@@ -40,7 +40,11 @@ Learn more - Explore more through Astro's official [documentation](https://docs.
 
 ------
 
-
+------
+Updated on 05th March 2025
+## This update includes:
+- Added FuseJS search 
+-------
 ## Components
 
 - Text Component  
