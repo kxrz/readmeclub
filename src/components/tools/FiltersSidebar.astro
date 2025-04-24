@@ -97,9 +97,11 @@ const filters = [
   variant="default"
   type="button"
   @click="leftDrawerOpen = true"
+  aria-label="Open filters"
 >
   Filters
 </Button>
+
 <div
   x-show="leftDrawerOpen"
   class="fixed inset-0 z-40 flex justify-start h-full p-2 lg:p-3"
@@ -146,7 +148,7 @@ const filters = [
     >
       <button
         type="button"
-        class="text-base-500 hover:text-base-900 focus:outline-none"
+        class=" text-base-600 hover:text-base-900 focus:outline-none"
         @click="leftDrawerOpen = false"
       >
         <span class="sr-only">Close sidebar</span>
@@ -213,7 +215,7 @@ const filters = [
             <Text
               tag="p"
               variant="textSM"
-              class=" text-base-500"
+              class="  text-base-600"
             >
               Unlock the full range of filters and enhance your experience by
               choosing to become a valued supporter.

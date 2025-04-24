@@ -32,7 +32,7 @@ const { frontmatter } = Astro.props;
             >{frontmatter.title}
             <span>${frontmatter.price}</span></Text
           >
-          <Text tag="p" variant="textBase" class="mt-4 text-base-500">
+          <Text tag="p" variant="textBase" class="mt-4  text-base-600">
             {frontmatter.description}</Text
           >
           <div class="mt-10 gap-2 grid grid-cols-1 sm:grid-cols-2">
@@ -75,7 +75,7 @@ const { frontmatter } = Astro.props;
                 </svg>
               </summary>
               <div class="pb-4">
-                <Text tag="p" variant="textSM" class="text-base-500">
+                <Text tag="p" variant="textSM" class=" text-base-600">
                   This product is crafted from high-quality materials designed
                   for durability and comfort. It features modern design elements
                   and is perfect for everyday use.
@@ -87,7 +87,7 @@ const { frontmatter } = Astro.props;
                         <Text
                           tag="p"
                           variant="textSM"
-                          class="text-base-500 text-balance  font-medium"
+                          class=" text-base-600 text-balance  font-medium"
                         >
                           {highlight}
                         </Text>
@@ -117,7 +117,7 @@ const { frontmatter } = Astro.props;
                 </svg>
               </summary>
               <div class="pb-4">
-                <Text tag="p" variant="textSM" class="text-base-500">
+                <Text tag="p" variant="textSM" class=" text-base-600">
                   We offer free standard shipping on all orders above $50.
                   Express shipping options are available at checkout for an
                   additional fee.
@@ -137,7 +137,7 @@ const { frontmatter } = Astro.props;
                             {feature.title}
                           </Text>
                         </dt>
-                        <dd class="mt-1 text-base-500">
+                        <dd class="mt-1  text-base-600">
                           <Text tag="span" variant="textSM">
                             {feature.description}
                           </Text>
@@ -171,7 +171,7 @@ const { frontmatter } = Astro.props;
                 <Text
                   tag="p"
                   variant="textSM"
-                  class="text-base-500 text-balance"
+                  class=" text-base-600 text-balance"
                 >
                   {frontmatter.license}
                 </Text>

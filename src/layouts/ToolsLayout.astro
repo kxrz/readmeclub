@@ -49,7 +49,7 @@ const { frontmatter } = Astro.props;
             <Text
               tag="p"
               variant="textBase"
-              class="mt-4 text-base-500 text-balance"
+              class="mt-4  text-base-600 text-balance"
             >
               {frontmatter.tagline}
             </Text>
@@ -72,8 +72,8 @@ const { frontmatter } = Astro.props;
                         <span class="flex-1 mx-2 border-dotted border-b border-base-300" />
                       </Text>
                     </dt>
-                    <dd class="mt-1 text-base-500">
-                      <Text tag="p" variant="textSM" class="text-base-500">
+                    <dd class="mt-1  text-base-600">
+                      <Text tag="p" variant="textSM" class=" text-base-600">
                         {details.value}
                       </Text>
                     </dd>
@@ -139,7 +139,7 @@ const { frontmatter } = Astro.props;
   <section>
     <Wrapper variant="standard">
       <div class="max-w-2xl">
-        <Text tag="p" variant="textBase" class="text-base-500 text-balance">
+        <Text tag="p" variant="textBase" class=" text-base-600 text-balance">
           {frontmatter.description}
         </Text>
         <Wrapper variant="prose">
@@ -156,13 +156,13 @@ const { frontmatter } = Astro.props;
         <Text
           tag="h2"
           variant="textXS"
-          class="font-medium uppercase text-base-500">Latest additions</Text
+          class="font-medium uppercase  text-base-600">Latest additions</Text
         >
         <Text
           tag="a"
           href="/tools/home"
           aria-label="Your label"
-          class="text-base-500 text-xs uppercase hover:text-accent-500 flex items-center gap-1 transition-all duration-200"
+          class=" text-base-600 text-xs uppercase hover:text-accent-500 flex items-center gap-1 transition-all duration-200"
         >
           See all tools
           <svg

@@ -25,7 +25,7 @@ const tags = [...new Set(allTools.map((post) => post.data.tags).flat())];
       <Text
         tag="p"
         variant="textBase"
-        class="mt-4 text-base-500 text-balance 2xl:text-xl"
+        class="mt-4  text-base-600 text-balance 2xl:text-xl"
       >
         Here you will find all the tags for our resources.
       </Text>
@@ -37,7 +37,7 @@ const tags = [...new Set(allTools.map((post) => post.data.tags).flat())];
               variant="link"
               aria-label={tag}
               href={`/tools/tags/${tag}`}
-              class=" flex justify-between text-base-500 capitalize hover:text-accent-500"
+              class=" flex justify-between  text-base-600 capitalize hover:text-accent-500"
             >
               {tag}
 

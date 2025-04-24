@@ -42,7 +42,7 @@ const allPosts = allPostsUnsorted.sort(
             alt={frontmatter.avatar.url}
             class="object-cover size-10 rounded-full"
           />
-          <div class="flex flex-col text-base-500">
+          <div class="flex flex-col  text-base-600">
             <time datetime={frontmatter.pubDate.toString().slice(0, 10)}>
               <Text tag="span" variant="textXS" class="font-medium"
                 >Written on {frontmatter.pubDate.toString().slice(0, 10)}
@@ -83,7 +83,7 @@ const allPosts = allPostsUnsorted.sort(
         <Text
           tag="p"
           variant="textBase"
-          class="mt-4 text-base-500 text-balance"
+          class="mt-4  text-base-600 text-balance"
         >
           {frontmatter.description}
         </Text>
