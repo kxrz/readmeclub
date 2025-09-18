@@ -2,94 +2,8 @@
 // Fundation
 import Text from "@/components/fundations/elements/Text.astro";
 import Button from "@/components/fundations/components/Button.astro";
-const filters = [
-  {
-    category: "Categories",
-    options: [
-      "Design Tools",
-      "Development Tools",
-      "SEO Tools",
-      "Analytics Tools",
-      "Project Management",
-      "Marketing Tools",
-      "CRM Software",
-      "E-commerce Platforms",
-      "Collaboration Tools",
-    ],
-  },
-  {
-    category: "Pricing",
-    options: [
-      "Free",
-      "Paid",
-      "Freemium",
-      "Subscription-based",
-      "One-time Payment",
-      "Enterprise Licensing",
-    ],
-  },
-  {
-    category: "Platform",
-    options: [
-      "Web",
-      "Desktop",
-      "Mobile",
-      "Cloud-based",
-      "Self-hosted",
-      "Cross-platform",
-    ],
-  },
-  {
-    category: "Features",
-    options: [
-      "Customizable",
-      "Integration-ready",
-      "Automation",
-      "Real-time Analytics",
-      "Drag-and-Drop Builder",
-      "Multilingual Support",
-      "AI-powered",
-      "Offline Access",
-    ],
-  },
-  {
-    category: "User Rating",
-    options: [
-      "5 Stars",
-      "4 Stars & Above",
-      "3 Stars & Above",
-      "Highly Recommended",
-      "Top-rated",
-    ],
-  },
-  {
-    category: "Industries",
-    options: [
-      "Design",
-      "Development",
-      "Marketing",
-      "Education",
-      "Healthcare",
-      "Finance",
-      "E-commerce",
-      "Real Estate",
-      "Hospitality",
-    ],
-  },
-  {
-    category: "Integration",
-    options: [
-      "Google Suite",
-      "Microsoft 365",
-      "Slack",
-      "Zapier",
-      "HubSpot",
-      "Salesforce",
-      "Stripe",
-      "Shopify",
-    ],
-  },
-];
+
+const { tags = [], categories = [], types = [] } = Astro.props;
 ---
 
 <Button
@@ -222,54 +136,66 @@ const filters = [
             </Text>
           </a>
         </div>
-        <div
-          class="border-t border-base-200 gap-2  flex flex-col p-2 py-3 px-6 "
-        >
-          {
-            filters.map((filter) => (
-              <details class="group ">
-                <summary class="text-base-900 cursor-pointer font-semibold text-base flex items-center justify-between w-full select-none hover:text-accent-500">
-                  {filter.category}
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    class="icon icon-tabler icons-tabler-outline icon-tabler-plus size-4 duration-300 ease-out transform group-open:-rotate-45"
-                  >
-                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                    <path d="M12 5l0 14" />
-                    <path d="M5 12l14 0" />
-                  </svg>
-                </summary>
-                <fieldset>
-                  <legend class="sr-only">{filter.category}</legend>
-                  <div class="flex flex-col space-y-2 mt-2">
-                    {filter.options.map((option) => (
-                      <label class="flex items-center gap-2">
-                        <input
-                          type="checkbox"
-                          name={filter.category.toLowerCase()}
-                          value={option}
-                          class="text-accent-500 border-base-200 rounded-full focus:ring-accent-500 focus:border-accent-500"
-                        />
-                        <Text
-                          tag="span"
-                          variant="textSM"
-                          class="text-sm text-base-600"
-                        >
-                          {option}
-                        </Text>
-                      </label>
-                    ))}
-                  </div>
-                </fieldset>
-              </details>
-            ))
-          }
+        <div class="border-t border-base-200 gap-2  flex flex-col p-2 py-3 px-6 ">
+          {categories.length > 0 && (
+            <details class="group" open>
+              <summary class="text-base-900 cursor-pointer font-semibold text-base flex items-center justify-between w-full select-none hover:text-accent-500">
+                Categories
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-plus size-4 duration-300 ease-out transform group-open:-rotate-45"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 5l0 14" /><path d="M5 12l14 0" /></svg>
+              </summary>
+              <fieldset>
+                <legend class="sr-only">Categories</legend>
+                <div class="flex flex-col space-y-2 mt-2">
+                  {categories.map((option) => (
+                    <label class="flex items-center gap-2">
+                      <input type="checkbox" x-model="selectedCategories" value={option} class="text-accent-500 border-base-200 rounded-full focus:ring-accent-500 focus:border-accent-500" />
+                      <Text tag="span" variant="textSM" class="text-sm text-base-600">{option}</Text>
+                    </label>
+                  ))}
+                </div>
+              </fieldset>
+            </details>
+          )}
+
+          {types.length > 0 && (
+            <details class="group" open>
+              <summary class="text-base-900 cursor-pointer font-semibold text-base flex items-center justify-between w-full select-none hover:text-accent-500">
+                Types
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-plus size-4 duration-300 ease-out transform group-open:-rotate-45"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 5l0 14" /><path d="M5 12l14 0" /></svg>
+              </summary>
+              <fieldset>
+                <legend class="sr-only">Types</legend>
+                <div class="flex flex-col space-y-2 mt-2">
+                  {types.map((option) => (
+                    <label class="flex items-center gap-2">
+                      <input type="checkbox" x-model="selectedTypes" value={option} class="text-accent-500 border-base-200 rounded-full focus:ring-accent-500 focus:border-accent-500" />
+                      <Text tag="span" variant="textSM" class="text-sm text-base-600">{option}</Text>
+                    </label>
+                  ))}
+                </div>
+              </fieldset>
+            </details>
+          )}
+
+          {tags.length > 0 && (
+            <details class="group">
+              <summary class="text-base-900 cursor-pointer font-semibold text-base flex items-center justify-between w-full select-none hover:text-accent-500">
+                Tags
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-plus size-4 duration-300 ease-out transform group-open:-rotate-45"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 5l0 14" /><path d="M5 12l14 0" /></svg>
+              </summary>
+              <fieldset>
+                <legend class="sr-only">Tags</legend>
+                <div class="flex flex-col space-y-2 mt-2">
+                  {tags.map((option) => (
+                    <label class="flex items-center gap-2">
+                      <input type="checkbox" x-model="selectedTags" value={option} class="text-accent-500 border-base-200 rounded-full focus:ring-accent-500 focus:border-accent-500" />
+                      <Text tag="span" variant="textSM" class="text-sm text-base-600 capitalize">{option}</Text>
+                    </label>
+                  ))}
+                </div>
+              </fieldset>
+            </details>
+          )}
         </div>
       </div>
       <!-- Footer -->
@@ -279,14 +205,16 @@ const filters = [
             size="sm"
             variant="muted"
             class="w-auto justify-center"
-            href="/forms/signin">clear</Button
-          >
+            type="button"
+            @click="clearAll()"
+          >clear</Button>
           <Button
             size="sm"
             variant="accent"
             class="w-auto justify-center"
-            href="/forms/signup">Apply filters</Button
-          >
+            type="button"
+            @click="leftDrawerOpen = false"
+          >Apply filters</Button>
         </div>
       </div>
     </div>

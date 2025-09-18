@@ -40,12 +40,12 @@ const sortedTags = allTags.sort((a, b) => a.localeCompare(b));
     </Wrapper>
   </section>
   <section
-    x-data="{ leftDrawerOpen: false }"
+    x-data='filtersState()'
     @keydown.window.escape="open = false"
   >
     <Wrapper variant="standard" class="py-6">
       <div class="flex items-center gap-2">
-        <FiltersSidebar />
+        <FiltersSidebar tags={sortedTags} categories={Array.from(new Set(alltools.map((post) => (post.data.details || []).find((d) => d.label === "Category")?.value).filter(Boolean))).sort((a, b) => a.localeCompare(b))} types={Array.from(new Set(alltools.map((post) => (post.data.details || []).find((d) => d.label === "Type")?.value).filter(Boolean))).sort((a, b) => a.localeCompare(b))} />
 
         <div
           class="scrollable-content relative flex snap-x snap-proximity gap-2 py-2 px-2 overflow-x-scroll scrollbar-hide"
@@ -72,7 +72,24 @@ const sortedTags = allTags.sort((a, b) => a.localeCompare(b));
         {
           alltools.map((post, i) => (
             <>
-              <BigCard key={`post-${i}`} post={post} />
+              {
+                // Extract metadata for filtering
+                (() => {
+                  const tags = (post.data.tags || []).join("|");
+                  const category = (post.data.details || []).find((d) => d.label === "Category")?.value || "";
+                  const type = (post.data.details || []).find((d) => d.label === "Type")?.value || "";
+                  return (
+                    <div
+                      data-tags={tags}
+                      data-category={category}
+                      data-type={type}
+                      x-show="matches($el)"
+                    >
+                      <BigCard key={`post-${i}`} post={post} />
+                    </div>
+                  );
+                })()
+              }
               {i === 2 && <SponsorCard key={`sponsor-${i}`} />}
             </>
           ))
@@ -81,3 +98,47 @@ const sortedTags = allTags.sort((a, b) => a.localeCompare(b));
     </Wrapper>
   </section>
 </BaseLayout>
+
+<script is:inline>
+  function filtersState() {
+    return {
+      leftDrawerOpen: false,
+      // Selected filters
+      selectedTags: [],
+      selectedCategories: [],
+      selectedTypes: [],
+      // Helpers to read dataset from a card element
+      getTags(el) {
+        return (el.dataset.tags || "").split("|").filter(Boolean);
+      },
+      getCategory(el) {
+        return el.dataset.category || "";
+      },
+      getType(el) {
+        return el.dataset.type || "";
+      },
+      // Core match logic for a given card element
+      matches(el) {
+        const tags = this.getTags(el);
+        const category = this.getCategory(el);
+        const type = this.getType(el);
+        const tagsOk = this.selectedTags.length === 0 || this.selectedTags.every((t) => tags.includes(t));
+        const categoryOk = this.selectedCategories.length === 0 || this.selectedCategories.includes(category);
+        const typeOk = this.selectedTypes.length === 0 || this.selectedTypes.includes(type);
+        return tagsOk && categoryOk && typeOk;
+      },
+      // Clear all filters
+      clearAll() {
+        this.selectedTags = [];
+        this.selectedCategories = [];
+        this.selectedTypes = [];
+      },
+    };
+  }
+  window.filtersState = filtersState;
+  // Ensure Alpine picks up the global function if needed after init
+  document.addEventListener('alpine:init', () => {
+    // no-op; presence ensures function is available when Alpine evaluates x-data
+  });
+  
+</script>
