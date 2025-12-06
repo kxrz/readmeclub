@@ -14,12 +14,13 @@ import SmallMoreCard from "@/components/resources/SmallMoreCard.astro";
 import { supabase } from '@/lib/supabase/client';
 import { useTranslations } from '@/i18n/utils';
 import { getGradientForId } from '@/lib/utils/gradients';
+import { normalizeSiteUrl, buildUrl } from '@/lib/utils/url';
 import type { Lang } from '@/i18n/utils';
 import type { Resource } from '@/lib/supabase/schema';
 
 const lang = (Astro.params.lang || 'en') as Lang;
 const t = useTranslations(lang);
-const siteUrl = Astro.site || 'https://readme.club';
+const siteUrl = normalizeSiteUrl(Astro.site);
 
 const id = Astro.params.id;
 
@@ -47,7 +48,7 @@ const textColorStyle = `color: ${gradient.text};`;
 const thumbnailUrl = resource.thumbnail_url || `/api/resources/${resource.id}/og-image.png`;
 const hasFile = !!resource.file_url;
 const hasExternalLink = !!resource.external_link;
-const ogImage = resource.thumbnail_url || `${siteUrl}/api/resources/${resource.id}/og-image.png`;
+const ogImage = resource.thumbnail_url || buildUrl(`/api/resources/${resource.id}/og-image.png`, siteUrl);
 
 // Vérifier si c'est une image à télécharger
 const isImageFile = hasFile && resource.file_name ? /\.(jpg|jpeg|png|gif|webp|svg|bmp|ico)$/i.test(resource.file_name) : false;

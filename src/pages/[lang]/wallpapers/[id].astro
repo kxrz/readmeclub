@@ -13,12 +13,13 @@ import WallpaperThumbnail from "@/components/wallpapers/WallpaperThumbnail.astro
 import { supabase } from '@/lib/supabase/client';
 import { useTranslations } from '@/i18n/utils';
 import { getGradientForId } from '@/lib/utils/gradients';
+import { normalizeSiteUrl, buildUrl } from '@/lib/utils/url';
 import type { Lang } from '@/i18n/utils';
 import type { Wallpaper } from '@/lib/supabase/schema';
 
 const lang = (Astro.params.lang || 'en') as Lang;
 const t = useTranslations(lang);
-const siteUrl = Astro.site || 'https://readme.club';
+const siteUrl = normalizeSiteUrl(Astro.site);
 
 const id = Astro.params.id;
 
@@ -57,7 +58,7 @@ const gradientStyle = `background: linear-gradient(135deg, ${gradient.from} 0%, 
 const textColorStyle = `color: ${gradient.text};`;
 
 const imageUrl = wallpaper.file_url || '/placeholder-wallpaper.jpg';
-const ogImage = wallpaper.file_url || `${siteUrl}/api/wallpapers/${wallpaper.id}/og-image.png`;
+const ogImage = wallpaper.file_url || buildUrl(`/api/wallpapers/${wallpaper.id}/og-image.png`, siteUrl);
 ---
 
 <BaseLayout>
