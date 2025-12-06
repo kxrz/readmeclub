@@ -67,8 +67,8 @@ export const POST: APIRoute = async ({ request }) => {
     ];
     
     const fileType = file.type;
-    const fileName = file.name.toLowerCase();
-    const fileExtension = fileName.substring(fileName.lastIndexOf('.') + 1);
+    const fileLowerCaseName = file.name.toLowerCase();
+    const fileExtension = fileLowerCaseName.substring(fileLowerCaseName.lastIndexOf('.') + 1);
     const allowedExtensions = ['zip', 'rar', '7z', 'pdf', 'epub', 'txt', 'html', 'htm', 'js', 'css', 'json', 'png', 'jpg', 'jpeg', 'gif', 'webp', 'svg', 'ttf', 'otf', 'eot', 'woff', 'woff2', 'bin'];
     
     const isValidType = fileType && allowedTypes.includes(fileType);
