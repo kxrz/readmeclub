@@ -33,3 +33,4 @@ pnpm-debug.log*
 *.swp
 *.tmp
 Thumbs.db
+/trendspotter_RC_2025
