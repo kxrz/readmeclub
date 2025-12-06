@@ -28,7 +28,7 @@ async function loadFonts() {
 
 export const GET: APIRoute = async ({ url }) => {
   try {
-    const title = url.searchParams.get('title') || 'Readme.club';
+    const title = url.searchParams.get('title') || 'readme.club';
     const description = url.searchParams.get('description') || '';
     
     // Charger les polices

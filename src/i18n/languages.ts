@@ -1,7 +1,7 @@
 export const ui = {
   en: {
     // Site
-    'site.name': 'ReadMe',
+    'site.name': 'readme.club',
     'site.name_lower': 'readme.club',
     'site.tagline': 'Community-driven resource sharing for Xteink users',
     'site.description': 'Share and discover language files, documentation, tools, wallpapers, feature requests, and more',
@@ -308,7 +308,7 @@ export const ui = {
   },
   fr: {
     // Site
-    'site.name': 'ReadMe',
+    'site.name': 'readme.club',
     'site.name_lower': 'readme.club',
     'site.tagline': 'Partage de ressources communautaires pour les utilisateurs Xteink',
     'site.description': 'Partagez et découvrez des fichiers de langue, de la documentation, des outils, des fonds d\'écran, des demandes de fonctionnalités et plus encore',
@@ -612,7 +612,7 @@ export const ui = {
   },
   es: {
     // Site
-    'site.name': 'ReadMe',
+    'site.name': 'readme.club',
     'site.name_lower': 'readme.club',
     'site.tagline': 'Intercambio de recursos comunitarios para usuarios de Xteink',
     'site.description': 'Comparte y descubre archivos de idioma, documentación, herramientas, fondos de pantalla, solicitudes de funciones y más',
@@ -888,7 +888,7 @@ export const ui = {
   },
   ru: {
     // Site
-    'site.name': 'ReadMe',
+    'site.name': 'readme.club',
     'site.name_lower': 'readme.club',
     'site.tagline': 'Обмен ресурсами сообщества для пользователей Xteink',
     'site.description': 'Делитесь и открывайте языковые файлы, документацию, инструменты, обои, запросы функций и многое другое',
@@ -1165,7 +1165,7 @@ export const ui = {
   },
   cn: {
     // Site
-    'site.name': 'ReadMe',
+    'site.name': 'readme.club',
     'site.name_lower': 'readme.club',
     'site.tagline': '面向 Xteink 用户的社区资源共享',
     'site.description': '分享和发现语言文件、文档、工具、壁纸、功能请求等',
