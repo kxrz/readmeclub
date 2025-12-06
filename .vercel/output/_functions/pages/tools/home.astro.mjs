@@ -1,9 +1,9 @@
 import { c as createComponent, m as maybeRenderHead, r as renderComponent, a as renderTemplate, B as defineScriptVars, C as Fragment, e as addAttribute } from '../../chunks/astro/server_DMB4Uz73.mjs';
 import 'piccolore';
-import { b as $$Text, $ as $$BaseLayout, a as $$Wrapper } from '../../chunks/BaseLayout_CO6ejgXa.mjs';
+import { b as $$Text, $ as $$BaseLayout, a as $$Wrapper } from '../../chunks/BaseLayout_ea5yR0aV.mjs';
 import { $ as $$Link } from '../../chunks/Link_Ins73ZxP.mjs';
 import { $ as $$Image } from '../../chunks/_astro_assets_BOyCgF7Z.mjs';
-import { $ as $$FiltersSidebar, a as $$BigCard } from '../../chunks/BigCard_DIgywpku.mjs';
+import { $ as $$FiltersSidebar, a as $$BigCard } from '../../chunks/BigCard_D5egEK49.mjs';
 import 'clsx';
 import { g as getCollection } from '../../chunks/_astro_content_DqmQcJki.mjs';
 export { renderers } from '../../renderers.mjs';

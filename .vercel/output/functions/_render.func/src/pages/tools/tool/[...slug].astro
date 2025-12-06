@@ -16,7 +16,15 @@ export async function getStaticPaths() {
   });
   return paths;
 }
-const { page } = Astro.props;
+
+const { slug } = Astro.params;
+const tools = await getCollection("tools");
+const page = tools.find(p => p.slug === slug);
+
+if (!page) {
+  return Astro.redirect('/404', 404);
+}
+
 const { Content } = await page.render();
 ---
 

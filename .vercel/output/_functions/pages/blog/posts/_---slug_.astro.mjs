@@ -1,10 +1,10 @@
 import { b as createAstro, c as createComponent, r as renderComponent, a as renderTemplate, m as maybeRenderHead, e as addAttribute, C as Fragment, y as renderSlot } from '../../../chunks/astro/server_DMB4Uz73.mjs';
 import 'piccolore';
 import { $ as $$Image } from '../../../chunks/_astro_assets_BOyCgF7Z.mjs';
-import { $ as $$BaseLayout, a as $$Wrapper, b as $$Text } from '../../../chunks/BaseLayout_CO6ejgXa.mjs';
+import { $ as $$BaseLayout, a as $$Wrapper, b as $$Text } from '../../../chunks/BaseLayout_ea5yR0aV.mjs';
 import { $ as $$Link } from '../../../chunks/Link_Ins73ZxP.mjs';
-import { $ as $$SubscribeCta } from '../../../chunks/SubscribeCta_dk7JgIAS.mjs';
-import { $ as $$Insights } from '../../../chunks/Insights_BA_uzwBD.mjs';
+import { $ as $$SubscribeCta } from '../../../chunks/SubscribeCta_Bv2xg8mC.mjs';
+import { $ as $$Insights } from '../../../chunks/Insights_DN14pbwr.mjs';
 import { g as getCollection } from '../../../chunks/_astro_content_DqmQcJki.mjs';
 export { renderers } from '../../../renderers.mjs';
 
@@ -33,7 +33,12 @@ async function getStaticPaths() {
 const $$ = createComponent(async ($$result, $$props, $$slots) => {
   const Astro2 = $$result.createAstro($$Astro, $$props, $$slots);
   Astro2.self = $$;
-  const { entry } = Astro2.props;
+  const { slug } = Astro2.params;
+  const blogEntries = await getCollection("posts");
+  const entry = blogEntries.find((e) => e.slug === slug);
+  if (!entry) {
+    return Astro2.redirect("/404", 404);
+  }
   const { Content } = await entry.render();
   return renderTemplate`${renderComponent($$result, "BlogLayout", $$BlogLayout, { "frontmatter": entry.data }, { "default": async ($$result2) => renderTemplate` ${renderComponent($$result2, "Content", Content, {})} ` })}`;
 }, "/Users/florentbertiaux/Documents/GitHub/xteinkhub2026/src/pages/blog/posts/[...slug].astro", void 0);

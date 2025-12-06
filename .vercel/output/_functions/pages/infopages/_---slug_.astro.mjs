@@ -1,6 +1,6 @@
 import { b as createAstro, c as createComponent, r as renderComponent, a as renderTemplate, m as maybeRenderHead, y as renderSlot } from '../../chunks/astro/server_DMB4Uz73.mjs';
 import 'piccolore';
-import { $ as $$BaseLayout, a as $$Wrapper, b as $$Text } from '../../chunks/BaseLayout_CO6ejgXa.mjs';
+import { $ as $$BaseLayout, a as $$Wrapper, b as $$Text } from '../../chunks/BaseLayout_ea5yR0aV.mjs';
 import { g as getCollection } from '../../chunks/_astro_content_DqmQcJki.mjs';
 export { renderers } from '../../renderers.mjs';
 
@@ -29,9 +29,14 @@ async function getStaticPaths() {
 const $$ = createComponent(async ($$result, $$props, $$slots) => {
   const Astro2 = $$result.createAstro($$Astro, $$props, $$slots);
   Astro2.self = $$;
-  const { page } = Astro2.props;
+  const { slug } = Astro2.params;
+  const infoPages = await getCollection("infopages");
+  const page = infoPages.find((p) => p.slug === slug);
+  if (!page) {
+    return Astro2.redirect("/404", 404);
+  }
   const { Content } = await page.render();
-  return renderTemplate`${renderComponent($$result, "InfoPagesLayout", $$InfoPagesLayout, { "frontmatter": page.data }, { "default": async ($$result2) => renderTemplate` ${renderComponent($$result2, "Content", Content, {})}` })}`;
+  return renderTemplate`${renderComponent($$result, "InfoPagesLayout", $$InfoPagesLayout, { "frontmatter": page.data }, { "default": async ($$result2) => renderTemplate` ${renderComponent($$result2, "Content", Content, {})} ` })}`;
 }, "/Users/florentbertiaux/Documents/GitHub/xteinkhub2026/src/pages/infopages/[...slug].astro", void 0);
 
 const $$file = "/Users/florentbertiaux/Documents/GitHub/xteinkhub2026/src/pages/infopages/[...slug].astro";

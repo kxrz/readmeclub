@@ -1,7 +1,7 @@
 import { c as createComponent, m as maybeRenderHead, r as renderComponent, a as renderTemplate } from '../../chunks/astro/server_DMB4Uz73.mjs';
 import 'piccolore';
-import { a as $$Wrapper, b as $$Text, $ as $$BaseLayout } from '../../chunks/BaseLayout_CO6ejgXa.mjs';
-import { $ as $$SubmitModal } from '../../chunks/SubmitModal_DODVBcgz.mjs';
+import { a as $$Wrapper, b as $$Text, $ as $$BaseLayout } from '../../chunks/BaseLayout_ea5yR0aV.mjs';
+import { $ as $$SubmitModal } from '../../chunks/SubmitModal_5LDaOiFM.mjs';
 export { renderers } from '../../renderers.mjs';
 
 const $$Submissions$1 = createComponent(($$result, $$props, $$slots) => {

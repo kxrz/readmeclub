@@ -1,8 +1,8 @@
 import { b as createAstro, c as createComponent, r as renderComponent, a as renderTemplate, m as maybeRenderHead } from '../../../chunks/astro/server_DMB4Uz73.mjs';
 import 'piccolore';
-import { $ as $$BaseLayout, a as $$Wrapper, b as $$Text } from '../../../chunks/BaseLayout_CO6ejgXa.mjs';
-import { $ as $$Insights } from '../../../chunks/Insights_BA_uzwBD.mjs';
-import { $ as $$EntriesOne } from '../../../chunks/EntriesOne_Brlf-5Qd.mjs';
+import { $ as $$BaseLayout, a as $$Wrapper, b as $$Text } from '../../../chunks/BaseLayout_ea5yR0aV.mjs';
+import { $ as $$Insights } from '../../../chunks/Insights_DN14pbwr.mjs';
+import { $ as $$EntriesOne } from '../../../chunks/EntriesOne_8m2ttt-L.mjs';
 import { g as getCollection } from '../../../chunks/_astro_content_DqmQcJki.mjs';
 export { renderers } from '../../../renderers.mjs';
 
@@ -27,7 +27,13 @@ const $$tag = createComponent(async ($$result, $$props, $$slots) => {
   const Astro2 = $$result.createAstro($$Astro, $$props, $$slots);
   Astro2.self = $$tag;
   const { tag } = Astro2.params;
-  const { posts } = Astro2.props;
+  const allPosts = await getCollection("posts");
+  const uniqueTags = [...new Set(allPosts.map((post) => post.data.tags).flat())];
+  if (!uniqueTags.includes(tag)) {
+    return Astro2.redirect("/404", 404);
+  }
+  const filteredPosts = allPosts.filter((post) => post.data.tags.includes(tag));
+  const { posts } = { posts: filteredPosts };
   return renderTemplate`${renderComponent($$result, "BaseLayout", $$BaseLayout, { "pageTitle": tag }, { "default": async ($$result2) => renderTemplate` ${maybeRenderHead()}<section> ${renderComponent($$result2, "Wrapper", $$Wrapper, { "variant": "hero" }, { "default": async ($$result3) => renderTemplate` ${renderComponent($$result3, "Text", $$Text, { "tag": "h1", "variant": "displaySM", "class": "text-base-900 2xl:text-5xl" }, { "default": async ($$result4) => renderTemplate`
 All our blogs tagged with ${tag}` })} ${renderComponent($$result3, "Text", $$Text, { "tag": "p", "variant": "textBase", "class": "mt-4  text-base-600 text-balance 2xl:text-xl" }, { "default": async ($$result4) => renderTemplate`
 Read all about ${tag} here.

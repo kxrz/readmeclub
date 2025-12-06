@@ -1,7 +1,7 @@
 import { b as createAstro, c as createComponent, r as renderComponent, a as renderTemplate, m as maybeRenderHead, e as addAttribute } from '../../chunks/astro/server_DMB4Uz73.mjs';
 import 'piccolore';
-import { u as useTranslations, $ as $$BaseLayout, a as $$Wrapper, b as $$Text } from '../../chunks/BaseLayout_CO6ejgXa.mjs';
-import { $ as $$WallpaperCard } from '../../chunks/WallpaperCard_hgj3yts5.mjs';
+import { u as useTranslations, $ as $$BaseLayout, a as $$Wrapper, b as $$Text } from '../../chunks/BaseLayout_ea5yR0aV.mjs';
+import { $ as $$WallpaperCard } from '../../chunks/WallpaperCard_D9abOqdx.mjs';
 import { s as supabase } from '../../chunks/client_DiYgajIf.mjs';
 export { renderers } from '../../renderers.mjs';
 

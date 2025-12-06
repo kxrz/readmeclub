@@ -1,8 +1,8 @@
 import { c as createComponent, m as maybeRenderHead, r as renderComponent, a as renderTemplate } from '../../chunks/astro/server_DMB4Uz73.mjs';
 import 'piccolore';
-import { b as $$Text, a as $$Wrapper, $ as $$BaseLayout } from '../../chunks/BaseLayout_CO6ejgXa.mjs';
+import { b as $$Text, a as $$Wrapper, $ as $$BaseLayout } from '../../chunks/BaseLayout_ea5yR0aV.mjs';
 import { $ as $$Image } from '../../chunks/_astro_assets_BOyCgF7Z.mjs';
-import { $ as $$DeleteAccountModal } from '../../chunks/DeleteAccountModal_BrLnEl5-.mjs';
+import { $ as $$DeleteAccountModal } from '../../chunks/DeleteAccountModal_DNx1T_Sm.mjs';
 import { $ as $$Button } from '../../chunks/Button_B6723hw2.mjs';
 export { renderers } from '../../renderers.mjs';
 

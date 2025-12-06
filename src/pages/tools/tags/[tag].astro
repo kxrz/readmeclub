@@ -32,6 +32,11 @@ const { tag } = Astro.params;
 // Collect all unique tags
 const allTags = [...new Set(alltools.flatMap((post) => post.data.tags || []))];
 const sortedTags = allTags.sort((a, b) => a.localeCompare(b));
+
+// Verify tag exists
+if (!allTags.includes(tag)) {
+  return Astro.redirect('/404', 404);
+}
 ---
 
 <BaseLayout pageTitle={tag}>

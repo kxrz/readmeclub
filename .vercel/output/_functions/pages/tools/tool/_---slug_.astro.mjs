@@ -1,9 +1,9 @@
 import { b as createAstro, c as createComponent, m as maybeRenderHead, e as addAttribute, r as renderComponent, a as renderTemplate, y as renderSlot } from '../../../chunks/astro/server_DMB4Uz73.mjs';
 import 'piccolore';
 import { $ as $$Image } from '../../../chunks/_astro_assets_BOyCgF7Z.mjs';
-import { b as $$Text, $ as $$BaseLayout, a as $$Wrapper } from '../../../chunks/BaseLayout_CO6ejgXa.mjs';
+import { b as $$Text, $ as $$BaseLayout, a as $$Wrapper } from '../../../chunks/BaseLayout_ea5yR0aV.mjs';
 import { $ as $$Link } from '../../../chunks/Link_Ins73ZxP.mjs';
-import { $ as $$BookmarksModal } from '../../../chunks/BookmarksModal_DfF0i2GG.mjs';
+import { $ as $$BookmarksModal } from '../../../chunks/BookmarksModal_DhYZevGD.mjs';
 import { g as getCollection } from '../../../chunks/_astro_content_DqmQcJki.mjs';
 export { renderers } from '../../../renderers.mjs';
 
@@ -48,7 +48,12 @@ async function getStaticPaths() {
 const $$ = createComponent(async ($$result, $$props, $$slots) => {
   const Astro2 = $$result.createAstro($$Astro, $$props, $$slots);
   Astro2.self = $$;
-  const { page } = Astro2.props;
+  const { slug } = Astro2.params;
+  const tools = await getCollection("tools");
+  const page = tools.find((p) => p.slug === slug);
+  if (!page) {
+    return Astro2.redirect("/404", 404);
+  }
   const { Content } = await page.render();
   return renderTemplate`${renderComponent($$result, "ToolsLayout", $$ToolsLayout, { "frontmatter": page.data }, { "default": async ($$result2) => renderTemplate` ${renderComponent($$result2, "Content", Content, {})} ` })}`;
 }, "/Users/florentbertiaux/Documents/GitHub/xteinkhub2026/src/pages/tools/tool/[...slug].astro", void 0);

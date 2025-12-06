@@ -17,7 +17,15 @@ export async function getStaticPaths() {
   });
   return paths;
 }
-const { page } = Astro.props;
+
+const { slug } = Astro.params;
+const store = await getCollection('store');
+const page = store.find(p => p.slug === slug);
+
+if (!page) {
+  return Astro.redirect('/404', 404);
+}
+
 const { Content } = await page.render();
 ---
 <StoreLayout frontmatter={page.data}>

@@ -28,7 +28,16 @@ export async function getStaticPaths() {
   });
 }
 const { tag } = Astro.params;
-const { posts } = Astro.props;
+const allPosts = await getCollection("posts");
+const uniqueTags = [...new Set(allPosts.map((post) => post.data.tags).flat())];
+
+// Verify tag exists
+if (!uniqueTags.includes(tag)) {
+  return Astro.redirect('/404', 404);
+}
+
+const filteredPosts = allPosts.filter((post) => post.data.tags.includes(tag));
+const { posts } = { posts: filteredPosts };
 
 ---
 

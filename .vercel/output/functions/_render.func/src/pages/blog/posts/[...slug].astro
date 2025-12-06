@@ -12,7 +12,15 @@ export async function getStaticPaths() {
     props: { entry },
   }));
 }
-const { entry } = Astro.props;
+
+const { slug } = Astro.params;
+const blogEntries = await getCollection("posts");
+const entry = blogEntries.find(e => e.slug === slug);
+
+if (!entry) {
+  return Astro.redirect('/404', 404);
+}
+
 const { Content } = await entry.render();
 ---
 

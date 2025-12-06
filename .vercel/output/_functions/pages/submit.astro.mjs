@@ -1,7 +1,7 @@
 import { b as createAstro, c as createComponent, r as renderComponent, a as renderTemplate, C as Fragment, m as maybeRenderHead } from '../chunks/astro/server_DMB4Uz73.mjs';
 import 'piccolore';
-import { g as getLangFromUrl, $ as $$BaseLayout, c as getLangPrefix, u as useTranslations, a as $$Wrapper, b as $$Text } from '../chunks/BaseLayout_CO6ejgXa.mjs';
-import { $ as $$SubmitResource } from '../chunks/SubmitResource_BIsgjtra.mjs';
+import { g as getLangFromUrl, $ as $$BaseLayout, c as getLangPrefix, u as useTranslations, a as $$Wrapper, b as $$Text } from '../chunks/BaseLayout_ea5yR0aV.mjs';
+import { $ as $$SubmitResource } from '../chunks/SubmitResource_Cfye8jQy.mjs';
 import { $ as $$Seo } from '../chunks/Seo_Dd6omgxK.mjs';
 export { renderers } from '../renderers.mjs';
 
