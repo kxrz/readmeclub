@@ -1,7 +1,7 @@
----
-import { Astro } from 'astro';
+import type { APIRoute } from 'astro';
 
-Astro.cookies.delete('admin_session', { path: '/' });
-return Astro.redirect('/admin');
----
+export const GET: APIRoute = async ({ cookies, redirect }) => {
+  cookies.delete('admin_session', { path: '/' });
+  return redirect('/admin', 302);
+};
 
