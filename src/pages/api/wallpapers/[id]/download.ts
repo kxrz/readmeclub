@@ -96,8 +96,7 @@ export const GET: APIRoute = async ({ params }) => {
       'jpg': 'image/jpeg',
       'jpeg': 'image/jpeg',
       'png': 'image/png',
-      'webp': 'image/webp',
-      'gif': 'image/gif',
+      'bmp': 'image/bmp',
     };
     const contentType = contentTypeMap[fileExtension] || 'image/jpeg';
     

@@ -39,20 +39,18 @@ export const POST: APIRoute = async ({ request }) => {
       });
     }
     
-    // Validate file format - only images
+    // Validate file format - only BMP, JPG and PNG
     const allowedTypes = [
       'image/png',
       'image/jpeg',
       'image/jpg',
-      'image/gif',
-      'image/webp',
-      'image/svg+xml',
+      'image/bmp',
     ];
     
     const fileType = file.type;
     const fileLowerCaseName = file.name.toLowerCase();
     const fileExtension = fileLowerCaseName.substring(fileLowerCaseName.lastIndexOf('.') + 1);
-    const allowedExtensions = ['png', 'jpg', 'jpeg', 'gif', 'webp', 'svg'];
+    const allowedExtensions = ['png', 'jpg', 'jpeg', 'bmp'];
     
     const isValidType = fileType && allowedTypes.includes(fileType);
     const isValidExtension = allowedExtensions.includes(fileExtension);
@@ -92,6 +90,10 @@ export const POST: APIRoute = async ({ request }) => {
             break;
           }
         }
+      } else if (fileExtension === 'bmp' && arrayBuffer.byteLength >= 26) {
+        // BMP: width and height are at bytes 18-21 and 22-25 (little-endian)
+        width = view.getUint32(18, true); // little-endian
+        height = Math.abs(view.getInt32(22, true)); // can be negative for top-down BMPs
       }
       
       // Validate detected dimensions

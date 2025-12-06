@@ -74,7 +74,7 @@ const t = useTranslations(lang);
         type="file"
         id="file"
         name="file"
-        accept="image/png,image/jpeg,image/jpg,image/gif,image/webp,image/svg+xml"
+        accept="image/png,image/jpeg,image/jpg,image/bmp"
         required
         @change="
           const file = $event.target.files[0];
@@ -210,9 +210,9 @@ const t = useTranslations(lang);
     }
     
     // Validate file format
-    const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif', 'image/webp', 'image/svg+xml'];
+    const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/bmp'];
     const fileExtension = file.name.toLowerCase().substring(file.name.lastIndexOf('.') + 1);
-    const allowedExtensions = ['png', 'jpg', 'jpeg', 'gif', 'webp', 'svg'];
+    const allowedExtensions = ['png', 'jpg', 'jpeg', 'bmp'];
     
     const isValidType = file.type && allowedTypes.includes(file.type);
     const isValidExtension = allowedExtensions.includes(fileExtension);
