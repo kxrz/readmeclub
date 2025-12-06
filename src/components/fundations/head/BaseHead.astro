@@ -1,14 +1,17 @@
 ---
-import Seo from "@/components/fundations/head/Seo.astro";
 import Meta from "@/components/fundations/head/Meta.astro";
 import Fonts from "@/components/fundations/head/Fonts.astro";
 import Favicons from "@/components/fundations/head/Favicons.astro";
 // Scripts
 import FuseJS from "@/components/fundations/scripts/FuseJS.astro";
 import AlpineJs from "@/components/fundations/scripts/AlpineJS.astro";
+import { getLangFromUrl } from '@/i18n/utils';
+import { useTranslations } from '@/i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
 ---
 
-<Seo />
 <Meta />
 <Fonts />
 <Favicons />

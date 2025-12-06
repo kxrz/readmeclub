@@ -1,0 +1,56 @@
+---
+import Text from "@/components/fundations/elements/Text.astro";
+import type { Wallpaper } from '@/lib/supabase/schema';
+import { useTranslations, getLangFromUrl, getLangPrefix } from '@/i18n/utils';
+
+interface Props {
+  wallpaper: Wallpaper;
+}
+
+const { wallpaper } = Astro.props;
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const langPrefix = getLangPrefix(lang);
+
+const wallpaperUrl = langPrefix ? `${langPrefix}/wallpapers/${wallpaper.id}` : `/wallpapers/${wallpaper.id}`;
+const imageUrl = wallpaper.file_url || '/placeholder-wallpaper.jpg';
+---
+
+<a
+  href={wallpaperUrl}
+  class="group relative flex flex-col rounded-lg border border-base-200 bg-white overflow-hidden hover:border-accent-300 hover:shadow-lg transition-all"
+>
+  <div class="aspect-[3/4] w-full overflow-hidden bg-base-100">
+    <img
+      src={imageUrl}
+      alt={wallpaper.title || 'Wallpaper'}
+      class="h-full w-full object-cover group-hover:scale-105 transition-transform"
+      loading="lazy"
+    />
+  </div>
+  
+  <div class="p-4 flex-1">
+    <div class="flex items-start justify-between gap-2 mb-2">
+      <Text tag="h3" variant="textBase" class="font-semibold text-base-900 line-clamp-2 group-hover:text-accent-500">
+        {wallpaper.title || 'Untitled Wallpaper'}
+      </Text>
+      {wallpaper.category && (
+        <span class="shrink-0 text-xs uppercase text-base-500 bg-base-100 px-2 py-1 rounded">
+          {wallpaper.category}
+        </span>
+      )}
+    </div>
+    
+    <div class="flex items-center justify-between mt-auto">
+      <Text tag="span" variant="textXS" class="text-base-500">
+        {t('wallpapers.downloads', { count: wallpaper.download_count })}
+      </Text>
+      {wallpaper.author_name && (
+        <Text tag="span" variant="textXS" class="text-base-500">
+          {wallpaper.author_name}
+        </Text>
+      )}
+    </div>
+  </div>
+</a>
+

@@ -2,7 +2,11 @@ import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 import sitemap from "@astrojs/sitemap";
 import mdx from "@astrojs/mdx";
+import vercel from "@astrojs/vercel/serverless";
+
 export default defineConfig({
+  output: 'server',
+  adapter: vercel(),
   vite: {
     plugins: [tailwindcss()],
   },
@@ -17,6 +21,13 @@ export default defineConfig({
     skipInline: false,
     drafts: true
   },
-  site: 'https://lexingtonthemes.com',
+  site: 'https://readme.club',
+  i18n: {
+    defaultLocale: "en",
+    locales: ["en", "fr", "es", "ru", "cn"],
+    routing: {
+      prefixDefaultLocale: false
+    }
+  },
   integrations: [sitemap(), mdx()]
 });

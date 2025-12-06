@@ -1,12 +1,16 @@
 ---
 import Text from "@/components/fundations/elements/Text.astro";
+import { useTranslations, getLangFromUrl } from '@/i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
 ---
 
 <Text
   tag="a"
   href="/"
   variant="textBase"
-  class="inline-flex items-center font-bold text-base-1300 uppercase gap-3 group-hover:opacity-80"
+  class="inline-flex items-center font-bold text-base-1300 lowercase gap-3 group-hover:opacity-80"
 >
-  trendspotter
+  {t('site.name_lower')}
 </Text>

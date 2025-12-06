@@ -5,13 +5,18 @@ import BaseHead from "@/components/fundations/head/BaseHead.astro";
 // Components
 import Footer from "@/components/global/Footer.astro";
 import Navigation from "@/components/navigation/Navigation.astro";
+import { getLangFromUrl } from '@/i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
 ---
+
 <html
-  lang="en"
+  lang={lang}
   class="scroll-smooth selection:bg-accent-50 selection:text-accent-500"
 >
   <head>
     <BaseHead />
+    <slot name="head" />
   </head>
   <body
     x-data="{ rightDrawerOpen: false }"

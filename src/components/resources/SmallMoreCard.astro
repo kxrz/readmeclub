@@ -1,0 +1,48 @@
+---
+import Text from "@/components/fundations/elements/Text.astro";
+import { useTranslations, getLangFromUrl, getLangPrefix } from '@/i18n/utils';
+
+interface Props {
+  href: string;
+  label?: string;
+}
+
+const { href, label } = Astro.props;
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const displayLabel = label || t('common.view') + ' all';
+---
+
+<a
+  href={href}
+  title={displayLabel}
+  class="relative flex items-center gap-x-3 rounded-md bg-base-50 p-4 focus-outline-none"
+>
+  <div
+    class="flex-shrink-0 p-1 size-16 bg-white rounded-full items-center flex justify-center"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      class="icon icon-tabler icons-tabler-outline icon-tabler-plus size-10 text-base-400"
+    >
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+      <path d="M12 5l0 14"></path>
+      <path d="M5 12l14 0"></path>
+    </svg>
+  </div>
+  <div class="min-w-0 flex-1">
+    <span class="absolute inset-0" aria-hidden="true"></span>
+    <Text tag="h3" variant="textSM" class="font-medium text-base-600">
+      {displayLabel}
+    </Text>
+  </div>
+</a>
+

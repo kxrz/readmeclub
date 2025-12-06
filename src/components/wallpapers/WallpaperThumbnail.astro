@@ -1,0 +1,29 @@
+---
+import type { Wallpaper } from '@/lib/supabase/schema';
+import { useTranslations, getLangFromUrl, getLangPrefix } from '@/i18n/utils';
+
+interface Props {
+  wallpaper: Wallpaper;
+}
+
+const { wallpaper } = Astro.props;
+const lang = getLangFromUrl(Astro.url);
+const langPrefix = getLangPrefix(lang);
+
+const wallpaperUrl = langPrefix ? `${langPrefix}/wallpapers/${wallpaper.id}` : `/wallpapers/${wallpaper.id}`;
+const imageUrl = wallpaper.file_url || '/placeholder-wallpaper.jpg';
+---
+
+<a
+  href={wallpaperUrl}
+  class="group relative flex-shrink-0 w-32 h-48 rounded-lg overflow-hidden border border-base-200 bg-white hover:border-accent-300 hover:shadow-lg transition-all"
+  title={wallpaper.title || 'Wallpaper'}
+>
+  <img
+    src={imageUrl}
+    alt={wallpaper.title || 'Wallpaper'}
+    class="h-full w-full object-cover group-hover:scale-105 transition-transform"
+    loading="lazy"
+  />
+</a>
+

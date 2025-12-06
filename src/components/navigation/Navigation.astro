@@ -6,53 +6,34 @@ import Logo from "@/images/logo.svg";
 import Text from "@/components/fundations/elements/Text.astro";
 import Link from "../fundations/components/Link.astro";
 import Wrapper from "@/components/fundations/containers/Wrapper.astro";
-// Components
-import ToolSearch from "@/components/tools/ToolSearch.astro";
-// Quick access links
-const links = [
-  { href: "/tools/home", text: "Tools" },
-  { href: "/blog/home", text: "Blog" },
-  { href: "/store/home", text: "Store" },
-  { href: "/system/overview", text: "Overview" },
+import LogoComponent from "@/components/global/Logo.astro";
+// i18n
+import { useTranslations, getLangFromUrl, getLangPrefix } from '@/i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const langPrefix = getLangPrefix(lang);
+const isIndexPage = Astro.url.pathname === "/" || Astro.url.pathname === `/${lang}`;
+
+// Navigation items (header - visible)
+const navItems = [
+  { href: `${langPrefix}/resources`, text: t('nav.resources') },
+  { href: `${langPrefix}/wallpapers`, text: t('nav.wallpapers') },
+  { href: `${langPrefix}/fonts`, text: t('nav.fonts') },
+  { href: `${langPrefix}/tips`, text: t('nav.tips') },
 ];
 
-// Define navigation data
-const navigation = [
-  {
-    title: "Navigation",
-    items: [
-      {
-        href: "/tools/home",
-        text: "Tools",
-      },
-      {
-        href: "/blog/home",
-        text: "Blog",
-      },
-      
-    ],
-  },
+// Navigation items (burger menu - all)
+const burgerItems = [
+  { href: `${langPrefix}/resources`, text: t('nav.resources') },
+  { href: `${langPrefix}/wallpapers`, text: t('nav.wallpapers') },
+  { href: `${langPrefix}/fonts`, text: t('nav.fonts') },
+  { href: `${langPrefix}/board`, text: t('nav.board') },
+  { href: `${langPrefix}/tips`, text: t('nav.tips') },
+  { href: `${langPrefix}/location`, text: t('nav.location') },
+  { href: `${langPrefix}/guide`, text: t('nav.guide') },
+  { href: `${langPrefix}/disclaimer`, text: t('nav.disclaimer') },
 ];
-const system = [
-  {
-    title: "Navigation",
-    items: [
-      {
-        href: "/system/typography",
-        text: "Typography",
-      },
-      {
-        href: "/system/buttons",
-        text: "Buttons",
-      },
-      {
-        href: "/system/links",
-        text: "Links",
-      },
-    ],
-  },
-];
-const isIndexPage = Astro.url.pathname === "/";
 ---
 
 <section>
@@ -61,22 +42,11 @@ const isIndexPage = Astro.url.pathname === "/";
       class="grid grid-cols-2 md:grid-cols-2 items-center w-full gap-3 pt-2 lg:pt-8"
     >
       <div class="flex items-center gap-2 lg:gap-4">
-        <!-- Small not sowing on Index page, it already has a big logo -->
+        <a href={langPrefix || "/"} class="shrink-0">
+          <LogoComponent />
+        </a>
         {
-          !isIndexPage && (
-            <a href="/" class="shrink-0">
-              <Image
-                width="100"
-                height="100"
-                src={Logo}
-                alt="#_"
-                class="object-cover w-24  lg:w-28 "
-              />
-            </a>
-          )
-        }
-        {
-          links.map((link) => (
+          navItems.map((link) => (
             <Text
               tag="a"
               href={link.href}
@@ -86,40 +56,48 @@ const isIndexPage = Astro.url.pathname === "/";
             </Text>
           ))
         }
+        <button
+          type="button"
+          @click="rightDrawerOpen = true"
+          class="text-base-900 text-xs lg:text-base hover:text-accent-500 font-medium"
+          aria-label="Open menu"
+        >
+          {t('nav.more')}
+        </button>
       </div>
 
       <button
-  type="button"
-  class="size-9 inline-flex items-center justify-center group ml-auto"
-  @click="rightDrawerOpen = true"
-  aria-label="Open filters panel"
->
-  <div class="p-1.5 group-focus-visible:bg-base-50">
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      class="fill-base-400 size-6 shrink-0 transition duration-300 ease-in-out"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-    >
-      <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-      <path
-        :class="{'opacity-0': rightDrawerOpen}"
-        d="M4 8l18 0"
-        class="opacity-0"
-      ></path>
-      <path d="M4 16l18 0"></path>
-    </svg>
-    <span class="sr-only">Open sidebar</span>
-  </div>
-</button>
-
+        type="button"
+        class="size-9 inline-flex items-center justify-center group ml-auto"
+        @click="rightDrawerOpen = true"
+        aria-label="Open menu"
+      >
+        <div class="p-1.5 group-focus-visible:bg-base-50">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="fill-base-400 size-6 shrink-0 transition duration-300 ease-in-out"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+            <path
+              :class="{'opacity-0': rightDrawerOpen}"
+              d="M4 8l18 0"
+              class="opacity-0"
+            ></path>
+            <path d="M4 16l18 0"></path>
+          </svg>
+          <span class="sr-only">Open sidebar</span>
+        </div>
+      </button>
     </div>
   </Wrapper>
 </section>
+
 <div
   x-show="rightDrawerOpen"
   x-ref="dialog"
@@ -194,73 +172,60 @@ const isIndexPage = Astro.url.pathname === "/";
           variant="textSM"
           class="uppercase text-base-900 font-semibold"
         >
-          Menu
+          {t('nav.home')}
         </Text>
       </div>
       <nav role="navigation">
         <div
           class="flex flex-col gap-6 lg:gap-12 border-t border-base-200 p-2 py-3 px-6"
         >
-          {
-            navigation.map((section) => (
-              <ul role="navigation" class="flex flex-col gap-1">
-                {section.items.map((item) => (
-                  <li>
-                    <Text
-                      tag="a"
-                      variant="textXL"
-                      href={item.href}
-                      class="text-base-900 font-semibold  hover:text-accent-500"
-                    >
-                      {item.text}
-                    </Text>
-                  </li>
-                ))}
-              </ul>
-            ))
-          }
+          <ul role="navigation" class="flex flex-col gap-1">
+            {burgerItems.map((item) => (
+              <li>
+                <Text
+                  tag="a"
+                  variant="textXL"
+                  href={item.href}
+                  class="text-base-900 font-semibold  hover:text-accent-500"
+                >
+                  {item.text}
+                </Text>
+              </li>
+            ))}
+          </ul>
         </div>
-        <div
-          class="flex flex-col gap-6 lg:gap-12 border-t border-base-200 p-2 py-3 px-6 mt-12"
-        >
-          {
-            system.map((section) => (
-              <ul role="navigation" class="flex flex-col gap-1">
-                {section.items.map((item) => (
-                  <li>
-                    <Text
-                      tag="a"
-                      variant="textSM"
-                      variant="link"
-                      href={item.href}
-                      class="  text-base-600 hover:text-accent-500"
-                    >
-                      {item.text}
-                    </Text>
-                  </li>
-                ))}
-              </ul>
-            ))
-          }
+        <div class="border-t border-base-200 p-2 py-3 px-6">
+          <Text
+            tag="a"
+            variant="textSM"
+            href="https://donate.stripe.com/28EdR9gtc9Sca4IfP94Vy00"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-base-600 hover:text-accent-500 flex items-center gap-2"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="icon icon-tabler icons-tabler-outline icon-tabler-coffee"
+            >
+              <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+              <path d="M3 14c.83 .642 2.077 1.017 3.5 1c1.423 .017 2.67 -.358 3.5 -1c.83 -.642 2.077 -1.017 3.5 -1c1.423 -.017 2.67 .358 3.5 1"></path>
+              <path d="M8 3a2.4 2.4 0 0 0 -1 2a2.4 2.4 0 0 0 1 2"></path>
+              <path d="M12 3a2.4 2.4 0 0 0 -1 2a2.4 2.4 0 0 0 1 2"></path>
+              <path d="M3 10h14v5a6 6 0 0 1 -6 6h-2a6 6 0 0 1 -6 -6v-5z"></path>
+              <path d="M16.746 16.726a3 3 0 1 0 .252 -4.202"></path>
+            </svg>
+            {t('nav.support_project')}
+          </Text>
         </div>
       </nav>
-    </div>
-    <!-- Footer -->
-    <div class="flex-shrink-0 px-6 py-3 border-t border-base-200">
-      <div class="flex items-center gap-2">
-        <Link
-          size="sm"
-          variant="muted"
-          class="w-auto justify-center"
-          href="/forms/signin">Sign in</Link
-        >
-        <Link
-          size="sm"
-          variant="accent"
-          class="w-auto justify-center"
-          href="/forms/signup">Sign up</Link
-        >
-      </div>
     </div>
   </div>
 </div>

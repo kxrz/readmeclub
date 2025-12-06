@@ -1,64 +1,74 @@
 ---
 import { AstroSeo } from "@astrolib/seo";
+
+interface Props {
+  title: string;
+  description: string;
+  canonical?: string;
+  ogImage?: string;
+  ogType?: 'website' | 'article';
+  lang?: string;
+  noindex?: boolean;
+}
+
+const {
+  title,
+  description,
+  canonical,
+  ogImage,
+  ogType = 'website',
+  lang = 'en',
+  noindex = false,
+} = Astro.props;
+
+const siteUrl = Astro.site || 'https://readme.club';
+const currentUrl = canonical || new URL(Astro.url.pathname, siteUrl).toString();
+const defaultOgImage = ogImage || `${siteUrl}/api/og-image.png?title=${encodeURIComponent(title)}`;
+
+const localeMap: Record<string, string> = {
+  en: 'en_US',
+  fr: 'fr_FR',
+  es: 'es_ES',
+  ru: 'ru_RU',
+  cn: 'zh_CN',
+};
+
+const ogLocale = localeMap[lang] || 'en_US';
 ---
 
 <AstroSeo
-  title="Your Page Title"
-  description="A detailed description of your page content."
-  canonical="https://yoursite.com/current-page"
+  title={title}
+  description={description}
+  canonical={currentUrl}
   openGraph={{
-    url: "https://yoursite.com/current-page",
-    title: "Your Page Title",
-    description: "A detailed description of your page content.",
+    url: currentUrl,
+    title: title,
+    description: description,
     images: [
       {
-        url: "https://yoursite.com/og-image.jpg",
+        url: defaultOgImage,
         width: 1200,
         height: 630,
-        alt: "Open Graph Image Alt",
-        type: "image/jpeg",
+        alt: title,
+        type: 'image/png',
       },
     ],
-    site_name: "Your Site Name",
-    type: "website",
-    locale: "en_US",
+    site_name: 'Readme.club',
+    type: ogType,
+    locale: ogLocale,
   }}
   twitter={{
-    handle: "@yourhandle",
-    site: "@yoursite",
-    cardType: "summary_large_image",
+    cardType: 'summary_large_image',
   }}
 />
 
-<!-- Open Graph / Facebook -->
-<meta property="og:type" content="website" />
-<meta property="og:url" content="https://www.yourwebsite.com/" />
-<meta property="og:title" content="Your Website Title" />
-<meta
-  property="og:description"
-  content="A brief description of your website content."
-/>
-<meta
-  property="og:image"
-  content="https://www.yourwebsite.com/path/to/image.jpg"
-/>
+{noindex && (
+  <meta name="robots" content="noindex, nofollow" />
+)}
 
-<!-- Twitter -->
-<meta property="twitter:card" content="summary_large_image" />
-<meta property="twitter:url" content="https://www.yourwebsite.com/" />
-<meta property="twitter:title" content="Your Website Title" />
-<meta
-  property="twitter:description"
-  content="A brief description of your website content."
-/>
-<meta
-  property="twitter:image"
-  content="https://www.yourwebsite.com/path/to/image.jpg"
-/>
-
-<!-- Canonical URL -->
-<link rel="canonical" href="https://www.yourwebsite.com/" />
-
-<!-- Additional SEO -->
-<meta name="robots" content="index, follow" />
-<meta name="googlebot" content="index, follow" />
+{!noindex && (
+  <>
+    <meta name="robots" content="index, follow" />
+    <meta name="googlebot" content="index, follow" />
+  </>
+)}

@@ -1,27 +1,49 @@
 {
-  "name": "@lexington/trendspotter",
+  "name": "xteink-community-hub",
   "type": "module",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "analyze-migration": "tsx scripts/analyze-migration.ts",
+    "migrate-resources": "tsx scripts/migrate-resources.ts",
+    "clean-duplicates": "tsx scripts/clean-duplicates.ts",
+    "clean-duplicates:dry-run": "tsx scripts/clean-duplicates.ts --dry-run",
+    "check-duplicates": "tsx scripts/check-duplicates.ts",
+    "translate-tips": "tsx scripts/translate-tips.ts",
+    "analyze-locations": "tsx scripts/analyze-locations.ts",
+    "migrate-locations": "tsx scripts/migrate-locations.ts",
+    "analyze-features": "tsx scripts/analyze-features.ts",
+    "migrate-features": "tsx scripts/migrate-features.ts"
   },
   "dependencies": {
     "@astrojs/mdx": "^4.3.5",
     "@astrojs/rss": "^4.0.12",
     "@astrojs/sitemap": "^3.6.0",
+    "@astrojs/vercel": "^8.0.0",
     "@astrolib/seo": "^1.0.0-beta.8",
+    "@resvg/resvg-js": "^2.6.2",
+    "@supabase/supabase-js": "^2.39.0",
     "@tailwindcss/forms": "^0.5.10",
     "@tailwindcss/typography": "^0.5.16",
+    "alpinejs": "^3.15.2",
     "astro": "^5.13.8",
-    "tailwind-scrollbar-hide": "^4.0.0"
+    "dotenv": "^16.6.1",
+    "leaflet": "^1.9.4",
+    "satori": "^0.14.0",
+    "tailwind-scrollbar-hide": "^4.0.0",
+    "zod": "^3.22.4"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.1.13",
-    "tailwindcss": "^4.1.13"
+    "@types/leaflet": "^1.9.8",
+    "@types/node": "^20.10.0",
+    "tailwindcss": "^4.1.13",
+    "tsx": "^4.7.0",
+    "typescript": "^5.3.3"
   }
 }

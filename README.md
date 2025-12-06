@@ -1,94 +1,136 @@
-# Trendspotter
+# Xteink Community Hub
 
-## Template Integrations
-- Tailwind CSS v4  
-- Astro SEO - Powered by [@astrolib/seo](https://github.com/onwidget/astrolib/tree/main/packages/seo)
-- Astro Sitemap - https://docs.astro.build/en/guides/integrations-guide/sitemap/
+Plateforme communautaire pour partager et découvrir des ressources pour Xteink.
 
-## Template Structure
+## 🚀 Démarrage rapide
 
-The template follows a typical Astro project structure. You'll find the following key directories and files:
+### Prérequis
 
+- Node.js 20+
+- npm ou yarn
+- Compte Supabase
+
+### Installation
+
+1. Cloner le projet
+```bash
+git clone <repository-url>
+cd xteinkhub2026
+```
+
+2. Installer les dépendances
+```bash
+npm install
+```
+
+3. Configurer les variables d'environnement
+```bash
+cp .env.example .env
+# Éditer .env avec vos clés Supabase
+```
+
+4. Configurer Supabase
+
+- Créer un projet sur [Supabase](https://supabase.com)
+- Créer les buckets Storage : `resources` et `wallpapers` (public)
+- Exécuter les migrations SQL dans l'ordre :
+  - `supabase/migrations/001_initial_schema.sql`
+  - `supabase/migrations/002_rls_policies.sql`
+
+5. Lancer le serveur de développement
+```bash
+npm run dev
+```
+
+Le site sera accessible sur `http://localhost:4321`
+
+## 📁 Structure du projet
 
 ```
-/
-├── public/
 ├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
+│   ├── components/       # Composants Astro réutilisables
+│   ├── pages/           # Routes Astro (pages + API)
+│   ├── layouts/         # Layouts Astro
+│   ├── lib/             # Utilitaires et clients
+│   │   ├── supabase/    # Clients Supabase
+│   │   └── utils/       # Utilitaires (rate limiting, etc.)
+│   ├── i18n/            # Système d'internationalisation
+│   └── styles/          # Styles globaux
+├── supabase/
+│   └── migrations/      # Migrations SQL
+└── public/              # Assets statiques
 ```
 
-- `src/pages/`: Contains `.astro` and `.md` files. Each file becomes a route in your project based on its name.
-- `src/components/`: Ideal for placing your Astro/React/Vue/Svelte/Preact components.
-- `public/`: For static assets such as images that you want to serve directly.
+## 🌐 Internationalisation
 
-## Commands
+Le site supporte 5 langues :
+- EN (anglais) - langue par défaut
+- FR (français)
+- ES (espagnol)
+- RU (russe)
+- CN (chinois)
 
-All commands are run from the root of the project, from a terminal:
+Les traductions sont dans `src/i18n/languages.ts`.
 
-| Command                | Action                                           |
-| :--------------------- | :----------------------------------------------- |
-| `npm install`          | Installs dependencies                            |
-| `npm run dev`          | Starts local dev server at `localhost:3000`      |
-| `npm run build`        | Build your production site to `./dist/`          |
-| `npm run preview`      | Preview your build locally, before deploying     |
-| `npm run astro ...`    | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro --help` | Get help using the Astro CLI                     |
+## 🗄️ Base de données
 
-Learn more - Explore more through Astro's official [documentation](https://docs.astro.build).
+### Tables principales
 
-------
+- `resources` : Catalogue de ressources communautaires
+- `wallpapers` : Galerie de wallpapers
+- `feature_requests` : Demandes de fonctionnalités avec votes
+- `location_declarations` : Déclarations de localisation
+- `analytics` : Statistiques globales
 
-------
-Updated on 05th March 2025
-## This update includes:
-- Added FuseJS search 
--------
-## Components
+### Storage Supabase
 
-- Text Component  
-A versatile and reusable component for handling text across your project, ensuring consistency and easy customization.  
+- Bucket `resources` : Fichiers uploadés (ressources)
+- Bucket `wallpapers` : Images wallpapers
 
-- **HTML Tags:** Easily change the HTML element (like `p`, `h1`, `span`, `a`) using the `tag` prop, with `p` being the default.  
-- **Variants:** Pick from preset text styles (such as `displayXL` or `textBase`) for a consistent look.  
-- **Custom Classes:** Add or adjust styles with the `class` prop.  
-- **Accessibility:** Customize with additional props like `id`, `href`, `title`, and `style`.  
-- **Content Slot:** Add any content inside the component, including optional left and right icons. 
-Example usage:
-```astro
-<Text tag="h1" variant="displayXL" class="text-center">
-  Welcome to the new version!
-</Text>
-``` 
+## 🔐 Administration
 
-- Button Component  
-A customizable button component with options to fit your design needs:  
+L'administration se fait via un système simple de cookie :
+- Page de login : `/admin`
+- Mot de passe défini dans `ADMIN_PASSWORD`
+- Cookie `admin_session` valide 24h
 
-- **Variants:** Choose from predefined styles like `primary` (dark background) and `secondary` (lighter background), with support for dark mode.  
-- **Sizes:** Select `small` or `medium` for different button heights and padding.  
-- **Gaps:** Control the spacing between content with the `gapSize` prop (either `small` or `medium`).  
-- **Custom Classes:** Apply additional styles using the `class` prop.  
-- **Slots:** Include icons or extra content with optional `left-icon` and `right-icon` slots.  
-Example usage:
-```astro
-<Button size="small" variant="primary">Primary small</Button>
-```
+## 📤 API Routes
 
--  Wrapper Component  
-A flexible layout component that helps with consistent spacing and alignment.  
+### Ressources
 
-- **Variants:** The default `standard` variant includes responsive widths, centered content, and padding.  
-- **Custom Classes:** Add or change styles with the `class` prop.  
-- **Content Slot:** Easily add any child components or content inside.
+- `GET /api/resources` : Liste des ressources
+- `POST /api/resources` : Créer une ressource
+- `GET /api/resources/[id]` : Détails d'une ressource
+- `GET /api/resources/[id]/download` : Télécharger une ressource
+- `POST /api/resources/upload` : Upload de fichier
 
-```astro
-<Wrapper variant="standard">
-Your content goes here
-</Wrapper>
-```
------
+### Rate Limiting
 
-### [Support](https://lexingtonthemes.com/legal/support/)
-### [Documentation](https://lexingtonthemes.com/documentation/)
-### [Get your bundle](https://lexingtonthemes.com)
+- Maximum 5 soumissions par IP toutes les 24h
+- Tracking via hash SHA-256 de l'IP
+
+## 🚀 Déploiement sur Vercel
+
+1. Connecter le repository à Vercel
+2. Configurer les variables d'environnement dans Vercel Dashboard
+3. Déployer automatiquement via Git
+
+Le projet utilise l'adapter `@astrojs/vercel/serverless` pour le SSR.
+
+## 📝 Scripts disponibles
+
+- `npm run dev` : Serveur de développement
+- `npm run build` : Build de production
+- `npm run preview` : Prévisualiser le build local
+
+## 🛠️ Technologies utilisées
+
+- **Astro 5** : Framework SSR
+- **Tailwind CSS 4** : Styling
+- **Supabase** : Base de données + Storage
+- **TypeScript** : Typage statique
+- **Zod** : Validation de schémas
+
+## 📚 Documentation
+
+Voir `PROJECT_MIGRATION_GUIDE.md` pour plus de détails sur l'architecture.

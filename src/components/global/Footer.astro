@@ -1,46 +1,34 @@
 ---
-// Assets
-import { Image } from "astro:assets";
-import Logo from "@/images/logoWhite.svg";
 // Fundation
 import Text from "../fundations/elements/Text.astro";
 import Wrapper from "../fundations/containers/Wrapper.astro";
+import { useTranslations, getLangFromUrl, getLangPrefix, getLocalizedUrl } from '@/i18n/utils';
+import type { Lang } from '@/i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const langPrefix = getLangPrefix(lang);
+
+// Generate URLs for each language, preserving the current page
+const languages: Lang[] = ['en', 'fr', 'es', 'ru', 'cn'];
+const languageUrls = languages.reduce((acc, targetLang) => {
+  acc[targetLang] = getLocalizedUrl(Astro.url, targetLang);
+  return acc;
+}, {} as Record<Lang, string>);
+
 const legalLinks = [
-  { href: "/infopages/terms", text: "Terms & policies" },
-  { href: "/infopages/", text: "Privacy policy" },
-];
-const socialLinks = [
-  { text: "Twitter", href: "#" },
-  { text: "YouTube", href: "#" },
-  { text: "GitHub", href: "#" },
-  { text: "SoundCloud", href: "#" },
-  { text: "LinkedIn", href: "#" },
+  { href: `${langPrefix}/disclaimer`, text: t('nav.disclaimer') },
+  { href: `${langPrefix}/llm-info`, text: t('footer.llm_info') },
 ];
 ---
 
 <style>
   #waveContainer {
-    /* 
-    // Ensures that content 
-    // outside the container is not visible 
-    */
     overflow: hidden;
-    /* 
-    // Sets the height of the  
-    // container for the wave effect 
-    */
     height: 200px;
   }
   .wave-segment {
-    /* 
-    // Each wave segment 
-    // is white in color 
-    */
     background-color: #ffffff;
-    /* 
-    // Smooth transition when 
-    // the margin or height changes 
-    */
     transition: all 0.1s ease;
   }
 </style>
@@ -72,48 +60,45 @@ const socialLinks = [
       <Text
         tag="p"
         variant="textSM"
-        x-data="{ year: new Date().getFullYear() }"
         class="mt-4">
-        © <span x-text="year"></span> Lexington Themes
+        © <span x-text="new Date().getFullYear()"></span> {t('footer.crafted_by')}
+      </Text>
+      <Text
+        tag="p"
+        variant="textXS"
+        class="mt-2 text-base-400">
+        {t('footer.not_affiliated')}
       </Text>
     </div>
     <!-- Right Column -->
     <div class="space-y-4">
-      <ul class="flex flex-wrap gap-4">
-        {
-          socialLinks.map((link) => (
-            <li>
-              <Text
-                tag="a"
-                variant="textSM"
-                href={link.href}
-                class="hover:text-accent-400"
-              >
-                {link.text}
-              </Text>
-            </li>
-          ))
-        }
-      </ul>
+      <!-- Language Selector -->
+      <div class="flex items-center gap-2">
+        <Text tag="span" variant="textXS" class="text-base-400 uppercase">
+          Language
+        </Text>
+        <div class="flex gap-2">
+          {languages.map((targetLang) => (
+            <a
+              href={languageUrls[targetLang]}
+              class={`text-sm hover:text-accent-400 transition-colors ${
+                lang === targetLang ? 'text-accent-400 font-semibold' : 'text-base-400'
+              }`}
+            >
+              {targetLang.toUpperCase()}
+            </a>
+          ))}
+        </div>
+      </div>
       <div class="text-right mt-4">
         <a href="#top" class="text-sm hover:underline inline-flex items-center">
-          Back to top
+          {t('common.back')} to top
         </a>
       </div>
     </div>
   </Wrapper>
   <div id="waveContainer" aria-hidden="true">
-    <!-- 
-    // Container for the wave effect; 
-    // aria-hidden ensures it's 
-    // not accessible by screen readers 
-    -->
     <div style="margin-top:0px">
-      <!-- 
-      // Individual wave segments follow; 
-      // margin-top and height define 
-      // their position and size 
-      -->
       <div class="wave-segment" style="margin-top:0px;height:1px"></div>
       <div class="wave-segment" style="margin-top:1px;height:2px"></div>
       <div class="wave-segment" style="margin-top:2px;height:3px"></div>
@@ -137,30 +122,21 @@ const socialLinks = [
       <div class="wave-segment" style="margin-top:20px;height:21px"></div>
       <div class="wave-segment" style="margin-top:21px;height:22px"></div>
       <div class="wave-segment" style="margin-top:22px;height:23px"></div>
-    </div>πfus
+    </div>
   </div>
 </footer>
 <script type="module">
   document.addEventListener("DOMContentLoaded", () => {
     const waveSegments = document.querySelectorAll(".wave-segment");
-    // Controls the phase of the wave animation
     let wavePhase = 0;
     function animateWave() {
-      // Calculate a vertical offset for each wave segment using the sine function
       waveSegments.forEach((segment, index) => {
-        // '0.3' adjusts the wavelength, and '20' sets the amplitude (max vertical displacement)
         const offset = Math.sin((wavePhase + index) * 0.3) * 20;
-        // Applies the calculated offset to the `margin-top` property
-        //
-        // `Math.max(0, offset)` ensures no negative values, keeping segments aligned at the top
         segment.style.marginTop = `${Math.max(0, offset)}px`;
       });
-      // Increments the phase to create the motion (adjusts animation speed)
       wavePhase += 0.1;
-      // Recursively calls `animateWave` for smooth, frame-based animation
       requestAnimationFrame(animateWave);
     }
-    // Starts the wave animation
     animateWave();
   });
 </script>
