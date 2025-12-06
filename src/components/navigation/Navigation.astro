@@ -39,36 +39,40 @@ const burgerItems = [
 <section>
   <Wrapper variant="standard">
     <div
-      class="grid grid-cols-2 md:grid-cols-2 items-center w-full gap-3 pt-2 lg:pt-8"
+      class="flex items-center justify-between w-full gap-3 pt-2 lg:pt-8"
     >
       <div class="flex items-center gap-2 lg:gap-4">
         <a href={langPrefix || "/"} class="shrink-0">
           <LogoComponent />
         </a>
-        {
-          navItems.map((link) => (
-            <Text
-              tag="a"
-              href={link.href}
-              class="text-base-900 text-xs lg:text-base hover:text-accent-500 font-medium"
-            >
-              {link.text}
-            </Text>
-          ))
-        }
-        <button
-          type="button"
-          @click="rightDrawerOpen = true"
-          class="text-base-900 text-xs lg:text-base hover:text-accent-500 font-medium"
-          aria-label="Open menu"
-        >
-          {t('nav.more')}
-        </button>
+        {/* Navigation items - visible only on desktop */}
+        <div class="hidden lg:flex items-center gap-2 lg:gap-4">
+          {
+            navItems.map((link) => (
+              <Text
+                tag="a"
+                href={link.href}
+                class="text-base-900 text-sm hover:text-accent-500 font-medium"
+              >
+                {link.text}
+              </Text>
+            ))
+          }
+          <button
+            type="button"
+            @click="rightDrawerOpen = true"
+            class="text-base-900 text-sm hover:text-accent-500 font-medium"
+            aria-label="Open menu"
+          >
+            {t('nav.more')}
+          </button>
+        </div>
       </div>
 
+      {/* Burger menu button - visible on all sizes */}
       <button
         type="button"
-        class="size-9 inline-flex items-center justify-center group ml-auto"
+        class="size-9 inline-flex items-center justify-center group"
         @click="rightDrawerOpen = true"
         aria-label="Open menu"
       >
