@@ -1,18 +1,18 @@
 import { c as createComponent, m as maybeRenderHead, r as renderComponent, a as renderTemplate } from './astro/server_DMB4Uz73.mjs';
 import 'piccolore';
-import { b as $$Text } from './BaseLayout_CmF6HVGJ.mjs';
+import { b as $$Text } from './BaseLayout_CO6ejgXa.mjs';
 import { $ as $$Button } from './Button_B6723hw2.mjs';
 
-const $$RemoveCollectionModal = createComponent(($$result, $$props, $$slots) => {
+const $$DeleteAccountModal = createComponent(($$result, $$props, $$slots) => {
   return renderTemplate`${maybeRenderHead()}<div x-show="open" role="dialog" aria-modal="true" style="display: none;" x-id="['modal-title']" aria-labelledby="modal-title-3" :aria-labelledby="$id('modal-title')" x-on:keydown.escape.prevent.stop="open = false" class="fixed inset-0 z-50 w-screen overflow-y-hidden"> <!-- Overlay --> <div x-show="open" x-transition.opacity="" style="display: none;" class="fixed inset-0 bg-base-200/80"></div> <!-- Panel --> <div x-show="open" x-on:click="open = false" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="transform opacity-0 translate-y-full" x-transition:enter-end="transform opacity-100 translate-y-0" x-transition:leave="transition ease-in duration-300" x-transition:leave-start="transform opacity-100 translate-y-0" x-transition:leave-end="transform opacity-0 translate-y-full" class="relative flex min-h-screen items-center justify-center p-4" style="display: none;"> <div x-on:click.stop="" x-trap.noscroll.inert="open" class="relative w-full max-w-sm overflow-y-auto bg-white"> <div class="relative p-8"> ${renderComponent($$result, "Text", $$Text, { "tag": "h3", "variant": "textLG", "class": "font-medium text-base-900 text-center" }, { "default": ($$result2) => renderTemplate`
 Are you sure?
 ` })} ${renderComponent($$result, "Text", $$Text, { "tag": "p", "variant": "textSM", "class": "font-medium  text-base-600 text-center mt-2 text-balance" }, { "default": ($$result2) => renderTemplate`
-Removing your collection is not reversible and you will loose all your saved tools.
+Removing your account is not reversible and you will loose all your saved tools, information and preferences.
 ` })} <div class="mt-4 flex items-center gap-2"> ${renderComponent($$result, "Button", $$Button, { "size": "base", "submit": "true", "variant": "ghost", "class": "w-full justify-center" }, { "default": ($$result2) => renderTemplate`
 Cancel
 ` })} ${renderComponent($$result, "Button", $$Button, { "size": "base", "submit": "true", "variant": "default", "class": "w-full justify-center" }, { "default": ($$result2) => renderTemplate`
 OK
 ` })} </div> </div> </div> </div> </div>`;
-}, "/Users/florentbertiaux/Documents/GitHub/xteinkhub2026/src/components/tools/dashboard/RemoveCollectionModal.astro", void 0);
+}, "/Users/florentbertiaux/Documents/GitHub/xteinkhub2026/src/components/tools/dashboard/DeleteAccountModal.astro", void 0);
 
-export { $$RemoveCollectionModal as $ };
+export { $$DeleteAccountModal as $ };

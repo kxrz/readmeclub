@@ -1,6 +1,6 @@
 import { b as createAstro, c as createComponent, m as maybeRenderHead, r as renderComponent, e as addAttribute, d as renderScript, a as renderTemplate } from './astro/server_DMB4Uz73.mjs';
 import 'piccolore';
-import { g as getLangFromUrl, u as useTranslations, b as $$Text } from './BaseLayout_CmF6HVGJ.mjs';
+import { g as getLangFromUrl, u as useTranslations, b as $$Text } from './BaseLayout_CO6ejgXa.mjs';
 
 const $$Astro = createAstro("https://readme.club");
 const $$FeatureRequestCard = createComponent(async ($$result, $$props, $$slots) => {

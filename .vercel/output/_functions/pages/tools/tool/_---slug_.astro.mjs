@@ -1,9 +1,9 @@
 import { b as createAstro, c as createComponent, m as maybeRenderHead, e as addAttribute, r as renderComponent, a as renderTemplate, y as renderSlot } from '../../../chunks/astro/server_DMB4Uz73.mjs';
 import 'piccolore';
 import { $ as $$Image } from '../../../chunks/_astro_assets_BOyCgF7Z.mjs';
-import { b as $$Text, $ as $$BaseLayout, a as $$Wrapper } from '../../../chunks/BaseLayout_CmF6HVGJ.mjs';
+import { b as $$Text, $ as $$BaseLayout, a as $$Wrapper } from '../../../chunks/BaseLayout_CO6ejgXa.mjs';
 import { $ as $$Link } from '../../../chunks/Link_Ins73ZxP.mjs';
-import { $ as $$BookmarksModal } from '../../../chunks/BookmarksModal_IEVIPrvh.mjs';
+import { $ as $$BookmarksModal } from '../../../chunks/BookmarksModal_DfF0i2GG.mjs';
 import { g as getCollection } from '../../../chunks/_astro_content_DqmQcJki.mjs';
 export { renderers } from '../../../renderers.mjs';
 

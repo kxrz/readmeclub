@@ -1,7 +1,7 @@
 import { c as createComponent, m as maybeRenderHead, r as renderComponent, a as renderTemplate } from './astro/server_DMB4Uz73.mjs';
 import 'piccolore';
 import { $ as $$Image } from './_astro_assets_BOyCgF7Z.mjs';
-import { b as $$Text } from './BaseLayout_CmF6HVGJ.mjs';
+import { b as $$Text } from './BaseLayout_CO6ejgXa.mjs';
 import { $ as $$Link } from './Link_Ins73ZxP.mjs';
 
 const Gif = new Proxy({"src":"/_astro/white.DMKzhvaA.gif","width":540,"height":540,"format":"gif"}, {

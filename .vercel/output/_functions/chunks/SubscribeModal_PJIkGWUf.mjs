@@ -1,7 +1,7 @@
 import { c as createComponent, m as maybeRenderHead, r as renderComponent, a as renderTemplate } from './astro/server_DMB4Uz73.mjs';
 import 'piccolore';
 import { $ as $$Image } from './_astro_assets_BOyCgF7Z.mjs';
-import { b as $$Text } from './BaseLayout_CmF6HVGJ.mjs';
+import { b as $$Text } from './BaseLayout_CO6ejgXa.mjs';
 import { $ as $$Button } from './Button_B6723hw2.mjs';
 
 const Lex = new Proxy({"src":"/_astro/carousel.DjbB2_SU.gif","width":800,"height":426,"format":"gif"}, {

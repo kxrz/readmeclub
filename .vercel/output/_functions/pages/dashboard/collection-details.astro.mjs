@@ -1,8 +1,8 @@
 import { c as createComponent, m as maybeRenderHead, r as renderComponent, a as renderTemplate } from '../../chunks/astro/server_DMB4Uz73.mjs';
 import 'piccolore';
-import { a as $$Wrapper, b as $$Text, $ as $$BaseLayout } from '../../chunks/BaseLayout_CmF6HVGJ.mjs';
-import { $ as $$CreateCollectionModal, a as $$EditCollectionModal } from '../../chunks/CreateCollectionModal_BaSJ0u6M.mjs';
-import { $ as $$RemoveCollectionModal } from '../../chunks/RemoveCollectionModal_BCLOyYb7.mjs';
+import { a as $$Wrapper, b as $$Text, $ as $$BaseLayout } from '../../chunks/BaseLayout_CO6ejgXa.mjs';
+import { $ as $$CreateCollectionModal, a as $$EditCollectionModal } from '../../chunks/CreateCollectionModal_BaquATJM.mjs';
+import { $ as $$RemoveCollectionModal } from '../../chunks/RemoveCollectionModal_CuRlznwR.mjs';
 export { renderers } from '../../renderers.mjs';
 
 const $$CollectionDetails$1 = createComponent(($$result, $$props, $$slots) => {

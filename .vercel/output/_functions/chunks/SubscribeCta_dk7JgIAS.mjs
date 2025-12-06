@@ -1,8 +1,8 @@
 import { c as createComponent, m as maybeRenderHead, r as renderComponent, a as renderTemplate } from './astro/server_DMB4Uz73.mjs';
 import 'piccolore';
-import { a as $$Wrapper, b as $$Text } from './BaseLayout_CmF6HVGJ.mjs';
+import { a as $$Wrapper, b as $$Text } from './BaseLayout_CO6ejgXa.mjs';
 import { $ as $$Button } from './Button_B6723hw2.mjs';
-import { $ as $$SubscribeModal } from './SubscribeModal_zbN12Kaj.mjs';
+import { $ as $$SubscribeModal } from './SubscribeModal_PJIkGWUf.mjs';
 
 const $$SubscribeCta = createComponent(($$result, $$props, $$slots) => {
   return renderTemplate`${maybeRenderHead()}<section> ${renderComponent($$result, "Wrapper", $$Wrapper, { "variant": "narrow", "class": "py-24 flex flex-col" }, { "default": ($$result2) => renderTemplate` <div class="text-center"> ${renderComponent($$result2, "Text", $$Text, { "variant": "displaySM", "class": "text-base-900 font-medium 2xl:text-5xl tracking-tight" }, { "default": ($$result3) => renderTemplate`

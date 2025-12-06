@@ -1,7 +1,7 @@
 import { b as createAstro, c as createComponent, m as maybeRenderHead, e as addAttribute, a as renderTemplate } from './astro/server_DMB4Uz73.mjs';
 import 'piccolore';
 import 'clsx';
-import { g as getLangFromUrl, c as getLangPrefix } from './BaseLayout_CmF6HVGJ.mjs';
+import { g as getLangFromUrl, c as getLangPrefix } from './BaseLayout_CO6ejgXa.mjs';
 
 const $$Astro = createAstro("https://readme.club");
 const $$WallpaperThumbnail = createComponent(($$result, $$props, $$slots) => {

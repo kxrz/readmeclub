@@ -1,6 +1,6 @@
 import { c as createComponent, r as renderComponent, a as renderTemplate, y as renderSlot, m as maybeRenderHead } from '../../chunks/astro/server_DMB4Uz73.mjs';
 import 'piccolore';
-import { $ as $$BaseLayout, a as $$Wrapper, b as $$Text } from '../../chunks/BaseLayout_CmF6HVGJ.mjs';
+import { $ as $$BaseLayout, a as $$Wrapper, b as $$Text } from '../../chunks/BaseLayout_CO6ejgXa.mjs';
 import { $ as $$Image } from '../../chunks/_astro_assets_BOyCgF7Z.mjs';
 import { G as Gif } from '../../chunks/forms_C9LxtkCu.mjs';
 import { $ as $$Button } from '../../chunks/Button_B6723hw2.mjs';

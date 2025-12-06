@@ -1,10 +1,10 @@
 import { b as createAstro, c as createComponent, r as renderComponent, a as renderTemplate, C as Fragment, m as maybeRenderHead } from '../chunks/astro/server_DMB4Uz73.mjs';
 import 'piccolore';
-import { g as getLangFromUrl, $ as $$BaseLayout, u as useTranslations, a as $$Wrapper, b as $$Text, c as getLangPrefix } from '../chunks/BaseLayout_CmF6HVGJ.mjs';
-import { $ as $$Hero, a as $$MoreCard } from '../chunks/MoreCard_DDaJD53w.mjs';
-import { $ as $$ResourceCard } from '../chunks/ResourceCard_oRAN5S0u.mjs';
-import { $ as $$WallpaperCard } from '../chunks/WallpaperCard_D2yH04ig.mjs';
-import { $ as $$SmallResourceCard, a as $$SmallMoreCard } from '../chunks/SmallMoreCard_CK4i7p3I.mjs';
+import { g as getLangFromUrl, $ as $$BaseLayout, u as useTranslations, a as $$Wrapper, b as $$Text, c as getLangPrefix } from '../chunks/BaseLayout_CO6ejgXa.mjs';
+import { $ as $$Hero, a as $$MoreCard } from '../chunks/MoreCard_DdzDXuzO.mjs';
+import { $ as $$ResourceCard } from '../chunks/ResourceCard_CcA03vFK.mjs';
+import { $ as $$WallpaperCard } from '../chunks/WallpaperCard_hgj3yts5.mjs';
+import { $ as $$SmallResourceCard, a as $$SmallMoreCard } from '../chunks/SmallMoreCard_BwYn5lxI.mjs';
 import { $ as $$Seo } from '../chunks/Seo_Dd6omgxK.mjs';
 import { s as supabase } from '../chunks/client_DiYgajIf.mjs';
 export { renderers } from '../renderers.mjs';

@@ -1,12 +1,12 @@
 import { c as createComponent, m as maybeRenderHead, r as renderComponent, a as renderTemplate } from '../../chunks/astro/server_DMB4Uz73.mjs';
 import 'piccolore';
-import { a as $$Wrapper, b as $$Text, $ as $$BaseLayout } from '../../chunks/BaseLayout_CmF6HVGJ.mjs';
-import { $ as $$SubmitModal } from '../../chunks/SubmitModal_D_ywGjxO.mjs';
-import { $ as $$BookmarksModal } from '../../chunks/BookmarksModal_IEVIPrvh.mjs';
-import { $ as $$SubscribeModal } from '../../chunks/SubscribeModal_zbN12Kaj.mjs';
-import { $ as $$DeleteAccountModal } from '../../chunks/DeleteAccountModal_q7kz9hOe.mjs';
-import { $ as $$CreateCollectionModal, a as $$EditCollectionModal } from '../../chunks/CreateCollectionModal_BaSJ0u6M.mjs';
-import { $ as $$RemoveCollectionModal } from '../../chunks/RemoveCollectionModal_BCLOyYb7.mjs';
+import { a as $$Wrapper, b as $$Text, $ as $$BaseLayout } from '../../chunks/BaseLayout_CO6ejgXa.mjs';
+import { $ as $$SubmitModal } from '../../chunks/SubmitModal_DODVBcgz.mjs';
+import { $ as $$BookmarksModal } from '../../chunks/BookmarksModal_DfF0i2GG.mjs';
+import { $ as $$SubscribeModal } from '../../chunks/SubscribeModal_PJIkGWUf.mjs';
+import { $ as $$DeleteAccountModal } from '../../chunks/DeleteAccountModal_BrLnEl5-.mjs';
+import { $ as $$CreateCollectionModal, a as $$EditCollectionModal } from '../../chunks/CreateCollectionModal_BaquATJM.mjs';
+import { $ as $$RemoveCollectionModal } from '../../chunks/RemoveCollectionModal_CuRlznwR.mjs';
 export { renderers } from '../../renderers.mjs';
 
 const $$Overview$1 = createComponent(($$result, $$props, $$slots) => {

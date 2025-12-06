@@ -1,6 +1,6 @@
 import { c as createComponent, m as maybeRenderHead, r as renderComponent, a as renderTemplate } from './astro/server_DMB4Uz73.mjs';
 import 'piccolore';
-import { b as $$Text } from './BaseLayout_CmF6HVGJ.mjs';
+import { b as $$Text } from './BaseLayout_CO6ejgXa.mjs';
 import { $ as $$Button } from './Button_B6723hw2.mjs';
 
 const $$EditCollectionModal = createComponent(($$result, $$props, $$slots) => {

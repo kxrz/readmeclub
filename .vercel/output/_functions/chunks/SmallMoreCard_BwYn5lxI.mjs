@@ -1,6 +1,6 @@
 import { b as createAstro, c as createComponent, m as maybeRenderHead, e as addAttribute, r as renderComponent, a as renderTemplate } from './astro/server_DMB4Uz73.mjs';
 import 'piccolore';
-import { g as getLangFromUrl, c as getLangPrefix, b as $$Text, u as useTranslations } from './BaseLayout_CmF6HVGJ.mjs';
+import { g as getLangFromUrl, c as getLangPrefix, b as $$Text, u as useTranslations } from './BaseLayout_CO6ejgXa.mjs';
 
 const $$Astro$1 = createAstro("https://readme.club");
 const $$SmallResourceCard = createComponent(($$result, $$props, $$slots) => {

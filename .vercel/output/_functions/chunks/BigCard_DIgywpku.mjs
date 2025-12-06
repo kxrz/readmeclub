@@ -1,9 +1,9 @@
 import { b as createAstro, c as createComponent, r as renderComponent, m as maybeRenderHead, e as addAttribute, a as renderTemplate } from './astro/server_DMB4Uz73.mjs';
 import 'piccolore';
-import { b as $$Text } from './BaseLayout_CmF6HVGJ.mjs';
+import { b as $$Text } from './BaseLayout_CO6ejgXa.mjs';
 import { $ as $$Button } from './Button_B6723hw2.mjs';
 import { $ as $$Image } from './_astro_assets_BOyCgF7Z.mjs';
-import { $ as $$BookmarksModal } from './BookmarksModal_IEVIPrvh.mjs';
+import { $ as $$BookmarksModal } from './BookmarksModal_DfF0i2GG.mjs';
 
 const $$Astro$1 = createAstro("https://readme.club");
 const $$FiltersSidebar = createComponent(($$result, $$props, $$slots) => {

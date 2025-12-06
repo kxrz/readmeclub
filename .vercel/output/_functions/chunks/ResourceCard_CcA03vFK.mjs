@@ -1,6 +1,6 @@
 import { b as createAstro, c as createComponent, m as maybeRenderHead, e as addAttribute, r as renderComponent, a as renderTemplate } from './astro/server_DMB4Uz73.mjs';
 import 'piccolore';
-import { g as getLangFromUrl, c as getLangPrefix, u as useTranslations, b as $$Text } from './BaseLayout_CmF6HVGJ.mjs';
+import { g as getLangFromUrl, c as getLangPrefix, u as useTranslations, b as $$Text } from './BaseLayout_CO6ejgXa.mjs';
 import { g as getGradientForId } from './gradients_DWIDfilt.mjs';
 
 const $$Astro = createAstro("https://readme.club");

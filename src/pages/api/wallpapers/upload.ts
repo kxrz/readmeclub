@@ -65,39 +65,36 @@ export const POST: APIRoute = async ({ request }) => {
     }
     
     // Get image dimensions
-    let width = 0;
-    let height = 0;
+    // For now, we'll use default dimensions and let the admin update them if needed
+    // Reading image dimensions from binary data can be problematic in serverless environments
+    // A better approach would be to use a library like 'sharp' or 'image-size' if needed
+    let width = 1920; // Default fallback
+    let height = 1080;
     
+    // Try to detect dimensions using DataView (more compatible with serverless)
     try {
       const arrayBuffer = await file.arrayBuffer();
-      const buffer = Buffer.from(arrayBuffer);
+      const view = new DataView(arrayBuffer);
       
-      // Simple dimension detection for common formats
-      if (fileExtension === 'png') {
-        // PNG: bytes 16-23 contain width and height (32-bit each, big-endian)
-        width = buffer.readUInt32BE(16);
-        height = buffer.readUInt32BE(20);
-      } else if (['jpg', 'jpeg'].includes(fileExtension)) {
-        // JPEG: more complex, need to parse markers
-        // For now, we'll use a library or set default
-        // Using a simple approach: try to read dimensions from EXIF or SOF markers
-        let i = 0;
-        while (i < buffer.length - 8) {
-          if (buffer[i] === 0xFF && buffer[i + 1] === 0xC0) {
-            // SOF0 marker found
-            height = buffer.readUInt16BE(i + 5);
-            width = buffer.readUInt16BE(i + 7);
+      // Simple dimension detection for PNG (bytes 16-23 contain width and height)
+      if (fileExtension === 'png' && arrayBuffer.byteLength >= 24) {
+        width = view.getUint32(16, false); // big-endian
+        height = view.getUint32(20, false); // big-endian
+      } else if (['jpg', 'jpeg'].includes(fileExtension) && arrayBuffer.byteLength >= 20) {
+        // JPEG: look for SOF0 marker (0xFF 0xC0)
+        const uint8Array = new Uint8Array(arrayBuffer);
+        for (let i = 0; i < uint8Array.length - 8; i++) {
+          if (uint8Array[i] === 0xFF && uint8Array[i + 1] === 0xC0) {
+            height = view.getUint16(i + 5, false);
+            width = view.getUint16(i + 7, false);
             break;
           }
-          i++;
         }
       }
       
-      // Fallback: if dimensions not detected, use a default or try to load image
-      if (width === 0 || height === 0) {
-        // For SVG or if detection failed, we'll set defaults
-        // In production, you might want to use sharp or jimp to get dimensions
-        width = 1920; // Default fallback
+      // Validate detected dimensions
+      if (width === 0 || height === 0 || width > 10000 || height > 10000) {
+        width = 1920;
         height = 1080;
       }
     } catch (error) {

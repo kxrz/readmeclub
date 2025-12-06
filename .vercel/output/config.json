@@ -148,11 +148,19 @@
 			"dest": "_render"
 		},
 		{
+			"src": "^/api/wallpapers/upload/?$",
+			"dest": "_render"
+		},
+		{
 			"src": "^/api/wallpapers/([^/]+?)/download/?$",
 			"dest": "_render"
 		},
 		{
 			"src": "^/api/wallpapers/([^/]+?)/og-image\\.png/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/api/wallpapers/?$",
 			"dest": "_render"
 		},
 		{
@@ -252,6 +260,14 @@
 			"dest": "_render"
 		},
 		{
+			"src": "^/sitemap-index\\.xml/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/sitemap\\.xml/?$",
+			"dest": "_render"
+		},
+		{
 			"src": "^/store/home/?$",
 			"dest": "_render"
 		},
@@ -261,6 +277,10 @@
 		},
 		{
 			"src": "^/submit/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/submit-wallpaper/?$",
 			"dest": "_render"
 		},
 		{
@@ -349,6 +369,10 @@
 		},
 		{
 			"src": "^/([^/]+?)/submit/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/([^/]+?)/submit-wallpaper/?$",
 			"dest": "_render"
 		},
 		{

@@ -112,6 +112,18 @@ const ui = {
     "wallpapers.category.pop_culture": "Pop Culture",
     "wallpapers.category.custom": "Custom",
     "wallpapers.category.other": "Other",
+    "wallpapers.form.subtitle": "Share your wallpaper with the community",
+    "wallpapers.form.title_placeholder": "Wallpaper title (optional)",
+    "wallpapers.form.category": "Category",
+    "wallpapers.form.image": "Wallpaper Image",
+    "wallpapers.form.image_help": "Upload an image file (PNG, JPG, GIF, WEBP, SVG). Maximum size: 10MB.",
+    "wallpapers.form.author_name": "Author Name",
+    "wallpapers.form.author_name_placeholder": "Your name or username",
+    "wallpapers.form.reddit_username": "Reddit Username",
+    "wallpapers.form.reddit_username_placeholder": "u/username (optional)",
+    "wallpapers.form.instagram_username": "Instagram Username",
+    "wallpapers.form.instagram_username_placeholder": "@username (optional)",
+    "wallpapers.form.success_message": "Wallpaper submitted successfully!",
     // Fonts
     "fonts.title": "Fonts",
     "fonts.subtitle": "Tools and resources for creating custom fonts for your X4 tablet",
@@ -393,6 +405,18 @@ const ui = {
     "wallpapers.category.pop_culture": "Pop culture",
     "wallpapers.category.custom": "Personnalisé",
     "wallpapers.category.other": "Autre",
+    "wallpapers.form.subtitle": "Partagez votre fond d'écran avec la communauté",
+    "wallpapers.form.title_placeholder": "Titre du fond d'écran (optionnel)",
+    "wallpapers.form.category": "Catégorie",
+    "wallpapers.form.image": "Image du fond d'écran",
+    "wallpapers.form.image_help": "Téléversez un fichier image (PNG, JPG, GIF, WEBP, SVG). Taille maximale : 10MB.",
+    "wallpapers.form.author_name": "Nom de l'auteur",
+    "wallpapers.form.author_name_placeholder": "Votre nom ou nom d'utilisateur",
+    "wallpapers.form.reddit_username": "Nom d'utilisateur Reddit",
+    "wallpapers.form.reddit_username_placeholder": "u/nom_utilisateur (optionnel)",
+    "wallpapers.form.instagram_username": "Nom d'utilisateur Instagram",
+    "wallpapers.form.instagram_username_placeholder": "@nom_utilisateur (optionnel)",
+    "wallpapers.form.success_message": "Fond d'écran soumis avec succès !",
     // Fonts
     "fonts.title": "Polices",
     "fonts.subtitle": "Outils et ressources pour créer des polices personnalisées pour votre tablette X4",
@@ -688,6 +712,18 @@ const ui = {
     "wallpapers.category.pop_culture": "Cultura pop",
     "wallpapers.category.custom": "Personalizado",
     "wallpapers.category.other": "Otro",
+    "wallpapers.form.subtitle": "Comparte tu fondo de pantalla con la comunidad",
+    "wallpapers.form.title_placeholder": "Título del fondo de pantalla (opcional)",
+    "wallpapers.form.category": "Categoría",
+    "wallpapers.form.image": "Imagen del fondo de pantalla",
+    "wallpapers.form.image_help": "Sube un archivo de imagen (PNG, JPG, GIF, WEBP, SVG). Tamaño máximo: 10MB.",
+    "wallpapers.form.author_name": "Nombre del autor",
+    "wallpapers.form.author_name_placeholder": "Tu nombre o nombre de usuario",
+    "wallpapers.form.reddit_username": "Nombre de usuario de Reddit",
+    "wallpapers.form.reddit_username_placeholder": "u/nombre_usuario (opcional)",
+    "wallpapers.form.instagram_username": "Nombre de usuario de Instagram",
+    "wallpapers.form.instagram_username_placeholder": "@nombre_usuario (opcional)",
+    "wallpapers.form.success_message": "¡Fondo de pantalla enviado con éxito!",
     // Fonts
     "fonts.title": "Fuentes",
     "fonts.subtitle": "Herramientas y recursos para crear fuentes personalizadas para tu tableta X4",
@@ -916,6 +952,18 @@ const ui = {
     "wallpapers.category.pop_culture": "Поп-культура",
     "wallpapers.category.custom": "Пользовательский",
     "wallpapers.category.other": "Другое",
+    "wallpapers.form.subtitle": "Поделитесь своими обоями с сообществом",
+    "wallpapers.form.title_placeholder": "Название обоев (необязательно)",
+    "wallpapers.form.category": "Категория",
+    "wallpapers.form.image": "Изображение обоев",
+    "wallpapers.form.image_help": "Загрузите файл изображения (PNG, JPG, GIF, WEBP, SVG). Максимальный размер: 10MB.",
+    "wallpapers.form.author_name": "Имя автора",
+    "wallpapers.form.author_name_placeholder": "Ваше имя или имя пользователя",
+    "wallpapers.form.reddit_username": "Имя пользователя Reddit",
+    "wallpapers.form.reddit_username_placeholder": "u/имя_пользователя (необязательно)",
+    "wallpapers.form.instagram_username": "Имя пользователя Instagram",
+    "wallpapers.form.instagram_username_placeholder": "@имя_пользователя (необязательно)",
+    "wallpapers.form.success_message": "Обои успешно отправлены!",
     // Fonts
     "fonts.title": "Шрифты",
     "fonts.subtitle": "Инструменты и ресурсы для создания пользовательских шрифтов для вашего планшета X4",
@@ -1169,6 +1217,18 @@ const ui = {
     "wallpapers.category.pop_culture": "流行文化",
     "wallpapers.category.custom": "自定义",
     "wallpapers.category.other": "其他",
+    "wallpapers.form.subtitle": "与社区分享您的壁纸",
+    "wallpapers.form.title_placeholder": "壁纸标题（可选）",
+    "wallpapers.form.category": "类别",
+    "wallpapers.form.image": "壁纸图片",
+    "wallpapers.form.image_help": "上传图片文件（PNG、JPG、GIF、WEBP、SVG）。最大大小：10MB。",
+    "wallpapers.form.author_name": "作者姓名",
+    "wallpapers.form.author_name_placeholder": "您的姓名或用户名",
+    "wallpapers.form.reddit_username": "Reddit 用户名",
+    "wallpapers.form.reddit_username_placeholder": "u/用户名（可选）",
+    "wallpapers.form.instagram_username": "Instagram 用户名",
+    "wallpapers.form.instagram_username_placeholder": "@用户名（可选）",
+    "wallpapers.form.success_message": "壁纸提交成功！",
     // Fonts
     "fonts.title": "字体",
     "fonts.subtitle": "为您的 X4 平板电脑创建自定义字体的工具和资源",
@@ -2206,7 +2266,9 @@ const $$Footer = createComponent(($$result, $$props, $$slots) => {
     { href: `${langPrefix}/llm-info`, text: t("footer.llm_info") }
   ];
   return renderTemplate(_a || (_a = __template(["", '<footer x-data="{ year: new Date().getFullYear() }" class="bg-black text-white relative lg:h-svh flex flex-col w-full h-full justify-between" data-astro-cid-tgc5tww7> ', ' <div id="waveContainer" aria-hidden="true" data-astro-cid-tgc5tww7> <div style="margin-top:0px" data-astro-cid-tgc5tww7> <div class="wave-segment" style="margin-top:0px;height:1px" data-astro-cid-tgc5tww7></div> <div class="wave-segment" style="margin-top:1px;height:2px" data-astro-cid-tgc5tww7></div> <div class="wave-segment" style="margin-top:2px;height:3px" data-astro-cid-tgc5tww7></div> <div class="wave-segment" style="margin-top:3px;height:4px" data-astro-cid-tgc5tww7></div> <div class="wave-segment" style="margin-top:4px;height:5px" data-astro-cid-tgc5tww7></div> <div class="wave-segment" style="margin-top:5px;height:6px" data-astro-cid-tgc5tww7></div> <div class="wave-segment" style="margin-top:6px;height:7px" data-astro-cid-tgc5tww7></div> <div class="wave-segment" style="margin-top:7px;height:8px" data-astro-cid-tgc5tww7></div> <div class="wave-segment" style="margin-top:8px;height:9px" data-astro-cid-tgc5tww7></div> <div class="wave-segment" style="margin-top:9px;height:10px" data-astro-cid-tgc5tww7></div> <div class="wave-segment" style="margin-top:10px;height:11px" data-astro-cid-tgc5tww7></div> <div class="wave-segment" style="margin-top:11px;height:12px" data-astro-cid-tgc5tww7></div> <div class="wave-segment" style="margin-top:12px;height:13px" data-astro-cid-tgc5tww7></div> <div class="wave-segment" style="margin-top:13px;height:14px" data-astro-cid-tgc5tww7></div> <div class="wave-segment" style="margin-top:14px;height:15px" data-astro-cid-tgc5tww7></div> <div class="wave-segment" style="margin-top:15px;height:16px" data-astro-cid-tgc5tww7></div> <div class="wave-segment" style="margin-top:16px;height:17px" data-astro-cid-tgc5tww7></div> <div class="wave-segment" style="margin-top:17px;height:18px" data-astro-cid-tgc5tww7></div> <div class="wave-segment" style="margin-top:18px;height:19px" data-astro-cid-tgc5tww7></div> <div class="wave-segment" style="margin-top:19px;height:20px" data-astro-cid-tgc5tww7></div> <div class="wave-segment" style="margin-top:20px;height:21px" data-astro-cid-tgc5tww7></div> <div class="wave-segment" style="margin-top:21px;height:22px" data-astro-cid-tgc5tww7></div> <div class="wave-segment" style="margin-top:22px;height:23px" data-astro-cid-tgc5tww7></div> </div> </div> </footer> <script type="module">\n  document.addEventListener("DOMContentLoaded", () => {\n    const waveSegments = document.querySelectorAll(".wave-segment");\n    let wavePhase = 0;\n    function animateWave() {\n      waveSegments.forEach((segment, index) => {\n        const offset = Math.sin((wavePhase + index) * 0.3) * 20;\n        segment.style.marginTop = `${Math.max(0, offset)}px`;\n      });\n      wavePhase += 0.1;\n      requestAnimationFrame(animateWave);\n    }\n    animateWave();\n  });\n<\/script>'], ["", '<footer x-data="{ year: new Date().getFullYear() }" class="bg-black text-white relative lg:h-svh flex flex-col w-full h-full justify-between" data-astro-cid-tgc5tww7> ', ' <div id="waveContainer" aria-hidden="true" data-astro-cid-tgc5tww7> <div style="margin-top:0px" data-astro-cid-tgc5tww7> <div class="wave-segment" style="margin-top:0px;height:1px" data-astro-cid-tgc5tww7></div> <div class="wave-segment" style="margin-top:1px;height:2px" data-astro-cid-tgc5tww7></div> <div class="wave-segment" style="margin-top:2px;height:3px" data-astro-cid-tgc5tww7></div> <div class="wave-segment" style="margin-top:3px;height:4px" data-astro-cid-tgc5tww7></div> <div class="wave-segment" style="margin-top:4px;height:5px" data-astro-cid-tgc5tww7></div> <div class="wave-segment" style="margin-top:5px;height:6px" data-astro-cid-tgc5tww7></div> <div class="wave-segment" style="margin-top:6px;height:7px" data-astro-cid-tgc5tww7></div> <div class="wave-segment" style="margin-top:7px;height:8px" data-astro-cid-tgc5tww7></div> <div class="wave-segment" style="margin-top:8px;height:9px" data-astro-cid-tgc5tww7></div> <div class="wave-segment" style="margin-top:9px;height:10px" data-astro-cid-tgc5tww7></div> <div class="wave-segment" style="margin-top:10px;height:11px" data-astro-cid-tgc5tww7></div> <div class="wave-segment" style="margin-top:11px;height:12px" data-astro-cid-tgc5tww7></div> <div class="wave-segment" style="margin-top:12px;height:13px" data-astro-cid-tgc5tww7></div> <div class="wave-segment" style="margin-top:13px;height:14px" data-astro-cid-tgc5tww7></div> <div class="wave-segment" style="margin-top:14px;height:15px" data-astro-cid-tgc5tww7></div> <div class="wave-segment" style="margin-top:15px;height:16px" data-astro-cid-tgc5tww7></div> <div class="wave-segment" style="margin-top:16px;height:17px" data-astro-cid-tgc5tww7></div> <div class="wave-segment" style="margin-top:17px;height:18px" data-astro-cid-tgc5tww7></div> <div class="wave-segment" style="margin-top:18px;height:19px" data-astro-cid-tgc5tww7></div> <div class="wave-segment" style="margin-top:19px;height:20px" data-astro-cid-tgc5tww7></div> <div class="wave-segment" style="margin-top:20px;height:21px" data-astro-cid-tgc5tww7></div> <div class="wave-segment" style="margin-top:21px;height:22px" data-astro-cid-tgc5tww7></div> <div class="wave-segment" style="margin-top:22px;height:23px" data-astro-cid-tgc5tww7></div> </div> </div> </footer> <script type="module">\n  document.addEventListener("DOMContentLoaded", () => {\n    const waveSegments = document.querySelectorAll(".wave-segment");\n    let wavePhase = 0;\n    function animateWave() {\n      waveSegments.forEach((segment, index) => {\n        const offset = Math.sin((wavePhase + index) * 0.3) * 20;\n        segment.style.marginTop = \\`\\${Math.max(0, offset)}px\\`;\n      });\n      wavePhase += 0.1;\n      requestAnimationFrame(animateWave);\n    }\n    animateWave();\n  });\n<\/script>'])), maybeRenderHead(), renderComponent($$result, "Wrapper", $$Wrapper, { "class": "flex flex-col md:flex-row justify-between w-full gap-4 pb-24 pt-8", "data-astro-cid-tgc5tww7": true }, { "default": ($$result2) => renderTemplate`  <div class="space-y-2" data-astro-cid-tgc5tww7> <ul class="flex flex-wrap gap-4" data-astro-cid-tgc5tww7> ${legalLinks.map((link) => renderTemplate`<li data-astro-cid-tgc5tww7> ${renderComponent($$result2, "Text", $$Text, { "tag": "a", "variant": "textSM", "href": link.href, "class": "hover:text-accent-400", "data-astro-cid-tgc5tww7": true }, { "default": ($$result3) => renderTemplate`${link.text}` })} </li>`)} </ul> ${renderComponent($$result2, "Text", $$Text, { "tag": "p", "variant": "textSM", "class": "mt-4", "data-astro-cid-tgc5tww7": true }, { "default": ($$result3) => renderTemplate`
-© <span x-text="new Date().getFullYear()" data-astro-cid-tgc5tww7></span> ${t("footer.crafted_by")}` })} ${renderComponent($$result2, "Text", $$Text, { "tag": "p", "variant": "textXS", "class": "mt-2 text-base-400", "data-astro-cid-tgc5tww7": true }, { "default": ($$result3) => renderTemplate`${t("footer.not_affiliated")}` })} </div>  <div class="space-y-4" data-astro-cid-tgc5tww7> <!-- Language Selector --> <div class="flex items-center gap-2" data-astro-cid-tgc5tww7> ${renderComponent($$result2, "Text", $$Text, { "tag": "span", "variant": "textXS", "class": "text-base-400 uppercase", "data-astro-cid-tgc5tww7": true }, { "default": ($$result3) => renderTemplate`
+© <span x-text="new Date().getFullYear()" data-astro-cid-tgc5tww7></span> ${t("footer.crafted_by").split("Florent")[0]}<a href="https://dontthinkjustbuild.com/" target="_blank" rel="noopener noreferrer" class="hover:text-accent-400 transition-colors" data-astro-cid-tgc5tww7>
+Florent
+</a> ${t("footer.crafted_by").split("Florent")[1] || ""}` })} ${renderComponent($$result2, "Text", $$Text, { "tag": "p", "variant": "textXS", "class": "mt-2 text-base-400", "data-astro-cid-tgc5tww7": true }, { "default": ($$result3) => renderTemplate`${t("footer.not_affiliated")}` })} </div>  <div class="space-y-4" data-astro-cid-tgc5tww7> <!-- Language Selector --> <div class="flex items-center gap-2" data-astro-cid-tgc5tww7> ${renderComponent($$result2, "Text", $$Text, { "tag": "span", "variant": "textXS", "class": "text-base-400 uppercase", "data-astro-cid-tgc5tww7": true }, { "default": ($$result3) => renderTemplate`
 Language
 ` })} <div class="flex gap-2" data-astro-cid-tgc5tww7> ${languages.map((targetLang) => renderTemplate`<a${addAttribute(languageUrls[targetLang], "href")}${addAttribute(`text-sm hover:text-accent-400 transition-colors ${lang === targetLang ? "text-accent-400 font-semibold" : "text-base-400"}`, "class")} data-astro-cid-tgc5tww7> ${targetLang.toUpperCase()} </a>`)} </div> </div> <div class="text-right mt-4" data-astro-cid-tgc5tww7> <a href="#top" class="text-sm hover:underline inline-flex items-center" data-astro-cid-tgc5tww7> ${t("common.back")} to top
 </a> </div> </div> ` }));

@@ -1,9 +1,9 @@
 import { b as createAstro, c as createComponent, r as renderComponent, a as renderTemplate, C as Fragment, m as maybeRenderHead, e as addAttribute } from '../../chunks/astro/server_DMB4Uz73.mjs';
 import 'piccolore';
-import { g as getLangFromUrl, c as getLangPrefix, $ as $$BaseLayout, u as useTranslations, a as $$Wrapper, b as $$Text } from '../../chunks/BaseLayout_CmF6HVGJ.mjs';
+import { g as getLangFromUrl, c as getLangPrefix, $ as $$BaseLayout, u as useTranslations, a as $$Wrapper, b as $$Text } from '../../chunks/BaseLayout_CO6ejgXa.mjs';
 import { $ as $$Button } from '../../chunks/Button_B6723hw2.mjs';
 import { $ as $$Seo } from '../../chunks/Seo_Dd6omgxK.mjs';
-import { $ as $$WallpaperThumbnail } from '../../chunks/WallpaperThumbnail_BRZekPdl.mjs';
+import { $ as $$WallpaperThumbnail } from '../../chunks/WallpaperThumbnail_bjYBmRYG.mjs';
 import { s as supabase } from '../../chunks/client_DiYgajIf.mjs';
 import { g as getGradientForId } from '../../chunks/gradients_DWIDfilt.mjs';
 export { renderers } from '../../renderers.mjs';
