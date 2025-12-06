@@ -4,6 +4,7 @@ import { z } from 'zod';
 import { getIPHash, checkSubmissionLimit, incrementSubmissionCount } from '../../chunks/rate-limit_BVj0SoS1.mjs';
 export { renderers } from '../../renderers.mjs';
 
+const prerender = false;
 const wallpaperSchema = z.object({
   title: z.string().max(60).optional(),
   category: z.enum(["minimalist", "dark", "light", "pop_culture", "custom", "other"]).optional(),
@@ -104,7 +105,8 @@ const POST = async ({ request }) => {
 const _page = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
   GET,
-  POST
+  POST,
+  prerender
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const page = () => _page;

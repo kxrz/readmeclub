@@ -1,3 +1,5 @@
+export const prerender = false;
+
 import type { APIRoute } from 'astro';
 import { requireAdmin } from '@/lib/utils/admin';
 import { getSupabaseAdmin } from '@/lib/supabase/admin';

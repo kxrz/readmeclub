@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { getIPHash, checkSubmissionLimit, incrementSubmissionCount } from '../../chunks/rate-limit_BVj0SoS1.mjs';
 export { renderers } from '../../renderers.mjs';
 
+const prerender = false;
 const featureRequestSchema = z.object({
   title: z.string().min(1).max(80),
   description: z.string().min(1).max(500),
@@ -99,7 +100,8 @@ const POST = async ({ request }) => {
 const _page = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
   GET,
-  POST
+  POST,
+  prerender
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const page = () => _page;

@@ -3,6 +3,7 @@ import { g as getSupabaseAdmin } from '../../../../../chunks/admin_Ct61RJ0x.mjs'
 import { z } from 'zod';
 export { renderers } from '../../../../../renderers.mjs';
 
+const prerender = false;
 const updateResourceSchema = z.object({
   type: z.enum(["language_file", "plugin", "link", "documentation", "tool", "info", "other"]).optional(),
   title: z.string().min(1).max(255).optional(),
@@ -77,7 +78,8 @@ const PUT = async ({ params, request, cookies }) => {
 
 const _page = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  PUT
+  PUT,
+  prerender
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const page = () => _page;

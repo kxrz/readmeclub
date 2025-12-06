@@ -2,6 +2,7 @@ import { r as requireAdmin } from '../../../../../chunks/admin_DKwhe7Wu.mjs';
 import { g as getSupabaseAdmin } from '../../../../../chunks/admin_Ct61RJ0x.mjs';
 export { renderers } from '../../../../../renderers.mjs';
 
+const prerender = false;
 const POST = async ({ params, request, cookies }) => {
   try {
     requireAdmin(cookies);
@@ -45,7 +46,8 @@ const POST = async ({ params, request, cookies }) => {
 
 const _page = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  POST
+  POST,
+  prerender
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const page = () => _page;

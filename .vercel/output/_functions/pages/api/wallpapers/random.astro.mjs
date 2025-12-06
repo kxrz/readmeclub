@@ -1,6 +1,7 @@
 import { s as supabase } from '../../../chunks/client_DiYgajIf.mjs';
 export { renderers } from '../../../renderers.mjs';
 
+const prerender = false;
 const GET = async ({ request }) => {
   try {
     const { data: wallpapers, error } = await supabase.from("wallpapers").select("id").eq("status", "published").eq("hidden", false);
@@ -39,7 +40,8 @@ const GET = async ({ request }) => {
 
 const _page = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  GET
+  GET,
+  prerender
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const page = () => _page;

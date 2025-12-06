@@ -2,6 +2,7 @@ import { s as supabase } from '../../chunks/client_DiYgajIf.mjs';
 import { z } from 'zod';
 export { renderers } from '../../renderers.mjs';
 
+const prerender = false;
 const resourceSchema = z.object({
   type: z.enum(["language_file", "plugin", "link", "documentation", "tool", "info", "other"]),
   title: z.string().min(1).max(255),
@@ -104,7 +105,8 @@ const POST = async ({ request }) => {
 const _page = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
   GET,
-  POST
+  POST,
+  prerender
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const page = () => _page;

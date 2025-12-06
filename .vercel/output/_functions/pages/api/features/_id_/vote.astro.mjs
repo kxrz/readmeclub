@@ -2,6 +2,7 @@ import { g as getSupabaseAdmin } from '../../../../chunks/admin_Ct61RJ0x.mjs';
 import { getIPHash } from '../../../../chunks/rate-limit_BVj0SoS1.mjs';
 export { renderers } from '../../../../renderers.mjs';
 
+const prerender = false;
 const POST = async ({ params, request }) => {
   try {
     const id = params.id;
@@ -70,7 +71,8 @@ const POST = async ({ params, request }) => {
 
 const _page = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  POST
+  POST,
+  prerender
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const page = () => _page;

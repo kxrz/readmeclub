@@ -2,6 +2,7 @@ import { s as supabase } from '../../../../chunks/client_DiYgajIf.mjs';
 import { g as getSupabaseAdmin } from '../../../../chunks/admin_Ct61RJ0x.mjs';
 export { renderers } from '../../../../renderers.mjs';
 
+const prerender = false;
 const GET = async ({ params }) => {
   try {
     const id = params.id;
@@ -92,7 +93,8 @@ const GET = async ({ params }) => {
 
 const _page = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  GET
+  GET,
+  prerender
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const page = () => _page;

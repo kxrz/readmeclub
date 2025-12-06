@@ -3,6 +3,7 @@ import { g as getSupabaseAdmin } from '../../../../../chunks/admin_Ct61RJ0x.mjs'
 import { z } from 'zod';
 export { renderers } from '../../../../../renderers.mjs';
 
+const prerender = false;
 const updateWallpaperSchema = z.object({
   status: z.enum(["draft", "published"]).optional(),
   hidden: z.boolean().optional(),
@@ -70,7 +71,8 @@ const PUT = async ({ params, request, cookies }) => {
 
 const _page = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  PUT
+  PUT,
+  prerender
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const page = () => _page;

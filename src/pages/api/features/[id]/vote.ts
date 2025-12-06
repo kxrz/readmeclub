@@ -1,3 +1,5 @@
+export const prerender = false;
+
 import type { APIRoute } from 'astro';
 import { getSupabaseAdmin } from '@/lib/supabase/admin';
 import { getIPHash } from '@/lib/utils/rate-limit';

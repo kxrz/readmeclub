@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { getIPHash, checkSubmissionLimit, incrementSubmissionCount } from '../../../chunks/rate-limit_BVj0SoS1.mjs';
 export { renderers } from '../../../renderers.mjs';
 
+const prerender = false;
 const declareLocationSchema = z.object({
   country_code: z.string().length(2).regex(/^[A-Z]{2}$/)
   // ISO 3166-1 alpha-2
@@ -59,7 +60,8 @@ const POST = async ({ request }) => {
 
 const _page = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  POST
+  POST,
+  prerender
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const page = () => _page;

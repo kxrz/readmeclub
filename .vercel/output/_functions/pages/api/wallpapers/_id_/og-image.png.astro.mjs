@@ -5,6 +5,7 @@ import { readFileSync } from 'fs';
 import { join } from 'path';
 export { renderers } from '../../../../renderers.mjs';
 
+const prerender = false;
 async function loadFonts() {
   const fontRegular = readFileSync(join(process.cwd(), "public", "fonts", "inter-400.woff"));
   const fontBold = readFileSync(join(process.cwd(), "public", "fonts", "inter-700.woff"));
@@ -135,7 +136,8 @@ const GET = async ({ params }) => {
 
 const _page = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  GET
+  GET,
+  prerender
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const page = () => _page;

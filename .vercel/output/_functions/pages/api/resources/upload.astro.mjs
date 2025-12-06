@@ -2,6 +2,7 @@ import { g as getSupabaseAdmin } from '../../../chunks/admin_Ct61RJ0x.mjs';
 import { getIPHash, checkSubmissionLimit, incrementSubmissionCount } from '../../../chunks/rate-limit_BVj0SoS1.mjs';
 export { renderers } from '../../../renderers.mjs';
 
+const prerender = false;
 const POST = async ({ request }) => {
   try {
     const ipHash = await getIPHash(request);
@@ -107,7 +108,8 @@ const POST = async ({ request }) => {
 
 const _page = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  POST
+  POST,
+  prerender
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const page = () => _page;

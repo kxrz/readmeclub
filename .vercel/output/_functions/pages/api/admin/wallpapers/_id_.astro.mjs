@@ -2,6 +2,7 @@ import { r as requireAdmin } from '../../../../chunks/admin_DKwhe7Wu.mjs';
 import { g as getSupabaseAdmin } from '../../../../chunks/admin_Ct61RJ0x.mjs';
 export { renderers } from '../../../../renderers.mjs';
 
+const prerender = false;
 const GET = async ({ params, cookies }) => {
   try {
     requireAdmin(cookies);
@@ -43,7 +44,8 @@ const GET = async ({ params, cookies }) => {
 
 const _page = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  GET
+  GET,
+  prerender
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const page = () => _page;
