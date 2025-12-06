@@ -7,6 +7,10 @@ export const ui = {
     'site.description': 'Share and discover language files, documentation, tools, wallpapers, feature requests, and more',
     'site.also_known_as': 'also known as the Xteink Community Hub',
     
+    // Welcome
+    'welcome.title': 'Welcome to the new community hub!',
+    'welcome.message': 'We\'ve migrated to a new platform. Explore resources, wallpapers, and more!',
+    
     // Navigation
     'nav.home': 'Home',
     'nav.resources': 'Resources',
@@ -314,6 +318,10 @@ export const ui = {
     'site.description': 'Partagez et découvrez des fichiers de langue, de la documentation, des outils, des fonds d\'écran, des demandes de fonctionnalités et plus encore',
     'site.also_known_as': 'également connu sous le nom de Xteink Community Hub',
     
+    // Welcome
+    'welcome.title': 'Bienvenue sur le nouveau hub communautaire !',
+    'welcome.message': 'Nous avons migré vers une nouvelle plateforme. Explorez les ressources, fonds d\'écran et plus encore !',
+    
     // Navigation
     'nav.home': 'Accueil',
     'nav.resources': 'Ressources',
@@ -618,6 +626,10 @@ export const ui = {
     'site.description': 'Comparte y descubre archivos de idioma, documentación, herramientas, fondos de pantalla, solicitudes de funciones y más',
     'site.also_known_as': 'también conocido como el Xteink Community Hub',
     
+    // Welcome
+    'welcome.title': '¡Bienvenido al nuevo centro comunitario!',
+    'welcome.message': 'Hemos migrado a una nueva plataforma. ¡Explora recursos, fondos de pantalla y más!',
+    
     // Navigation
     'nav.home': 'Inicio',
     'nav.resources': 'Recursos',
@@ -893,6 +905,10 @@ export const ui = {
     'site.tagline': 'Обмен ресурсами сообщества для пользователей Xteink',
     'site.description': 'Делитесь и открывайте языковые файлы, документацию, инструменты, обои, запросы функций и многое другое',
     'site.also_known_as': 'также известный как Xteink Community Hub',
+    
+    // Welcome
+    'welcome.title': 'Добро пожаловать в новый центр сообщества!',
+    'welcome.message': 'Мы перешли на новую платформу. Изучайте ресурсы, обои и многое другое!',
     
     // Navigation
     'nav.home': 'Главная',
@@ -1170,6 +1186,10 @@ export const ui = {
     'site.tagline': '面向 Xteink 用户的社区资源共享',
     'site.description': '分享和发现语言文件、文档、工具、壁纸、功能请求等',
     'site.also_known_as': '也称为 Xteink Community Hub',
+    
+    // Welcome
+    'welcome.title': '欢迎来到新的社区中心！',
+    'welcome.message': '我们已经迁移到新平台。探索资源、壁纸等更多内容！',
     
     // Navigation
     'nav.home': '首页',
