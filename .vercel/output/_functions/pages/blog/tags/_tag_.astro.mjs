@@ -7,6 +7,7 @@ import { g as getCollection } from '../../../chunks/_astro_content_DqmQcJki.mjs'
 export { renderers } from '../../../renderers.mjs';
 
 const $$Astro = createAstro("https://readme.club");
+const prerender = false;
 async function getStaticPaths() {
   const allPosts = await getCollection("posts");
   const uniqueTags = [
@@ -41,6 +42,7 @@ const _page = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   default: $$tag,
   file: $$file,
   getStaticPaths,
+  prerender,
   url: $$url
 }, Symbol.toStringTag, { value: 'Module' }));
 

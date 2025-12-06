@@ -33,6 +33,7 @@ See all tools
 }, "/Users/florentbertiaux/Documents/GitHub/xteinkhub2026/src/layouts/ToolsLayout.astro", void 0);
 
 const $$Astro = createAstro("https://readme.club");
+const prerender = false;
 async function getStaticPaths() {
   const tools = await getCollection("tools");
   const paths = tools.map((page) => {
@@ -60,6 +61,7 @@ const _page = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   default: $$,
   file: $$file,
   getStaticPaths,
+  prerender,
   url: $$url
 }, Symbol.toStringTag, { value: 'Module' }));
 

@@ -22,6 +22,7 @@ by ${frontmatter.author}` })} </div> </div> <div class="flex flex-wrap items-cen
 }, "/Users/florentbertiaux/Documents/GitHub/xteinkhub2026/src/layouts/BlogLayout.astro", void 0);
 
 const $$Astro = createAstro("https://readme.club");
+const prerender = false;
 async function getStaticPaths() {
   const blogEntries = await getCollection("posts");
   return blogEntries.map((entry) => ({
@@ -45,6 +46,7 @@ const _page = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   default: $$,
   file: $$file,
   getStaticPaths,
+  prerender,
   url: $$url
 }, Symbol.toStringTag, { value: 'Module' }));
 

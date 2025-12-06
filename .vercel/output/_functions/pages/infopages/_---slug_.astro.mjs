@@ -14,6 +14,7 @@ Last upadated on ${frontmatter.pubDate.toString().slice(0, 10)}` })} ` })} </sec
 }, "/Users/florentbertiaux/Documents/GitHub/xteinkhub2026/src/layouts/InfoPagesLayout.astro", void 0);
 
 const $$Astro = createAstro("https://readme.club");
+const prerender = false;
 async function getStaticPaths() {
   const infoPages = await getCollection("infopages");
   const paths = infoPages.map((page) => {
@@ -41,6 +42,7 @@ const _page = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   default: $$,
   file: $$file,
   getStaticPaths,
+  prerender,
   url: $$url
 }, Symbol.toStringTag, { value: 'Module' }));
 

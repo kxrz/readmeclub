@@ -10,6 +10,7 @@ import { g as getGradientForId } from '../../../chunks/gradients_DWIDfilt.mjs';
 export { renderers } from '../../../renderers.mjs';
 
 const $$Astro = createAstro("https://readme.club");
+const prerender = false;
 const $$id = createComponent(async ($$result, $$props, $$slots) => {
   const Astro2 = $$result.createAstro($$Astro, $$props, $$slots);
   Astro2.self = $$id;
@@ -60,6 +61,7 @@ const _page = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
   default: $$id,
   file: $$file,
+  prerender,
   url: $$url
 }, Symbol.toStringTag, { value: 'Module' }));
 

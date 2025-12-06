@@ -29,6 +29,7 @@ License<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" s
 }, "/Users/florentbertiaux/Documents/GitHub/xteinkhub2026/src/layouts/StoreLayout.astro", void 0);
 
 const $$Astro = createAstro("https://readme.club");
+const prerender = false;
 async function getStaticPaths() {
   const store = await getCollection("store");
   const paths = store.map((page) => {
@@ -56,6 +57,7 @@ const _page = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   default: $$,
   file: $$file,
   getStaticPaths,
+  prerender,
   url: $$url
 }, Symbol.toStringTag, { value: 'Module' }));
 
