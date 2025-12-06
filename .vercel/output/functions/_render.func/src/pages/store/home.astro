@@ -1,0 +1,42 @@
+---
+// Layout
+import BaseLayout from "@/layouts/BaseLayout.astro";
+// Fundation
+import Text from "@/components/fundations/elements/Text.astro";
+import Wrapper from "@/components/fundations/containers/Wrapper.astro";
+// Get all posts from the "store" collection
+import { getCollection } from "astro:content";
+const allProducts = await getCollection("store");
+// Components
+import StoreEntries from "@/components/store/StoreEntries.astro";
+---
+
+<BaseLayout>
+  <section>
+    <Wrapper variant="hero">
+      <Text
+        tag="h1"
+        variant="displaySM"
+        class="text-base-900 font-medium 2xl:text-5xl tracking-tight"
+      >
+        Digital products for your business
+      </Text>
+      <Text
+      tag="p"
+      variant="textBase"
+      class="mt-4  text-base-600 text-balance 2xl:text-xl"
+    >
+        Shop my selection of digital products to help you grow your business,
+        and to make your life easier and more productive
+      </Text>
+    </Wrapper>
+  </section>
+  <section>
+    <Wrapper variant="standard" class="pt-6 pb-24">
+   
+      <div class="grid grid-cols-1 gap-2 md:grid-cols-3   group">
+        {allProducts.map((post) => <StoreEntries post={post} />)}
+      </div>
+    </Wrapper>
+  </section>
+</BaseLayout>

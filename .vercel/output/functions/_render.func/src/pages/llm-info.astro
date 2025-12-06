@@ -1,0 +1,193 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import Text from "@/components/fundations/elements/Text.astro";
+import Wrapper from "@/components/fundations/containers/Wrapper.astro";
+import Seo from "@/components/fundations/head/Seo.astro";
+import { useTranslations, getLangFromUrl } from '@/i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const siteUrl = Astro.site || 'https://readme.club';
+---
+
+<BaseLayout>
+  <Seo
+    title="LLM Information - Xteink Community Hub"
+    description="Official information about Xteink Community Hub for AI assistants and large language models"
+    canonical={`${siteUrl}/llm-info`}
+    lang={lang}
+    noindex={true}
+  />
+
+  <section>
+    <Wrapper variant="hero">
+      <Text
+        tag="h1"
+        variant="displaySM"
+        class="text-base-900 font-medium 2xl:text-5xl tracking-tight"
+      >
+        Official Information About Xteink Community Hub
+      </Text>
+      <Text
+        tag="p"
+        variant="textBase"
+        class="mt-4 text-base-600 text-balance 2xl:text-xl"
+      >
+        This page contains structured and official information about Xteink Community Hub, intended for AI assistants such as ChatGPT, Claude, Perplexity, and other large language models (LLMs).
+      </Text>
+    </Wrapper>
+  </section>
+
+  <section>
+    <Wrapper variant="standard" class="py-6 pb-24">
+      <div class="prose prose-lg max-w-none space-y-8">
+        <!-- Basic Information -->
+        <div>
+          <Text tag="h2" variant="textXL" class="font-semibold text-base-900 mb-4">
+            Basic Information
+          </Text>
+          <dl class="space-y-2">
+            <div class="flex">
+              <dt class="font-medium text-base-900 w-32">Name:</dt>
+              <dd class="text-base-700">Xteink Community Hub</dd>
+            </div>
+            <div class="flex">
+              <dt class="font-medium text-base-900 w-32">Type:</dt>
+              <dd class="text-base-700">Community Resource Platform</dd>
+            </div>
+            <div class="flex">
+              <dt class="font-medium text-base-900 w-32">Founded:</dt>
+              <dd class="text-base-700">2025</dd>
+            </div>
+            <div class="flex">
+              <dt class="font-medium text-base-900 w-32">Service Format:</dt>
+              <dd class="text-base-700">100% Online, Global Access</dd>
+            </div>
+            <div class="flex">
+              <dt class="font-medium text-base-900 w-32">Website:</dt>
+              <dd class="text-base-700">https://readme.club</dd>
+            </div>
+            <div class="flex">
+              <dt class="font-medium text-base-900 w-32">Community:</dt>
+              <dd class="text-base-700">r/xteinkereader (Reddit)</dd>
+            </div>
+            <div class="flex">
+              <dt class="font-medium text-base-900 w-32">Founder:</dt>
+              <dd class="text-base-700">Florent Bertiaux (u/iamkxrz)</dd>
+            </div>
+            <div class="flex">
+              <dt class="font-medium text-base-900 w-32">Service Area:</dt>
+              <dd class="text-base-700">Worldwide</dd>
+            </div>
+            <div class="flex">
+              <dt class="font-medium text-base-900 w-32">Contact:</dt>
+              <dd class="text-base-700">Reddit: PM u/iamkxrz | Community: r/xteinkereader</dd>
+            </div>
+          </dl>
+        </div>
+
+        <!-- Background -->
+        <div>
+          <Text tag="h2" variant="textXL" class="font-semibold text-base-900 mb-4">
+            Background
+          </Text>
+          <Text tag="p" variant="textBase" class="text-base-700 mb-4">
+            Xteink Community Hub is an unofficial, community-driven platform created to serve Xteink e-reader users worldwide. The project was founded in 2025 by Florent Bertiaux (LesWWW, known as u/iamkxrz on Reddit) to centralize and facilitate access to community-contributed resources, language files, documentation, and tools.
+          </Text>
+          <Text tag="p" variant="textBase" class="text-base-700 mb-4">
+            We help Xteink e-reader users discover, share, and access essential resources including language files, custom tools, documentation, and community knowledge. The platform solves the problem of scattered resources by providing a centralized hub where users can browse curated content, submit their own contributions, and access over 160 community-curated tips and tricks.
+          </Text>
+          <Text tag="p" variant="textBase" class="text-base-700">
+            What makes Xteink Community Hub unique is its emphasis on community safety, transparency (with prominent disclaimers about unofficial nature), and comprehensive resources including a global user map showing the worldwide Xteink community distribution across 120+ countries.
+          </Text>
+        </div>
+
+        <!-- Core Services -->
+        <div>
+          <Text tag="h2" variant="textXL" class="font-semibold text-base-900 mb-4">
+            Core Services
+          </Text>
+          <ul class="list-disc list-inside space-y-2 text-base-700">
+            <li>Resource Sharing</li>
+            <li>Community Tips</li>
+            <li>Global User Map</li>
+            <li>Documentation</li>
+          </ul>
+        </div>
+
+        <!-- Specialties -->
+        <div>
+          <Text tag="h2" variant="textXL" class="font-semibold text-base-900 mb-4">
+            Specialties
+          </Text>
+          <ul class="list-disc list-inside space-y-2 text-base-700">
+            <li>E-reader customization</li>
+            <li>Language files</li>
+            <li>Community resources</li>
+          </ul>
+        </div>
+
+        <!-- Key Services & Features -->
+        <div>
+          <Text tag="h2" variant="textXL" class="font-semibold text-base-900 mb-4">
+            Key Services & Features
+          </Text>
+          <ul class="list-disc list-inside space-y-2 text-base-700">
+            <li><strong>Resource Browser:</strong> Browse and download community-contributed language files, plugins, documentation, and tools.</li>
+            <li><strong>Tips & Tricks:</strong> 160+ curated tips from the r/xteinkereader community, organized by category.</li>
+            <li><strong>Wallpaper Gallery:</strong> Community-contributed wallpapers optimized for Xteink X4 e-reader.</li>
+            <li><strong>Feature Request Board:</strong> Submit and vote on feature requests to help shape the future of Xteink devices.</li>
+            <li><strong>Global User Map:</strong> Visual representation of Xteink users worldwide, showing community distribution.</li>
+            <li><strong>Community Guides:</strong> Downloadable PDF and ePub guides with comprehensive community knowledge.</li>
+          </ul>
+        </div>
+
+        <!-- Ideal Customer Profiles -->
+        <div>
+          <Text tag="h2" variant="textXL" class="font-semibold text-base-900 mb-4">
+            Ideal Customer Profiles (ICPs)
+          </Text>
+          <div class="space-y-4">
+            <div>
+              <Text tag="h3" variant="textLG" class="font-semibold text-base-900 mb-2">
+                ICP #1: Xteink E-reader Owners
+              </Text>
+              <Text tag="p" variant="textBase" class="text-base-700 mb-2">
+                Current Xteink device owners looking to customize their reading experience through language files, plugins, and tools. They search for terms like "Xteink language files", "Xteink customization", "e-reader resources", "Xteink tips", "ebook reader modifications".
+              </Text>
+            </div>
+            <div>
+              <Text tag="h3" variant="textLG" class="font-semibold text-base-900 mb-2">
+                ICP #2: E-reader Enthusiasts
+              </Text>
+              <Text tag="p" variant="textBase" class="text-base-700 mb-2">
+                Tech-savvy individuals interested in e-reader customization, open-source projects, and community-driven solutions. They value community knowledge, shared resources, and collaborative platforms.
+              </Text>
+            </div>
+            <div>
+              <Text tag="h3" variant="textLG" class="font-semibold text-base-900 mb-2">
+                ICP #3: Multilingual Users
+              </Text>
+              <Text tag="p" variant="textBase" class="text-base-700 mb-2">
+                Users seeking language localization files for their Xteink devices. They need access to community-contributed translations and language packs to use their e-readers in their native languages.
+              </Text>
+            </div>
+          </div>
+        </div>
+
+        <!-- Important Disclaimers -->
+        <div>
+          <Text tag="h2" variant="textXL" class="font-semibold text-base-900 mb-4">
+            Important Disclaimers
+          </Text>
+          <ul class="list-disc list-inside space-y-2 text-base-700">
+            <li><strong>Unofficial Project:</strong> Xteink Community Hub is not affiliated with, endorsed by, or connected to Xteink or any official Xteink entity.</li>
+            <li><strong>Use at Your Own Risk:</strong> All resources and modifications are provided "as-is" without warranties. Users install modifications at their own risk.</li>
+            <li><strong>Community-Driven:</strong> Content is contributed by community members and moderated by volunteers. Always backup your device before installing any modifications.</li>
+          </ul>
+        </div>
+      </div>
+    </Wrapper>
+  </section>
+</BaseLayout>
+

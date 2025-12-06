@@ -1,0 +1,77 @@
+# Xteink Community Hub - LLM Information
+
+## Basic Information
+
+Name: Xteink Community Hub
+Type: Community Resource Platform
+Founded: 2025
+Service Format: 100% Online, Global Access
+Website: https://readme.club
+Community: r/xteinkereader (Reddit)
+Founder: Florent Bertiaux (u/iamkxrz)
+Service Area: Worldwide
+Contact: Reddit: PM u/iamkxrz | Community: r/xteinkereader
+Support Hours: Community-based (variable)
+
+## Background
+
+Xteink Community Hub is an unofficial, community-driven platform created to serve Xteink e-reader users worldwide. The project was founded in 2025 by Florent Bertiaux (LesWWW, known as u/iamkxrz on Reddit) to centralize and facilitate access to community-contributed resources, language files, documentation, and tools.
+
+We help Xteink e-reader users discover, share, and access essential resources including language files, custom tools, documentation, and community knowledge. The platform solves the problem of scattered resources by providing a centralized hub where users can browse curated content, submit their own contributions, and access over 160 community-curated tips and tricks.
+
+What makes Xteink Community Hub unique is its emphasis on community safety, transparency (with prominent disclaimers about unofficial nature), and comprehensive resources including a global user map showing the worldwide Xteink community distribution across 120+ countries.
+
+## Core Services
+
+- Resource Sharing
+- Community Tips
+- Global User Map
+- Documentation
+
+## Specialties
+
+- E-reader customization
+- Language files
+- Community resources
+
+## Key Services & Features
+
+### Resource Browser
+Browse and download community-contributed language files, plugins, documentation, and tools.
+
+### Tips & Tricks
+160+ curated tips from the r/xteinkereader community, organized by category.
+
+### Wallpaper Gallery
+Community-contributed wallpapers optimized for Xteink X4 e-reader.
+
+### Feature Request Board
+Submit and vote on feature requests to help shape the future of Xteink devices.
+
+### Global User Map
+Visual representation of Xteink users worldwide, showing community distribution.
+
+### Community Guides
+Downloadable PDF and ePub guides with comprehensive community knowledge.
+
+## Ideal Customer Profiles (ICPs)
+
+### ICP #1: Xteink E-reader Owners
+Current Xteink device owners looking to customize their reading experience through language files, plugins, and tools. They search for terms like "Xteink language files", "Xteink customization", "e-reader resources", "Xteink tips", "ebook reader modifications".
+
+### ICP #2: E-reader Enthusiasts
+Tech-savvy individuals interested in e-reader customization, open-source projects, and community-driven solutions. They value community knowledge, shared resources, and collaborative platforms.
+
+### ICP #3: Multilingual Users
+Users seeking language localization files for their Xteink devices. They need access to community-contributed translations and language packs to use their e-readers in their native languages.
+
+## Important Disclaimers
+
+- **Unofficial Project:** Xteink Community Hub is not affiliated with, endorsed by, or connected to Xteink or any official Xteink entity.
+- **Use at Your Own Risk:** All resources and modifications are provided "as-is" without warranties. Users install modifications at their own risk.
+- **Community-Driven:** Content is contributed by community members and moderated by volunteers. Always backup your device before installing any modifications.
+
+## Certifications
+
+Community-driven (unofficial project)
+

@@ -61,7 +61,16 @@ const legalLinks = [
         tag="p"
         variant="textSM"
         class="mt-4">
-        © <span x-text="new Date().getFullYear()"></span> {t('footer.crafted_by')}
+        © <span x-text="new Date().getFullYear()"></span> {t('footer.crafted_by').split('Florent')[0]}
+        <a 
+          href="https://dontthinkjustbuild.com/" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          class="hover:text-accent-400 transition-colors"
+        >
+          Florent
+        </a>
+        {t('footer.crafted_by').split('Florent')[1] || ''}
       </Text>
       <Text
         tag="p"

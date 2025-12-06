@@ -21,7 +21,10 @@
     "analyze-locations": "tsx scripts/analyze-locations.ts",
     "migrate-locations": "tsx scripts/migrate-locations.ts",
     "analyze-features": "tsx scripts/analyze-features.ts",
-    "migrate-features": "tsx scripts/migrate-features.ts"
+    "migrate-features": "tsx scripts/migrate-features.ts",
+    "analyze-stats": "tsx scripts/analyze-stats.ts",
+    "migrate-stats": "tsx scripts/migrate-stats.ts",
+    "set-guide-stats": "tsx scripts/set-guide-stats.ts"
   },
   "dependencies": {
     "@astrojs/mdx": "^4.3.5",

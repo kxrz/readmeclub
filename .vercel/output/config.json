@@ -1,0 +1,380 @@
+{
+	"version": 3,
+	"routes": [
+		{
+			"handle": "filesystem"
+		},
+		{
+			"src": "^/_astro/(.*)$",
+			"headers": {
+				"cache-control": "public, max-age=31536000, immutable"
+			},
+			"continue": true
+		},
+		{
+			"src": "^/_server-islands/([^/]+?)/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/_image/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/404/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/about/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/admin/features/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/admin/logout/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/admin/resources/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/admin/stats/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/admin/wallpapers/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/admin/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/advertise/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/api/admin/features/([^/]+?)/toggle/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/api/admin/features/([^/]+?)/update/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/api/admin/login/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/api/admin/resources/([^/]+?)/star/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/api/admin/resources/([^/]+?)/toggle/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/api/admin/resources/([^/]+?)/update/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/api/admin/resources/([^/]+?)/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/api/admin/wallpapers/([^/]+?)/toggle/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/api/admin/wallpapers/([^/]+?)/update/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/api/admin/wallpapers/([^/]+?)/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/api/features/([^/]+?)/vote/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/api/features/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/api/guide/epub-v2-download/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/api/guide/pdf-v2-download/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/api/location/declare/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/api/location/stats/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/api/og-image\\.png/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/api/resources/upload/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/api/resources/([^/]+?)/download/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/api/resources/([^/]+?)/og-image\\.png/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/api/resources/([^/]+?)/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/api/resources/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/api/wallpapers/random/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/api/wallpapers/([^/]+?)/download/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/api/wallpapers/([^/]+?)/og-image\\.png/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/blog/home/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/blog/posts(?:/(.*?))?/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/blog/tags/([^/]+?)/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/blog/tags/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/board/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/dashboard/collection-details/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/dashboard/collections/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/dashboard/profile/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/dashboard/settings/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/dashboard/submissions/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/disclaimer/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/fonts/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/forms/contact/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/forms/reset/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/forms/signin/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/forms/signup/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/guide/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/infopages(?:/(.*?))?/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/llm-info/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/location/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/pricing/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/resources/([^/]+?)/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/resources/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/rss\\.xml/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/store/home/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/store(?:/(.*?))?/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/submit/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/system/buttons/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/system/colors/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/system/links/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/system/overview/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/system/typography/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/tips/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/tools/home/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/tools/submit/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/tools/tags/([^/]+?)/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/tools/tags/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/tools/tool(?:/(.*?))?/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/wallpapers/([^/]+?)/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/wallpapers/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/([^/]+?)/board/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/([^/]+?)/disclaimer/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/([^/]+?)/fonts/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/([^/]+?)/guide/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/([^/]+?)/llm-info/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/([^/]+?)/location/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/([^/]+?)/resources/([^/]+?)/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/([^/]+?)/resources/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/([^/]+?)/submit/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/([^/]+?)/tips/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/([^/]+?)/wallpapers/([^/]+?)/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/([^/]+?)/wallpapers/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/([^/]+?)/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/.*$",
+			"dest": "_render",
+			"status": 404
+		}
+	]
+}

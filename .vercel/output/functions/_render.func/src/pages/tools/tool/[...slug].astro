@@ -1,0 +1,23 @@
+---
+// Layout
+import ToolsLayout from "@/layouts/ToolsLayout.astro";
+// Get  all posts from the "tools"  collection, which returns an unsorted array of post objects
+import { getCollection } from "astro:content";
+export async function getStaticPaths() {
+  const tools = await getCollection("tools");
+  const paths = tools.map((page) => {
+    return {
+      params: { slug: page.slug },
+      props: { page },
+      trailingSlash: false,
+    };
+  });
+  return paths;
+}
+const { page } = Astro.props;
+const { Content } = await page.render();
+---
+
+<ToolsLayout frontmatter={page.data}>
+  <Content />
+</ToolsLayout>

@@ -1,0 +1,367 @@
+---
+// Layout
+import BaseLayout from "@/layouts/BaseLayout.astro";
+// Fundation
+import Text from "@/components/fundations/elements/Text.astro";
+import Button from "@/components/fundations/components/Button.astro";
+import Link from "@/components/fundations/components/Link.astro";
+import Wrapper from "@/components/fundations/containers/Wrapper.astro";
+import Seo from "@/components/fundations/head/Seo.astro";
+import WallpaperThumbnail from "@/components/wallpapers/WallpaperThumbnail.astro";
+import { supabase } from '@/lib/supabase/client';
+import { useTranslations } from '@/i18n/utils';
+import { getGradientForId } from '@/lib/utils/gradients';
+import type { Lang } from '@/i18n/utils';
+import type { Wallpaper } from '@/lib/supabase/schema';
+
+const lang = (Astro.params.lang || 'en') as Lang;
+const t = useTranslations(lang);
+const siteUrl = Astro.site || 'https://readme.club';
+
+const id = Astro.params.id;
+
+if (!id) {
+  return Astro.redirect(`/${lang}/wallpapers`);
+}
+
+const { data: wallpaper, error } = await supabase
+  .from('wallpapers')
+  .select('*')
+  .eq('id', id)
+  .eq('status', 'published')
+  .eq('hidden', false)
+  .single();
+
+if (error || !wallpaper) {
+  return Astro.redirect(`/${lang}/wallpapers`);
+}
+
+// Récupérer d'autres wallpapers aléatoires (exclure celui actuel)
+const { data: otherWallpapers } = await supabase
+  .from('wallpapers')
+  .select('*')
+  .eq('status', 'published')
+  .eq('hidden', false)
+  .neq('id', id)
+  .order('created_at', { ascending: false })
+  .limit(10);
+
+// Mélanger aléatoirement et prendre 6 (pour avoir 6 + 1 bouton random = 7)
+const shuffled = otherWallpapers ? [...otherWallpapers].sort(() => Math.random() - 0.5).slice(0, 6) : [];
+
+// Générer un gradient unique pour ce wallpaper
+const gradient = getGradientForId(wallpaper.id);
+const gradientStyle = `background: linear-gradient(135deg, ${gradient.from} 0%, ${gradient.to} 100%);`;
+const textColorStyle = `color: ${gradient.text};`;
+
+const imageUrl = wallpaper.file_url || '/placeholder-wallpaper.jpg';
+const ogImage = wallpaper.file_url || `${siteUrl}/api/wallpapers/${wallpaper.id}/og-image.png`;
+---
+
+<BaseLayout>
+  <Fragment slot="head">
+    <Seo
+      title={`${wallpaper.title || 'Wallpaper'} - ${t('wallpapers.title')} - ${t('site.name')}`}
+      description={wallpaper.title ? `${t('wallpapers.subtitle')} - ${wallpaper.title}` : t('wallpapers.subtitle')}
+      canonical={`${siteUrl}/${lang}/wallpapers/${wallpaper.id}`}
+      ogImage={ogImage}
+      ogType="article"
+      lang={lang}
+    />
+  </Fragment>
+  <section>
+    <Wrapper variant="hero">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+        <div class="lg:col-span-2">
+          <div class="w-full max-w-2xl mx-auto overflow-hidden rounded-lg bg-base-100 border border-base-200">
+            {wallpaper.file_url ? (
+              <div class="relative">
+                <img
+                  src={imageUrl}
+                  alt={wallpaper.title || 'Wallpaper'}
+                  class="w-full h-auto max-h-[70vh] object-contain"
+                  loading="lazy"
+                  decoding="async"
+                />
+                <a
+                  href={imageUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="absolute top-4 right-4 bg-white/90 hover:bg-white backdrop-blur-sm rounded-full p-2 shadow-sm transition-colors"
+                  title={t('wallpapers.view_full_size')}
+                  aria-label={t('wallpapers.view_full_size')}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="text-base-900"
+                  >
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                    <path d="M7 7h10v10"></path>
+                    <path d="M7 17l10 -10"></path>
+                    <path d="M17 7l-10 10"></path>
+                  </svg>
+                </a>
+              </div>
+            ) : (
+              <div class="aspect-[3/4] w-full flex items-center justify-center" style={gradientStyle}>
+                <Text tag="span" variant="displaySM" class="font-semibold px-8 text-center" style={textColorStyle}>
+                  {wallpaper.title || 'Wallpaper'}
+                </Text>
+              </div>
+            )}
+          </div>
+        </div>
+        <div class="flex flex-col h-full justify-between">
+          <div>
+            <Text
+              tag="h1"
+              variant="displaySM"
+              class="text-base-900 mt-12 font-medium 2xl:text-5xl tracking-tight"
+            >
+              {wallpaper.title || 'Untitled Wallpaper'}
+            </Text>
+            <Text
+              tag="p"
+              variant="textBase"
+              class="mt-4 text-base-600 text-balance"
+            >
+              {t('wallpapers.subtitle')}
+            </Text>
+            <Text
+              tag="p"
+              variant="textBase"
+              class="text-base-900 mt-12 font-medium uppercase"
+            >
+              Details
+            </Text>
+            <dl class="relative flex flex-col gap-4 mt-4 w-full">
+              {wallpaper.category && (
+                <div class="flex items-center lg:justify-between">
+                  <dt class="flex-1">
+                    <Text
+                      tag="p"
+                      variant="textSM"
+                      class="text-base-900 font-medium flex justify-between"
+                    >
+                      <span>Category</span>
+                      <span class="flex-1 mx-2 border-dotted border-b border-base-300" />
+                    </Text>
+                  </dt>
+                  <dd class="mt-1 text-base-600">
+                    <Text tag="p" variant="textSM" class="text-base-600">
+                      {t(`wallpapers.category.${wallpaper.category}`)}
+                    </Text>
+                  </dd>
+                </div>
+              )}
+              <div class="flex items-center lg:justify-between">
+                <dt class="flex-1">
+                  <Text
+                    tag="p"
+                    variant="textSM"
+                    class="text-base-900 font-medium flex justify-between"
+                  >
+                    <span>Downloads</span>
+                    <span class="flex-1 mx-2 border-dotted border-b border-base-300" />
+                  </Text>
+                </dt>
+                <dd class="mt-1 text-base-600">
+                  <Text tag="p" variant="textSM" class="text-base-600">
+                    {t('wallpapers.downloads', { count: wallpaper.download_count })}
+                  </Text>
+                </dd>
+              </div>
+              {wallpaper.width > 0 && wallpaper.height > 0 && (
+                <div class="flex items-center lg:justify-between">
+                  <dt class="flex-1">
+                    <Text
+                      tag="p"
+                      variant="textSM"
+                      class="text-base-900 font-medium flex justify-between"
+                    >
+                      <span>{t('wallpapers.resolution')}</span>
+                      <span class="flex-1 mx-2 border-dotted border-b border-base-300" />
+                    </Text>
+                  </dt>
+                  <dd class="mt-1 text-base-600">
+                    <Text tag="p" variant="textSM" class="text-base-600">
+                      {wallpaper.width} × {wallpaper.height} px
+                    </Text>
+                  </dd>
+                </div>
+              )}
+              {wallpaper.file_size > 0 && (
+                <div class="flex items-center lg:justify-between">
+                  <dt class="flex-1">
+                    <Text
+                      tag="p"
+                      variant="textSM"
+                      class="text-base-900 font-medium flex justify-between"
+                    >
+                      <span>{t('wallpapers.file_size')}</span>
+                      <span class="flex-1 mx-2 border-dotted border-b border-base-300" />
+                    </Text>
+                  </dt>
+                  <dd class="mt-1 text-base-600">
+                    <Text tag="p" variant="textSM" class="text-base-600">
+                      {(wallpaper.file_size / (1024 * 1024)).toFixed(2)} MB
+                    </Text>
+                  </dd>
+                </div>
+              )}
+              {wallpaper.author_name && (
+                <div class="flex items-center lg:justify-between">
+                  <dt class="flex-1">
+                    <Text
+                      tag="p"
+                      variant="textSM"
+                      class="text-base-900 font-medium flex justify-between"
+                    >
+                      <span>{t('wallpapers.author')}</span>
+                      <span class="flex-1 mx-2 border-dotted border-b border-base-300" />
+                    </Text>
+                  </dt>
+                  <dd class="mt-1 text-base-600">
+                    <Text tag="p" variant="textSM" class="text-base-600">
+                      {wallpaper.author_name}
+                    </Text>
+                  </dd>
+                </div>
+              )}
+              {wallpaper.reddit_username && (
+                <div class="flex items-center lg:justify-between">
+                  <dt class="flex-1">
+                    <Text
+                      tag="p"
+                      variant="textSM"
+                      class="text-base-900 font-medium flex justify-between"
+                    >
+                      <span>Reddit</span>
+                      <span class="flex-1 mx-2 border-dotted border-b border-base-300" />
+                    </Text>
+                  </dt>
+                  <dd class="mt-1 text-base-600">
+                    <Text tag="p" variant="textSM" class="text-base-600">
+                      <a href={`https://reddit.com/user/${wallpaper.reddit_username}`} target="_blank" rel="noopener noreferrer" class="text-accent-500 hover:underline">
+                        u/{wallpaper.reddit_username}
+                      </a>
+                    </Text>
+                  </dd>
+                </div>
+              )}
+              {wallpaper.instagram_username && (
+                <div class="flex items-center lg:justify-between">
+                  <dt class="flex-1">
+                    <Text
+                      tag="p"
+                      variant="textSM"
+                      class="text-base-900 font-medium flex justify-between"
+                    >
+                      <span>Instagram</span>
+                      <span class="flex-1 mx-2 border-dotted border-b border-base-300" />
+                    </Text>
+                  </dt>
+                  <dd class="mt-1 text-base-600">
+                    <Text tag="p" variant="textSM" class="text-base-600">
+                      <a href={`https://instagram.com/${wallpaper.instagram_username}`} target="_blank" rel="noopener noreferrer" class="text-accent-500 hover:underline">
+                        @{wallpaper.instagram_username}
+                      </a>
+                    </Text>
+                  </dd>
+                </div>
+              )}
+            </dl>
+          </div>
+
+          <div class="flex items-center mt-8 justify-between">
+            {wallpaper.file_url && (
+              <a
+                href={`/api/wallpapers/${wallpaper.id}/download`}
+                class="block"
+              >
+                <Button
+                  variant="accent"
+                  size="xs"
+                  class="justify-center flex items-center gap-1 w-auto"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="icon icon-tabler icons-tabler-outline icon-tabler-download size-4"
+                  >
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                    <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2"></path>
+                    <path d="M7 11l5 5l5 -5"></path>
+                    <path d="M12 4l0 12"></path>
+                  </svg>
+                  {t('wallpapers.download')}
+                </Button>
+              </a>
+            )}
+          </div>
+        </div>
+      </div>
+    </Wrapper>
+  </section>
+  
+  {shuffled && shuffled.length > 0 && (
+    <section>
+      <Wrapper variant="standard" class="py-6">
+        <Text
+          tag="h2"
+          variant="textBase"
+          class="text-base-900 font-medium mb-4"
+        >
+          {t('wallpapers.related')}
+        </Text>
+        <div class="flex gap-4 overflow-x-auto scrollbar-hide pb-2">
+          {shuffled.map((wp) => (
+            <WallpaperThumbnail wallpaper={wp} />
+          ))}
+          <a
+            href={`/api/wallpapers/random`}
+            class="group relative flex-shrink-0 w-32 h-48 rounded-lg overflow-hidden border border-base-200 bg-white hover:border-accent-300 hover:shadow-lg transition-all flex items-center justify-center"
+            title={t('wallpapers.random')}
+          >
+            <div class="flex flex-col items-center justify-center gap-2 text-base-600 group-hover:text-accent-500 transition-colors">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="size-8"
+              >
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                <path d="M3 3m0 2a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v14a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2z"></path>
+                <path d="M8 8h.01"></path>
+                <path d="M16 8h.01"></path>
+                <path d="M12 12h.01"></path>
+                <path d="M8 16h.01"></path>
+                <path d="M16 16h.01"></path>
+              </svg>
+              <Text tag="span" variant="textXS" class="font-medium">
+                {t('wallpapers.random')}
+              </Text>
+            </div>
+          </a>
+        </div>
+      </Wrapper>
+    </section>
+  )}
+</BaseLayout>
