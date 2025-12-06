@@ -7,14 +7,13 @@ import Button from "@/components/fundations/components/Button.astro";
 import Link from "@/components/fundations/components/Link.astro";
 import Wrapper from "@/components/fundations/containers/Wrapper.astro";
 import Seo from "@/components/fundations/head/Seo.astro";
-import { useTranslations, getLangFromUrl, getLangPrefix } from '@/i18n/utils';
+import { useTranslations } from '@/i18n/utils';
 import { normalizeSiteUrl } from '@/lib/utils/url';
+import type { Lang } from '@/i18n/utils';
 
-const lang = getLangFromUrl(Astro.url);
+const lang = (Astro.params.lang || 'en') as Lang;
 const t = useTranslations(lang);
-const langPrefix = getLangPrefix(lang);
 const siteUrl = normalizeSiteUrl(Astro.site);
-import { normalizeSiteUrl } from '@/lib/utils/url';
 
 ---
 
@@ -23,7 +22,7 @@ import { normalizeSiteUrl } from '@/lib/utils/url';
     <Seo
       title={`${t('about.title')} - ${t('site.name')}`}
       description={t('about.description')}
-      canonical={`${siteUrl}${langPrefix}/about`}
+      canonical={`${siteUrl}/${lang}/about`}
       lang={lang}
     />
   </Fragment>
@@ -251,3 +250,4 @@ import { normalizeSiteUrl } from '@/lib/utils/url';
     </Wrapper>
   </section>
 </BaseLayout>
+

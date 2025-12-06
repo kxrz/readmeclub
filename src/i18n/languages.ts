@@ -23,6 +23,23 @@ export const ui = {
     'nav.location': 'Global Map',
     'nav.guide': 'Community Guide',
     'nav.disclaimer': 'Legal Disclaimer',
+    'nav.about': 'About',
+    
+    // About
+    'about.title': 'About',
+    'about.description': 'Learn more about readme.club, the Xteink Community Hub',
+    'about.subtitle': 'Learn more about this community-driven platform for Xteink users',
+    'about.what.title': 'What is readme.club?',
+    'about.what.content': 'readme.club (also known as the Xteink Community Hub) is an unofficial, community-driven platform created to serve Xteink e-reader users worldwide. Our mission is to centralize and facilitate access to community-contributed resources, language files, documentation, tools, wallpapers, and more.',
+    'about.what.content2': 'This platform is completely independent and not affiliated with Xteink or any official Xteink entity. All content is contributed by community members and moderated by volunteers.',
+    'about.links.title': 'Official Links',
+    'about.links.subreddit.title': 'Official Subreddit',
+    'about.links.subreddit.description': 'Join the active community on Reddit to discuss, share tips, and get help from other Xteink users.',
+    'about.links.website.title': 'Official Website',
+    'about.links.website.description': 'Visit the official Xteink website to learn more about the devices, purchase products, and access official support.',
+    'about.links.creator.title': 'Creator',
+    'about.links.creator.description': 'This platform was created by Florent Bertiaux (u/iamkxrz). You can reach out on Reddit for questions or feedback.',
+    'about.disclaimer': 'This platform is unofficial and not affiliated with Xteink. All resources are provided "as-is" by the community.',
     
     // Common
     'common.download': 'Download',
@@ -85,6 +102,7 @@ export const ui = {
     'wallpapers.view_full_size': 'View full size',
     'wallpapers.related': 'Related Wallpapers',
     'wallpapers.random': 'Random',
+    'wallpapers.copyright_notice': 'Copyright Notice: This wallpaper is provided by the community. The submitter is responsible for ensuring they have the right to share this content. If you believe this wallpaper infringes your copyright, please contact us. This platform is not responsible for copyright violations.',
     'wallpapers.category.minimalist': 'Minimalist',
     'wallpapers.category.dark': 'Dark',
     'wallpapers.category.light': 'Light',
@@ -103,6 +121,7 @@ export const ui = {
     'wallpapers.form.instagram_username': 'Instagram Username',
     'wallpapers.form.instagram_username_placeholder': '@username (optional)',
     'wallpapers.form.success_message': 'Wallpaper submitted successfully!',
+    'wallpapers.form.copyright_notice': 'By submitting this wallpaper, you confirm that you own the copyright or have obtained proper authorization to share this content. You are solely responsible for any copyright infringement. This platform is not liable for copyright violations.',
     
     // Fonts
     'fonts.title': 'Fonts',
@@ -334,6 +353,23 @@ export const ui = {
     'nav.location': 'Carte mondiale',
     'nav.guide': 'Guide communautaire',
     'nav.disclaimer': 'Avertissement légal',
+    'nav.about': 'À propos',
+    
+    // About
+    'about.title': 'À propos',
+    'about.description': 'En savoir plus sur readme.club, le Xteink Community Hub',
+    'about.subtitle': 'En savoir plus sur cette plateforme communautaire pour les utilisateurs Xteink',
+    'about.what.title': 'Qu\'est-ce que readme.club ?',
+    'about.what.content': 'readme.club (également connu sous le nom de Xteink Community Hub) est une plateforme non officielle et communautaire créée pour servir les utilisateurs de liseuses Xteink dans le monde entier. Notre mission est de centraliser et faciliter l\'accès aux ressources contribuées par la communauté, fichiers de langue, documentation, outils, fonds d\'écran et plus encore.',
+    'about.what.content2': 'Cette plateforme est complètement indépendante et n\'est pas affiliée à Xteink ou à toute entité officielle Xteink. Tout le contenu est contribué par les membres de la communauté et modéré par des bénévoles.',
+    'about.links.title': 'Liens officiels',
+    'about.links.subreddit.title': 'Subreddit officiel',
+    'about.links.subreddit.description': 'Rejoignez la communauté active sur Reddit pour discuter, partager des astuces et obtenir de l\'aide d\'autres utilisateurs Xteink.',
+    'about.links.website.title': 'Site officiel',
+    'about.links.website.description': 'Visitez le site officiel Xteink pour en savoir plus sur les appareils, acheter des produits et accéder au support officiel.',
+    'about.links.creator.title': 'Créateur',
+    'about.links.creator.description': 'Cette plateforme a été créée par Florent Bertiaux (u/iamkxrz). Vous pouvez le contacter sur Reddit pour des questions ou des commentaires.',
+    'about.disclaimer': 'Cette plateforme est non officielle et n\'est pas affiliée à Xteink. Toutes les ressources sont fournies "telles quelles" par la communauté.',
     
     // Common
     'common.download': 'Télécharger',
@@ -396,6 +432,7 @@ export const ui = {
     'wallpapers.view_full_size': 'Voir en taille réelle',
     'wallpapers.related': 'Fonds d\'écran similaires',
     'wallpapers.random': 'Aléatoire',
+    'wallpapers.copyright_notice': 'Avertissement sur le droit d\'auteur : Ce fond d\'écran est fourni par la communauté. Le contributeur est responsable de s\'assurer qu\'il a le droit de partager ce contenu. Si vous pensez que ce fond d\'écran viole vos droits d\'auteur, veuillez nous contacter. Cette plateforme n\'est pas responsable des violations de droits d\'auteur.',
     'wallpapers.category.minimalist': 'Minimaliste',
     'wallpapers.category.dark': 'Sombre',
     'wallpapers.category.light': 'Clair',
@@ -414,6 +451,7 @@ export const ui = {
     'wallpapers.form.instagram_username': 'Nom d\'utilisateur Instagram',
     'wallpapers.form.instagram_username_placeholder': '@nom_utilisateur (optionnel)',
     'wallpapers.form.success_message': 'Fond d\'écran soumis avec succès !',
+    'wallpapers.form.copyright_notice': 'En soumettant ce fond d\'écran, vous confirmez que vous détenez les droits d\'auteur ou avez obtenu l\'autorisation appropriée pour partager ce contenu. Vous êtes seul responsable de toute violation de droits d\'auteur. Cette plateforme n\'est pas responsable des violations de droits d\'auteur.',
     
     // Fonts
     'fonts.title': 'Polices',
@@ -668,6 +706,23 @@ export const ui = {
     'nav.location': 'Mapa global',
     'nav.guide': 'Guía comunitaria',
     'nav.disclaimer': 'Aviso legal',
+    'nav.about': 'Acerca de',
+    
+    // About
+    'about.title': 'Acerca de',
+    'about.description': 'Más información sobre readme.club, el Xteink Community Hub',
+    'about.subtitle': 'Más información sobre esta plataforma comunitaria para usuarios de Xteink',
+    'about.what.title': '¿Qué es readme.club?',
+    'about.what.content': 'readme.club (también conocido como Xteink Community Hub) es una plataforma no oficial y comunitaria creada para servir a los usuarios de lectores electrónicos Xteink en todo el mundo. Nuestra misión es centralizar y facilitar el acceso a recursos contribuidos por la comunidad, archivos de idioma, documentación, herramientas, fondos de pantalla y más.',
+    'about.what.content2': 'Esta plataforma es completamente independiente y no está afiliada a Xteink ni a ninguna entidad oficial de Xteink. Todo el contenido es contribuido por miembros de la comunidad y moderado por voluntarios.',
+    'about.links.title': 'Enlaces oficiales',
+    'about.links.subreddit.title': 'Subreddit oficial',
+    'about.links.subreddit.description': 'Únete a la comunidad activa en Reddit para discutir, compartir consejos y obtener ayuda de otros usuarios de Xteink.',
+    'about.links.website.title': 'Sitio web oficial',
+    'about.links.website.description': 'Visita el sitio web oficial de Xteink para obtener más información sobre los dispositivos, comprar productos y acceder al soporte oficial.',
+    'about.links.creator.title': 'Creador',
+    'about.links.creator.description': 'Esta plataforma fue creada por Florent Bertiaux (u/iamkxrz). Puedes contactarlo en Reddit para preguntas o comentarios.',
+    'about.disclaimer': 'Esta plataforma no es oficial y no está afiliada a Xteink. Todos los recursos se proporcionan "tal cual" por la comunidad.',
     
     // Common
     'common.download': 'Descargar',
@@ -721,6 +776,7 @@ export const ui = {
     'wallpapers.view_full_size': 'Ver tamaño completo',
     'wallpapers.related': 'Fondos de pantalla relacionados',
     'wallpapers.random': 'Aleatorio',
+    'wallpapers.copyright_notice': 'Aviso de derechos de autor: Este fondo de pantalla es proporcionado por la comunidad. El contribuidor es responsable de asegurar que tiene el derecho de compartir este contenido. Si cree que este fondo de pantalla infringe sus derechos de autor, por favor contáctenos. Esta plataforma no es responsable de violaciones de derechos de autor.',
     'wallpapers.category.minimalist': 'Minimalista',
     'wallpapers.category.dark': 'Oscuro',
     'wallpapers.category.light': 'Claro',
@@ -739,6 +795,7 @@ export const ui = {
     'wallpapers.form.instagram_username': 'Nombre de usuario de Instagram',
     'wallpapers.form.instagram_username_placeholder': '@nombre_usuario (opcional)',
     'wallpapers.form.success_message': '¡Fondo de pantalla enviado con éxito!',
+    'wallpapers.form.copyright_notice': 'Al enviar este fondo de pantalla, confirma que posee los derechos de autor o ha obtenido la autorización adecuada para compartir este contenido. Usted es el único responsable de cualquier infracción de derechos de autor. Esta plataforma no es responsable de violaciones de derechos de autor.',
     
     // Fonts
     'fonts.title': 'Fuentes',
@@ -922,6 +979,23 @@ export const ui = {
     'nav.location': 'Глобальная карта',
     'nav.guide': 'Руководство сообщества',
     'nav.disclaimer': 'Юридическое уведомление',
+    'nav.about': 'О нас',
+    
+    // About
+    'about.title': 'О нас',
+    'about.description': 'Узнайте больше о readme.club, Xteink Community Hub',
+    'about.subtitle': 'Узнайте больше об этой общественной платформе для пользователей Xteink',
+    'about.what.title': 'Что такое readme.club?',
+    'about.what.content': 'readme.club (также известный как Xteink Community Hub) — это неофициальная общественная платформа, созданная для обслуживания пользователей электронных книг Xteink по всему миру. Наша миссия — централизовать и облегчить доступ к ресурсам, предоставленным сообществом, языковым файлам, документации, инструментам, обоям и многому другому.',
+    'about.what.content2': 'Эта платформа полностью независима и не связана с Xteink или какой-либо официальной организацией Xteink. Весь контент предоставляется членами сообщества и модерируется волонтерами.',
+    'about.links.title': 'Официальные ссылки',
+    'about.links.subreddit.title': 'Официальный Subreddit',
+    'about.links.subreddit.description': 'Присоединяйтесь к активному сообществу на Reddit, чтобы обсуждать, делиться советами и получать помощь от других пользователей Xteink.',
+    'about.links.website.title': 'Официальный сайт',
+    'about.links.website.description': 'Посетите официальный сайт Xteink, чтобы узнать больше об устройствах, купить продукты и получить доступ к официальной поддержке.',
+    'about.links.creator.title': 'Создатель',
+    'about.links.creator.description': 'Эта платформа была создана Флораном Бертьо (u/iamkxrz). Вы можете связаться с ним на Reddit для вопросов или отзывов.',
+    'about.disclaimer': 'Эта платформа неофициальна и не связана с Xteink. Все ресурсы предоставляются сообществом "как есть".',
     
     // Common
     'common.download': 'Скачать',
@@ -976,6 +1050,7 @@ export const ui = {
     'wallpapers.view_full_size': 'Просмотр в полном размере',
     'wallpapers.related': 'Похожие обои',
     'wallpapers.random': 'Случайный',
+    'wallpapers.copyright_notice': 'Уведомление об авторских правах: Эти обои предоставлены сообществом. Отправитель несет ответственность за обеспечение права на распространение этого контента. Если вы считаете, что эти обои нарушают ваши авторские права, пожалуйста, свяжитесь с нами. Эта платформа не несет ответственности за нарушения авторских прав.',
     'wallpapers.category.minimalist': 'Минималистичный',
     'wallpapers.category.dark': 'Темный',
     'wallpapers.category.light': 'Светлый',
@@ -994,6 +1069,7 @@ export const ui = {
     'wallpapers.form.instagram_username': 'Имя пользователя Instagram',
     'wallpapers.form.instagram_username_placeholder': '@имя_пользователя (необязательно)',
     'wallpapers.form.success_message': 'Обои успешно отправлены!',
+    'wallpapers.form.copyright_notice': 'Отправляя эти обои, вы подтверждаете, что владеете авторскими правами или получили соответствующее разрешение на распространение этого контента. Вы несете единоличную ответственность за любое нарушение авторских прав. Эта платформа не несет ответственности за нарушения авторских прав.',
     
     // Fonts
     'fonts.title': 'Шрифты',
@@ -1203,6 +1279,23 @@ export const ui = {
     'nav.location': '全球地图',
     'nav.guide': '社区指南',
     'nav.disclaimer': '法律声明',
+    'nav.about': '关于',
+    
+    // About
+    'about.title': '关于',
+    'about.description': '了解更多关于 readme.club，Xteink Community Hub',
+    'about.subtitle': '了解更多关于这个面向 Xteink 用户的社区平台',
+    'about.what.title': '什么是 readme.club？',
+    'about.what.content': 'readme.club（也称为 Xteink Community Hub）是一个非官方的社区驱动平台，旨在为全球 Xteink 电子阅读器用户提供服务。我们的使命是集中和促进对社区贡献的资源、语言文件、文档、工具、壁纸等的访问。',
+    'about.what.content2': '该平台完全独立，不隶属于 Xteink 或任何官方 Xteink 实体。所有内容均由社区成员贡献，由志愿者审核。',
+    'about.links.title': '官方链接',
+    'about.links.subreddit.title': '官方 Subreddit',
+    'about.links.subreddit.description': '加入 Reddit 上的活跃社区，讨论、分享技巧并从其他 Xteink 用户那里获得帮助。',
+    'about.links.website.title': '官方网站',
+    'about.links.website.description': '访问 Xteink 官方网站，了解更多关于设备的信息、购买产品并访问官方支持。',
+    'about.links.creator.title': '创建者',
+    'about.links.creator.description': '该平台由 Florent Bertiaux (u/iamkxrz) 创建。您可以在 Reddit 上联系他提出问题或反馈。',
+    'about.disclaimer': '该平台是非官方的，不隶属于 Xteink。所有资源均由社区"按原样"提供。',
     
     // Common
     'common.download': '下载',
@@ -1257,6 +1350,7 @@ export const ui = {
     'wallpapers.view_full_size': '查看完整尺寸',
     'wallpapers.related': '相关壁纸',
     'wallpapers.random': '随机',
+    'wallpapers.copyright_notice': '版权声明：此壁纸由社区提供。提交者负责确保有权分享此内容。如果您认为此壁纸侵犯了您的版权，请联系我们。本平台不对版权侵权行为负责。',
     'wallpapers.category.minimalist': '极简',
     'wallpapers.category.dark': '深色',
     'wallpapers.category.light': '浅色',
@@ -1275,6 +1369,7 @@ export const ui = {
     'wallpapers.form.instagram_username': 'Instagram 用户名',
     'wallpapers.form.instagram_username_placeholder': '@用户名（可选）',
     'wallpapers.form.success_message': '壁纸提交成功！',
+    'wallpapers.form.copyright_notice': '提交此壁纸即表示您确认拥有版权或已获得适当授权来分享此内容。您对任何版权侵权行为承担全部责任。本平台不对版权侵权行为负责。',
     
     // Fonts
     'fonts.title': '字体',
