@@ -6,7 +6,7 @@ import { getGradientForId } from '@/lib/utils/gradients';
 interface Props {
   href: string;
   label?: string;
-  variant?: 'resource' | 'wallpaper';
+  variant?: 'resource' | 'wallpaper' | 'news';
 }
 
 const { href, label, variant = 'resource' } = Astro.props;
@@ -15,6 +15,7 @@ const t = useTranslations(lang);
 const displayLabel = label || t('common.view') + ' all';
 
 const isWallpaper = variant === 'wallpaper';
+const isNews = variant === 'news';
 
 // Générer un gradient subtil pour la carte "more"
 const gradient = getGradientForId(href);
@@ -47,6 +48,33 @@ const gradientStyle = `background: linear-gradient(135deg, ${gradient.from} 0%, 
       </div>
       <div class="p-4 flex-1 flex items-center justify-center">
         <Text tag="span" variant="textBase" class="font-semibold text-base-600 group-hover:text-accent-500 transition-colors text-center">
+          {displayLabel}
+        </Text>
+      </div>
+    </>
+  ) : isNews ? (
+    <>
+      <div class="aspect-video w-full overflow-hidden rounded-md mb-3 flex items-center justify-center opacity-60" style={gradientStyle}>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="48"
+          height="48"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="icon icon-tabler icons-tabler-outline icon-tabler-plus text-white group-hover:opacity-100 transition-opacity"
+        >
+          <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+          <path d="M12 5l0 14"></path>
+          <path d="M5 12l14 0"></path>
+        </svg>
+      </div>
+      
+      <div class="flex-1 flex items-center justify-center">
+        <Text tag="span" variant="textBase" class="font-semibold text-base-600 group-hover:text-accent-500 transition-colors">
           {displayLabel}
         </Text>
       </div>

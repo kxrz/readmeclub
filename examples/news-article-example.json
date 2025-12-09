@@ -1,0 +1,13 @@
+{
+  "title": "Welcome to the New Community Hub",
+  "slug": "welcome-to-the-new-community-hub",
+  "excerpt": "We're excited to announce the launch of our new community platform, bringing together Xteink users from around the world.",
+  "content": "## What's New?\n\nWe've completely redesigned the platform to make it easier to discover and share resources, wallpapers, and more.\n\n## Key Features\n\n- Improved resource browsing\n- Better wallpaper gallery\n- Community feature requests\n- Multi-language support\n\nWe hope you enjoy the new experience!",
+  "featured_image_url": "https://example.com/images/welcome-banner.jpg",
+  "author_name": "Florent Bertiaux",
+  "author_email": "florent@example.com",
+  "status": "published",
+  "featured": true,
+  "published_at": "2025-01-15T10:00:00Z"
+}
+

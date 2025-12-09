@@ -23,6 +23,7 @@ export type WallpaperStatus = 'draft' | 'published';
 
 export type FeatureRequestStatus = 'published' | 'draft' | 'archived';
 export type AdminStatus = 'pending' | 'planned' | 'completed' | 'rejected';
+export type NewsStatus = 'draft' | 'published' | 'archived';
 
 export interface Resource {
   id: string;
@@ -113,5 +114,23 @@ export interface Analytics {
   csv_downloads: number;
   page_views: number;
   last_updated: string;
+}
+
+export interface News {
+  id: string;
+  title: string;
+  slug: string;
+  excerpt: string | null;
+  content: string;
+  featured_image_url: string | null;
+  author_name: string | null;
+  author_email: string | null;
+  status: NewsStatus;
+  featured: boolean;
+  hidden: boolean;
+  published_at: string | null;
+  created_at: string;
+  updated_at: string;
+  views_count: number;
 }
 

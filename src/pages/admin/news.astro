@@ -1,0 +1,552 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import Text from "@/components/fundations/elements/Text.astro";
+import Button from "@/components/fundations/components/Button.astro";
+import Wrapper from "@/components/fundations/containers/Wrapper.astro";
+import { checkAdminAuth } from '@/lib/utils/admin';
+import { getSupabaseAdmin } from '@/lib/supabase/admin';
+import { useTranslations, getLangFromUrl } from '@/i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+// Check admin auth
+if (!checkAdminAuth(Astro.cookies)) {
+  return Astro.redirect('/admin');
+}
+
+// Fetch all news articles (including hidden)
+const supabaseAdmin = getSupabaseAdmin();
+const { data: articles } = await supabaseAdmin
+  .from('news')
+  .select('*')
+  .order('created_at', { ascending: false });
+---
+
+<BaseLayout>
+  <Fragment slot="head">
+    <script is:inline>
+      // Define functions immediately for Alpine.js (before Alpine initializes)
+      (function() {
+        window.handleImageUpload = async function(input) {
+          const file = input.files?.[0];
+          if (!file) return;
+
+          const formData = new FormData();
+          formData.append('file', file);
+
+          const urlInput = document.getElementById('featured_image_url');
+          if (!urlInput) return;
+          
+          urlInput.disabled = true;
+          urlInput.value = 'Uploading...';
+
+          try {
+            const res = await fetch('/api/admin/news/upload-image', {
+              method: 'POST',
+              body: formData,
+            });
+
+            if (!res.ok) {
+              const error = await res.json().catch(() => ({ error: 'Upload failed' }));
+              throw new Error(error.error || 'Upload failed');
+            }
+
+            const data = await res.json();
+            urlInput.value = data.url;
+          } catch (error) {
+            alert(error.message || 'Failed to upload image');
+          } finally {
+            urlInput.disabled = false;
+          }
+        };
+
+        window.submitForm = async function(formEl, alpineData) {
+          const formData = new FormData(formEl);
+          const data = {};
+
+          // Collect form data
+          data.title = formData.get('title')?.toString().trim();
+          data.slug = formData.get('slug')?.toString().trim().toLowerCase();
+          data.content = formData.get('content')?.toString().trim();
+          
+          const excerpt = formData.get('excerpt')?.toString().trim();
+          if (excerpt) data.excerpt = excerpt;
+          
+          const featuredImageUrl = formData.get('featured_image_url')?.toString().trim();
+          if (featuredImageUrl) data.featured_image_url = featuredImageUrl;
+          
+          const authorName = formData.get('author_name')?.toString().trim();
+          if (authorName) data.author_name = authorName;
+          
+          const authorEmail = formData.get('author_email')?.toString().trim();
+          if (authorEmail) data.author_email = authorEmail;
+          
+          data.status = formData.get('status')?.toString() || 'draft';
+          data.featured = formData.get('featured') === 'on';
+          
+          const publishedAt = formData.get('published_at')?.toString();
+          if (publishedAt) {
+            // Convert local datetime to ISO string
+            const date = new Date(publishedAt);
+            data.published_at = date.toISOString();
+          }
+
+          try {
+            const res = await fetch('/api/admin/news', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(data),
+            });
+
+            if (!res.ok) {
+              const error = await res.json().catch(() => ({ error: 'Failed to create article' }));
+              throw new Error(error.error || 'Failed to create article');
+            }
+
+            alpineData.success = true;
+            formEl.reset();
+            setTimeout(() => {
+              window.location.reload();
+            }, 1500);
+          } catch (error) {
+            alpineData.error = error.message || 'Failed to create article';
+          } finally {
+            alpineData.submitting = false;
+          }
+        };
+
+        window.deleteArticle = async function(id) {
+          if (!confirm('Are you sure you want to delete this article?')) {
+            return;
+          }
+
+          try {
+            const res = await fetch(`/api/admin/news/${id}/delete`, {
+              method: 'DELETE',
+            });
+
+            if (!res.ok) {
+              throw new Error('Failed to delete article');
+            }
+
+            window.location.reload();
+          } catch (error) {
+            alert('Failed to delete article');
+          }
+        };
+
+        window.editArticle = function(id) {
+          window.location.href = `/admin/news/${id}`;
+        };
+      })();
+    </script>
+  </Fragment>
+  <section>
+    <Wrapper variant="hero">
+      <div class="flex items-center justify-between">
+        <Text
+          tag="h1"
+          variant="displaySM"
+          class="text-base-900 font-medium 2xl:text-5xl tracking-tight"
+        >
+          News Management
+        </Text>
+        <div class="flex items-center gap-4">
+          <a href="/admin/stats">
+            <Button variant="muted" size="sm">
+              Stats
+            </Button>
+          </a>
+          <a href="/admin/resources">
+            <Button variant="muted" size="sm">
+              Resources
+            </Button>
+          </a>
+          <a href="/admin/features">
+            <Button variant="muted" size="sm">
+              Features
+            </Button>
+          </a>
+          <a href="/admin/wallpapers">
+            <Button variant="muted" size="sm">
+              Wallpapers
+            </Button>
+          </a>
+          <a href="/admin/news">
+            <Button variant="muted" size="sm">
+              News
+            </Button>
+          </a>
+          <a href="/admin/logout">
+            <Button variant="muted" size="sm">
+              {t('admin.logout')}
+            </Button>
+          </a>
+        </div>
+      </div>
+    </Wrapper>
+  </section>
+  
+  <section>
+    <Wrapper variant="standard" class="py-6 pb-24">
+      <div class="mb-6">
+        <button
+          type="button"
+          class="px-4 py-2 bg-accent-500 text-white rounded-lg hover:bg-accent-600 transition-colors"
+          onclick="document.getElementById('create-article-form').classList.toggle('hidden')"
+        >
+          + Create New Article
+        </button>
+      </div>
+
+      <!-- Create Article Form -->
+      <div id="create-article-form" class="hidden mb-8 p-6 border border-base-200 rounded-lg bg-base-50">
+        <form
+          id="new-article-form"
+          class="space-y-4"
+          x-data="{
+            submitting: false,
+            error: null,
+            success: false
+          }"
+          @submit.prevent="submitting = true; error = null; success = false; await window.submitForm($el, $data)"
+        >
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label for="title" class="block text-sm font-medium text-base-700 mb-1">Title *</label>
+              <input
+                type="text"
+                id="title"
+                name="title"
+                required
+                maxlength="255"
+                class="w-full px-3 py-2 border border-base-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500"
+              />
+            </div>
+            <div>
+              <label for="slug" class="block text-sm font-medium text-base-700 mb-1">Slug * (lowercase, hyphens only)</label>
+              <input
+                type="text"
+                id="slug"
+                name="slug"
+                required
+                class="w-full px-3 py-2 border border-base-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label for="excerpt" class="block text-sm font-medium text-base-700 mb-1">Excerpt (max 500 chars)</label>
+            <textarea
+              id="excerpt"
+              name="excerpt"
+              maxlength="500"
+              rows="2"
+              class="w-full px-3 py-2 border border-base-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500"
+            ></textarea>
+          </div>
+
+          <div>
+            <label for="content" class="block text-sm font-medium text-base-700 mb-1">Content * (Markdown)</label>
+            <textarea
+              id="content"
+              name="content"
+              required
+              rows="15"
+              placeholder="# Title&#10;&#10;Write your article content in **Markdown** format.&#10;&#10;## Features&#10;&#10;- Lists&#10;- **Bold** and *italic* text&#10;- [Links](https://example.com)&#10;- Code blocks"
+              class="w-full px-3 py-2 border border-base-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500 font-mono text-sm"
+            ></textarea>
+            <p class="text-xs text-base-500 mt-1">
+              Supports Markdown syntax: headings, bold, italic, lists, links, code blocks, etc.
+            </p>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label for="featured_image" class="block text-sm font-medium text-base-700 mb-1">Featured Image</label>
+              <input
+                type="file"
+                id="featured_image"
+                name="featured_image"
+                accept="image/png,image/jpeg,image/jpg,image/webp,image/gif"
+                class="block w-full text-sm text-base-700 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-accent-500 file:text-white hover:file:bg-accent-600 file:cursor-pointer mb-2"
+                onchange="window.handleImageUpload(this)"
+              />
+              <input
+                type="url"
+                id="featured_image_url"
+                name="featured_image_url"
+                placeholder="Or paste image URL here"
+                class="w-full px-3 py-2 border border-base-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500"
+              />
+              <p class="text-xs text-base-500 mt-1">
+                Upload an image (max 5MB) or paste a URL. Formats: PNG, JPG, WEBP, GIF
+              </p>
+            </div>
+            <div>
+              <label for="author_name" class="block text-sm font-medium text-base-700 mb-1">Author Name</label>
+              <input
+                type="text"
+                id="author_name"
+                name="author_name"
+                maxlength="100"
+                class="w-full px-3 py-2 border border-base-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label for="author_email" class="block text-sm font-medium text-base-700 mb-1">Author Email</label>
+            <input
+              type="email"
+              id="author_email"
+              name="author_email"
+              class="w-full px-3 py-2 border border-base-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500"
+            />
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label for="status" class="block text-sm font-medium text-base-700 mb-1">Status</label>
+              <select
+                id="status"
+                name="status"
+                class="w-full px-3 py-2 border border-base-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500"
+              >
+                <option value="draft">Draft</option>
+                <option value="published">Published</option>
+                <option value="archived">Archived</option>
+              </select>
+            </div>
+            <div class="flex items-center pt-6">
+              <label class="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  id="featured"
+                  name="featured"
+                  class="w-4 h-4 text-accent-500 border-base-300 rounded focus:ring-accent-500"
+                />
+                <span class="text-sm font-medium text-base-700">Featured</span>
+              </label>
+            </div>
+            <div>
+              <label for="published_at" class="block text-sm font-medium text-base-700 mb-1">Published At (ISO 8601)</label>
+              <input
+                type="datetime-local"
+                id="published_at"
+                name="published_at"
+                class="w-full px-3 py-2 border border-base-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500"
+              />
+            </div>
+          </div>
+
+          <div x-show="error" x-transition class="p-4 bg-red-50 border border-red-200 rounded-lg">
+            <p class="text-sm text-red-700" x-text="error"></p>
+          </div>
+
+          <div x-show="success" x-transition class="p-4 bg-green-50 border border-green-200 rounded-lg">
+            <p class="text-sm text-green-700">Article created successfully!</p>
+          </div>
+
+          <div class="flex gap-2">
+            <button
+              type="submit"
+              class="px-4 py-2 bg-accent-500 text-white rounded-lg hover:bg-accent-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              x-bind:disabled="submitting"
+            >
+              <span x-show="!submitting">Create Article</span>
+              <span x-show="submitting">Creating...</span>
+            </button>
+            <button
+              type="button"
+              class="px-4 py-2 bg-base-200 text-base-700 rounded-lg hover:bg-base-300 transition-colors"
+              onclick="document.getElementById('create-article-form').classList.add('hidden'); document.getElementById('new-article-form').reset();"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <div class="space-y-4">
+        {articles && articles.length > 0 ? (
+          articles.map((article) => (
+            <div
+              class="flex items-start justify-between p-4 border border-base-200 rounded-lg hover:bg-base-50"
+            >
+              <div class="flex-1 flex items-start gap-4">
+                {article.featured_image_url && (
+                  <img
+                    src={article.featured_image_url}
+                    alt={article.title}
+                    class="w-20 h-20 object-cover rounded-lg border border-base-200"
+                  />
+                )}
+                <div class="flex-1">
+                  <div class="flex items-center gap-2 mb-1">
+                    <Text tag="h3" variant="textBase" class="font-semibold text-base-900">
+                      {article.title}
+                    </Text>
+                    {article.featured && (
+                      <span class="text-xs px-2 py-1 bg-accent-100 text-accent-700 rounded">
+                        Featured
+                      </span>
+                    )}
+                  </div>
+                  <div class="flex items-center gap-4 mt-2 flex-wrap">
+                    <span class={`text-xs px-2 py-1 rounded ${
+                      article.status === 'published' ? 'bg-green-100 text-green-700' :
+                      article.status === 'archived' ? 'bg-gray-100 text-gray-700' :
+                      'bg-yellow-100 text-yellow-700'
+                    }`}>
+                      {article.status}
+                    </span>
+                    {article.hidden && (
+                      <span class="text-xs text-base-500">Hidden</span>
+                    )}
+                    {article.author_name && (
+                      <span class="text-xs text-base-500">
+                        By {article.author_name}
+                      </span>
+                    )}
+                    {article.published_at && (
+                      <span class="text-xs text-base-500">
+                        {new Date(article.published_at).toLocaleDateString()}
+                      </span>
+                    )}
+                    <span class="text-xs text-base-500">
+                      {article.views_count || 0} views
+                    </span>
+                  </div>
+                  {article.excerpt && (
+                    <Text tag="p" variant="textSM" class="text-base-600 mt-2 line-clamp-2">
+                      {article.excerpt}
+                    </Text>
+                  )}
+                  <a
+                    href={`/news/${article.slug}`}
+                    target="_blank"
+                    class="text-xs text-accent-500 hover:text-accent-600 mt-2 inline-block"
+                  >
+                    View article →
+                  </a>
+                </div>
+              </div>
+              <div class="flex items-center gap-2">
+                <button
+                  type="button"
+                  class="px-3 py-1 text-sm bg-base-200 text-base-700 rounded hover:bg-base-300 transition-colors"
+                  onclick={`window.editArticle('${article.id}')`}
+                >
+                  Edit
+                </button>
+                <button
+                  type="button"
+                  class="px-3 py-1 text-sm bg-red-100 text-red-700 rounded hover:bg-red-200 transition-colors"
+                  onclick={`window.deleteArticle('${article.id}')`}
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          ))
+        ) : (
+          <div class="text-center py-12">
+            <Text tag="p" variant="textBase" class="text-base-500">
+              No articles found. Create your first article above!
+            </Text>
+          </div>
+        )}
+      </div>
+    </Wrapper>
+  </section>
+</BaseLayout>
+
+<script is:inline>
+
+  // Generate slug from title with date suffix
+  function generateSlugFromTitle(titleInput) {
+    const slugInput = document.getElementById('slug');
+    if (!slugInput || slugInput.dataset.manualEdit === 'true') {
+      return; // Don't auto-generate if user manually edited the slug
+    }
+
+    const title = titleInput.value.trim();
+    if (!title) {
+      slugInput.value = '';
+      return;
+    }
+
+    // Generate date suffix YYMMDD
+    const now = new Date();
+    const year = now.getFullYear().toString().slice(-2);
+    const month = (now.getMonth() + 1).toString().padStart(2, '0');
+    const day = now.getDate().toString().padStart(2, '0');
+    const dateSuffix = `-${year}${month}${day}`;
+
+    // Convert title to slug
+    let slug = title
+      .toLowerCase()
+      .normalize('NFD') // Normalize to decomposed form for handling accents
+      .replace(/[\u0300-\u036f]/g, '') // Remove diacritics
+      .replace(/[^a-z0-9\s-]/g, '') // Remove special characters except spaces and hyphens
+      .replace(/\s+/g, '-') // Replace spaces with hyphens
+      .replace(/-+/g, '-') // Replace multiple hyphens with single hyphen
+      .replace(/^-|-$/g, ''); // Remove leading/trailing hyphens
+
+    // Add date suffix
+    slug = slug + dateSuffix;
+
+    slugInput.value = slug;
+  }
+
+  // Initialize slug generation on DOM ready
+  document.addEventListener('DOMContentLoaded', function() {
+    try {
+      const titleInput = document.getElementById('title');
+      const slugInput = document.getElementById('slug');
+      
+      if (titleInput && slugInput) {
+        // Auto-generate slug from title on input
+        titleInput.addEventListener('input', function() {
+          try {
+            if (!slugInput.dataset.manualEdit) {
+              generateSlugFromTitle(this);
+            }
+          } catch (e) {
+            console.error('Error generating slug:', e);
+          }
+        });
+        
+        // Mark slug as manually edited if user types in it
+        slugInput.addEventListener('input', function() {
+          try {
+            if (this.value.trim()) {
+              this.dataset.manualEdit = 'true';
+            }
+          } catch (e) {
+            console.error('Error handling slug input:', e);
+          }
+        });
+        
+        // Validate slug format on blur
+        slugInput.addEventListener('blur', function() {
+          try {
+            const value = this.value.trim();
+            if (value && !/^[-a-z0-9]+$/.test(value)) {
+              this.setCustomValidity('Slug must contain only lowercase letters, numbers, and hyphens');
+            } else {
+              this.setCustomValidity('');
+            }
+          } catch (e) {
+            console.error('Error validating slug:', e);
+          }
+        });
+      }
+    } catch (e) {
+      console.error('Error initializing slug generation:', e);
+    }
+  });
+</script>
+

@@ -16,6 +16,7 @@ export const ui = {
     'nav.resources': 'Resources',
     'nav.wallpapers': 'Wallpapers',
     'nav.fonts': 'Fonts',
+    'nav.news': 'News',
     'nav.more': 'More',
     'nav.support_project': 'Support this project',
     'nav.board': 'Feature Board',
@@ -59,6 +60,17 @@ export const ui = {
     'common.next': 'Next',
     'common.previous': 'Previous',
     'common.optional': 'Optional',
+    'common.breadcrumb': 'Breadcrumb',
+    
+    // News
+    'news.title': 'News',
+    'news.subtitle': 'Latest updates and articles from the community',
+    'news.latest': 'Latest News',
+    'news.featured': 'Featured',
+    'news.by': 'By',
+    'news.views': 'views',
+    'news.recent_articles': 'Recent Articles',
+    'news.no_results': 'No news articles found',
     
     // Resources
     'resources.title': 'Community Resources',
@@ -389,6 +401,17 @@ export const ui = {
     'common.next': 'Suivant',
     'common.previous': 'Précédent',
     'common.optional': 'Optionnel',
+    'common.breadcrumb': 'Fil d\'Ariane',
+    
+    // News
+    'news.title': 'Actualités',
+    'news.subtitle': 'Dernières mises à jour et articles de la communauté',
+    'news.latest': 'Dernières actualités',
+    'news.featured': 'À la une',
+    'news.by': 'Par',
+    'news.views': 'vues',
+    'news.recent_articles': 'Articles récents',
+    'news.no_results': 'Aucun article trouvé',
     
     // Resources
     'resources.title': 'Ressources communautaires',
@@ -741,6 +764,18 @@ export const ui = {
     'common.back': 'Atrás',
     'common.next': 'Siguiente',
     'common.previous': 'Anterior',
+    'common.optional': 'Opcional',
+    'common.breadcrumb': 'Miga de pan',
+    
+    // News
+    'news.title': 'Noticias',
+    'news.subtitle': 'Últimas actualizaciones y artículos de la comunidad',
+    'news.latest': 'Últimas noticias',
+    'news.featured': 'Destacado',
+    'news.by': 'Por',
+    'news.views': 'vistas',
+    'news.recent_articles': 'Artículos recientes',
+    'news.no_results': 'No se encontraron artículos',
     
     // Resources
     'resources.title': 'Recursos comunitarios',
@@ -972,6 +1007,7 @@ export const ui = {
     'nav.resources': 'Ресурсы',
     'nav.wallpapers': 'Обои',
     'nav.fonts': 'Шрифты',
+    'nav.news': 'Новости',
     'nav.more': 'Еще',
     'nav.support_project': 'Поддержать проект',
     'nav.board': 'Доска функций',
@@ -1015,6 +1051,17 @@ export const ui = {
     'common.next': 'Далее',
     'common.previous': 'Предыдущий',
     'common.optional': 'Необязательно',
+    'common.breadcrumb': 'Хлебные крошки',
+    
+    // News
+    'news.title': 'Новости',
+    'news.subtitle': 'Последние обновления и статьи сообщества',
+    'news.latest': 'Последние новости',
+    'news.featured': 'Рекомендуемое',
+    'news.by': 'Автор',
+    'news.views': 'просмотров',
+    'news.recent_articles': 'Недавние статьи',
+    'news.no_results': 'Статьи не найдены',
     
     // Resources
     'resources.title': 'Ресурсы сообщества',
@@ -1272,6 +1319,7 @@ export const ui = {
     'nav.resources': '资源',
     'nav.wallpapers': '壁纸',
     'nav.fonts': '字体',
+    'nav.news': '新闻',
     'nav.more': '更多',
     'nav.support_project': '支持此项目',
     'nav.board': '功能板',
@@ -1315,6 +1363,17 @@ export const ui = {
     'common.next': '下一步',
     'common.previous': '上一步',
     'common.optional': '可选',
+    'common.breadcrumb': '面包屑导航',
+    
+    // News
+    'news.title': '新闻',
+    'news.subtitle': '社区的最新更新和文章',
+    'news.latest': '最新新闻',
+    'news.featured': '精选',
+    'news.by': '作者',
+    'news.views': '次浏览',
+    'news.recent_articles': '最近文章',
+    'news.no_results': '未找到新闻文章',
     
     // Resources
     'resources.title': '社区资源',

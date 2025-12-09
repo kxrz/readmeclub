@@ -1,0 +1,74 @@
+---
+import Text from "@/components/fundations/elements/Text.astro";
+import Link from "@/components/fundations/components/Link.astro";
+import type { News } from '@/lib/supabase/schema';
+import { useTranslations, getLangFromUrl, getLangPrefix } from '@/i18n/utils';
+
+interface Props {
+  news: News;
+}
+
+const { news } = Astro.props;
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const langPrefix = getLangPrefix(lang);
+
+const newsUrl = langPrefix ? `${langPrefix}/news/${news.slug}` : `/news/${news.slug}`;
+const featuredImageUrl = news.featured_image_url || `/api/news/${news.id}/og-image.png`;
+const publishedDate = news.published_at ? new Date(news.published_at) : new Date(news.created_at);
+const formattedDate = publishedDate.toLocaleDateString(lang === 'en' ? 'en-US' : lang === 'fr' ? 'fr-FR' : lang === 'es' ? 'es-ES' : lang === 'ru' ? 'ru-RU' : 'zh-CN', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric'
+});
+---
+
+<a
+  href={newsUrl}
+  class="group relative flex flex-col rounded-lg border border-base-200 bg-white overflow-hidden hover:border-accent-300 hover:shadow-lg transition-all"
+>
+  <div class="aspect-video w-full overflow-hidden bg-base-100">
+    <img
+      src={featuredImageUrl}
+      alt={news.title}
+      class="h-full w-full object-cover group-hover:scale-105 transition-transform"
+      loading="lazy"
+      onerror="this.onerror=null; this.src=this.dataset.fallback;"
+      data-fallback={`/api/news/${news.id}/og-image.png`}
+    />
+  </div>
+  
+  <div class="p-6 flex-1 flex flex-col">
+    {news.featured && (
+      <span class="inline-block mb-2 text-xs uppercase text-accent-600 font-semibold">
+        {t('news.featured')}
+      </span>
+    )}
+    
+    <Text tag="h3" variant="textBase" class="font-semibold text-base-900 line-clamp-2 group-hover:text-accent-500 mb-2">
+      {news.title}
+    </Text>
+    
+    {news.excerpt && (
+      <Text tag="p" variant="textSM" class="text-base-600 line-clamp-3 mb-4 flex-1">
+        {news.excerpt}
+      </Text>
+    )}
+    
+    <div class="flex items-center justify-between mt-auto pt-4 border-t border-base-200">
+      <div class="flex items-center gap-3 text-xs text-base-500">
+        {news.author_name && (
+          <span>{news.author_name}</span>
+        )}
+        <span>•</span>
+        <time datetime={publishedDate.toISOString()}>{formattedDate}</time>
+      </div>
+      {news.views_count > 0 && (
+        <Text tag="span" variant="textXS" class="text-base-500">
+          {news.views_count} {t('news.views')}
+        </Text>
+      )}
+    </div>
+  </div>
+</a>
+

@@ -1,0 +1,459 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import Text from "@/components/fundations/elements/Text.astro";
+import Button from "@/components/fundations/components/Button.astro";
+import Wrapper from "@/components/fundations/containers/Wrapper.astro";
+import { checkAdminAuth } from '@/lib/utils/admin';
+import { getSupabaseAdmin } from '@/lib/supabase/admin';
+import { useTranslations, getLangFromUrl } from '@/i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+// Check admin auth
+if (!checkAdminAuth(Astro.cookies)) {
+  return Astro.redirect('/admin');
+}
+
+const id = Astro.params.id;
+
+if (!id) {
+  return Astro.redirect('/admin/news');
+}
+
+// Fetch article
+const supabaseAdmin = getSupabaseAdmin();
+const { data: article, error } = await supabaseAdmin
+  .from('news')
+  .select('*')
+  .eq('id', id)
+  .single();
+
+if (error || !article) {
+  return Astro.redirect('/admin/news');
+}
+
+// Format published_at for datetime-local input
+const publishedAtFormatted = article.published_at 
+  ? new Date(article.published_at).toISOString().slice(0, 16)
+  : '';
+---
+
+<BaseLayout>
+  <Fragment slot="head">
+    <script is:inline>
+      // Define functions immediately for Alpine.js (before Alpine initializes)
+      (function() {
+        window.handleImageUpload = async function(input) {
+          const file = input.files?.[0];
+          if (!file) return;
+
+          const formData = new FormData();
+          formData.append('file', file);
+
+          const urlInput = document.getElementById('featured_image_url');
+          if (!urlInput) return;
+          
+          urlInput.disabled = true;
+          urlInput.value = 'Uploading...';
+
+          try {
+            const res = await fetch('/api/admin/news/upload-image', {
+              method: 'POST',
+              body: formData,
+            });
+
+            if (!res.ok) {
+              const error = await res.json().catch(() => ({ error: 'Upload failed' }));
+              throw new Error(error.error || 'Upload failed');
+            }
+
+            const data = await res.json();
+            urlInput.value = data.url;
+          } catch (error) {
+            alert(error.message || 'Failed to upload image');
+          } finally {
+            urlInput.disabled = false;
+          }
+        };
+
+        window.submitForm = async function(formEl, alpineData) {
+          const formData = new FormData(formEl);
+          const data = {};
+
+          // Collect form data
+          const title = formData.get('title')?.toString().trim();
+          if (title) data.title = title;
+          
+          const slug = formData.get('slug')?.toString().trim().toLowerCase();
+          if (slug) data.slug = slug;
+          
+          const content = formData.get('content')?.toString().trim();
+          if (content) data.content = content;
+          
+          const excerpt = formData.get('excerpt')?.toString().trim();
+          data.excerpt = excerpt || null;
+          
+          const featuredImageUrl = formData.get('featured_image_url')?.toString().trim();
+          data.featured_image_url = featuredImageUrl || null;
+          
+          const authorName = formData.get('author_name')?.toString().trim();
+          data.author_name = authorName || null;
+          
+          const authorEmail = formData.get('author_email')?.toString().trim();
+          data.author_email = authorEmail || null;
+          
+          const status = formData.get('status')?.toString();
+          if (status) data.status = status;
+          
+          data.featured = formData.get('featured') === 'on';
+          data.hidden = formData.get('hidden') === 'on';
+          
+          const publishedAt = formData.get('published_at')?.toString();
+          if (publishedAt) {
+            const date = new Date(publishedAt);
+            data.published_at = date.toISOString();
+          } else {
+            data.published_at = null;
+          }
+
+          const articleId = window.location.pathname.split('/').pop();
+
+          try {
+            const res = await fetch(`/api/admin/news/${articleId}/update`, {
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(data),
+            });
+
+            if (!res.ok) {
+              const error = await res.json().catch(() => ({ error: 'Failed to update article' }));
+              throw new Error(error.error || 'Failed to update article');
+            }
+
+            alpineData.success = true;
+            setTimeout(() => {
+              window.location.href = '/admin/news';
+            }, 1500);
+          } catch (error) {
+            alpineData.error = error.message || 'Failed to update article';
+          } finally {
+            alpineData.submitting = false;
+          }
+        };
+      })();
+    </script>
+  </Fragment>
+  <section>
+    <Wrapper variant="hero">
+      <div class="flex items-center justify-between">
+        <Text
+          tag="h1"
+          variant="displaySM"
+          class="text-base-900 font-medium 2xl:text-5xl tracking-tight"
+        >
+          Edit Article
+        </Text>
+        <div class="flex items-center gap-4">
+          <a href="/admin/news">
+            <Button variant="muted" size="sm">
+              ← Back to Articles
+            </Button>
+          </a>
+          <a href="/admin/logout">
+            <Button variant="muted" size="sm">
+              {t('admin.logout')}
+            </Button>
+          </a>
+        </div>
+      </div>
+    </Wrapper>
+  </section>
+  
+  <section>
+    <Wrapper variant="standard" class="py-6 pb-24">
+      <form
+        id="edit-article-form"
+        class="space-y-4"
+        x-data="{
+          submitting: false,
+          error: null,
+          success: false
+        }"
+        @submit.prevent="submitting = true; error = null; success = false; await window.submitForm($el, $data)"
+      >
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label for="title" class="block text-sm font-medium text-base-700 mb-1">Title *</label>
+            <input
+              type="text"
+              id="title"
+              name="title"
+              required
+              maxlength="255"
+              value={article.title}
+              class="w-full px-3 py-2 border border-base-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500"
+            />
+          </div>
+          <div>
+            <label for="slug" class="block text-sm font-medium text-base-700 mb-1">Slug * (lowercase, hyphens only)</label>
+            <input
+              type="text"
+              id="slug"
+              name="slug"
+              required
+              value={article.slug}
+              class="w-full px-3 py-2 border border-base-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label for="excerpt" class="block text-sm font-medium text-base-700 mb-1">Excerpt (max 500 chars)</label>
+          <textarea
+            id="excerpt"
+            name="excerpt"
+            maxlength="500"
+            rows="2"
+            class="w-full px-3 py-2 border border-base-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500"
+          >{article.excerpt || ''}</textarea>
+        </div>
+
+        <div>
+          <label for="content" class="block text-sm font-medium text-base-700 mb-1">Content * (Markdown)</label>
+          <textarea
+            id="content"
+            name="content"
+            required
+            rows="15"
+            placeholder="# Title&#10;&#10;Write your article content in **Markdown** format."
+            class="w-full px-3 py-2 border border-base-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500 font-mono text-sm"
+          >{article.content}</textarea>
+          <p class="text-xs text-base-500 mt-1">
+            Supports Markdown syntax: headings, bold, italic, lists, links, code blocks, etc.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label for="featured_image" class="block text-sm font-medium text-base-700 mb-1">Featured Image</label>
+            <input
+              type="file"
+              id="featured_image"
+              name="featured_image"
+              accept="image/png,image/jpeg,image/jpg,image/webp,image/gif"
+              class="block w-full text-sm text-base-700 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-accent-500 file:text-white hover:file:bg-accent-600 file:cursor-pointer mb-2"
+              onchange="window.handleImageUpload(this)"
+            />
+            <input
+              type="url"
+              id="featured_image_url"
+              name="featured_image_url"
+              value={article.featured_image_url || ''}
+              placeholder="Or paste image URL here"
+              class="w-full px-3 py-2 border border-base-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500"
+            />
+            <p class="text-xs text-base-500 mt-1">
+              Upload an image (max 5MB) or paste a URL. Formats: PNG, JPG, WEBP, GIF
+            </p>
+            {article.featured_image_url && (
+              <div class="mt-2">
+                <img
+                  src={article.featured_image_url}
+                  alt="Current featured image"
+                  class="max-w-xs h-auto rounded-lg border border-base-200"
+                  onerror="this.style.display='none'"
+                />
+              </div>
+            )}
+          </div>
+          <div>
+            <label for="author_name" class="block text-sm font-medium text-base-700 mb-1">Author Name</label>
+            <input
+              type="text"
+              id="author_name"
+              name="author_name"
+              maxlength="100"
+              value={article.author_name || ''}
+              class="w-full px-3 py-2 border border-base-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label for="author_email" class="block text-sm font-medium text-base-700 mb-1">Author Email</label>
+          <input
+            type="email"
+            id="author_email"
+            name="author_email"
+            value={article.author_email || ''}
+            class="w-full px-3 py-2 border border-base-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500"
+          />
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label for="status" class="block text-sm font-medium text-base-700 mb-1">Status</label>
+            <select
+              id="status"
+              name="status"
+              class="w-full px-3 py-2 border border-base-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500"
+            >
+              <option value="draft" selected={article.status === 'draft'}>Draft</option>
+              <option value="published" selected={article.status === 'published'}>Published</option>
+              <option value="archived" selected={article.status === 'archived'}>Archived</option>
+            </select>
+          </div>
+          <div class="flex items-center pt-6">
+            <label class="flex items-center gap-2">
+              <input
+                type="checkbox"
+                id="featured"
+                name="featured"
+                checked={article.featured}
+                class="w-4 h-4 text-accent-500 border-base-300 rounded focus:ring-accent-500"
+              />
+              <span class="text-sm font-medium text-base-700">Featured</span>
+            </label>
+          </div>
+          <div>
+            <label for="published_at" class="block text-sm font-medium text-base-700 mb-1">Published At (ISO 8601)</label>
+            <input
+              type="datetime-local"
+              id="published_at"
+              name="published_at"
+              value={publishedAtFormatted}
+              class="w-full px-3 py-2 border border-base-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500"
+            />
+          </div>
+        </div>
+
+        <div class="flex items-center pt-2">
+          <label class="flex items-center gap-2">
+            <input
+              type="checkbox"
+              id="hidden"
+              name="hidden"
+              checked={article.hidden}
+              class="w-4 h-4 text-accent-500 border-base-300 rounded focus:ring-accent-500"
+            />
+            <span class="text-sm font-medium text-base-700">Hidden</span>
+          </label>
+        </div>
+
+        <div x-show="error" x-transition class="p-4 bg-red-50 border border-red-200 rounded-lg">
+          <p class="text-sm text-red-700" x-text="error"></p>
+        </div>
+
+        <div x-show="success" x-transition class="p-4 bg-green-50 border border-green-200 rounded-lg">
+          <p class="text-sm text-green-700">Article updated successfully!</p>
+        </div>
+
+        <div class="flex gap-2">
+          <button
+            type="submit"
+            class="px-4 py-2 bg-accent-500 text-white rounded-lg hover:bg-accent-600 transition-colors"
+            x-bind:disabled="submitting"
+          >
+            <span x-show="!submitting">Update Article</span>
+            <span x-show="submitting">Updating...</span>
+          </button>
+          <a
+            href="/admin/news"
+            class="px-4 py-2 bg-base-200 text-base-700 rounded-lg hover:bg-base-300 transition-colors inline-block text-center"
+          >
+            Cancel
+          </a>
+        </div>
+      </form>
+    </Wrapper>
+  </section>
+</BaseLayout>
+
+<script is:inline>
+
+  // Generate slug from title with date suffix
+  function generateSlugFromTitle(titleInput) {
+    const slugInput = document.getElementById('slug');
+    if (!slugInput || slugInput.dataset.manualEdit === 'true') {
+      return; // Don't auto-generate if user manually edited the slug
+    }
+
+    const title = titleInput.value.trim();
+    if (!title) {
+      slugInput.value = '';
+      return;
+    }
+
+    // Generate date suffix YYMMDD
+    const now = new Date();
+    const year = now.getFullYear().toString().slice(-2);
+    const month = (now.getMonth() + 1).toString().padStart(2, '0');
+    const day = now.getDate().toString().padStart(2, '0');
+    const dateSuffix = `-${year}${month}${day}`;
+
+    // Convert title to slug
+    let slug = title
+      .toLowerCase()
+      .normalize('NFD') // Normalize to decomposed form for handling accents
+      .replace(/[\u0300-\u036f]/g, '') // Remove diacritics
+      .replace(/[^a-z0-9\s-]/g, '') // Remove special characters except spaces and hyphens
+      .replace(/\s+/g, '-') // Replace spaces with hyphens
+      .replace(/-+/g, '-') // Replace multiple hyphens with single hyphen
+      .replace(/^-|-$/g, ''); // Remove leading/trailing hyphens
+
+    // Add date suffix
+    slug = slug + dateSuffix;
+
+    slugInput.value = slug;
+  }
+
+  // Initialize slug generation on DOM ready
+  document.addEventListener('DOMContentLoaded', function() {
+    try {
+      const titleInput = document.getElementById('title');
+      const slugInput = document.getElementById('slug');
+      
+      if (titleInput && slugInput) {
+        // Auto-generate slug from title on input
+        titleInput.addEventListener('input', function() {
+          try {
+            if (!slugInput.dataset.manualEdit) {
+              generateSlugFromTitle(this);
+            }
+          } catch (e) {
+            console.error('Error generating slug:', e);
+          }
+        });
+        
+        // Mark slug as manually edited if user types in it
+        slugInput.addEventListener('input', function() {
+          try {
+            if (this.value.trim()) {
+              this.dataset.manualEdit = 'true';
+            }
+          } catch (e) {
+            console.error('Error handling slug input:', e);
+          }
+        });
+        
+        // Validate slug format on blur
+        slugInput.addEventListener('blur', function() {
+          try {
+            const value = this.value.trim();
+            if (value && !/^[-a-z0-9]+$/.test(value)) {
+              this.setCustomValidity('Slug must contain only lowercase letters, numbers, and hyphens');
+            } else {
+              this.setCustomValidity('');
+            }
+          } catch (e) {
+            console.error('Error validating slug:', e);
+          }
+        });
+      }
+    } catch (e) {
+      console.error('Error initializing slug generation:', e);
+    }
+  });
+</script>
+

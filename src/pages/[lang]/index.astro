@@ -8,6 +8,7 @@ import WallpaperCard from "@/components/wallpapers/WallpaperCard.astro";
 import SmallResourceCard from "@/components/resources/SmallResourceCard.astro";
 import SmallMoreCard from "@/components/resources/SmallMoreCard.astro";
 import MoreCard from "@/components/common/MoreCard.astro";
+import NewsCard from "@/components/news/NewsCard.astro";
 import Seo from "@/components/fundations/head/Seo.astro";
 import { supabase } from '@/lib/supabase/client';
 import { useTranslations } from '@/i18n/utils';
@@ -44,6 +45,17 @@ const { data: latestWallpapers } = await supabase
   .eq('hidden', false)
   .order('created_at', { ascending: false })
   .limit(4);
+
+// Fetch latest news articles - order by featured first, then by published_at (or created_at if null), most recent first
+const { data: latestNews } = await supabase
+  .from('news')
+  .select('*')
+  .eq('status', 'published')
+  .eq('hidden', false)
+  .order('featured', { ascending: false })
+  .order('published_at', { ascending: false, nullsFirst: false })
+  .order('created_at', { ascending: false })
+  .limit(3);
 ---
 
 <BaseLayout>
@@ -100,6 +112,54 @@ const { data: latestWallpapers } = await supabase
             <ResourceCard resource={resource} />
           ))}
           <MoreCard href={`/${lang}/resources`} label={t('common.view') + ' all'} />
+        </div>
+      </Wrapper>
+    </section>
+  )}
+
+  {latestNews && latestNews.length > 0 && (
+    <section>
+      <Wrapper variant="standard" class="pt-6 pb-24">
+        <div class="flex flex-col gap-4 lg:flex-row lg:justify-between border-t border-base-200 pt-2">
+          <Text
+            tag="h2"
+            variant="textXS"
+            class="font-medium uppercase text-base-600"
+          >
+            {t('news.latest')}
+          </Text>
+          <Text
+            tag="a"
+            variant="textXS"
+            href={`/${lang}/news`}
+            aria-label={t('nav.news')}
+            class="text-base-600 uppercase hover:text-accent-500 flex items-center gap-1 transition-all duration-200"
+          >
+            {t('common.view')} all
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="icon icon-tabler icons-tabler-outline icon-tabler-arrow-narrow-right"
+            >
+              <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+              <path d="M5 12l14 0"></path>
+              <path d="M15 16l4 -4"></path>
+              <path d="M15 8l4 4"></path>
+            </svg>
+          </Text>
+        </div>
+        <div class="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3 mt-8">
+          {latestNews.map((article) => (
+            <NewsCard news={article} />
+          ))}
+          <MoreCard href={`/${lang}/news`} label={t('common.view') + ' all'} variant="news" />
         </div>
       </Wrapper>
     </section>
@@ -174,6 +234,7 @@ const { data: latestWallpapers } = await supabase
       </Wrapper>
     </section>
   )}
+
   
   <section>
     <Wrapper variant="standard" class="pt-6 pb-24">
