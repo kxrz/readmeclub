@@ -2,6 +2,7 @@
 import Text from "@/components/fundations/elements/Text.astro";
 import type { Resource } from '@/lib/supabase/schema';
 import { useTranslations, getLangFromUrl, getLangPrefix } from '@/i18n/utils';
+import { stripMarkdown } from '@/lib/utils/markdown';
 
 interface Props {
   resource: Resource;
@@ -14,6 +15,9 @@ const langPrefix = getLangPrefix(lang);
 
 const resourceUrl = langPrefix ? `${langPrefix}/resources/${resource.id}` : `/resources/${resource.id}`;
 const thumbnailUrl = resource.thumbnail_url || `/api/resources/${resource.id}/og-image.png`;
+
+// Nettoyer le markdown pour l'affichage dans la carte
+const cleanDescription = stripMarkdown(resource.description);
 ---
 
 <a
@@ -46,7 +50,7 @@ const thumbnailUrl = resource.thumbnail_url || `/api/resources/${resource.id}/og
         {resource.title}
       </Text>
       <Text tag="p" variant="textXS" class="text-base-600 mt-1 line-clamp-1">
-        {resource.description.length > 35 ? resource.description.substring(0, 35).trim() + '...' : resource.description}
+        {cleanDescription.length > 35 ? cleanDescription.substring(0, 35).trim() + '...' : cleanDescription}
       </Text>
     </div>
   </div>

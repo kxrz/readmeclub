@@ -15,6 +15,7 @@ import { supabase } from '@/lib/supabase/client';
 import { useTranslations, getLangFromUrl, getLangPrefix } from '@/i18n/utils';
 import { getGradientForId } from '@/lib/utils/gradients';
 import { normalizeSiteUrl, buildUrl } from '@/lib/utils/url';
+import { renderMarkdown } from '@/lib/utils/markdown';
 import type { Resource } from '@/lib/supabase/schema';
 
 const lang = getLangFromUrl(Astro.url);
@@ -146,13 +147,10 @@ try {
             >
               {resource.title}
             </Text>
-            <Text
-              tag="p"
-              variant="textBase"
-              class="mt-4 text-base-600 text-balance"
-            >
-              {resource.description}
-            </Text>
+            <div
+              class="mt-4 text-base-600 text-balance prose prose-sm max-w-none prose-headings:text-base-900 prose-p:text-base-600 prose-a:text-accent-500 prose-a:no-underline hover:prose-a:underline prose-strong:text-base-900 prose-code:text-base-900 prose-code:bg-base-100 prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-code:text-sm"
+              set:html={renderMarkdown(resource.description)}
+            />
             <Text
               tag="p"
               variant="textBase"

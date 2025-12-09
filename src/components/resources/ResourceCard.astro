@@ -5,6 +5,7 @@ import Link from "@/components/fundations/components/Link.astro";
 import type { Resource } from '@/lib/supabase/schema';
 import { useTranslations, getLangFromUrl, getLangPrefix } from '@/i18n/utils';
 import { getGradientForId } from '@/lib/utils/gradients';
+import { stripMarkdown } from '@/lib/utils/markdown';
 
 interface Props {
   resource: Resource;
@@ -22,6 +23,9 @@ const resourceUrl = langPrefix ? `${langPrefix}/resources/${resource.id}` : `/re
 const gradient = getGradientForId(resource.id);
 const gradientStyle = `background: linear-gradient(135deg, ${gradient.from} 0%, ${gradient.to} 100%);`;
 const textColorStyle = `color: ${gradient.text};`;
+
+// Nettoyer le markdown pour l'affichage dans la carte
+const cleanDescription = stripMarkdown(resource.description);
 ---
 
 <a
@@ -56,7 +60,7 @@ const textColorStyle = `color: ${gradient.text};`;
     </div>
     
     <Text tag="p" variant="textSM" class="text-base-600 line-clamp-2 mb-3">
-      {resource.description}
+      {cleanDescription}
     </Text>
     
     <div class="flex items-center justify-between mt-auto">
