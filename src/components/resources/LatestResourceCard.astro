@@ -1,0 +1,110 @@
+---
+import Text from "@/components/fundations/elements/Text.astro";
+import type { Resource } from '@/lib/supabase/schema';
+import { useTranslations, getLangFromUrl, getLangPrefix } from '@/i18n/utils';
+import { stripMarkdown } from '@/lib/utils/markdown';
+import { getGradientForId } from '@/lib/utils/gradients';
+
+interface Props {
+  resource: Resource;
+}
+
+const { resource } = Astro.props;
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const langPrefix = getLangPrefix(lang);
+
+const resourceUrl = langPrefix ? `${langPrefix}/resources/${resource.id}` : `/resources/${resource.id}`;
+const thumbnailUrl = resource.thumbnail_url || `/api/resources/${resource.id}/og-image.png`;
+
+// Nettoyer le markdown pour l'affichage
+const cleanDescription = stripMarkdown(resource.description);
+
+// Générer un gradient unique pour cette ressource
+const gradient = getGradientForId(resource.id);
+const gradientStyle = `background: linear-gradient(135deg, ${gradient.from} 0%, ${gradient.to} 100%);`;
+const textColorStyle = `color: ${gradient.text};`;
+
+// Formater la date
+const createdDate = new Date(resource.created_at);
+const formattedDate = createdDate.toLocaleDateString(
+  lang === 'en' ? 'en-US' : lang === 'fr' ? 'fr-FR' : lang === 'es' ? 'es-ES' : lang === 'ru' ? 'ru-RU' : 'zh-CN',
+  {
+    month: 'short',
+    day: 'numeric'
+  }
+);
+---
+
+<a
+  href={resourceUrl}
+  class="group relative flex flex-col h-full rounded-xl border border-base-200 bg-white overflow-hidden hover:border-accent-300 hover:shadow-xl transition-all"
+>
+  <div class="aspect-video w-full overflow-hidden bg-base-100 relative">
+    {resource.thumbnail_url ? (
+      <img
+        src={thumbnailUrl}
+        alt={resource.title}
+        class="h-full w-full object-cover group-hover:scale-110 transition-transform duration-500"
+        loading="lazy"
+      />
+    ) : (
+      <div class="h-full w-full flex items-center justify-center" style={gradientStyle}>
+        <Text tag="span" variant="textLG" class="font-semibold px-4 text-center" style={textColorStyle}>
+          {resource.title}
+        </Text>
+      </div>
+    )}
+    <div class="absolute top-3 right-3">
+      <span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-white/90 backdrop-blur-sm text-base-700">
+        {t(`resources.type.${resource.type}`)}
+      </span>
+    </div>
+    <div class="absolute bottom-3 left-3">
+      <time datetime={createdDate.toISOString()} class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-white/90 backdrop-blur-sm text-base-600">
+        {formattedDate}
+      </time>
+    </div>
+  </div>
+  
+  <div class="p-4 flex-1 flex flex-col min-h-[140px]">
+    <Text tag="h3" variant="textBase" class="font-semibold text-base-900 line-clamp-2 group-hover:text-accent-500 mb-2">
+      {resource.title}
+    </Text>
+    
+    {cleanDescription ? (
+      <Text tag="p" variant="textSM" class="text-base-600 line-clamp-2 mb-3 flex-1">
+        {cleanDescription}
+      </Text>
+    ) : (
+      <div class="flex-1 mb-3"></div>
+    )}
+    
+    <div class="flex items-center justify-between pt-3 border-t border-base-200 mt-auto">
+      {resource.downloads_count > 0 ? (
+        <Text tag="span" variant="textXS" class="text-base-500">
+          {t('resources.downloads', { count: resource.downloads_count })}
+        </Text>
+      ) : (
+        <span></span>
+      )}
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        class="text-base-400 group-hover:text-accent-500 transition-colors"
+      >
+        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+        <path d="M5 12l14 0"></path>
+        <path d="M15 16l4 -4"></path>
+        <path d="M15 8l4 4"></path>
+      </svg>
+    </div>
+  </div>
+</a>
