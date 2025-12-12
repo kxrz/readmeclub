@@ -2,6 +2,7 @@
 import Text from "@/components/fundations/elements/Text.astro";
 import type { Wallpaper } from '@/lib/supabase/schema';
 import { useTranslations, getLangFromUrl, getLangPrefix } from '@/i18n/utils';
+import { getWallpaperAuthorName } from '@/lib/utils/author';
 
 interface Props {
   wallpaper: Wallpaper;
@@ -14,6 +15,7 @@ const langPrefix = getLangPrefix(lang);
 
 const wallpaperUrl = langPrefix ? `${langPrefix}/wallpapers/${wallpaper.id}` : `/wallpapers/${wallpaper.id}`;
 const imageUrl = wallpaper.file_url || '/placeholder-wallpaper.jpg';
+const authorName = getWallpaperAuthorName(wallpaper);
 ---
 
 <a
@@ -45,9 +47,9 @@ const imageUrl = wallpaper.file_url || '/placeholder-wallpaper.jpg';
       <Text tag="span" variant="textXS" class="text-base-500">
         {t('wallpapers.downloads', { count: wallpaper.download_count })}
       </Text>
-      {wallpaper.author_name && (
+      {authorName && (
         <Text tag="span" variant="textXS" class="text-base-500">
-          {wallpaper.author_name}
+          {authorName}
         </Text>
       )}
     </div>

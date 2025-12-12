@@ -16,6 +16,7 @@ import { useTranslations, getLangFromUrl, getLangPrefix } from '@/i18n/utils';
 import { getGradientForId } from '@/lib/utils/gradients';
 import { normalizeSiteUrl, buildUrl } from '@/lib/utils/url';
 import { renderMarkdown } from '@/lib/utils/markdown';
+import { getResourceContributorName } from '@/lib/utils/author';
 import type { Resource } from '@/lib/supabase/schema';
 
 const lang = getLangFromUrl(Astro.url);
@@ -48,6 +49,7 @@ const textColorStyle = `color: ${gradient.text};`;
 const thumbnailUrl = resource.thumbnail_url || `/api/resources/${resource.id}/og-image.png`;
 const hasFile = !!resource.file_url;
 const hasExternalLink = !!resource.external_link;
+const contributorName = getResourceContributorName(resource);
 const siteUrl = normalizeSiteUrl(Astro.site);
 const ogImage = resource.thumbnail_url || buildUrl(`/api/resources/${resource.id}/og-image.png`, siteUrl);
 
@@ -231,7 +233,7 @@ try {
                   </dd>
                 </div>
               )}
-              {resource.contributor_name && (
+              {contributorName && (
                 <div class="flex items-center lg:justify-between">
                   <dt class="flex-1">
                     <Text
@@ -245,7 +247,7 @@ try {
                   </dt>
                   <dd class="mt-1 text-base-600">
                     <Text tag="p" variant="textSM" class="text-base-600">
-                      {resource.contributor_name}
+                      {contributorName}
                     </Text>
                   </dd>
                 </div>

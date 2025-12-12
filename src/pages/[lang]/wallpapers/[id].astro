@@ -14,6 +14,7 @@ import { supabase } from '@/lib/supabase/client';
 import { useTranslations } from '@/i18n/utils';
 import { getGradientForId } from '@/lib/utils/gradients';
 import { normalizeSiteUrl, buildUrl } from '@/lib/utils/url';
+import { getWallpaperAuthorName } from '@/lib/utils/author';
 import type { Lang } from '@/i18n/utils';
 import type { Wallpaper } from '@/lib/supabase/schema';
 
@@ -48,6 +49,10 @@ const { data: otherWallpapers } = await supabase
   .neq('id', id)
   .order('created_at', { ascending: false })
   .limit(10);
+
+const authorName = getWallpaperAuthorName(wallpaper);
+// Afficher les sections reddit/instagram séparément seulement si on a un author_name réel (pas un fallback)
+const showSeparateUsernames = !!wallpaper.author_name;
 
 // Mélanger aléatoirement et prendre 6 (pour avoir 6 + 1 bouton random = 7)
 const shuffled = otherWallpapers ? [...otherWallpapers].sort(() => Math.random() - 0.5).slice(0, 6) : [];
@@ -220,7 +225,7 @@ const ogImage = wallpaper.file_url || buildUrl(`/api/wallpapers/${wallpaper.id}/
                   </dd>
                 </div>
               )}
-              {wallpaper.author_name && (
+              {authorName && (
                 <div class="flex items-center lg:justify-between">
                   <dt class="flex-1">
                     <Text
@@ -234,12 +239,22 @@ const ogImage = wallpaper.file_url || buildUrl(`/api/wallpapers/${wallpaper.id}/
                   </dt>
                   <dd class="mt-1 text-base-600">
                     <Text tag="p" variant="textSM" class="text-base-600">
-                      {wallpaper.author_name}
+                      {authorName.startsWith('u/') && wallpaper.reddit_username ? (
+                        <a href={`https://reddit.com/user/${wallpaper.reddit_username}`} target="_blank" rel="noopener noreferrer" class="text-accent-500 hover:underline">
+                          {authorName}
+                        </a>
+                      ) : authorName.startsWith('@') && wallpaper.instagram_username ? (
+                        <a href={`https://instagram.com/${wallpaper.instagram_username}`} target="_blank" rel="noopener noreferrer" class="text-accent-500 hover:underline">
+                          {authorName}
+                        </a>
+                      ) : (
+                        authorName
+                      )}
                     </Text>
                   </dd>
                 </div>
               )}
-              {wallpaper.reddit_username && (
+              {showSeparateUsernames && wallpaper.reddit_username && (
                 <div class="flex items-center lg:justify-between">
                   <dt class="flex-1">
                     <Text
@@ -260,7 +275,7 @@ const ogImage = wallpaper.file_url || buildUrl(`/api/wallpapers/${wallpaper.id}/
                   </dd>
                 </div>
               )}
-              {wallpaper.instagram_username && (
+              {showSeparateUsernames && wallpaper.instagram_username && (
                 <div class="flex items-center lg:justify-between">
                   <dt class="flex-1">
                     <Text

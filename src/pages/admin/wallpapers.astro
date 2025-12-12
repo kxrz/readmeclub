@@ -6,6 +6,7 @@ import Wrapper from "@/components/fundations/containers/Wrapper.astro";
 import { checkAdminAuth } from '@/lib/utils/admin';
 import { getSupabaseAdmin } from '@/lib/supabase/admin';
 import { useTranslations, getLangFromUrl } from '@/i18n/utils';
+import { getWallpaperAuthorName } from '@/lib/utils/author';
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
@@ -69,7 +70,9 @@ const { data: wallpapers } = await supabaseAdmin
     <Wrapper variant="standard" class="py-6 pb-24">
       <div class="space-y-4">
         {wallpapers && wallpapers.length > 0 ? (
-          wallpapers.map((wallpaper) => (
+          wallpapers.map((wallpaper) => {
+            const authorName = getWallpaperAuthorName(wallpaper);
+            return (
             <div
               class="flex items-center justify-between p-4 border border-base-200 rounded-lg hover:bg-base-50"
             >
@@ -102,9 +105,9 @@ const { data: wallpapers } = await supabaseAdmin
                     <span class="text-xs text-base-500">
                       {t('wallpapers.downloads', { count: wallpaper.download_count })}
                     </span>
-                    {wallpaper.author_name && (
+                    {authorName && (
                       <span class="text-xs text-base-500">
-                        {wallpaper.author_name}
+                        {authorName}
                       </span>
                     )}
                   </div>
@@ -148,7 +151,8 @@ const { data: wallpapers } = await supabaseAdmin
                 </a>
               </div>
             </div>
-          ))
+            );
+          })
         ) : (
           <Text tag="p" variant="textBase" class="text-base-500 text-center py-12">
             No wallpapers found
