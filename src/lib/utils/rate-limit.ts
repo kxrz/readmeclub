@@ -26,7 +26,7 @@ export async function checkSubmissionLimit(ipHash: string): Promise<{ allowed: b
     .single();
   
   const now = new Date();
-  const maxSubmissions = 5; // Max 5 submissions per 24h
+  const maxSubmissions = 24; // Max 24 submissions per 24h
   
   if (!limit) {
     // Create new limit
