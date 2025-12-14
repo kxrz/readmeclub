@@ -7,6 +7,7 @@ import Footer from "@/components/global/Footer.astro";
 import Navigation from "@/components/navigation/Navigation.astro";
 import WelcomeBanner from "@/components/common/WelcomeBanner.astro";
 import Analytics from '@vercel/analytics/astro';
+import SpeedInsights from '@vercel/speed-insights/astro';
 import { getLangFromUrl } from '@/i18n/utils';
 
 const lang = getLangFromUrl(Astro.url);
@@ -32,5 +33,6 @@ const lang = getLangFromUrl(Astro.url);
     <Footer />
     <WelcomeBanner />
     <Analytics />
+    <SpeedInsights />
   </body>
 </html>
