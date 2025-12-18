@@ -61,6 +61,11 @@ export const ui = {
     'common.previous': 'Previous',
     'common.optional': 'Optional',
     'common.breadcrumb': 'Breadcrumb',
+    'common.sort': 'Sort',
+    'common.sort.latest': 'Latest',
+    'common.sort.popular': 'Popular',
+    'common.sort.name': 'Name',
+    'common.sort.author': 'Author',
     
     // News
     'news.title': 'News',
@@ -403,6 +408,11 @@ export const ui = {
     'common.previous': 'Précédent',
     'common.optional': 'Optionnel',
     'common.breadcrumb': 'Fil d\'Ariane',
+    'common.sort': 'Trier',
+    'common.sort.latest': 'Plus récent',
+    'common.sort.popular': 'Populaire',
+    'common.sort.name': 'Nom',
+    'common.sort.author': 'Auteur',
     
     // News
     'news.title': 'Actualités',
@@ -768,6 +778,11 @@ export const ui = {
     'common.previous': 'Anterior',
     'common.optional': 'Opcional',
     'common.breadcrumb': 'Miga de pan',
+    'common.sort': 'Ordenar',
+    'common.sort.latest': 'Más reciente',
+    'common.sort.popular': 'Popular',
+    'common.sort.name': 'Nombre',
+    'common.sort.author': 'Autor',
     
     // News
     'news.title': 'Noticias',
@@ -1055,6 +1070,11 @@ export const ui = {
     'common.previous': 'Предыдущий',
     'common.optional': 'Необязательно',
     'common.breadcrumb': 'Хлебные крошки',
+    'common.sort': 'Сортировать',
+    'common.sort.latest': 'Последние',
+    'common.sort.popular': 'Популярные',
+    'common.sort.name': 'Имя',
+    'common.sort.author': 'Автор',
     
     // News
     'news.title': 'Новости',
@@ -1368,6 +1388,11 @@ export const ui = {
     'common.previous': '上一步',
     'common.optional': '可选',
     'common.breadcrumb': '面包屑导航',
+    'common.sort': '排序',
+    'common.sort.latest': '最新',
+    'common.sort.popular': '热门',
+    'common.sort.name': '名称',
+    'common.sort.author': '作者',
     
     // News
     'news.title': '新闻',

@@ -5,33 +5,59 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 import Text from "@/components/fundations/elements/Text.astro";
 import Wrapper from "@/components/fundations/containers/Wrapper.astro";
 import WallpaperCard from "@/components/wallpapers/WallpaperCard.astro";
-import Seo from "@/components/fundations/head/Seo.astro";
 import { supabase } from '@/lib/supabase/client';
 import { useTranslations, getLangFromUrl, getLangPrefix } from '@/i18n/utils';
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 const langPrefix = getLangPrefix(lang);
-const siteUrl = Astro.site || 'https://readme.club';
 
 const url = Astro.url;
 const category = url.searchParams.get('category') || null;
-const limit = 50;
-const offset = 0;
+const sort = url.searchParams.get('sort') || 'latest';
+const pageParam = url.searchParams.get('page');
+const page = Math.max(1, parseInt(pageParam || '1', 10));
+const pageSize = 24;
+const from = (page - 1) * pageSize;
+const to = from + pageSize;
 
 let query = supabase
   .from('wallpapers')
   .select('*')
   .eq('status', 'published')
-  .eq('hidden', false)
-  .order('created_at', { ascending: false })
-  .range(offset, offset + limit - 1);
+  .eq('hidden', false);
 
 if (category) {
   query = query.eq('category', category);
 }
 
-const { data: wallpapers } = await query;
+if (sort === 'popular') {
+  query = query.order('download_count', { ascending: false });
+} else if (sort === 'name') {
+  query = query.order('title', { ascending: true, nullsFirst: false });
+} else if (sort === 'author') {
+  query = query.order('author_name', { ascending: true, nullsFirst: false });
+} else {
+  query = query.order('created_at', { ascending: false });
+}
+
+query = query.range(from, to);
+
+const { data: rawWallpapers } = await query;
+const wallpapers = rawWallpapers ? rawWallpapers.slice(0, pageSize) : [];
+const hasNext = !!rawWallpapers && rawWallpapers.length > pageSize;
+const hasPrev = page > 1;
+
+const { count: wallpapersCount } = await supabase
+  .from('wallpapers')
+  .select('*', { count: 'exact', head: true })
+  .eq('status', 'published')
+  .eq('hidden', false);
+
+const totalWallpapers = typeof wallpapersCount === 'number' ? wallpapersCount : 0;
+const baseSubtitle = t('wallpapers.subtitle');
+const normalizedSubtitle = baseSubtitle.length > 0 ? baseSubtitle[0].toLowerCase() + baseSubtitle.slice(1) : baseSubtitle;
+const wallpapersSubtitle = totalWallpapers > 0 ? `${totalWallpapers} ${normalizedSubtitle}` : baseSubtitle;
 
 const categories = [
   { value: 'minimalist', label: t('wallpapers.category.minimalist') },
@@ -41,17 +67,16 @@ const categories = [
   { value: 'custom', label: t('wallpapers.category.custom') },
   { value: 'other', label: t('wallpapers.category.other') },
 ];
+
+const sortOptions = [
+  { value: 'latest', label: t('common.sort.latest') },
+  { value: 'popular', label: t('common.sort.popular') },
+  { value: 'name', label: t('common.sort.name') },
+  { value: 'author', label: t('common.sort.author') },
+];
 ---
 
 <BaseLayout>
-  <Fragment slot="head">
-    <Seo
-      title={`${t('wallpapers.title')} - ${t('site.name')}`}
-      description={t('wallpapers.subtitle')}
-      canonical={`${siteUrl}${langPrefix}/wallpapers`}
-      lang={lang}
-    />
-  </Fragment>
   <section>
     <Wrapper variant="hero">
       <Text
@@ -66,7 +91,7 @@ const categories = [
         variant="textBase"
         class="mt-4 text-base-600 text-balance 2xl:text-xl"
       >
-        {t('wallpapers.subtitle')}
+        {wallpapersSubtitle}
       </Text>
       <div class="mt-4">
         <a
@@ -97,38 +122,125 @@ const categories = [
   
   <section>
     <Wrapper variant="standard" class="py-6">
-      <!-- Filters -->
-      <div class="flex flex-wrap gap-2 mb-6">
-        <a
-          href={`${lang === 'en' ? '' : `/${lang}`}/wallpapers`}
-          class={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-            !category
-              ? 'bg-accent-500 text-white'
-              : 'bg-base-100 text-base-700 hover:bg-base-200'
-          }`}
-        >
-          {t('common.filter')}: All
-        </a>
-        {categories.map((cat) => (
-          <a
-            href={`${lang === 'en' ? '' : `/${lang}`}/wallpapers?category=${cat.value}`}
-            class={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-              category === cat.value
-                ? 'bg-accent-500 text-white'
-                : 'bg-base-100 text-base-700 hover:bg-base-200'
-            }`}
-          >
-            {cat.label}
-          </a>
-        ))}
+      <div class="flex flex-col gap-4 mb-6 md:flex-row md:items-center md:justify-between">
+        <div class="flex items-center gap-2 flex-wrap">
+          <span class="text-xs md:text-sm text-base-500 whitespace-nowrap">{t('common.filter')}</span>
+          <div class="flex flex-wrap gap-1.5 md:gap-2">
+            {categories.map((cat) => {
+              const params = new URLSearchParams();
+              if (sort !== 'latest') params.set('sort', sort);
+              params.set('category', cat.value);
+              const categoryUrl = params.toString() ? `${lang === 'en' ? '' : `/${lang}`}/wallpapers?${params.toString()}` : `${lang === 'en' ? '' : `/${lang}`}/wallpapers?category=${cat.value}`;
+              return (
+                <a
+                  href={categoryUrl}
+                  class={`px-2.5 py-1 md:px-3 md:py-1 rounded-full text-xs font-medium transition-colors ${
+                    category === cat.value
+                      ? 'bg-accent-500 text-white'
+                      : 'bg-base-100 text-base-700 hover:bg-base-200'
+                  }`}
+                >
+                  {cat.label}
+                </a>
+              );
+            })}
+            {category && (
+              <a
+                href={`${lang === 'en' ? '' : `/${lang}`}/wallpapers${sort !== 'latest' ? `?sort=${sort}` : ''}`}
+                class="px-2.5 py-1 md:px-3 md:py-1 rounded-full text-xs font-medium transition-colors bg-base-200 text-base-600 hover:bg-base-300 hover:text-base-700"
+                title="Reset filter"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-block">
+                  <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/>
+                  <path d="M21 3v5h-5"/>
+                  <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/>
+                  <path d="M3 21v-5h5"/>
+                </svg>
+              </a>
+            )}
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2 flex-wrap">
+          <span class="text-xs md:text-sm text-base-500 whitespace-nowrap">{t('common.sort')}</span>
+          <div class="flex flex-wrap gap-1.5 md:gap-2">
+            {sortOptions.map((option) => {
+              const params = new URLSearchParams();
+              if (category) params.set('category', category);
+              if (option.value !== 'latest') params.set('sort', option.value);
+              const sortUrl = params.toString() ? `${lang === 'en' ? '' : `/${lang}`}/wallpapers?${params.toString()}` : `${lang === 'en' ? '' : `/${lang}`}/wallpapers`;
+              return (
+                <a
+                  href={sortUrl}
+                  class={`px-2.5 py-1 md:px-3 md:py-1 rounded-full text-xs font-medium transition-colors ${
+                    sort === option.value
+                      ? 'bg-accent-500 text-white'
+                      : 'bg-base-100 text-base-700 hover:bg-base-200'
+                  }`}
+                >
+                  {option.label}
+                </a>
+              );
+            })}
+            {sort !== 'latest' && (
+              <a
+                href={`${lang === 'en' ? '' : `/${lang}`}/wallpapers${category ? `?category=${category}` : ''}`}
+                class="px-2.5 py-1 md:px-3 md:py-1 rounded-full text-xs font-medium transition-colors bg-base-200 text-base-600 hover:bg-base-300 hover:text-base-700"
+                title="Reset sort"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-block">
+                  <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/>
+                  <path d="M21 3v5h-5"/>
+                  <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/>
+                  <path d="M3 21v-5h5"/>
+                </svg>
+              </a>
+            )}
+          </div>
+        </div>
       </div>
       
-      <!-- Wallpapers Grid -->
       {wallpapers && wallpapers.length > 0 ? (
-        <div class="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
-          {wallpapers.map((wallpaper) => (
-            <WallpaperCard wallpaper={wallpaper} />
-          ))}
+        <div class="space-y-6">
+          <div class="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
+            {wallpapers.map((wallpaper) => (
+              <WallpaperCard wallpaper={wallpaper} />
+            ))}
+          </div>
+
+          {(hasPrev || hasNext) && (
+            <div class="flex items-center justify-center gap-3 md:gap-4 pt-6 md:pt-10 mt-6 md:mt-10 pb-2 md:pb-4 border-t border-base-200">
+              {hasPrev ? (
+                <a
+                  href={`${lang === 'en' ? '' : `/${lang}`}/wallpapers${category ? `?category=${category}` : ''}${category && sort !== 'latest' ? '&' : sort !== 'latest' ? '?' : category || page > 1 ? (category && page > 1 ? '&' : '?') : ''}${sort !== 'latest' ? `sort=${sort}` : ''}${sort !== 'latest' && page > 1 ? '&' : ''}${page > 1 ? `page=${page - 1}` : ''}`}
+                  class="inline-flex items-center justify-center w-12 h-12 md:w-10 md:h-10 rounded-full bg-base-100 text-base-700 hover:bg-base-200 hover:text-accent-500 transition-colors touch-target"
+                  aria-label="Page précédente"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m15 18-6-6 6-6"/>
+                  </svg>
+                </a>
+              ) : (
+                <div class="w-12 h-12 md:w-10 md:h-10"></div>
+              )}
+              <div class="px-3 py-1.5 md:px-4 md:py-2 rounded-full text-sm font-medium bg-base-100 text-base-600">
+                {page}
+              </div>
+              {hasNext ? (
+                <a
+                  href={`${lang === 'en' ? '' : `/${lang}`}/wallpapers${category ? `?category=${category}` : ''}${category && sort !== 'latest' ? '&' : sort !== 'latest' ? '?' : category ? '&' : '?'}${sort !== 'latest' ? `sort=${sort}&` : ''}page=${page + 1}`}
+                  class="inline-flex items-center justify-center w-12 h-12 md:w-10 md:h-10 rounded-full bg-base-100 text-base-700 hover:bg-base-200 hover:text-accent-500 transition-colors touch-target"
+                  aria-label="Page suivante"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m9 18 6-6-6-6"/>
+                  </svg>
+                </a>
+              ) : (
+                <div class="w-12 h-12 md:w-10 md:h-10"></div>
+              )}
+            </div>
+          )}
         </div>
       ) : (
         <div class="text-center py-12">
@@ -140,4 +252,3 @@ const categories = [
     </Wrapper>
   </section>
 </BaseLayout>
-
