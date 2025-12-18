@@ -2,6 +2,7 @@
 // Fundation
 import Text from "../fundations/elements/Text.astro";
 import Wrapper from "../fundations/containers/Wrapper.astro";
+import BuyMeACoffee from "../common/BuyMeACoffee.astro";
 import { useTranslations, getLangFromUrl, getLangPrefix, getLocalizedUrl } from '@/i18n/utils';
 import type { Lang } from '@/i18n/utils';
 
@@ -58,21 +59,26 @@ const legalLinks = [
           ))
         }
       </ul>
-      <Text
-        tag="p"
-        variant="textSM"
-        class="mt-4">
-        © <span x-text="new Date().getFullYear()"></span> {t('footer.crafted_by').split('Florent')[0]}
-        <a 
-          href="https://dontthinkjustbuild.com/" 
-          target="_blank" 
-          rel="noopener noreferrer"
-          class="hover:text-accent-400 transition-colors"
+      <div class="mt-4 space-y-2">
+        <Text
+          tag="p"
+          variant="textSM"
         >
-          Florent
-        </a>
-        {t('footer.crafted_by').split('Florent')[1] || ''}
-      </Text>
+          © <span x-text="new Date().getFullYear()"></span> {t('footer.crafted_by').split('Florent')[0]}
+          <a 
+            href="https://dontthinkjustbuild.com/" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            class="hover:text-accent-400 transition-colors"
+          >
+            Florent
+          </a>
+          {t('footer.crafted_by').split('Florent')[1] || ''}
+        </Text>
+        <div>
+          <BuyMeACoffee variant="default" class="text-base-400 hover:text-accent-400" />
+        </div>
+      </div>
       <Text
         tag="p"
         variant="textXS"

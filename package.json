@@ -45,6 +45,7 @@
     "leaflet": "^1.9.4",
     "lightningcss": "^1.30.2",
     "marked": "^17.0.1",
+    "micromark-util-decode-numeric-character-reference": "^2.0.2",
     "satori": "^0.14.0",
     "tailwind-scrollbar-hide": "^4.0.0",
     "zod": "^3.22.4"

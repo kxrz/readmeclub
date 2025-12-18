@@ -6,6 +6,7 @@ import Text from "@/components/fundations/elements/Text.astro";
 import Button from "@/components/fundations/components/Button.astro";
 import Link from "@/components/fundations/components/Link.astro";
 import Wrapper from "@/components/fundations/containers/Wrapper.astro";
+import BuyMeACoffee from "@/components/common/BuyMeACoffee.astro";
 import Seo from "@/components/fundations/head/Seo.astro";
 import { useTranslations, getLangFromUrl, getLangPrefix } from '@/i18n/utils';
 import { normalizeSiteUrl } from '@/lib/utils/url';
@@ -239,6 +240,11 @@ import { normalizeSiteUrl } from '@/lib/utils/url';
               </div>
             </div>
           </div>
+        </div>
+
+        <!-- Support -->
+        <div class="flex items-center justify-center py-6 border-t border-base-200">
+          <BuyMeACoffee variant="default" />
         </div>
 
         <!-- Disclaimer -->

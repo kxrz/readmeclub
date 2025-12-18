@@ -12,6 +12,7 @@ import SmallMoreCard from "@/components/resources/SmallMoreCard.astro";
 import LatestResourceCard from "@/components/resources/LatestResourceCard.astro";
 import LatestMoreCard from "@/components/resources/LatestMoreCard.astro";
 import MoreCard from "@/components/common/MoreCard.astro";
+import BuyMeACoffee from "@/components/common/BuyMeACoffee.astro";
 import NewsCard from "@/components/news/NewsCard.astro";
 import Seo from "@/components/fundations/head/Seo.astro";
 import { supabase } from '@/lib/supabase/client';
@@ -309,7 +310,10 @@ const { data: latestNews } = await supabase
   
   <section>
     <Wrapper variant="standard" class="pt-6 pb-24">
-      <div class="border-t border-base-200 pt-2">
+      <div class="border-t border-base-200 pt-8 pb-4 flex items-center justify-center">
+        <BuyMeACoffee variant="default" />
+      </div>
+      <div class="border-t border-base-200 pt-2 mt-8">
         <Text
           tag="h2"
           variant="textXS"

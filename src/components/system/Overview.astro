@@ -138,18 +138,23 @@ const pages = [
                       {category.title}
                     </Text>
                     <ul role="list">
-                      {category.links.map((link) => (
-                        <li>
-                          <Text
-                            tag="a"
-                            variant="textBase"
-                            href={link.href}
-                            class=" text-base-600 hover:text-accent-500"
-                          >
-                            {link.text}
-                          </Text>
-                        </li>
-                      ))}
+                      {category.links.map((link) => {
+                        const isExternal = link.href.startsWith('http://') || link.href.startsWith('https://');
+                        return (
+                          <li>
+                            <Text
+                              tag="a"
+                              variant="textBase"
+                              href={link.href}
+                              target={isExternal ? "_blank" : undefined}
+                              rel={isExternal ? "noopener noreferrer" : undefined}
+                              class=" text-base-600 hover:text-accent-500"
+                            >
+                              {link.text}
+                            </Text>
+                          </li>
+                        );
+                      })}
                     </ul>
                   </div>
                 ))}
