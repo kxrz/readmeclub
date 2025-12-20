@@ -68,9 +68,34 @@ function generateCacheKey(
 }
 
 /**
+ * Cache en mémoire pour les API routes (quand Astro.cache n'est pas disponible)
+ * 
+ * Ce cache est partagé entre toutes les requêtes dans le même processus Node.js
+ */
+interface MemoryCacheEntry<T> {
+  data: T;
+  expiresAt: number;
+}
+
+const memoryCache = new Map<string, MemoryCacheEntry<any>>();
+
+/**
+ * Nettoie les entrées expirées du cache mémoire
+ */
+function cleanupMemoryCache() {
+  const now = Date.now();
+  for (const [key, entry] of memoryCache.entries()) {
+    if (entry.expiresAt < now) {
+      memoryCache.delete(key);
+    }
+  }
+}
+
+/**
  * Exécute une requête Supabase avec cache
  * 
  * Le cache persiste jusqu'à invalidation manuelle ou expiration du TTL
+ * Utilise Astro.cache pour les pages .astro, et un cache mémoire pour les API routes
  * 
  * @param queryFn Fonction qui retourne un query builder Supabase
  * @param options Options de cache
@@ -88,21 +113,43 @@ export async function cachedQuery<T = any>(
     ? generateCacheKey(options.key, options)
     : `supabase:${Date.now()}`;
   
-  // Essaie de récupérer depuis le cache (si Astro.cache est disponible)
+  // Essaie d'abord Astro.cache (disponible dans les pages .astro)
   if (typeof Astro !== 'undefined' && Astro.cache) {
     try {
       const cached = await Astro.cache.get(cacheKey);
       if (cached) {
+        // Log pour vérifier les cache hits (toujours affiché)
+        console.log(`✅ Cache HIT (Astro.cache): ${cacheKey}`);
         return {
           data: cached as T,
           error: null,
           fromCache: true,
         };
       }
+      // Cache miss
+      console.log(`❌ Cache MISS (Astro.cache): ${cacheKey}`);
     } catch (error) {
       // Cache miss ou erreur - continue avec la requête
       console.warn(`Cache get failed for key ${cacheKey}:`, error);
     }
+  }
+  
+  // Si Astro.cache n'est pas disponible, utilise le cache mémoire (pour API routes)
+  cleanupMemoryCache(); // Nettoie les entrées expirées
+  const memoryEntry = memoryCache.get(cacheKey);
+  if (memoryEntry && memoryEntry.expiresAt > Date.now()) {
+    console.log(`✅ Cache HIT (memory): ${cacheKey}`);
+    return {
+      data: memoryEntry.data as T,
+      error: null,
+      fromCache: true,
+    };
+  }
+  
+  if (memoryEntry) {
+    console.log(`❌ Cache MISS (memory expired): ${cacheKey}`);
+  } else {
+    console.log(`❌ Cache MISS (memory): ${cacheKey}`);
   }
   
   // Exécute la requête
@@ -118,13 +165,31 @@ export async function cachedQuery<T = any>(
       };
     }
     
-    // Stocke dans le cache (si Astro.cache est disponible)
+    // Stocke dans Astro.cache (si disponible)
     if (typeof Astro !== 'undefined' && Astro.cache && data) {
       try {
         await Astro.cache.set(cacheKey, data, { ttl });
+        console.log(`💾 Cache SET (Astro.cache): ${cacheKey} (TTL: ${ttl}s)`);
       } catch (error) {
-        // Échec du cache - log mais ne fait pas échouer la requête
         console.warn(`Cache set failed for key ${cacheKey}:`, error);
+      }
+    }
+    
+    // Stocke aussi dans le cache mémoire (pour API routes et partage entre processus)
+    if (data) {
+      const expiresAt = Date.now() + (ttl * 1000);
+      memoryCache.set(cacheKey, { data, expiresAt });
+      console.log(`💾 Cache SET (memory): ${cacheKey} (TTL: ${ttl}s)`);
+      
+      // Limite la taille du cache mémoire (évite les fuites mémoire)
+      if (memoryCache.size > 1000) {
+        // Supprime les 100 plus anciennes entrées
+        const entries = Array.from(memoryCache.entries())
+          .sort((a, b) => a[1].expiresAt - b[1].expiresAt)
+          .slice(0, 100);
+        for (const [key] of entries) {
+          memoryCache.delete(key);
+        }
       }
     }
     
@@ -180,7 +245,7 @@ export async function invalidateCache(
 ): Promise<void> {
   try {
     const newVersion = await incrementCacheVersion(contentType);
-    console.log(`Cache invalidated for ${contentType} (new version: ${newVersion})${lang ? ` (lang: ${lang})` : ''}`);
+    console.log(`🔄 Cache INVALIDATED: ${contentType} → version ${newVersion}${lang ? ` (lang: ${lang})` : ''}`);
   } catch (error) {
     console.error(`Failed to invalidate cache for ${contentType}:`, error);
   }
