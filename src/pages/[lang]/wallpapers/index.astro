@@ -6,6 +6,7 @@ import Text from "@/components/fundations/elements/Text.astro";
 import Wrapper from "@/components/fundations/containers/Wrapper.astro";
 import WallpaperCard from "@/components/wallpapers/WallpaperCard.astro";
 import { supabase } from '@/lib/supabase/client';
+import { cachedQuery, cachedCount, CacheKeys } from '@/lib/supabase/cache';
 import { useTranslations } from '@/i18n/utils';
 import type { Lang } from '@/i18n/utils';
 
@@ -21,40 +22,59 @@ const pageSize = 24;
 const from = (page - 1) * pageSize;
 const to = from + pageSize;
 
-let query = supabase
-  .from('wallpapers')
-  .select('*')
-  .eq('status', 'published')
-  .eq('hidden', false);
+// Query avec cache (TTL long car invalidation manuelle)
+const { data: rawWallpapers } = await cachedQuery(
+  () => {
+    let query = supabase
+      .from('wallpapers')
+      .select('*')
+      .eq('status', 'published')
+      .eq('hidden', false);
 
-if (category) {
-  query = query.eq('category', category);
-}
+    if (category) {
+      query = query.eq('category', category);
+    }
 
-if (sort === 'popular') {
-  query = query.order('download_count', { ascending: false });
-} else if (sort === 'name') {
-  query = query.order('title', { ascending: true, nullsFirst: false });
-} else if (sort === 'author') {
-  query = query.order('author_name', { ascending: true, nullsFirst: false });
-} else {
-  query = query.order('created_at', { ascending: false });
-}
+    if (sort === 'popular') {
+      query = query.order('download_count', { ascending: false });
+    } else if (sort === 'name') {
+      query = query.order('title', { ascending: true, nullsFirst: false });
+    } else if (sort === 'author') {
+      query = query.order('author_name', { ascending: true, nullsFirst: false });
+    } else {
+      query = query.order('created_at', { ascending: false });
+    }
 
-query = query.range(from, to);
+    return query.range(from, to);
+  },
+  {
+    key: await CacheKeys.wallpapersPage(page, category || undefined, sort),
+    ttl: 86400,
+    lang,
+    contentType: 'wallpapers',
+    parts: [page, category, sort],
+  }
+);
 
-const { data: rawWallpapers } = await query;
 const wallpapers = rawWallpapers ? rawWallpapers.slice(0, pageSize) : [];
 const hasNext = !!rawWallpapers && rawWallpapers.length > pageSize;
 const hasPrev = page > 1;
 
-const { count: wallpapersCount } = await supabase
-  .from('wallpapers')
-  .select('*', { count: 'exact', head: true })
-  .eq('status', 'published')
-  .eq('hidden', false);
+// Count query avec cache (TTL long car invalidation manuelle)
+const { data: wallpapersCount } = await cachedCount(
+  () => supabase
+    .from('wallpapers')
+    .select('*', { count: 'exact', head: true })
+    .eq('status', 'published')
+    .eq('hidden', false),
+  {
+    key: await CacheKeys.wallpapersCount(),
+    ttl: 86400,
+    contentType: 'wallpapers',
+  }
+);
 
-const totalWallpapers = typeof wallpapersCount === 'number' ? wallpapersCount : 0;
+const totalWallpapers = wallpapersCount || 0;
 const baseSubtitle = t('wallpapers.subtitle');
 const normalizedSubtitle = baseSubtitle.length > 0 ? baseSubtitle[0].toLowerCase() + baseSubtitle.slice(1) : baseSubtitle;
 const wallpapersSubtitle = totalWallpapers > 0 ? `${totalWallpapers} ${normalizedSubtitle}` : baseSubtitle;

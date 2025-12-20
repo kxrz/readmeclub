@@ -11,6 +11,7 @@ import Breadcrumb from "@/components/common/Breadcrumb.astro";
 import SmallNewsCard from "@/components/news/SmallNewsCard.astro";
 import { supabase } from '@/lib/supabase/client';
 import { getSupabaseAdmin } from '@/lib/supabase/admin';
+import { cachedQuery, CacheKeys } from '@/lib/supabase/cache';
 import { useTranslations } from '@/i18n/utils';
 import { normalizeSiteUrl, buildUrl } from '@/lib/utils/url';
 import type { Lang } from '@/i18n/utils';
@@ -72,14 +73,21 @@ if (!slug) {
   return Astro.redirect(`/${lang}/news`);
 }
 
-// Fetch article
-const { data: article, error } = await supabase
-  .from('news')
-  .select('*')
-  .eq('slug', slug)
-  .eq('status', 'published')
-  .eq('hidden', false)
-  .single();
+// Fetch article avec cache
+const { data: article, error } = await cachedQuery(
+  () => supabase
+    .from('news')
+    .select('*')
+    .eq('slug', slug)
+    .eq('status', 'published')
+    .eq('hidden', false)
+    .single(),
+  {
+    key: await CacheKeys.newsBySlug(slug),
+    ttl: 86400,
+    contentType: 'news',
+  }
+);
 
 if (error || !article) {
   return Astro.redirect(`/${lang}/news`);

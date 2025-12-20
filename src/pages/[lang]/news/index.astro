@@ -9,6 +9,7 @@ import Wrapper from "@/components/fundations/containers/Wrapper.astro";
 import Seo from "@/components/fundations/head/Seo.astro";
 import NewsCard from "@/components/news/NewsCard.astro";
 import { supabase } from '@/lib/supabase/client';
+import { cachedQuery, cachedCount, CacheKeys } from '@/lib/supabase/cache';
 import { useTranslations } from '@/i18n/utils';
 import { normalizeSiteUrl } from '@/lib/utils/url';
 import type { Lang } from '@/i18n/utils';
@@ -23,23 +24,39 @@ const page = parseInt(url.searchParams.get('page') || '1');
 const limit = 12;
 const offset = (page - 1) * limit;
 
-// Fetch news articles - order by featured first, then by published_at (or created_at if null), most recent first
-const { data: news, error } = await supabase
-  .from('news')
-  .select('*')
-  .eq('status', 'published')
-  .eq('hidden', false)
-  .order('featured', { ascending: false })
-  .order('published_at', { ascending: false, nullsFirst: false })
-  .order('created_at', { ascending: false })
-  .range(offset, offset + limit - 1);
+// Fetch news articles avec cache (TTL long car invalidation manuelle)
+const { data: news, error } = await cachedQuery(
+  () => supabase
+    .from('news')
+    .select('*')
+    .eq('status', 'published')
+    .eq('hidden', false)
+    .order('featured', { ascending: false })
+    .order('published_at', { ascending: false, nullsFirst: false })
+    .order('created_at', { ascending: false })
+    .range(offset, offset + limit - 1),
+  {
+    key: await CacheKeys.newsPage(page),
+    ttl: 86400,
+    lang,
+    contentType: 'news',
+    parts: [page],
+  }
+);
 
-// Get total count
-const { count } = await supabase
-  .from('news')
-  .select('*', { count: 'exact', head: true })
-  .eq('status', 'published')
-  .eq('hidden', false);
+// Get total count avec cache (TTL long car invalidation manuelle)
+const { data: count } = await cachedCount(
+  () => supabase
+    .from('news')
+    .select('*', { count: 'exact', head: true })
+    .eq('status', 'published')
+    .eq('hidden', false),
+  {
+    key: await CacheKeys.newsCount(),
+    ttl: 86400,
+    contentType: 'news',
+  }
+);
 
 const totalPages = Math.ceil((count || 0) / limit);
 

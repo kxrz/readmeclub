@@ -3,6 +3,7 @@ export const prerender = false;
 import type { APIRoute } from 'astro';
 import { requireAdmin } from '@/lib/utils/admin';
 import { getSupabaseAdmin } from '@/lib/supabase/admin';
+import { invalidateCache, pregenerateCache } from '@/lib/supabase/cache';
 import { z } from 'zod';
 
 const updateResourceSchema = z.object({
@@ -63,6 +64,14 @@ export const PUT: APIRoute = async ({ params, request, cookies }) => {
         headers: { 'Content-Type': 'application/json' },
       });
     }
+    
+    // Invalide le cache car n'importe quel champ peut affecter l'affichage
+    Promise.all([
+      invalidateCache('resources'),
+      pregenerateCache('resources', supabaseAdmin),
+    ]).catch(err => {
+      console.error('Cache invalidation/pre-generation failed:', err);
+    });
     
     return new Response(JSON.stringify({ success: true, data }), {
       status: 200,

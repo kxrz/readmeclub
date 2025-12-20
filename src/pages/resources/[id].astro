@@ -12,6 +12,7 @@ import Seo from "@/components/fundations/head/Seo.astro";
 import SmallResourceCard from "@/components/resources/SmallResourceCard.astro";
 import SmallMoreCard from "@/components/resources/SmallMoreCard.astro";
 import { supabase } from '@/lib/supabase/client';
+import { cachedQuery, CacheKeys } from '@/lib/supabase/cache';
 import { useTranslations, getLangFromUrl, getLangPrefix } from '@/i18n/utils';
 import { getGradientForId } from '@/lib/utils/gradients';
 import { normalizeSiteUrl, buildUrl } from '@/lib/utils/url';
@@ -29,13 +30,21 @@ if (!id) {
   return Astro.redirect(`${langPrefix}/resources`);
 }
 
-const { data: resource, error } = await supabase
-  .from('resources')
-  .select('*')
-  .eq('id', id)
-  .eq('status', 'approved')
-  .eq('hidden', false)
-  .single();
+// Fetch resource avec cache
+const { data: resource, error } = await cachedQuery(
+  () => supabase
+    .from('resources')
+    .select('*')
+    .eq('id', id)
+    .eq('status', 'approved')
+    .eq('hidden', false)
+    .single(),
+  {
+    key: await CacheKeys.resourceById(id),
+    ttl: 86400,
+    contentType: 'resources',
+  }
+);
 
 if (error || !resource) {
   return Astro.redirect(`${langPrefix}/resources`);

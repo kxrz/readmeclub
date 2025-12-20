@@ -16,59 +16,100 @@ import BuyMeACoffee from "@/components/common/BuyMeACoffee.astro";
 import NewsCard from "@/components/news/NewsCard.astro";
 import Seo from "@/components/fundations/head/Seo.astro";
 import { supabase } from '@/lib/supabase/client';
+import { cachedQuery, CacheKeys } from '@/lib/supabase/cache';
 import { useTranslations, getLangFromUrl, getLangPrefix } from '@/i18n/utils';
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 const langPrefix = getLangPrefix(lang);
 
-// Fetch latest resources for activity feed
-const { data: latestResources } = await supabase
-  .from('resources')
-  .select('*')
-  .eq('status', 'approved')
-  .eq('hidden', false)
-  .order('created_at', { ascending: false })
-  .limit(5);
+// Fetch latest resources for activity feed (avec cache)
+const { data: latestResources } = await cachedQuery(
+  () => supabase
+    .from('resources')
+    .select('*')
+    .eq('status', 'approved')
+    .eq('hidden', false)
+    .order('created_at', { ascending: false })
+    .limit(5),
+  {
+    key: await CacheKeys.latestResources(lang),
+    ttl: 86400, // 24h - invalidation manuelle
+    lang,
+    contentType: 'resources',
+  }
+);
 
-// Fetch featured resources
-const { data: featuredResources } = await supabase
-  .from('resources')
-  .select('*')
-  .eq('status', 'approved')
-  .eq('hidden', false)
-  .order('downloads_count', { ascending: false })
-  .limit(8);
+// Fetch featured resources (avec cache)
+const { data: featuredResources } = await cachedQuery(
+  () => supabase
+    .from('resources')
+    .select('*')
+    .eq('status', 'approved')
+    .eq('hidden', false)
+    .order('downloads_count', { ascending: false })
+    .limit(8),
+  {
+    key: await CacheKeys.featuredResources(lang),
+    ttl: 86400,
+    lang,
+    contentType: 'resources',
+  }
+);
 
-// Fetch starred resources
-const { data: starredResources } = await supabase
-  .from('resources')
-  .select('*')
-  .eq('status', 'approved')
-  .eq('hidden', false)
-  .eq('starred', true)
-  .order('created_at', { ascending: false })
-  .limit(6);
+// Fetch starred resources (avec cache)
+const { data: starredResources } = await cachedQuery(
+  () => supabase
+    .from('resources')
+    .select('*')
+    .eq('status', 'approved')
+    .eq('hidden', false)
+    .eq('starred', true)
+    .order('created_at', { ascending: false })
+    .limit(6),
+  {
+    key: await CacheKeys.starredResources(lang),
+    ttl: 86400,
+    lang,
+    contentType: 'resources',
+  }
+);
 
-// Fetch latest wallpapers
-const { data: latestWallpapers } = await supabase
-  .from('wallpapers')
-  .select('*')
-  .eq('status', 'published')
-  .eq('hidden', false)
-  .order('created_at', { ascending: false })
-  .limit(4);
+// Fetch latest wallpapers (avec cache)
+const { data: latestWallpapers } = await cachedQuery(
+  () => supabase
+    .from('wallpapers')
+    .select('*')
+    .eq('status', 'published')
+    .eq('hidden', false)
+    .order('created_at', { ascending: false })
+    .limit(4),
+  {
+    key: await CacheKeys.latestWallpapers(lang),
+    ttl: 86400,
+    lang,
+    contentType: 'wallpapers',
+  }
+);
 
-// Fetch latest news articles - order by featured first, then by published_at (or created_at if null), most recent first
-const { data: latestNews } = await supabase
-  .from('news')
-  .select('*')
-  .eq('status', 'published')
-  .eq('hidden', false)
-  .order('featured', { ascending: false })
-  .order('published_at', { ascending: false, nullsFirst: false })
-  .order('created_at', { ascending: false })
-  .limit(3);
+// Fetch latest news articles (avec cache)
+const { data: latestNews } = await cachedQuery(
+  () => supabase
+    .from('news')
+    .select('*')
+    .eq('status', 'published')
+    .eq('hidden', false)
+    .order('featured', { ascending: false })
+    .order('published_at', { ascending: false, nullsFirst: false })
+    .order('created_at', { ascending: false })
+    .limit(3),
+  {
+    key: await CacheKeys.latestNews(lang),
+    ttl: 86400,
+    lang,
+    contentType: 'news',
+  }
+);
 ---
 
 <BaseLayout>

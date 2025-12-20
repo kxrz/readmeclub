@@ -2,6 +2,7 @@ export const prerender = false;
 
 import type { APIRoute } from 'astro';
 import { getSupabaseAdmin } from '@/lib/supabase/admin';
+import { invalidateCache, pregenerateCache } from '@/lib/supabase/cache';
 import { z } from 'zod';
 import { requireAdmin } from '@/lib/utils/admin';
 
@@ -56,6 +57,15 @@ export const PUT: APIRoute = async ({ params, request, cookies }) => {
         headers: { 'Content-Type': 'application/json' },
       });
     }
+
+    // Invalide le cache si le statut ou la visibilité a changé (en arrière-plan)
+    // Invalide toujours car n'importe quel champ peut affecter l'affichage
+    Promise.all([
+      invalidateCache('news'),
+      pregenerateCache('news', supabaseAdmin),
+    ]).catch(err => {
+      console.error('Cache invalidation/pre-generation failed:', err);
+    });
 
     return new Response(JSON.stringify(data), {
       status: 200,

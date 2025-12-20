@@ -2,6 +2,7 @@ export const prerender = false;
 
 import type { APIRoute } from 'astro';
 import { supabase } from '@/lib/supabase/client';
+import { cachedQuery, CacheKeys, invalidateCache, pregenerateCache } from '@/lib/supabase/cache';
 import { z } from 'zod';
 
 const resourceSchema = z.object({
@@ -27,20 +28,32 @@ export const GET: APIRoute = async ({ request }) => {
     const type = url.searchParams.get('type');
     const limit = parseInt(url.searchParams.get('limit') || '50');
     const offset = parseInt(url.searchParams.get('offset') || '0');
+    const page = Math.floor(offset / limit) + 1;
     
-    let query = supabase
-      .from('resources')
-      .select('*')
-      .eq('status', 'approved')
-      .eq('hidden', false)
-      .order('created_at', { ascending: false })
-      .range(offset, offset + limit - 1);
-    
-    if (type) {
-      query = query.eq('type', type);
-    }
-    
-    const { data, error } = await query;
+    // Query avec cache
+    const { data, error } = await cachedQuery(
+      () => {
+        let query = supabase
+          .from('resources')
+          .select('*')
+          .eq('status', 'approved')
+          .eq('hidden', false)
+          .order('created_at', { ascending: false })
+          .range(offset, offset + limit - 1);
+        
+        if (type) {
+          query = query.eq('type', type);
+        }
+        
+        return query;
+      },
+      {
+        key: await CacheKeys.resourcesPage(page, type || undefined),
+        ttl: 86400,
+        contentType: 'resources',
+        parts: [page, limit, type],
+      }
+    );
     
     if (error) {
       return new Response(JSON.stringify({ error: error.message }), {
@@ -49,9 +62,12 @@ export const GET: APIRoute = async ({ request }) => {
       });
     }
     
-    return new Response(JSON.stringify(data), {
+    return new Response(JSON.stringify(data || []), {
       status: 200,
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 
+        'Content-Type': 'application/json',
+        'Cache-Control': 'public, s-maxage=86400, stale-while-revalidate=3600'
+      },
     });
   } catch (error: any) {
     return new Response(JSON.stringify({ 
@@ -105,6 +121,15 @@ export const POST: APIRoute = async ({ request }) => {
     
     // Increment submission count
     await incrementSubmissionCount(ipHash);
+    
+    // Invalide le cache et pré-génère les nouveaux caches (en arrière-plan, ne bloque pas la réponse)
+    Promise.all([
+      invalidateCache('resources'),
+      pregenerateCache('resources', supabase),
+    ]).catch(err => {
+      console.error('Cache invalidation/pre-generation failed:', err);
+      // Ne fait pas échouer la requête si le cache échoue
+    });
     
     return new Response(JSON.stringify(data), {
       status: 201,

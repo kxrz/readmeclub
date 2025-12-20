@@ -11,6 +11,7 @@ import Wrapper from "@/components/fundations/containers/Wrapper.astro";
 import Seo from "@/components/fundations/head/Seo.astro";
 import WallpaperThumbnail from "@/components/wallpapers/WallpaperThumbnail.astro";
 import { supabase } from '@/lib/supabase/client';
+import { cachedQuery, CacheKeys } from '@/lib/supabase/cache';
 import { useTranslations } from '@/i18n/utils';
 import { getGradientForId } from '@/lib/utils/gradients';
 import { normalizeSiteUrl, buildUrl } from '@/lib/utils/url';
@@ -28,13 +29,21 @@ if (!id) {
   return Astro.redirect(`/${lang}/wallpapers`);
 }
 
-const { data: wallpaper, error } = await supabase
-  .from('wallpapers')
-  .select('*')
-  .eq('id', id)
-  .eq('status', 'published')
-  .eq('hidden', false)
-  .single();
+// Fetch wallpaper avec cache
+const { data: wallpaper, error } = await cachedQuery(
+  () => supabase
+    .from('wallpapers')
+    .select('*')
+    .eq('id', id)
+    .eq('status', 'published')
+    .eq('hidden', false)
+    .single(),
+  {
+    key: await CacheKeys.wallpaperById(id),
+    ttl: 86400,
+    contentType: 'wallpapers',
+  }
+);
 
 if (error || !wallpaper) {
   return Astro.redirect(`/${lang}/wallpapers`);
