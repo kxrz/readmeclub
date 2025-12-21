@@ -5,6 +5,7 @@ import { getSupabaseAdmin } from '@/lib/supabase/admin';
 import { invalidateCache, pregenerateCache } from '@/lib/supabase/cache';
 import { z } from 'zod';
 import { requireAdmin } from '@/lib/utils/admin';
+import { triggerVercelRebuild } from '@/lib/utils/vercel-rebuild';
 
 const newsUpdateSchema = z.object({
   title: z.string().min(1).max(255).optional(),
@@ -63,8 +64,9 @@ export const PUT: APIRoute = async ({ params, request, cookies }) => {
     Promise.all([
       invalidateCache('news'),
       pregenerateCache('news', supabaseAdmin),
+      triggerVercelRebuild(), // Déclenche un rebuild pour mettre à jour les pages pré-rendues
     ]).catch(err => {
-      console.error('Cache invalidation/pre-generation failed:', err);
+      console.error('Cache invalidation/pre-generation/rebuild failed:', err);
     });
 
     return new Response(JSON.stringify(data), {

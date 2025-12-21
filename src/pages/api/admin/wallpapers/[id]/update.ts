@@ -5,6 +5,7 @@ import { requireAdmin } from '@/lib/utils/admin';
 import { getSupabaseAdmin } from '@/lib/supabase/admin';
 import { invalidateCache, pregenerateCache } from '@/lib/supabase/cache';
 import { z } from 'zod';
+import { triggerVercelRebuild } from '@/lib/utils/vercel-rebuild';
 
 const updateWallpaperSchema = z.object({
   status: z.enum(['draft', 'published']).optional(),
@@ -60,8 +61,9 @@ export const PUT: APIRoute = async ({ params, request, cookies }) => {
     Promise.all([
       invalidateCache('wallpapers'),
       pregenerateCache('wallpapers', supabaseAdmin),
+      triggerVercelRebuild(), // Déclenche un rebuild pour mettre à jour les pages pré-rendues
     ]).catch(err => {
-      console.error('Cache invalidation/pre-generation failed:', err);
+      console.error('Cache invalidation/pre-generation/rebuild failed:', err);
     });
     
     return new Response(JSON.stringify(data), {

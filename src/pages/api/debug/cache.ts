@@ -1,3 +1,5 @@
+export const prerender = false; // Critical pour Vercel - évite les erreurs 405
+
 import type { APIRoute } from 'astro';
 import { supabase } from '@/lib/supabase/client';
 import { cachedQuery, CacheKeys } from '@/lib/supabase/cache';

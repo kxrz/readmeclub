@@ -4,6 +4,7 @@ import type { APIRoute } from 'astro';
 import { supabase } from '@/lib/supabase/client';
 import { cachedQuery, CacheKeys, invalidateCache, pregenerateCache } from '@/lib/supabase/cache';
 import { z } from 'zod';
+import { triggerVercelRebuild } from '@/lib/utils/vercel-rebuild';
 
 const resourceSchema = z.object({
   type: z.enum(['language_file', 'plugin', 'link', 'documentation', 'tool', 'info', 'other']),
@@ -126,9 +127,10 @@ export const POST: APIRoute = async ({ request }) => {
     Promise.all([
       invalidateCache('resources'),
       pregenerateCache('resources', supabase),
+      triggerVercelRebuild(), // Déclenche un rebuild pour mettre à jour les pages pré-rendues
     ]).catch(err => {
-      console.error('Cache invalidation/pre-generation failed:', err);
-      // Ne fait pas échouer la requête si le cache échoue
+      console.error('Cache invalidation/pre-generation/rebuild failed:', err);
+      // Ne fait pas échouer la requête si le cache/rebuild échoue
     });
     
     return new Response(JSON.stringify(data), {

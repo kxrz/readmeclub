@@ -5,7 +5,8 @@ import mdx from "@astrojs/mdx";
 import vercel from "@astrojs/vercel";
 
 export default defineConfig({
-  output: 'server',
+  // output: 'static' est le défaut et permet pré-rendu sélectif
+  // Les pages avec prerender = true sont statiques, les autres sont SSR
   adapter: vercel(),
   vite: {
     plugins: [tailwindcss()],

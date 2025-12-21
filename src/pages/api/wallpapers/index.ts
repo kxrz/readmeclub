@@ -6,6 +6,7 @@ import { getSupabaseAdmin } from '@/lib/supabase/admin';
 import { cachedQuery, CacheKeys, invalidateCache, pregenerateCache } from '@/lib/supabase/cache';
 import { z } from 'zod';
 import { getIPHash, checkSubmissionLimit, incrementSubmissionCount } from '@/lib/utils/rate-limit';
+import { triggerVercelRebuild } from '@/lib/utils/vercel-rebuild';
 
 const wallpaperSchema = z.object({
   title: z.string().max(60).optional(),
@@ -126,9 +127,10 @@ export const POST: APIRoute = async ({ request }) => {
     Promise.all([
       invalidateCache('wallpapers'),
       pregenerateCache('wallpapers', supabaseAdmin),
+      triggerVercelRebuild(), // Déclenche un rebuild pour mettre à jour les pages pré-rendues
     ]).catch(err => {
-      console.error('Cache invalidation/pre-generation failed:', err);
-      // Ne fait pas échouer la requête si le cache échoue
+      console.error('Cache invalidation/pre-generation/rebuild failed:', err);
+      // Ne fait pas échouer la requête si le cache/rebuild échoue
     });
     
     return new Response(JSON.stringify({ success: true, data }), {

@@ -1,5 +1,14 @@
 ---
-export const prerender = false;
+// Pré-rendu statique pour réduire drastiquement les requêtes DB
+export const prerender = true;
+
+// Génère toutes les langues au build
+export async function getStaticPaths() {
+  const langs = ['en', 'fr', 'es', 'ru', 'cn'];
+  return langs.map((lang) => ({
+    params: { lang },
+  }));
+}
 
 // Layout
 import BaseLayout from "@/layouts/BaseLayout.astro";
