@@ -6,26 +6,38 @@ Déclencher automatiquement un rebuild Vercel après chaque soumission de nouvea
 
 ## 📋 Configuration Requise
 
-### Étape 1 : Créer un Build Hook dans Vercel
+### Étape 1 : Créer un Deploy Hook dans Vercel
 
 1. **Aller dans Vercel Dashboard** → Votre projet
-2. **Settings** → **Git** → **Deploy Hooks**
-3. **Create Hook**
-4. **Nom** : `content-update` (ou autre nom)
-5. **Branch** : `main` (ou votre branche de production)
-6. **Copier l'URL du webhook** (format : `https://api.vercel.com/v1/integrations/deploy/...`)
+2. **Settings** (⚙️) → **Git** (dans le menu de gauche)
+3. **Faire défiler** jusqu'à la section **Deploy Hooks**
+4. **Create Hook**
+5. **Name** : `content-update` (ou autre nom)
+6. **Git Branch** : `main` (ou votre branche de production)
+7. **Create Hook**
+8. **⚠️ IMPORTANT** : **Copier l'URL du webhook** qui s'affiche
+   - Format : `https://api.vercel.com/v1/integrations/deploy/xxxxx/yyyyy`
+   - Vous en aurez besoin à l'étape 2
 
 ### Étape 2 : Ajouter la Variable d'Environnement
 
 1. **Vercel Dashboard** → Votre projet → **Settings** → **Environment Variables**
-2. **Ajouter une nouvelle variable** :
+2. **Add New**
+3. **Remplir** :
    - **Key** : `VERCEL_REBUILD_WEBHOOK_URL`
-   - **Value** : L'URL du webhook copiée à l'étape 1
-   - **Environments** : ✅ Production (et Development si vous voulez tester)
+   - **Value** : Collez l'URL du webhook copiée à l'étape 1
+   - **Environments** : 
+     - ✅ **Production** (obligatoire)
+     - ✅ **Preview** (optionnel, pour tester)
+     - ❌ **Development** (pas nécessaire)
+4. **Save**
 
 ### Étape 3 : Redéployer
 
-Après avoir ajouté la variable d'environnement, **redéployer** le projet pour que la variable soit disponible.
+**Important** : Les variables d'environnement ne sont disponibles qu'après un redéploiement.
+
+**Option A** : Faire un commit + push (redéploiement automatique)  
+**Option B** : Vercel Dashboard → Deployments → ⋯ → **Redeploy**
 
 ## ✅ Fonctionnement
 
