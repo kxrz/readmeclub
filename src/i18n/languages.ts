@@ -139,7 +139,7 @@ export const ui = {
     'wallpapers.form.reddit_username_placeholder': 'u/username (optional)',
     'wallpapers.form.instagram_username': 'Instagram Username',
     'wallpapers.form.instagram_username_placeholder': '@username (optional)',
-    'wallpapers.form.success_message': 'Wallpaper submitted successfully!',
+    'wallpapers.form.success_message': 'Your wallpaper has been received! It will be online shortly. Please do not submit the same wallpaper multiple times.',
     'wallpapers.form.copyright_notice': 'By submitting this wallpaper, you confirm that you own the copyright or have obtained proper authorization to share this content. You are solely responsible for any copyright infringement. This platform is not liable for copyright violations.',
     
     // Fonts
@@ -228,7 +228,7 @@ export const ui = {
     'board.form.tags': 'Tags (optional)',
     'board.form.tags_hint': 'comma-separated',
     'board.form.submit': 'Submit',
-    'board.form.success': 'Feature request submitted successfully!',
+    'board.form.success': 'Your feature request has been received! It will be online shortly. Please do not submit the same request multiple times.',
     'board.form.error': 'Failed to submit feature request',
     'board.no_results': 'No feature requests found',
     
@@ -320,7 +320,7 @@ export const ui = {
     'form.known_issues_placeholder': 'Any known issues or limitations...',
     'form.contributor_name_placeholder': 'Your name or username',
     'form.contact_info_placeholder': 'Email, Reddit, etc.',
-    'form.success_message': 'Resource submitted successfully! It will be reviewed before being published.',
+    'form.success_message': 'Your resource has been received! It will be online shortly. Please do not submit the same resource multiple times.',
     'resources.type.label': 'Resource Type',
     
     // Admin
@@ -487,7 +487,7 @@ export const ui = {
     'wallpapers.form.reddit_username_placeholder': 'u/nom_utilisateur (optionnel)',
     'wallpapers.form.instagram_username': 'Nom d\'utilisateur Instagram',
     'wallpapers.form.instagram_username_placeholder': '@nom_utilisateur (optionnel)',
-    'wallpapers.form.success_message': 'Fond d\'écran soumis avec succès !',
+    'wallpapers.form.success_message': 'Votre fond d\'écran a bien été reçu ! Il sera bientôt en ligne. Merci de ne pas publier plusieurs fois le même fond d\'écran.',
     'wallpapers.form.copyright_notice': 'En soumettant ce fond d\'écran, vous confirmez que vous détenez les droits d\'auteur ou avez obtenu l\'autorisation appropriée pour partager ce contenu. Vous êtes seul responsable de toute violation de droits d\'auteur. Cette plateforme n\'est pas responsable des violations de droits d\'auteur.',
     
     // Fonts
@@ -541,7 +541,7 @@ export const ui = {
     'board.form.tags': 'Tags (optionnel)',
     'board.form.tags_hint': 'séparés par des virgules',
     'board.form.submit': 'Soumettre',
-    'board.form.success': 'Demande de fonctionnalité soumise avec succès !',
+    'board.form.success': 'Votre demande de fonctionnalité a bien été reçue ! Elle sera bientôt en ligne. Merci de ne pas publier plusieurs fois la même demande.',
     'board.form.error': 'Échec de la soumission de la demande',
     'board.no_results': 'Aucune demande de fonctionnalité trouvée',
     
@@ -665,7 +665,7 @@ export const ui = {
     'form.known_issues_placeholder': 'Problèmes connus ou limitations...',
     'form.contributor_name_placeholder': 'Votre nom ou nom d\'utilisateur',
     'form.contact_info_placeholder': 'Email, Reddit, etc.',
-    'form.success_message': 'Ressource soumise avec succès ! Elle sera examinée avant publication.',
+    'form.success_message': 'Votre ressource a bien été reçue ! Elle sera bientôt en ligne. Merci de ne pas publier plusieurs fois la même ressource.',
     'resources.type.label': 'Type de ressource',
     
     // Admin
@@ -736,7 +736,7 @@ export const ui = {
     'board.form.tags': 'Etiquetas (opcional)',
     'board.form.tags_hint': 'separadas por comas',
     'board.form.submit': 'Enviar',
-    'board.form.success': '¡Solicitud de función enviada con éxito!',
+    'board.form.success': '¡Tu solicitud de función ha sido recibida! Estará en línea pronto. Por favor, no envíes la misma solicitud varias veces.',
     'board.form.error': 'Error al enviar la solicitud',
     'board.no_results': 'No se encontraron solicitudes de funciones',
     'nav.tips': 'Consejos',
@@ -850,7 +850,7 @@ export const ui = {
     'wallpapers.form.reddit_username_placeholder': 'u/nombre_usuario (opcional)',
     'wallpapers.form.instagram_username': 'Nombre de usuario de Instagram',
     'wallpapers.form.instagram_username_placeholder': '@nombre_usuario (opcional)',
-    'wallpapers.form.success_message': '¡Fondo de pantalla enviado con éxito!',
+    'wallpapers.form.success_message': '¡Tu fondo de pantalla ha sido recibido! Estará en línea pronto. Por favor, no envíes el mismo fondo de pantalla varias veces.',
     'wallpapers.form.copyright_notice': 'Al enviar este fondo de pantalla, confirma que posee los derechos de autor o ha obtenido la autorización adecuada para compartir este contenido. Usted es el único responsable de cualquier infracción de derechos de autor. Esta plataforma no es responsable de violaciones de derechos de autor.',
     
     // Fonts
@@ -1002,7 +1002,7 @@ export const ui = {
     'form.known_issues_placeholder': 'Problemas conocidos o limitaciones...',
     'form.contributor_name_placeholder': 'Tu nombre o nombre de usuario',
     'form.contact_info_placeholder': 'Email, Reddit, etc.',
-    'form.success_message': '¡Recurso enviado con éxito! Será revisado antes de ser publicado.',
+    'form.success_message': '¡Tu recurso ha sido recibido! Estará en línea pronto. Por favor, no envíes el mismo recurso varias veces.',
     'resources.type.label': 'Tipo de recurso',
     
     // Footer
@@ -1143,7 +1143,7 @@ export const ui = {
     'wallpapers.form.reddit_username_placeholder': 'u/имя_пользователя (необязательно)',
     'wallpapers.form.instagram_username': 'Имя пользователя Instagram',
     'wallpapers.form.instagram_username_placeholder': '@имя_пользователя (необязательно)',
-    'wallpapers.form.success_message': 'Обои успешно отправлены!',
+    'wallpapers.form.success_message': 'Ваши обои получены! Они скоро появятся в сети. Пожалуйста, не отправляйте одни и те же обои несколько раз.',
     'wallpapers.form.copyright_notice': 'Отправляя эти обои, вы подтверждаете, что владеете авторскими правами или получили соответствующее разрешение на распространение этого контента. Вы несете единоличную ответственность за любое нарушение авторских прав. Эта платформа не несет ответственности за нарушения авторских прав.',
     
     // Fonts
@@ -1232,7 +1232,7 @@ export const ui = {
     'board.form.tags': 'Теги (необязательно)',
     'board.form.tags_hint': 'разделенные запятыми',
     'board.form.submit': 'Отправить',
-    'board.form.success': 'Запрос функции успешно отправлен!',
+    'board.form.success': 'Ваш запрос функции получен! Он скоро появится в сети. Пожалуйста, не отправляйте один и тот же запрос несколько раз.',
     'board.form.error': 'Не удалось отправить запрос',
     'board.no_results': 'Запросы функций не найдены',
     
@@ -1321,7 +1321,7 @@ export const ui = {
     'form.known_issues_placeholder': 'Известные проблемы или ограничения...',
     'form.contributor_name_placeholder': 'Ваше имя или имя пользователя',
     'form.contact_info_placeholder': 'Email, Reddit и т.д.',
-    'form.success_message': 'Ресурс успешно отправлен! Он будет проверен перед публикацией.',
+    'form.success_message': 'Ваш ресурс получен! Он скоро появится в сети. Пожалуйста, не отправляйте один и тот же ресурс несколько раз.',
     'resources.type.label': 'Тип ресурса',
     
     // Footer
@@ -1462,7 +1462,7 @@ export const ui = {
     'wallpapers.form.reddit_username_placeholder': 'u/用户名（可选）',
     'wallpapers.form.instagram_username': 'Instagram 用户名',
     'wallpapers.form.instagram_username_placeholder': '@用户名（可选）',
-    'wallpapers.form.success_message': '壁纸提交成功！',
+    'wallpapers.form.success_message': '您的壁纸已收到！将很快上线。请不要多次提交相同的壁纸。',
     'wallpapers.form.copyright_notice': '提交此壁纸即表示您确认拥有版权或已获得适当授权来分享此内容。您对任何版权侵权行为承担全部责任。本平台不对版权侵权行为负责。',
     
     // Fonts
@@ -1551,7 +1551,7 @@ export const ui = {
     'board.form.tags': '标签（可选）',
     'board.form.tags_hint': '用逗号分隔',
     'board.form.submit': '提交',
-    'board.form.success': '功能请求提交成功！',
+    'board.form.success': '您的功能请求已收到！将很快上线。请不要多次提交相同的请求。',
     'board.form.error': '提交功能请求失败',
     'board.no_results': '未找到功能请求',
     
@@ -1640,7 +1640,7 @@ export const ui = {
     'form.known_issues_placeholder': '已知问题或限制...',
     'form.contributor_name_placeholder': '您的姓名或用户名',
     'form.contact_info_placeholder': '电子邮件、Reddit等',
-    'form.success_message': '资源提交成功！将在发布前进行审核。',
+    'form.success_message': '您的资源已收到！将很快上线。请不要多次提交相同的资源。',
     'resources.type.label': '资源类型',
     
     // Footer
