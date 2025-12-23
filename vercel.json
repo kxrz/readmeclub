@@ -1,0 +1,26 @@
+{
+  "redirects": [
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "xteink-community-hub.replit.app"
+        }
+      ],
+      "destination": "https://readme.club/$1",
+      "permanent": true
+    },
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "xteink.dontthinkjustbuild.com"
+        }
+      ],
+      "destination": "https://readme.club/$1",
+      "permanent": true
+    }
+  ]
+}
