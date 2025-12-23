@@ -222,12 +222,104 @@ export async function cachedCount(
   options: CacheOptions = {}
 ): Promise<CacheResult<number>> {
   // Les counts peuvent être cachés très longtemps (24h par défaut)
-  const { ttl = 86400, ...restOptions } = options;
+  const { ttl = 86400 } = options;
   
-  return cachedQuery<number>(queryFn, {
-    ...restOptions,
-    ttl,
-  });
+  // Génère la clé de cache
+  const cacheKey = options.key 
+    ? generateCacheKey(options.key, options)
+    : `supabase:count:${Date.now()}`;
+  
+  // Essaie d'abord Astro.cache (disponible dans les pages .astro)
+  if (typeof Astro !== 'undefined' && Astro.cache) {
+    try {
+      const cached = await Astro.cache.get(cacheKey);
+      if (cached !== null && cached !== undefined) {
+        console.log(`✅ Cache HIT (Astro.cache): ${cacheKey}`);
+        return {
+          data: cached as number,
+          error: null,
+          fromCache: true,
+        };
+      }
+      console.log(`❌ Cache MISS (Astro.cache): ${cacheKey}`);
+    } catch (error) {
+      console.warn(`Cache get failed for key ${cacheKey}:`, error);
+    }
+  }
+  
+  // Si Astro.cache n'est pas disponible, utilise le cache mémoire (pour API routes)
+  cleanupMemoryCache();
+  const memoryEntry = memoryCache.get(cacheKey);
+  if (memoryEntry && memoryEntry.expiresAt > Date.now()) {
+    console.log(`✅ Cache HIT (memory): ${cacheKey}`);
+    return {
+      data: memoryEntry.data as number,
+      error: null,
+      fromCache: true,
+    };
+  }
+  
+  if (memoryEntry) {
+    console.log(`❌ Cache MISS (memory expired): ${cacheKey}`);
+  } else {
+    console.log(`❌ Cache MISS (memory): ${cacheKey}`);
+  }
+  
+  // Exécute la requête
+  try {
+    const query = queryFn();
+    const { data, count, error } = await query;
+    
+    if (error) {
+      return {
+        data: null,
+        error: error as Error,
+        fromCache: false,
+      };
+    }
+    
+    // Pour les requêtes count avec head: true, Supabase retourne count dans la propriété count
+    const countValue = count !== null && count !== undefined ? count : (data as number);
+    
+    // Stocke dans Astro.cache (si disponible)
+    if (typeof Astro !== 'undefined' && Astro.cache && countValue !== null && countValue !== undefined) {
+      try {
+        await Astro.cache.set(cacheKey, countValue, { ttl });
+        console.log(`💾 Cache SET (Astro.cache): ${cacheKey} (TTL: ${ttl}s)`);
+      } catch (error) {
+        console.warn(`Cache set failed for key ${cacheKey}:`, error);
+      }
+    }
+    
+    // Stocke aussi dans le cache mémoire
+    if (countValue !== null && countValue !== undefined) {
+      const expiresAt = Date.now() + (ttl * 1000);
+      memoryCache.set(cacheKey, { data: countValue, expiresAt });
+      console.log(`💾 Cache SET (memory): ${cacheKey} (TTL: ${ttl}s)`);
+      
+      // Limite la taille du cache mémoire
+      if (memoryCache.size > 1000) {
+        const entries = Array.from(memoryCache.entries())
+          .sort((a, b) => a[1].expiresAt - b[1].expiresAt)
+          .slice(0, 100);
+        for (const [key] of entries) {
+          memoryCache.delete(key);
+        }
+      }
+    }
+    
+    return {
+      data: countValue as number,
+      error: null,
+      fromCache: false,
+    };
+  } catch (error) {
+    return {
+      data: null,
+      error: error as Error,
+      fromCache: false,
+    };
+  }
 }
 
 /**
