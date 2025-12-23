@@ -443,17 +443,17 @@ export const CacheKeys = {
     const version = await getCacheVersion('news');
     return `latest:news:v${version}:${lang || 'all'}`;
   },
-  wallpapersCount: async () => {
+  wallpapersCount: async (category?: string) => {
     const version = await getCacheVersion('wallpapers');
-    return `count:wallpapers:v${version}:all`;
+    return `count:wallpapers:v${version}:${category || 'all'}`;
   },
   newsCount: async () => {
     const version = await getCacheVersion('news');
     return `count:news:v${version}:all`;
   },
-  resourcesCount: async () => {
+  resourcesCount: async (type?: string) => {
     const version = await getCacheVersion('resources');
-    return `count:resources:v${version}:all`;
+    return `count:resources:v${version}:${type || 'all'}`;
   },
   wallpapersPage: async (page: number, category?: string, sort?: string) => {
     const version = await getCacheVersion('wallpapers');

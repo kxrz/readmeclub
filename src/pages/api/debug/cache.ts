@@ -97,8 +97,12 @@ export const GET: APIRoute = async ({ request }) => {
         key: key2,
       },
       result: {
-        cacheWorking: cacheAvailable && fromCache1 === false && fromCache2 === true,
-        performanceGain: fromCache2 ? `${Math.round((duration1 - duration2) / duration1 * 100)}% plus rapide` : 'N/A',
+        cacheWorking: cacheAvailable && fromCache2 === true,
+        performanceGain: fromCache2 && duration1 > 0 
+          ? `${Math.round((duration1 - duration2) / duration1 * 100)}% plus rapide` 
+          : fromCache2 && duration1 === 0 && duration2 === 0
+          ? 'Cache instantané (0ms)'
+          : 'N/A',
       },
     }, null, 2), {
       status: 200,

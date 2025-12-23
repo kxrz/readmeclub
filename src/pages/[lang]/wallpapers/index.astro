@@ -1,14 +1,5 @@
 ---
-// Pré-rendu statique pour réduire drastiquement les requêtes DB
-export const prerender = true;
-
-// Génère toutes les langues au build
-export async function getStaticPaths() {
-  const langs = ['en', 'fr', 'es', 'ru', 'cn'];
-  return langs.map((lang) => ({
-    params: { lang },
-  }));
-}
+export const prerender = false; // Pagination dynamique nécessite SSR
 
 // Layout
 import BaseLayout from "@/layouts/BaseLayout.astro";
@@ -67,25 +58,45 @@ const { data: rawWallpapers } = await cachedQuery(
   }
 );
 
-const wallpapers = rawWallpapers ? rawWallpapers.slice(0, pageSize) : [];
-const hasNext = !!rawWallpapers && rawWallpapers.length > pageSize;
-const hasPrev = page > 1;
+const wallpapers = rawWallpapers || [];
 
-// Count query avec cache (TTL long car invalidation manuelle)
+// Count query avec cache (avec category dans la clé si filtré)
 const { data: wallpapersCount } = await cachedCount(
-  () => supabase
-    .from('wallpapers')
-    .select('*', { count: 'exact', head: true })
-    .eq('status', 'published')
-    .eq('hidden', false),
+  () => {
+    let countQuery = supabase
+      .from('wallpapers')
+      .select('*', { count: 'exact', head: true })
+      .eq('status', 'published')
+      .eq('hidden', false);
+    
+    if (category) {
+      countQuery = countQuery.eq('category', category);
+    }
+    
+    return countQuery;
+  },
   {
-    key: await CacheKeys.wallpapersCount(),
+    key: await CacheKeys.wallpapersCount(category || undefined),
     ttl: 86400,
     contentType: 'wallpapers',
+    parts: category ? [category] : undefined,
   }
 );
 
 const totalWallpapers = wallpapersCount || 0;
+const totalPages = Math.ceil(totalWallpapers / pageSize);
+
+// Generate pagination pages array
+const paginationPages: number[] = [];
+if (totalPages > 1) {
+  for (let i = 1; i <= totalPages; i++) {
+    if (i === 1 || i === totalPages || (i >= page - 1 && i <= page + 1)) {
+      paginationPages.push(i);
+    } else if (i === page - 2 || i === page + 2) {
+      paginationPages.push(-1); // -1 represents ellipsis
+    }
+  }
+}
 const baseSubtitle = t('wallpapers.subtitle');
 const normalizedSubtitle = baseSubtitle.length > 0 ? baseSubtitle[0].toLowerCase() + baseSubtitle.slice(1) : baseSubtitle;
 const wallpapersSubtitle = totalWallpapers > 0 ? `${totalWallpapers} ${normalizedSubtitle}` : baseSubtitle;
@@ -105,6 +116,15 @@ const sortOptions = [
   { value: 'name', label: t('common.sort.name') },
   { value: 'author', label: t('common.sort.author') },
 ];
+
+// Helper function pour construire l'URL de pagination
+function buildWallpapersUrl(category: string | null, sort: string, pageNum: number): string {
+  const params = new URLSearchParams();
+  if (category) params.set('category', category);
+  if (sort !== 'latest') params.set('sort', sort);
+  if (pageNum > 1) params.set('page', pageNum.toString());
+  return params.toString() ? `?${params.toString()}` : '';
+}
 ---
 
 <BaseLayout>
@@ -239,36 +259,46 @@ const sortOptions = [
             ))}
           </div>
 
-          {(hasPrev || hasNext) && (
-            <div class="flex items-center justify-center gap-3 md:gap-4 pt-6 md:pt-10 mt-6 md:mt-10 pb-2 md:pb-4 border-t border-base-200">
-              {hasPrev ? (
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div class="flex items-center justify-center gap-2 mt-12">
+              {page > 1 && (
                 <a
-                  href={`/${lang}/wallpapers${category ? `?category=${category}` : ''}${category && sort !== 'latest' ? '&' : sort !== 'latest' ? '?' : category || page > 1 ? (category && page > 1 ? '&' : '?') : ''}${sort !== 'latest' ? `sort=${sort}` : ''}${sort !== 'latest' && page > 1 ? '&' : ''}${page > 1 ? `page=${page - 1}` : ''}`}
-                  class="inline-flex items-center justify-center w-12 h-12 md:w-10 md:h-10 rounded-full bg-base-100 text-base-700 hover:bg-base-200 hover:text-accent-500 transition-colors touch-target"
-                  aria-label="Page précédente"
+                  href={`/${lang}/wallpapers${buildWallpapersUrl(category, sort, page - 1)}`}
+                  class="px-4 py-2 text-sm text-base-700 bg-white border border-base-200 rounded-lg hover:border-accent-300 hover:text-accent-500 transition-colors"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="m15 18-6-6 6-6"/>
-                  </svg>
+                  {t('common.previous')}
                 </a>
-              ) : (
-                <div class="w-12 h-12 md:w-10 md:h-10"></div>
               )}
-              <div class="px-3 py-1.5 md:px-4 md:py-2 rounded-full text-sm font-medium bg-base-100 text-base-600">
-                {page}
+              
+              <div class="flex items-center gap-1">
+                {paginationPages.map((p) => {
+                  if (p === -1) {
+                    return <span class="px-2 text-base-500">...</span>;
+                  }
+                  const pageUrl = `/${lang}/wallpapers${buildWallpapersUrl(category, sort, p)}`;
+                  return (
+                    <a
+                      href={pageUrl}
+                      class={`px-4 py-2 text-sm rounded-lg transition-colors ${
+                        p === page
+                          ? 'bg-base-900 text-white'
+                          : 'text-base-700 bg-white border border-base-200 hover:border-accent-300 hover:text-accent-500'
+                      }`}
+                    >
+                      {p}
+                    </a>
+                  );
+                })}
               </div>
-              {hasNext ? (
+
+              {page < totalPages && (
                 <a
-                  href={`/${lang}/wallpapers${category ? `?category=${category}` : ''}${category && sort !== 'latest' ? '&' : sort !== 'latest' ? '?' : category ? '&' : '?'}${sort !== 'latest' ? `sort=${sort}&` : ''}page=${page + 1}`}
-                  class="inline-flex items-center justify-center w-12 h-12 md:w-10 md:h-10 rounded-full bg-base-100 text-base-700 hover:bg-base-200 hover:text-accent-500 transition-colors touch-target"
-                  aria-label="Page suivante"
+                  href={`/${lang}/wallpapers${buildWallpapersUrl(category, sort, page + 1)}`}
+                  class="px-4 py-2 text-sm text-base-700 bg-white border border-base-200 rounded-lg hover:border-accent-300 hover:text-accent-500 transition-colors"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="m9 18 6-6-6-6"/>
-                  </svg>
+                  {t('common.next')}
                 </a>
-              ) : (
-                <div class="w-12 h-12 md:w-10 md:h-10"></div>
               )}
             </div>
           )}

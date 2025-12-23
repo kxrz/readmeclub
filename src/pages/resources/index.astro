@@ -1,6 +1,5 @@
 ---
-// Pré-rendu statique pour réduire drastiquement les requêtes DB
-export const prerender = true;
+export const prerender = false; // Pagination dynamique nécessite SSR
 
 // Layout
 import BaseLayout from "@/layouts/BaseLayout.astro";
@@ -11,6 +10,7 @@ import ResourceCard from "@/components/resources/ResourceCard.astro";
 import Seo from "@/components/fundations/head/Seo.astro";
 import Link from "@/components/fundations/components/Link.astro";
 import { supabase } from '@/lib/supabase/client';
+import { cachedQuery, cachedCount, CacheKeys } from '@/lib/supabase/cache';
 import { useTranslations, getLangFromUrl, getLangPrefix } from '@/i18n/utils';
 
 const lang = getLangFromUrl(Astro.url);
@@ -18,24 +18,75 @@ const t = useTranslations(lang);
 const langPrefix = getLangPrefix(lang);
 const siteUrl = Astro.site || 'https://readme.club';
 
+// Pagination
 const url = Astro.url;
 const type = url.searchParams.get('type') || null;
+const page = parseInt(url.searchParams.get('page') || '1');
 const limit = 50;
-const offset = 0;
+const offset = (page - 1) * limit;
 
-let query = supabase
-  .from('resources')
-  .select('*')
-  .eq('status', 'approved')
-  .eq('hidden', false)
-  .order('created_at', { ascending: false })
-  .range(offset, offset + limit - 1);
+// Fetch resources avec cache
+const { data: resources, error } = await cachedQuery(
+  () => {
+    let query = supabase
+      .from('resources')
+      .select('*')
+      .eq('status', 'approved')
+      .eq('hidden', false)
+      .order('created_at', { ascending: false })
+      .range(offset, offset + limit - 1);
+    
+    if (type) {
+      query = query.eq('type', type);
+    }
+    
+    return query;
+  },
+  {
+    key: await CacheKeys.resourcesPage(page, type || undefined),
+    ttl: 86400,
+    lang,
+    contentType: 'resources',
+    parts: [page, type],
+  }
+);
 
-if (type) {
-  query = query.eq('type', type);
+// Get total count avec cache (avec type dans la clé si filtré)
+const { data: count } = await cachedCount(
+  () => {
+    let countQuery = supabase
+      .from('resources')
+      .select('*', { count: 'exact', head: true })
+      .eq('status', 'approved')
+      .eq('hidden', false);
+    
+    if (type) {
+      countQuery = countQuery.eq('type', type);
+    }
+    
+    return countQuery;
+  },
+  {
+    key: await CacheKeys.resourcesCount(type || undefined),
+    ttl: 86400,
+    contentType: 'resources',
+    parts: type ? [type] : undefined,
+  }
+);
+
+const totalPages = Math.ceil((count || 0) / limit);
+
+// Generate pagination pages array
+const paginationPages: number[] = [];
+if (totalPages > 1) {
+  for (let i = 1; i <= totalPages; i++) {
+    if (i === 1 || i === totalPages || (i >= page - 1 && i <= page + 1)) {
+      paginationPages.push(i);
+    } else if (i === page - 2 || i === page + 2) {
+      paginationPages.push(-1); // -1 represents ellipsis
+    }
+  }
 }
-
-const { data: resources } = await query;
 
 const resourceTypes = [
   { value: 'tool', label: t('resources.type.tool') },
@@ -130,11 +181,57 @@ const resourceTypes = [
       
       <!-- Resources Grid -->
       {resources && resources.length > 0 ? (
-        <div class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3 mt-2">
-          {resources.map((resource) => (
-            <ResourceCard resource={resource} />
-          ))}
-        </div>
+        <>
+          <div class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3 mt-2">
+            {resources.map((resource) => (
+              <ResourceCard resource={resource} />
+            ))}
+          </div>
+
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div class="flex items-center justify-center gap-2 mt-12">
+              {page > 1 && (
+                <a
+                  href={`${langPrefix}/resources${type ? `?type=${type}${page > 2 ? `&page=${page - 1}` : ''}` : page > 2 ? `?page=${page - 1}` : ''}`}
+                  class="px-4 py-2 text-sm text-base-700 bg-white border border-base-200 rounded-lg hover:border-accent-300 hover:text-accent-500 transition-colors"
+                >
+                  {t('common.previous')}
+                </a>
+              )}
+              
+              <div class="flex items-center gap-1">
+                {paginationPages.map((p) => {
+                  if (p === -1) {
+                    return <span class="px-2 text-base-500">...</span>;
+                  }
+                  const pageUrl = `${langPrefix}/resources${type ? `?type=${type}${p > 1 ? `&page=${p}` : ''}` : p > 1 ? `?page=${p}` : ''}`;
+                  return (
+                    <a
+                      href={pageUrl}
+                      class={`px-4 py-2 text-sm rounded-lg transition-colors ${
+                        p === page
+                          ? 'bg-base-900 text-white'
+                          : 'text-base-700 bg-white border border-base-200 hover:border-accent-300 hover:text-accent-500'
+                      }`}
+                    >
+                      {p}
+                    </a>
+                  );
+                })}
+              </div>
+
+              {page < totalPages && (
+                <a
+                  href={`${langPrefix}/resources${type ? `?type=${type}&page=${page + 1}` : `?page=${page + 1}`}`}
+                  class="px-4 py-2 text-sm text-base-700 bg-white border border-base-200 rounded-lg hover:border-accent-300 hover:text-accent-500 transition-colors"
+                >
+                  {t('common.next')}
+                </a>
+              )}
+            </div>
+          )}
+        </>
       ) : (
         <div class="text-center py-12">
           <Text tag="p" variant="textBase" class="text-base-500">
