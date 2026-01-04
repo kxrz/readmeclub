@@ -1,136 +1,150 @@
 # Xteink Community Hub
 
-Plateforme communautaire pour partager et découvrir des ressources pour Xteink.
+Community platform for sharing and discovering resources for Xteink.
 
-## 🚀 Démarrage rapide
+## 🚀 Quick Start
 
-### Prérequis
+### Prerequisites
 
 - Node.js 20+
-- npm ou yarn
-- Compte Supabase
+- npm or yarn
+- Supabase account
 
 ### Installation
 
-1. Cloner le projet
+1. Clone the project
 ```bash
 git clone <repository-url>
 cd xteinkhub2026
 ```
 
-2. Installer les dépendances
+2. Install dependencies
 ```bash
 npm install
 ```
 
-3. Configurer les variables d'environnement
+3. Configure environment variables
 ```bash
 cp .env.example .env
-# Éditer .env avec vos clés Supabase
+# Edit .env with your Supabase keys
 ```
 
-4. Configurer Supabase
+4. Set up Supabase
 
-- Créer un projet sur [Supabase](https://supabase.com)
-- Créer les buckets Storage : `resources` et `wallpapers` (public)
-- Exécuter les migrations SQL dans l'ordre :
+- Create a project on [Supabase](https://supabase.com)
+- Create Storage buckets: `resources` and `wallpapers` (public)
+- Run SQL migrations in order:
   - `supabase/migrations/001_initial_schema.sql`
   - `supabase/migrations/002_rls_policies.sql`
 
-5. Lancer le serveur de développement
+5. Start the development server
 ```bash
 npm run dev
 ```
 
-Le site sera accessible sur `http://localhost:4321`
+The site will be accessible at `http://localhost:4321`
 
-## 📁 Structure du projet
+## 📁 Project Structure
 
 ```
 ├── src/
-│   ├── components/       # Composants Astro réutilisables
-│   ├── pages/           # Routes Astro (pages + API)
-│   ├── layouts/         # Layouts Astro
-│   ├── lib/             # Utilitaires et clients
-│   │   ├── supabase/    # Clients Supabase
-│   │   └── utils/       # Utilitaires (rate limiting, etc.)
-│   ├── i18n/            # Système d'internationalisation
-│   └── styles/          # Styles globaux
+│   ├── components/       # Reusable Astro components
+│   ├── pages/           # Astro routes (pages + API)
+│   ├── layouts/         # Astro layouts
+│   ├── lib/             # Utilities and clients
+│   │   ├── supabase/    # Supabase clients
+│   │   └── utils/       # Utilities (rate limiting, etc.)
+│   ├── i18n/            # Internationalization system
+│   └── styles/          # Global styles
 ├── supabase/
-│   └── migrations/      # Migrations SQL
-└── public/              # Assets statiques
+│   └── migrations/      # SQL migrations
+└── public/              # Static assets
 ```
 
-## 🌐 Internationalisation
+## 🌐 Internationalization
 
-Le site supporte 5 langues :
-- EN (anglais) - langue par défaut
-- FR (français)
-- ES (espagnol)
-- RU (russe)
-- CN (chinois)
+The site supports 5 languages:
+- EN (English) - default language
+- FR (French)
+- ES (Spanish)
+- RU (Russian)
+- CN (Chinese)
 
-Les traductions sont dans `src/i18n/languages.ts`.
+Translations are in `src/i18n/languages.ts`.
 
-## 🗄️ Base de données
+## 🗄️ Database
 
-### Tables principales
+### Main tables
 
-- `resources` : Catalogue de ressources communautaires
-- `wallpapers` : Galerie de wallpapers
-- `feature_requests` : Demandes de fonctionnalités avec votes
-- `location_declarations` : Déclarations de localisation
-- `analytics` : Statistiques globales
+- `resources` : Community resources catalog
+- `wallpapers` : Wallpaper gallery
+- `feature_requests` : Feature requests with voting
+- `location_declarations` : Location declarations
+- `analytics` : Global statistics
 
-### Storage Supabase
+### Supabase Storage
 
-- Bucket `resources` : Fichiers uploadés (ressources)
-- Bucket `wallpapers` : Images wallpapers
+- `resources` bucket : Uploaded files (resources)
+- `wallpapers` bucket : Wallpaper images
 
 ## 🔐 Administration
 
-L'administration se fait via un système simple de cookie :
-- Page de login : `/admin`
-- Mot de passe défini dans `ADMIN_PASSWORD`
-- Cookie `admin_session` valide 24h
+Administration is done via a simple cookie system:
+- Login page: `/admin`
+- Password defined in `ADMIN_PASSWORD`
+- `admin_session` cookie valid for 24h
 
 ## 📤 API Routes
 
-### Ressources
+### Resources
 
-- `GET /api/resources` : Liste des ressources
-- `POST /api/resources` : Créer une ressource
-- `GET /api/resources/[id]` : Détails d'une ressource
-- `GET /api/resources/[id]/download` : Télécharger une ressource
-- `POST /api/resources/upload` : Upload de fichier
+- `GET /api/resources` : List resources
+- `POST /api/resources` : Create a resource
+- `GET /api/resources/[id]` : Resource details
+- `GET /api/resources/[id]/download` : Download a resource
+- `POST /api/resources/upload` : File upload
 
 ### Rate Limiting
 
-- Maximum 5 soumissions par IP toutes les 24h
-- Tracking via hash SHA-256 de l'IP
+- Maximum 5 submissions per IP every 24h
+- Tracking via SHA-256 hash of IP
 
-## 🚀 Déploiement sur Vercel
+## 🚀 Deployment on Vercel
 
-1. Connecter le repository à Vercel
-2. Configurer les variables d'environnement dans Vercel Dashboard
-3. Déployer automatiquement via Git
+1. Connect the repository to Vercel
+2. Configure environment variables in Vercel Dashboard
+3. Deploy automatically via Git
 
-Le projet utilise l'adapter `@astrojs/vercel/serverless` pour le SSR.
+The project uses the `@astrojs/vercel/serverless` adapter for SSR.
 
-## 📝 Scripts disponibles
+## 📝 Available Scripts
 
-- `npm run dev` : Serveur de développement
-- `npm run build` : Build de production
-- `npm run preview` : Prévisualiser le build local
+- `npm run dev` : Development server
+- `npm run build` : Production build
+- `npm run preview` : Preview local build
+- `./scripts/check-secrets.sh` : Verify no secrets are in code before commit
 
-## 🛠️ Technologies utilisées
+## 🛠️ Technologies Used
 
-- **Astro 5** : Framework SSR
+- **Astro 5** : SSR framework
 - **Tailwind CSS 4** : Styling
-- **Supabase** : Base de données + Storage
-- **TypeScript** : Typage statique
-- **Zod** : Validation de schémas
+- **Supabase** : Database + Storage
+- **TypeScript** : Static typing
+- **Zod** : Schema validation
+
+## 🔒 Security
+
+**⚠️ IMPORTANT**: This project is open-source. Never commit secrets or `.env` files.
+
+- **👉 Start here**: `PRE_COMMIT_CHECKLIST.md` - Step-by-step checklist before every commit
+- See `SECURITY.md` for security best practices
+- See `CONTRIBUTING.md` for contribution guide
+- Use `./scripts/check-secrets.sh` before each commit
 
 ## 📚 Documentation
 
-Voir `PROJECT_MIGRATION_GUIDE.md` pour plus de détails sur l'architecture.
+- `PRE_COMMIT_CHECKLIST.md` : **Pre-commit checklist** (use this before every commit!)
+- `PROJECT_MIGRATION_GUIDE.md` : Architecture details
+- `designsystem.md` : Complete design system
+- `SECURITY.md` : Security policy
+- `CONTRIBUTING.md` : Contribution guide
