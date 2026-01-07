@@ -317,7 +317,8 @@ const seoDescription = wallpaper.title ? `${wallpapersSubtitleText} - ${wallpape
             <a
               href={originalBmpUrl}
               download={`${wallpaper.title || 'wallpaper'}.bmp`}
-              class="block"
+              class="block wallpaper-download-link"
+              data-wallpaper-id={wallpaper.id}
             >
               <Button
                 variant="accent"
@@ -346,7 +347,8 @@ const seoDescription = wallpaper.title ? `${wallpapersSubtitleText} - ${wallpape
             <a
               href={imageUrl}
               download={`${wallpaper.title || 'wallpaper'}.${isBmp ? 'jpg' : 'webp'}`}
-              class="block"
+              class="block wallpaper-download-link"
+              data-wallpaper-id={wallpaper.id}
             >
               <Button
                 variant="outline"
@@ -372,6 +374,38 @@ const seoDescription = wallpaper.title ? `${wallpapersSubtitleText} - ${wallpape
               </Button>
             </a>
           </div>
+          
+          <script>
+            // Track wallpaper downloads without blocking the download
+            (function() {
+              const downloadLinks = document.querySelectorAll('.wallpaper-download-link');
+              const trackedIds = new Set(); // Éviter les doubles comptages
+              
+              downloadLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                  const wallpaperId = this.getAttribute('data-wallpaper-id');
+                  
+                  if (!wallpaperId || trackedIds.has(wallpaperId)) {
+                    return; // Déjà tracké dans cette session
+                  }
+                  
+                  // Marquer comme tracké immédiatement pour éviter les doubles clics
+                  trackedIds.add(wallpaperId);
+                  
+                  // Appeler l'API en arrière-plan (ne bloque pas le téléchargement)
+                  fetch(`/api/wallpapers/${wallpaperId}/track-download`, {
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/json',
+                    },
+                  }).catch(err => {
+                    // Ignorer les erreurs silencieusement pour ne pas perturber l'UX
+                    console.debug('Download tracking failed:', err);
+                  });
+                });
+              });
+            })();
+          </script>
 
           <!-- Copyright Notice -->
           <div class="mt-6 p-4 bg-base-50 border-l-4 border-base-300 rounded-r-lg">

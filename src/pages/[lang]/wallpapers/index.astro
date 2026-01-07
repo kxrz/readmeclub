@@ -125,34 +125,40 @@ function buildWallpapersUrl(category: string | null, sort: string, pageNum: numb
   
   <section>
     <Wrapper variant="standard" class="py-6">
-      <!-- Filtres et tri temporairement cachés -->
-      <!--
+      <!-- Filtres et tri -->
       <div class="flex flex-col gap-4 mb-6 md:flex-row md:items-center md:justify-between">
         <div class="flex items-center gap-2 flex-wrap">
           <span class="text-xs md:text-sm text-base-500 whitespace-nowrap">{t('common.filter')}</span>
           <div class="flex flex-wrap gap-1.5 md:gap-2">
-            {categories.map((cat) => {
-              const params = new URLSearchParams();
-              if (sort !== 'latest') params.set('sort', sort);
-              params.set('category', cat.value);
-              const categoryUrl = params.toString() ? `/${lang}/wallpapers?${params.toString()}` : `/${lang}/wallpapers?category=${cat.value}`;
-              return (
-                <a
-                  href={categoryUrl}
-                  class={`px-2.5 py-1 md:px-3 md:py-1 rounded-full text-xs font-medium transition-colors ${
-                    category === cat.value
-                      ? 'bg-accent-500 text-white'
-                      : 'bg-base-100 text-base-700 hover:bg-base-200'
-                  }`}
-                >
-                  {cat.label}
-                </a>
-              );
-            })}
+            <a
+              href="#"
+              data-category="all"
+              class={`category-filter px-2.5 py-1 md:px-3 md:py-1 rounded-full text-xs font-medium transition-colors ${
+                !category
+                  ? 'bg-accent-500 text-white'
+                  : 'bg-base-100 text-base-700 hover:bg-base-200'
+              }`}
+            >
+              {t('common.all') || 'All'}
+            </a>
+            {categories.map((cat) => (
+              <a
+                href="#"
+                data-category={cat.value}
+                class={`category-filter px-2.5 py-1 md:px-3 md:py-1 rounded-full text-xs font-medium transition-colors ${
+                  category === cat.value
+                    ? 'bg-accent-500 text-white'
+                    : 'bg-base-100 text-base-700 hover:bg-base-200'
+                }`}
+              >
+                {cat.label}
+              </a>
+            ))}
             {category && (
               <a
-                href={`/${lang}/wallpapers${sort !== 'latest' ? `?sort=${sort}` : ''}`}
-                class="px-2.5 py-1 md:px-3 md:py-1 rounded-full text-xs font-medium transition-colors bg-base-200 text-base-600 hover:bg-base-300 hover:text-base-700"
+                href="#"
+                data-category="all"
+                class="category-filter px-2.5 py-1 md:px-3 md:py-1 rounded-full text-xs font-medium transition-colors bg-base-200 text-base-600 hover:bg-base-300 hover:text-base-700"
                 title="Reset filter"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-block">
@@ -169,28 +175,24 @@ function buildWallpapersUrl(category: string | null, sort: string, pageNum: numb
         <div class="flex items-center gap-2 flex-wrap">
           <span class="text-xs md:text-sm text-base-500 whitespace-nowrap">{t('common.sort')}</span>
           <div class="flex flex-wrap gap-1.5 md:gap-2">
-            {sortOptions.map((option) => {
-              const params = new URLSearchParams();
-              if (category) params.set('category', category);
-              if (option.value !== 'latest') params.set('sort', option.value);
-              const sortUrl = params.toString() ? `/${lang}/wallpapers?${params.toString()}` : `/${lang}/wallpapers`;
-              return (
-                <a
-                  href={sortUrl}
-                  class={`px-2.5 py-1 md:px-3 md:py-1 rounded-full text-xs font-medium transition-colors ${
-                    sort === option.value
-                      ? 'bg-accent-500 text-white'
-                      : 'bg-base-100 text-base-700 hover:bg-base-200'
-                  }`}
-                >
-                  {option.label}
-                </a>
-              );
-            })}
+            {sortOptions.map((option) => (
+              <a
+                href="#"
+                data-sort={option.value}
+                class={`sort-option px-2.5 py-1 md:px-3 md:py-1 rounded-full text-xs font-medium transition-colors ${
+                  sort === option.value
+                    ? 'bg-accent-500 text-white'
+                    : 'bg-base-100 text-base-700 hover:bg-base-200'
+                }`}
+              >
+                {option.label}
+              </a>
+            ))}
             {sort !== 'latest' && (
               <a
-                href={`/${lang}/wallpapers${category ? `?category=${category}` : ''}`}
-                class="px-2.5 py-1 md:px-3 md:py-1 rounded-full text-xs font-medium transition-colors bg-base-200 text-base-600 hover:bg-base-300 hover:text-base-700"
+                href="#"
+                data-sort="latest"
+                class="sort-option px-2.5 py-1 md:px-3 md:py-1 rounded-full text-xs font-medium transition-colors bg-base-200 text-base-600 hover:bg-base-300 hover:text-base-700"
                 title="Reset sort"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-block">
@@ -204,59 +206,292 @@ function buildWallpapersUrl(category: string | null, sort: string, pageNum: numb
           </div>
         </div>
       </div>
-      -->
       
       {wallpapers && wallpapers.length > 0 ? (
         <div class="space-y-6">
-          <div class="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
+          {/* Données pour le tri côté client */}
+          <script id="wallpapers-data" type="application/json" set:html={JSON.stringify({ wallpapers: allWallpapers, lang, initialSort: sort, initialCategory: category, initialPage: page })}></script>
+          
+          <div id="wallpapers-grid" class="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
             {wallpapers.map((wallpaper) => (
               <WallpaperCard wallpaper={wallpaper} />
             ))}
           </div>
-
-          {/* Pagination */}
-          {totalPages > 1 && (
-            <div class="flex items-center justify-center gap-2 mt-12">
-              {page > 1 && (
-                <a
-                  href={`/${lang}/wallpapers${buildWallpapersUrl(category, sort, page - 1)}`}
-                  class="px-4 py-2 text-sm text-base-700 bg-white border border-base-200 rounded-lg hover:border-accent-300 hover:text-accent-500 transition-colors"
-                >
-                  {t('common.previous')}
-                </a>
-              )}
+          
+          <script>
+            (function() {
+              // Récupérer les données depuis le script JSON
+              const dataScript = document.getElementById('wallpapers-data');
+              if (!dataScript) return;
               
-              <div class="flex items-center gap-1">
-                {paginationPages.map((p) => {
-                  if (p === -1) {
-                    return <span class="px-2 text-base-500">...</span>;
+              const { wallpapers: allWallpapersData, lang: currentLang, initialSort, initialCategory, initialPage } = JSON.parse(dataScript.textContent);
+              
+              // Fonction de tri
+              function sortWallpapers(wallpapers, sortType) {
+                const sorted = [...wallpapers];
+                switch(sortType) {
+                  case 'popular':
+                    sorted.sort((a, b) => (b.download_count || 0) - (a.download_count || 0));
+                    break;
+                  case 'name':
+                    sorted.sort((a, b) => {
+                      const titleA = (a.title || '').toLowerCase();
+                      const titleB = (b.title || '').toLowerCase();
+                      return titleA.localeCompare(titleB);
+                    });
+                    break;
+                  case 'author':
+                    sorted.sort((a, b) => {
+                      const authorA = (a.author_name || a.reddit_username || '').toLowerCase();
+                      const authorB = (b.author_name || b.reddit_username || '').toLowerCase();
+                      return authorA.localeCompare(authorB);
+                    });
+                    break;
+                  case 'latest':
+                  default:
+                    sorted.sort((a, b) => {
+                      const dateA = new Date(a.created_at).getTime();
+                      const dateB = new Date(b.created_at).getTime();
+                      return dateB - dateA;
+                    });
+                    break;
+                }
+                return sorted;
+              }
+              
+              // Fonction de filtrage
+              function filterWallpapers(wallpapers, category) {
+                if (!category) return wallpapers;
+                return wallpapers.filter(w => w.category === category);
+              }
+              
+              // Fonction de pagination
+              function paginateWallpapers(wallpapers, page, pageSize) {
+                const start = (page - 1) * pageSize;
+                const end = start + pageSize;
+                return {
+                  data: wallpapers.slice(start, end),
+                  total: wallpapers.length,
+                  totalPages: Math.ceil(wallpapers.length / pageSize),
+                  currentPage: page,
+                };
+              }
+              
+              // État actuel
+              let currentSort = initialSort || 'latest';
+              let currentCategory = initialCategory || null;
+              let currentPage = initialPage || 1;
+              const pageSize = 24;
+              const langPrefix = currentLang === 'en' ? '' : `/${currentLang}`;
+              
+              // Fonction pour mettre à jour l'affichage
+              function updateDisplay() {
+                let filtered = filterWallpapers(allWallpapersData, currentCategory);
+                let sorted = sortWallpapers(filtered, currentSort);
+                let paginated = paginateWallpapers(sorted, currentPage, pageSize);
+                
+                // Mettre à jour la grille en utilisant les composants existants
+                const grid = document.getElementById('wallpapers-grid');
+                if (grid) {
+                  // Créer un conteneur temporaire pour le HTML
+                  const tempDiv = document.createElement('div');
+                  tempDiv.innerHTML = paginated.data.map(w => {
+                    const title = (w.title || 'Untitled').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+                    const imageUrl = w.thumbnail_path || `/wallpapers/${w.id}/thumbnail.webp`;
+                    const wallpaperUrl = `${langPrefix}/wallpapers/${w.id}`;
+                    const downloads = w.download_count || 0;
+                    const authorName = w.author_name || (w.reddit_username ? `u/${w.reddit_username}` : '');
+                    const categoryBadge = w.category ? `<span class="shrink-0 text-xs uppercase text-base-500 bg-base-100 px-2 py-1 rounded">${w.category}</span>` : '';
+                    
+                    return `
+                      <a href="${wallpaperUrl}" class="group relative flex flex-col rounded-lg border border-base-200 bg-white overflow-hidden hover:border-accent-300 hover:shadow-lg transition-all">
+                        <div class="aspect-[3/4] w-full overflow-hidden bg-base-100">
+                          <img src="${imageUrl}" alt="${title}" class="h-full w-full object-cover group-hover:scale-105 transition-transform" loading="lazy" />
+                        </div>
+                        <div class="p-4 flex-1">
+                          <div class="flex items-start justify-between gap-2 mb-2">
+                            <h3 class="font-semibold text-base-900 line-clamp-2 group-hover:text-accent-500">${title}</h3>
+                            ${categoryBadge}
+                          </div>
+                          <div class="flex items-center justify-between mt-auto">
+                            <span class="text-xs text-base-500">${downloads > 0 ? downloads + ' downloads' : ''}</span>
+                            ${authorName ? `<span class="text-xs text-base-500">${authorName}</span>` : ''}
+                          </div>
+                        </div>
+                      </a>
+                    `;
+                  }).join('');
+                  
+                  grid.innerHTML = tempDiv.innerHTML;
+                }
+                
+                // Mettre à jour la pagination
+                updatePagination(paginated);
+                
+                // Mettre à jour l'URL sans recharger
+                const params = new URLSearchParams();
+                if (currentCategory) params.set('category', currentCategory);
+                if (currentSort !== 'latest') params.set('sort', currentSort);
+                if (currentPage > 1) params.set('page', currentPage.toString());
+                const newUrl = window.location.pathname + (params.toString() ? '?' + params.toString() : '');
+                window.history.pushState({}, '', newUrl);
+              }
+              
+              // Fonction pour mettre à jour la pagination
+              function updatePagination(pagination) {
+                const paginationEl = document.getElementById('wallpapers-pagination');
+                if (!paginationEl) return;
+                
+                if (pagination.totalPages <= 1) {
+                  paginationEl.style.display = 'none';
+                  return;
+                }
+                
+                paginationEl.style.display = 'flex';
+                
+                // Générer les pages
+                const pages = [];
+                if (pagination.totalPages <= 7) {
+                  for (let i = 1; i <= pagination.totalPages; i++) pages.push(i);
+                } else {
+                  if (pagination.currentPage <= 3) {
+                    for (let i = 1; i <= 4; i++) pages.push(i);
+                    pages.push('ellipsis');
+                    pages.push(pagination.totalPages);
+                  } else if (pagination.currentPage >= pagination.totalPages - 2) {
+                    pages.push(1);
+                    pages.push('ellipsis');
+                    for (let i = pagination.totalPages - 3; i <= pagination.totalPages; i++) pages.push(i);
+                  } else {
+                    pages.push(1);
+                    pages.push('ellipsis');
+                    for (let i = pagination.currentPage - 1; i <= pagination.currentPage + 1; i++) pages.push(i);
+                    pages.push('ellipsis');
+                    pages.push(pagination.totalPages);
                   }
-                  const pageUrl = `/${lang}/wallpapers${buildWallpapersUrl(category, sort, p)}`;
-                  return (
-                    <a
-                      href={pageUrl}
-                      class={`px-4 py-2 text-sm rounded-lg transition-colors ${
-                        p === page
-                          ? 'bg-base-900 text-white'
-                          : 'text-base-700 bg-white border border-base-200 hover:border-accent-300 hover:text-accent-500'
-                      }`}
-                    >
-                      {p}
-                    </a>
-                  );
-                })}
-              </div>
+                }
+                
+                const prevText = paginationEl.querySelector('[data-prev-text]')?.textContent || 'Previous';
+                const nextText = paginationEl.querySelector('[data-next-text]')?.textContent || 'Next';
+                
+                paginationEl.innerHTML = `
+                  ${pagination.currentPage > 1 ? `
+                    <a href="#" class="page-link px-4 py-2 text-sm text-base-700 bg-white border border-base-200 rounded-lg hover:border-accent-300 hover:text-accent-500 transition-colors" data-page="${pagination.currentPage - 1}">${prevText}</a>
+                  ` : ''}
+                  <div class="flex items-center gap-1">
+                    ${pages.map(p => {
+                      if (p === 'ellipsis') return '<span class="px-2 text-base-500">...</span>';
+                      return `
+                        <a href="#" class="page-link px-4 py-2 text-sm rounded-lg transition-colors ${p === pagination.currentPage ? 'bg-base-900 text-white' : 'text-base-700 bg-white border border-base-200 hover:border-accent-300 hover:text-accent-500'}" data-page="${p}">${p}</a>
+                      `;
+                    }).join('')}
+                  </div>
+                  ${pagination.currentPage < pagination.totalPages ? `
+                    <a href="#" class="page-link px-4 py-2 text-sm text-base-700 bg-white border border-base-200 rounded-lg hover:border-accent-300 hover:text-accent-500 transition-colors" data-page="${pagination.currentPage + 1}">${nextText}</a>
+                  ` : ''}
+                `;
+                
+                // Ajouter les event listeners
+                paginationEl.querySelectorAll('.page-link').forEach(link => {
+                  link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    currentPage = parseInt(link.getAttribute('data-page') || '1');
+                    updateDisplay();
+                  });
+                });
+              }
+              
+              // Écouter les clics sur les boutons de tri
+              document.querySelectorAll('.sort-option').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                  e.preventDefault();
+                  currentSort = btn.getAttribute('data-sort') || 'latest';
+                  currentPage = 1;
+                  updateDisplay();
+                  
+                  // Mettre à jour les styles actifs
+                  document.querySelectorAll('.sort-option').forEach(b => {
+                    b.classList.remove('bg-accent-500', 'text-white');
+                    b.classList.add('bg-base-100', 'text-base-700');
+                  });
+                  btn.classList.remove('bg-base-100', 'text-base-700');
+                  btn.classList.add('bg-accent-500', 'text-white');
+                });
+              });
+              
+              // Écouter les clics sur les filtres de catégorie
+              document.querySelectorAll('.category-filter').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                  e.preventDefault();
+                  const cat = btn.getAttribute('data-category');
+                  currentCategory = cat === 'all' ? null : cat;
+                  currentPage = 1;
+                  updateDisplay();
+                  
+                  // Mettre à jour les styles actifs
+                  document.querySelectorAll('.category-filter').forEach(b => {
+                    b.classList.remove('bg-accent-500', 'text-white');
+                    b.classList.add('bg-base-100', 'text-base-700');
+                  });
+                  btn.classList.remove('bg-base-100', 'text-base-700');
+                  btn.classList.add('bg-accent-500', 'text-white');
+                });
+              });
+              
+              // Initialiser l'affichage au chargement
+              if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', updateDisplay);
+              } else {
+                updateDisplay();
+              }
+            })();
+          </script>
 
-              {page < totalPages && (
-                <a
-                  href={`/${lang}/wallpapers${buildWallpapersUrl(category, sort, page + 1)}`}
-                  class="px-4 py-2 text-sm text-base-700 bg-white border border-base-200 rounded-lg hover:border-accent-300 hover:text-accent-500 transition-colors"
-                >
-                  {t('common.next')}
-                </a>
-              )}
-            </div>
-          )}
+          {/* Pagination - sera mise à jour par JavaScript */}
+          <div id="wallpapers-pagination" class="flex items-center justify-center gap-2 mt-12" data-prev-text={t('common.previous')} data-next-text={t('common.next')}>
+            {totalPages > 1 && (
+              <>
+                {page > 1 && (
+                  <a
+                    href={`/${lang}/wallpapers${buildWallpapersUrl(category, sort, page - 1)}`}
+                    class="px-4 py-2 text-sm text-base-700 bg-white border border-base-200 rounded-lg hover:border-accent-300 hover:text-accent-500 transition-colors"
+                  >
+                    {t('common.previous')}
+                  </a>
+                )}
+                
+                <div class="flex items-center gap-1">
+                  {paginationPages.map((p) => {
+                    if (p === -1) {
+                      return <span class="px-2 text-base-500">...</span>;
+                    }
+                    const pageUrl = `/${lang}/wallpapers${buildWallpapersUrl(category, sort, p)}`;
+                    return (
+                      <a
+                        href={pageUrl}
+                        class={`px-4 py-2 text-sm rounded-lg transition-colors ${
+                          p === page
+                            ? 'bg-base-900 text-white'
+                            : 'text-base-700 bg-white border border-base-200 hover:border-accent-300 hover:text-accent-500'
+                        }`}
+                      >
+                        {p}
+                      </a>
+                    );
+                  })}
+                </div>
+
+                {page < totalPages && (
+                  <a
+                    href={`/${lang}/wallpapers${buildWallpapersUrl(category, sort, page + 1)}`}
+                    class="px-4 py-2 text-sm text-base-700 bg-white border border-base-200 rounded-lg hover:border-accent-300 hover:text-accent-500 transition-colors"
+                  >
+                    {t('common.next')}
+                  </a>
+                )}
+              </>
+            )}
+          </div>
         </div>
       ) : (
         <div class="text-center py-12">

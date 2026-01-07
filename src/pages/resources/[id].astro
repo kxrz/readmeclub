@@ -1,5 +1,5 @@
 ---
-export const prerender = false;
+export const prerender = true;
 
 // Layout
 import BaseLayout from "@/layouts/BaseLayout.astro";
@@ -11,42 +11,39 @@ import Wrapper from "@/components/fundations/containers/Wrapper.astro";
 import Seo from "@/components/fundations/head/Seo.astro";
 import SmallResourceCard from "@/components/resources/SmallResourceCard.astro";
 import SmallMoreCard from "@/components/resources/SmallMoreCard.astro";
-import { supabase } from '@/lib/supabase/client';
-import { cachedQuery, CacheKeys } from '@/lib/supabase/cache';
 import { useTranslations, getLangFromUrl, getLangPrefix } from '@/i18n/utils';
 import { getGradientForId } from '@/lib/utils/gradients';
 import { normalizeSiteUrl, buildUrl } from '@/lib/utils/url';
 import { renderMarkdown } from '@/lib/utils/markdown';
 import { getResourceContributorName } from '@/lib/utils/author';
+import { loadResourceById, loadAllResources } from '@/lib/utils/resource-loader';
 import type { Resource } from '@/lib/supabase/schema';
+
+export async function getStaticPaths() {
+  const resources = await loadAllResources();
+  
+  return resources
+    .filter(r => r.status === 'approved' && !r.hidden)
+    .map((resource) => ({
+      params: { id: resource.id },
+      props: { resource },
+    }));
+}
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 const langPrefix = getLangPrefix(lang);
 
-const id = Astro.params.id;
+const id = Astro.params.id || Astro.props.resource?.id;
 
 if (!id) {
   return Astro.redirect(`${langPrefix}/resources`);
 }
 
-// Fetch resource avec cache
-const { data: resource, error } = await cachedQuery(
-  () => supabase
-    .from('resources')
-    .select('*')
-    .eq('id', id)
-    .eq('status', 'approved')
-    .eq('hidden', false)
-    .single(),
-  {
-    key: await CacheKeys.resourceById(id),
-    ttl: 86400,
-    contentType: 'resources',
-  }
-);
+// Charger la resource depuis JSON statique (ou depuis props si pré-rendu)
+const resource = Astro.props.resource || await loadResourceById(id);
 
-if (error || !resource) {
+if (!resource || resource.status !== 'approved' || resource.hidden) {
   return Astro.redirect(`${langPrefix}/resources`);
 }
 
@@ -66,27 +63,15 @@ const ogImage = resource.thumbnail_url || buildUrl(`/api/resources/${resource.id
 const isImageFile = hasFile && resource.file_name ? /\.(jpg|jpeg|png|gif|webp|svg|bmp|ico)$/i.test(resource.file_name) : false;
 
 // Récupérer les ressources star (max 3, excluant la ressource actuelle)
-let starredResources: Resource[] | null = null;
-try {
-  const { data, error } = await supabase
-    .from('resources')
-    .select('*')
-    .eq('status', 'approved')
-    .eq('hidden', false)
-    .eq('starred', true)
-    .neq('id', resource.id)
-    .order('created_at', { ascending: false })
-    .limit(3);
-  
-  if (error) {
-    console.error('Error fetching starred resources:', error);
-    // Si le champ starred n'existe pas encore, starredResources reste null
-    starredResources = null;
-  } else {
-    starredResources = data;
-    console.log('Starred resources found:', starredResources?.length || 0);
-  }
-} catch (err) {
+const allResources = await loadAllResources();
+const starredResources = allResources
+  .filter(r => r.status === 'approved' && !r.hidden && r.starred === true && r.id !== resource.id)
+  .sort((a, b) => {
+    const dateA = new Date(a.created_at).getTime();
+    const dateB = new Date(b.created_at).getTime();
+    return dateB - dateA;
+  })
+  .slice(0, 3);
   console.error('Exception fetching starred resources:', err);
   // En cas d'erreur (champ inexistant), on continue sans ressources star
   starredResources = null;

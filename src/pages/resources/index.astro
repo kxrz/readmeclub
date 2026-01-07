@@ -18,20 +18,32 @@ const t = useTranslations(lang);
 const langPrefix = getLangPrefix(lang);
 const siteUrl = Astro.site || 'https://readme.club';
 
-// Pagination
+// Pagination et tri
 const url = Astro.url;
 const type = url.searchParams.get('type') || null;
+const sort = (url.searchParams.get('sort') || 'latest') as 'latest' | 'popular' | 'name';
 const page = parseInt(url.searchParams.get('page') || '1');
 const limit = 50;
 
 // Charger toutes les resources depuis JSON statique
 const allResources = await loadAllResources();
 
-// Filtrer et trier
+// Convertir le tri côté serveur pour l'affichage initial
+let sortBy: 'created_at' | 'downloads_count' | 'title' = 'created_at';
+let sortOrder: 'asc' | 'desc' = 'desc';
+if (sort === 'popular') {
+  sortBy = 'downloads_count';
+  sortOrder = 'desc';
+} else if (sort === 'name') {
+  sortBy = 'title';
+  sortOrder = 'asc';
+}
+
+// Filtrer et trier pour l'affichage initial
 const filteredResources = filterAndSortResources(allResources, {
   type: type || undefined,
-  sortBy: 'created_at',
-  sortOrder: 'desc',
+  sortBy,
+  sortOrder,
 });
 
 // Paginer
@@ -79,6 +91,12 @@ const resourceTypes = [
   { value: 'documentation', label: t('resources.type.documentation') },
   { value: 'link', label: t('resources.type.link') },
   { value: 'other', label: t('resources.type.other') },
+];
+
+const sortOptions = [
+  { value: 'latest', label: t('common.sort.latest') },
+  { value: 'popular', label: t('common.sort.popular') },
+  { value: 'name', label: t('common.sort.name') },
 ];
 ---
 
@@ -136,86 +154,405 @@ const resourceTypes = [
   
   <section>
     <Wrapper variant="standard" class="py-6">
-      <div
-        class="scrollable-content relative flex snap-x snap-proximity gap-2 py-2 px-2 overflow-x-scroll scrollbar-hide"
-      >
-        <Link
-          size="xs"
-          variant="ghost"
-          title={t('common.filter') + ': All'}
-          aria-label={t('common.filter') + ': All'}
-          href={`${lang === 'en' ? '' : `/${lang}`}/resources`}
-          class={!type ? 'bg-base-900 text-white hover:bg-base-800 ring-base-900 font-semibold' : 'text-base-900 bg-white ring-2 ring-base-400 hover:ring-accent-400 hover:bg-accent-50 font-medium'}
-        >
-          {t('common.filter')}: All
-        </Link>
-        {resourceTypes.map((rt) => (
-          <Link
-            size="xs"
-            variant="ghost"
-            title={rt.label}
-            aria-label={rt.label}
-            href={`${lang === 'en' ? '' : `/${lang}`}/resources?type=${rt.value}`}
-            class={type === rt.value ? 'bg-base-900 text-white hover:bg-base-800 ring-base-900 font-semibold' : 'text-base-900 bg-white ring-2 ring-base-400 hover:ring-accent-400 hover:bg-accent-50 font-medium'}
-          >
-            {rt.label}
-          </Link>
-        ))}
+      <!-- Filtres et tri -->
+      <div class="flex flex-col gap-4 mb-6 md:flex-row md:items-center md:justify-between">
+        <div class="flex items-center gap-2 flex-wrap">
+          <span class="text-xs md:text-sm text-base-500 whitespace-nowrap">{t('common.filter')}</span>
+          <div class="scrollable-content relative flex snap-x snap-proximity gap-2 py-2 px-2 overflow-x-scroll scrollbar-hide">
+            <a
+              href="#"
+              data-type="all"
+              class={`resource-type-filter px-2.5 py-1 md:px-3 md:py-1 rounded-full text-xs font-medium transition-colors ${
+                !type
+                  ? 'bg-base-900 text-white hover:bg-base-800 ring-base-900 font-semibold'
+                  : 'text-base-900 bg-white ring-2 ring-base-400 hover:ring-accent-400 hover:bg-accent-50 font-medium'
+              }`}
+            >
+              {t('common.filter')}: All
+            </a>
+            {resourceTypes.map((rt) => (
+              <a
+                href="#"
+                data-type={rt.value}
+                class={`resource-type-filter px-2.5 py-1 md:px-3 md:py-1 rounded-full text-xs font-medium transition-colors ${
+                  type === rt.value
+                    ? 'bg-base-900 text-white hover:bg-base-800 ring-base-900 font-semibold'
+                    : 'text-base-900 bg-white ring-2 ring-base-400 hover:ring-accent-400 hover:bg-accent-50 font-medium'
+                }`}
+              >
+                {rt.label}
+              </a>
+            ))}
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2 flex-wrap">
+          <span class="text-xs md:text-sm text-base-500 whitespace-nowrap">{t('common.sort')}</span>
+          <div class="flex flex-wrap gap-1.5 md:gap-2">
+            {sortOptions.map((option) => (
+              <a
+                href="#"
+                data-sort={option.value}
+                class={`resource-sort-option px-2.5 py-1 md:px-3 md:py-1 rounded-full text-xs font-medium transition-colors ${
+                  sort === option.value
+                    ? 'bg-accent-500 text-white'
+                    : 'bg-base-100 text-base-700 hover:bg-base-200'
+                }`}
+              >
+                {option.label}
+              </a>
+            ))}
+            {sort !== 'latest' && (
+              <a
+                href="#"
+                data-sort="latest"
+                class="resource-sort-option px-2.5 py-1 md:px-3 md:py-1 rounded-full text-xs font-medium transition-colors bg-base-200 text-base-600 hover:bg-base-300 hover:text-base-700"
+                title="Reset sort"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-block">
+                  <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/>
+                  <path d="M21 3v5h-5"/>
+                  <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/>
+                  <path d="M3 21v-5h5"/>
+                </svg>
+              </a>
+            )}
+          </div>
+        </div>
       </div>
+      
+      <!-- Resources Grid -->
       
       <!-- Resources Grid -->
       {resources && resources.length > 0 ? (
         <Fragment>
-          <div class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3 mt-2">
+          {/* Données pour le tri côté client */}
+          <script id="resources-data" type="application/json" set:html={JSON.stringify({ resources: allResources, lang: lang || 'en', initialSort: sort, initialType: type, initialPage: page })}></script>
+          
+          <div id="resources-grid" class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3 mt-2">
             {resources.map((resource) => (
               <ResourceCard resource={resource} />
             ))}
           </div>
 
-          {/* Pagination */}
-          {totalPages > 1 && (
-            <div class="flex items-center justify-center gap-2 mt-12">
-              {pagination.currentPage > 1 && (
-                <a
-                  href={`${langPrefix}/resources${type ? `?type=${type}${pagination.currentPage > 2 ? `&page=${pagination.currentPage - 1}` : ''}` : pagination.currentPage > 2 ? `?page=${pagination.currentPage - 1}` : ''}`}
-                  class="px-4 py-2 text-sm text-base-700 bg-white border border-base-200 rounded-lg hover:border-accent-300 hover:text-accent-500 transition-colors"
-                >
-                  {t('common.previous')}
-                </a>
-              )}
-              
-              <div class="flex items-center gap-1">
-                {paginationPages.map((p) => {
-                  if (p === 'ellipsis') {
-                    return <span class="px-2 text-base-500">...</span>;
-                  }
-                  const pageNum = p as number;
-                  const pageUrl = `${langPrefix}/resources${type ? `?type=${type}${pageNum > 1 ? `&page=${pageNum}` : ''}` : pageNum > 1 ? `?page=${pageNum}` : ''}`;
-                  return (
-                    <a
-                      href={pageUrl}
-                      class={`px-4 py-2 text-sm rounded-lg transition-colors ${
-                        pageNum === pagination.currentPage
-                          ? 'bg-base-900 text-white'
-                          : 'text-base-700 bg-white border border-base-200 hover:border-accent-300 hover:text-accent-500'
-                      }`}
-                    >
-                      {pageNum}
-                    </a>
-                  );
-                })}
-              </div>
+          {/* Pagination - sera mise à jour par JavaScript */}
+          <div id="resources-pagination" class="flex items-center justify-center gap-2 mt-12" data-prev-text={t('common.previous')} data-next-text={t('common.next')}>
+            {totalPages > 1 && (
+              <>
+                {pagination.currentPage > 1 && (
+                  <a
+                    href={`${langPrefix}/resources${type ? `?type=${type}${pagination.currentPage > 2 ? `&page=${pagination.currentPage - 1}` : ''}` : pagination.currentPage > 2 ? `?page=${pagination.currentPage - 1}` : ''}`}
+                    class="px-4 py-2 text-sm text-base-700 bg-white border border-base-200 rounded-lg hover:border-accent-300 hover:text-accent-500 transition-colors"
+                  >
+                    {t('common.previous')}
+                  </a>
+                )}
+                
+                <div class="flex items-center gap-1">
+                  {paginationPages.map((p) => {
+                    if (p === 'ellipsis') {
+                      return <span class="px-2 text-base-500">...</span>;
+                    }
+                    const pageNum = p as number;
+                    const pageUrl = `${langPrefix}/resources${type ? `?type=${type}${pageNum > 1 ? `&page=${pageNum}` : ''}` : pageNum > 1 ? `?page=${pageNum}` : ''}`;
+                    return (
+                      <a
+                        href={pageUrl}
+                        class={`px-4 py-2 text-sm rounded-lg transition-colors ${
+                          pageNum === pagination.currentPage
+                            ? 'bg-base-900 text-white'
+                            : 'text-base-700 bg-white border border-base-200 hover:border-accent-300 hover:text-accent-500'
+                        }`}
+                      >
+                        {pageNum}
+                      </a>
+                    );
+                  })}
+                </div>
 
-              {pagination.currentPage < totalPages && (
-                <a
-                  href={`${langPrefix}/resources${type ? `?type=${type}&page=${pagination.currentPage + 1}` : `?page=${pagination.currentPage + 1}`}`}
-                  class="px-4 py-2 text-sm text-base-700 bg-white border border-base-200 rounded-lg hover:border-accent-300 hover:text-accent-500 transition-colors"
-                >
-                  {t('common.next')}
-                </a>
-              )}
-            </div>
-          )}
+                {pagination.currentPage < totalPages && (
+                  <a
+                    href={`${langPrefix}/resources${type ? `?type=${type}&page=${pagination.currentPage + 1}` : `?page=${pagination.currentPage + 1}`}`}
+                    class="px-4 py-2 text-sm text-base-700 bg-white border border-base-200 rounded-lg hover:border-accent-300 hover:text-accent-500 transition-colors"
+                  >
+                    {t('common.next')}
+                  </a>
+                )}
+              </>
+            )}
+          </div>
+          
+          <script>
+            (function() {
+              // Récupérer les données depuis le script JSON
+              const dataScript = document.getElementById('resources-data');
+              if (!dataScript) return;
+              
+              const { resources: allResourcesData, lang: currentLang, initialSort, initialType, initialPage } = JSON.parse(dataScript.textContent);
+              
+              // Fonction pour générer un gradient simple (simplifié)
+              function getGradientForId(id) {
+                const hash = id.split('').reduce((acc, char) => {
+                  acc = ((acc << 5) - acc) + char.charCodeAt(0);
+                  return acc & acc;
+                }, 0);
+                const hue = Math.abs(hash) % 360;
+                return {
+                  from: `hsl(${hue}, 70%, 60%)`,
+                  to: `hsl(${(hue + 30) % 360}, 70%, 50%)`,
+                  text: '#ffffff'
+                };
+              }
+              
+              // Fonction pour nettoyer le markdown (simplifié)
+              function stripMarkdown(text) {
+                if (!text) return '';
+                return text
+                  .replace(/#{1,6}\s+/g, '')
+                  .replace(/\*\*(.+?)\*\*/g, '$1')
+                  .replace(/\*(.+?)\*/g, '$1')
+                  .replace(/\[(.+?)\]\(.+?\)/g, '$1')
+                  .replace(/`(.+?)`/g, '$1')
+                  .trim();
+              }
+              
+              // Fonction de tri
+              function sortResources(resources, sortType) {
+                const sorted = [...resources];
+                switch(sortType) {
+                  case 'popular':
+                    sorted.sort((a, b) => (b.downloads_count || 0) - (a.downloads_count || 0));
+                    break;
+                  case 'name':
+                    sorted.sort((a, b) => {
+                      const titleA = (a.title || '').toLowerCase();
+                      const titleB = (b.title || '').toLowerCase();
+                      return titleA.localeCompare(titleB);
+                    });
+                    break;
+                  case 'latest':
+                  default:
+                    sorted.sort((a, b) => {
+                      const dateA = new Date(a.created_at).getTime();
+                      const dateB = new Date(b.created_at).getTime();
+                      return dateB - dateA;
+                    });
+                    break;
+                }
+                return sorted;
+              }
+              
+              // Fonction de filtrage
+              function filterResources(resources, type) {
+                if (!type || type === 'all') return resources;
+                return resources.filter(r => r.type === type);
+              }
+              
+              // Fonction de pagination
+              function paginateResources(resources, page, pageSize) {
+                const start = (page - 1) * pageSize;
+                const end = start + pageSize;
+                return {
+                  data: resources.slice(start, end),
+                  total: resources.length,
+                  totalPages: Math.ceil(resources.length / pageSize),
+                  currentPage: page,
+                };
+              }
+              
+              // État actuel
+              let currentSort = initialSort || 'latest';
+              let currentType = initialType || null;
+              let currentPage = initialPage || 1;
+              const pageSize = 50;
+              const langPrefix = currentLang === 'en' ? '' : `/${currentLang}`;
+              
+              // Traductions simplifiées (on utilise les labels du serveur)
+              const typeLabels = {
+                tool: 'Tool',
+                language_file: 'Language File',
+                plugin: 'Plugin',
+                documentation: 'Documentation',
+                link: 'Link',
+                other: 'Other'
+              };
+              
+              // Fonction pour générer le HTML d'une carte de ressource
+              function generateResourceCardHTML(resource) {
+                const title = (resource.title || 'Untitled').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+                const description = stripMarkdown(resource.description || '').substring(0, 100).replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+                const thumbnailUrl = resource.thumbnail_url || `/api/resources/${resource.id}/og-image.png`;
+                const resourceUrl = `${langPrefix}/resources/${resource.id}`;
+                const downloads = resource.downloads_count || 0;
+                const downloadsText = downloads > 0 ? `${downloads} downloads` : '';
+                const typeLabel = typeLabels[resource.type] || resource.type;
+                const gradient = getGradientForId(resource.id);
+                const gradientStyle = `background: linear-gradient(135deg, ${gradient.from} 0%, ${gradient.to} 100%);`;
+                
+                const tagsHTML = resource.tags && resource.tags.length > 0
+                  ? `<div class="flex gap-1 flex-wrap">
+                      ${resource.tags.slice(0, 2).map(tag => `<span class="text-xs text-base-500 bg-base-50 px-2 py-0.5 rounded">${tag.replace(/"/g, '&quot;')}</span>`).join('')}
+                    </div>`
+                  : '';
+                
+                const thumbnailHTML = resource.thumbnail_url
+                  ? `<img src="${thumbnailUrl}" alt="${title}" class="h-full w-full object-cover group-hover:scale-105 transition-transform" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+                     <div class="h-full w-full flex items-center justify-center absolute inset-0" style="display: none; ${gradientStyle}">
+                       <span class="text-lg font-semibold px-4 text-center text-white">${title}</span>
+                     </div>`
+                  : `<div class="h-full w-full flex items-center justify-center" style="${gradientStyle}">
+                       <span class="text-lg font-semibold px-4 text-center text-white">${title}</span>
+                     </div>`;
+                
+                return `
+                  <a href="${resourceUrl}" class="group relative flex flex-col rounded-lg border border-base-200 bg-white p-4 hover:border-accent-300 hover:shadow-lg transition-all">
+                    <div class="aspect-video w-full overflow-hidden rounded-md bg-base-100 mb-3 relative">
+                      ${thumbnailHTML}
+                    </div>
+                    <div class="flex-1">
+                      <div class="flex items-start justify-between gap-2 mb-2">
+                        <h3 class="font-semibold text-base-900 line-clamp-2 group-hover:text-accent-500">${title}</h3>
+                        <span class="shrink-0 text-xs uppercase text-base-500 bg-base-100 px-2 py-1 rounded">${typeLabel}</span>
+                      </div>
+                      <p class="text-sm text-base-600 line-clamp-2 mb-3">${description}</p>
+                      <div class="flex items-center justify-between mt-auto">
+                        <span class="text-xs text-base-500">${downloadsText}</span>
+                        ${tagsHTML}
+                      </div>
+                    </div>
+                  </a>
+                `;
+              }
+              
+              // Fonction pour mettre à jour l'affichage
+              function updateDisplay() {
+                let filtered = filterResources(allResourcesData, currentType);
+                let sorted = sortResources(filtered, currentSort);
+                let paginated = paginateResources(sorted, currentPage, pageSize);
+                
+                // Mettre à jour la grille
+                const grid = document.getElementById('resources-grid');
+                if (grid) {
+                  grid.innerHTML = paginated.data.map(r => generateResourceCardHTML(r)).join('');
+                }
+                
+                // Mettre à jour la pagination
+                updatePagination(paginated);
+                
+                // Mettre à jour l'URL sans recharger
+                const params = new URLSearchParams();
+                if (currentType) params.set('type', currentType);
+                if (currentSort !== 'latest') params.set('sort', currentSort);
+                if (currentPage > 1) params.set('page', currentPage.toString());
+                const newUrl = window.location.pathname + (params.toString() ? '?' + params.toString() : '');
+                window.history.pushState({}, '', newUrl);
+              }
+              
+              // Fonction pour mettre à jour la pagination
+              function updatePagination(pagination) {
+                const paginationEl = document.getElementById('resources-pagination');
+                if (!paginationEl) return;
+                
+                if (pagination.totalPages <= 1) {
+                  paginationEl.style.display = 'none';
+                  return;
+                }
+                
+                paginationEl.style.display = 'flex';
+                
+                const pages = [];
+                if (pagination.totalPages <= 7) {
+                  for (let i = 1; i <= pagination.totalPages; i++) pages.push(i);
+                } else {
+                  if (pagination.currentPage <= 3) {
+                    for (let i = 1; i <= 4; i++) pages.push(i);
+                    pages.push('ellipsis');
+                    pages.push(pagination.totalPages);
+                  } else if (pagination.currentPage >= pagination.totalPages - 2) {
+                    pages.push(1);
+                    pages.push('ellipsis');
+                    for (let i = pagination.totalPages - 3; i <= pagination.totalPages; i++) pages.push(i);
+                  } else {
+                    pages.push(1);
+                    pages.push('ellipsis');
+                    for (let i = pagination.currentPage - 1; i <= pagination.currentPage + 1; i++) pages.push(i);
+                    pages.push('ellipsis');
+                    pages.push(pagination.totalPages);
+                  }
+                }
+                
+                const prevText = paginationEl.getAttribute('data-prev-text') || 'Previous';
+                const nextText = paginationEl.getAttribute('data-next-text') || 'Next';
+                
+                paginationEl.innerHTML = `
+                  ${pagination.currentPage > 1 ? `
+                    <a href="#" class="page-link px-4 py-2 text-sm text-base-700 bg-white border border-base-200 rounded-lg hover:border-accent-300 hover:text-accent-500 transition-colors" data-page="${pagination.currentPage - 1}">${prevText}</a>
+                  ` : ''}
+                  <div class="flex items-center gap-1">
+                    ${pages.map(p => {
+                      if (p === 'ellipsis') return '<span class="px-2 text-base-500">...</span>';
+                      return `
+                        <a href="#" class="page-link px-4 py-2 text-sm rounded-lg transition-colors ${p === pagination.currentPage ? 'bg-base-900 text-white' : 'text-base-700 bg-white border border-base-200 hover:border-accent-300 hover:text-accent-500'}" data-page="${p}">${p}</a>
+                      `;
+                    }).join('')}
+                  </div>
+                  ${pagination.currentPage < pagination.totalPages ? `
+                    <a href="#" class="page-link px-4 py-2 text-sm text-base-700 bg-white border border-base-200 rounded-lg hover:border-accent-300 hover:text-accent-500 transition-colors" data-page="${pagination.currentPage + 1}">${nextText}</a>
+                  ` : ''}
+                `;
+                
+                paginationEl.querySelectorAll('.page-link').forEach(link => {
+                  link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    currentPage = parseInt(link.getAttribute('data-page') || '1');
+                    updateDisplay();
+                  });
+                });
+              }
+              
+              // Écouter les clics sur les boutons de tri
+              document.querySelectorAll('.resource-sort-option').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                  e.preventDefault();
+                  currentSort = btn.getAttribute('data-sort') || 'latest';
+                  currentPage = 1;
+                  updateDisplay();
+                  
+                  document.querySelectorAll('.resource-sort-option').forEach(b => {
+                    b.classList.remove('bg-accent-500', 'text-white');
+                    b.classList.add('bg-base-100', 'text-base-700');
+                  });
+                  btn.classList.remove('bg-base-100', 'text-base-700');
+                  btn.classList.add('bg-accent-500', 'text-white');
+                });
+              });
+              
+              // Écouter les clics sur les filtres de type
+              document.querySelectorAll('.resource-type-filter').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                  e.preventDefault();
+                  const typeValue = btn.getAttribute('data-type');
+                  currentType = typeValue === 'all' ? null : typeValue;
+                  currentPage = 1;
+                  updateDisplay();
+                  
+                  document.querySelectorAll('.resource-type-filter').forEach(b => {
+                    b.classList.remove('bg-base-900', 'text-white', 'ring-base-900', 'font-semibold');
+                    b.classList.add('text-base-900', 'bg-white', 'ring-2', 'ring-base-400', 'font-medium');
+                  });
+                  btn.classList.remove('text-base-900', 'bg-white', 'ring-2', 'ring-base-400', 'font-medium');
+                  btn.classList.add('bg-base-900', 'text-white', 'ring-base-900', 'font-semibold');
+                });
+              });
+              
+              // Initialiser l'affichage au chargement
+              if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', updateDisplay);
+              } else {
+                updateDisplay();
+              }
+            })();
+          </script>
         </Fragment>
       ) : (
         <div class="text-center py-12">

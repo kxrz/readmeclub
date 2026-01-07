@@ -17,8 +17,6 @@ import LatestMoreCard from "@/components/resources/LatestMoreCard.astro";
 import MoreCard from "@/components/common/MoreCard.astro";
 import BuyMeACoffee from "@/components/common/BuyMeACoffee.astro";
 import Seo from "@/components/fundations/head/Seo.astro";
-import { supabase } from '@/lib/supabase/client';
-import { cachedQuery, CacheKeys } from '@/lib/supabase/cache';
 import { useTranslations, getLangFromUrl, getLangPrefix } from '@/i18n/utils';
 import { loadAllWallpapers } from '@/lib/utils/wallpaper-loader';
 import { loadAllResources, filterAndSortResources } from '@/lib/utils/resource-loader';
