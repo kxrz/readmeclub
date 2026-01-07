@@ -15,8 +15,9 @@ const t = useTranslations(lang);
 const langPrefix = getLangPrefix(lang);
 
 const wallpaperUrl = langPrefix ? `${langPrefix}/wallpapers/${wallpaper.id}` : `/wallpapers/${wallpaper.id}`;
-// Support both old format (file_url) and new format (thumbnail_path)
-const imageUrl = ('file_url' in wallpaper ? wallpaper.file_url : wallpaper.thumbnail_path) || '/placeholder-wallpaper.jpg';
+// Utiliser le fichier original BMP au lieu du WebP compressé
+// Toujours utiliser original.bmp qui est stocké dans chaque dossier wallpaper
+const imageUrl = `/wallpapers/${wallpaper.id}/original.bmp`;
 const authorName = 'author_name' in wallpaper && wallpaper.author_name 
   ? wallpaper.author_name 
   : ('reddit_username' in wallpaper && wallpaper.reddit_username 

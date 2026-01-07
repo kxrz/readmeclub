@@ -60,7 +60,8 @@ const gradient = getGradientForId(wallpaper.id);
 const gradientStyle = `background: linear-gradient(135deg, ${gradient.from} 0%, ${gradient.to} 100%);`;
 const textColorStyle = `color: ${gradient.text};`;
 
-const imageUrl = wallpaper.webp_path || wallpaper.thumbnail_path || '/placeholder-wallpaper.jpg';
+// Utiliser le fichier original BMP au lieu du WebP compressé
+const imageUrl = `/wallpapers/${wallpaper.id}/original.bmp`;
 const siteUrl = normalizeSiteUrl(Astro.site);
 const ogImage = wallpaper.webp_path || wallpaper.thumbnail_path || buildUrl(`/api/wallpapers/${wallpaper.id}/og-image.png`, siteUrl);
 
@@ -89,7 +90,7 @@ const seoDescription = wallpaper.title ? `${wallpapersSubtitleText} - ${wallpape
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
         <div class="lg:col-span-2">
           <div class="w-full max-w-2xl mx-auto overflow-hidden rounded-lg bg-base-100 border border-base-200">
-            {wallpaper.webp_path || wallpaper.thumbnail_path ? (
+            {imageUrl ? (
               <div class="relative">
                 <img
                   src={imageUrl}
