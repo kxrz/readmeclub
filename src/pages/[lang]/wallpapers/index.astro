@@ -1,5 +1,13 @@
 ---
-export const prerender = false; // Pagination dynamique nécessite SSR
+// Pré-rendu statique - charge depuis JSON index
+export const prerender = true;
+
+export async function getStaticPaths() {
+  const langs = ['en', 'fr', 'es', 'ru', 'cn'];
+  return langs.map((lang) => ({
+    params: { lang },
+  }));
+}
 
 // Layout
 import BaseLayout from "@/layouts/BaseLayout.astro";
@@ -7,8 +15,7 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 import Text from "@/components/fundations/elements/Text.astro";
 import Wrapper from "@/components/fundations/containers/Wrapper.astro";
 import WallpaperCard from "@/components/wallpapers/WallpaperCard.astro";
-import { supabase } from '@/lib/supabase/client';
-import { cachedQuery, cachedCount, CacheKeys } from '@/lib/supabase/cache';
+import { loadAllWallpapers, filterAndSortWallpapers, paginateWallpapers } from '@/lib/utils/wallpaper-loader';
 import { useTranslations } from '@/i18n/utils';
 import type { Lang } from '@/i18n/utils';
 
@@ -17,74 +24,19 @@ const t = useTranslations(lang);
 
 const url = Astro.url;
 const category = url.searchParams.get('category') || null;
-const sort = url.searchParams.get('sort') || 'latest';
+const sort = (url.searchParams.get('sort') || 'latest') as 'latest' | 'popular' | 'name' | 'author';
 const pageParam = url.searchParams.get('page');
 const page = Math.max(1, parseInt(pageParam || '1', 10));
 const pageSize = 24;
-const from = (page - 1) * pageSize;
-const to = from + pageSize;
 
-// Query avec cache (TTL long car invalidation manuelle)
-const { data: rawWallpapers } = await cachedQuery(
-  () => {
-    let query = supabase
-      .from('wallpapers')
-      .select('*')
-      .eq('status', 'published')
-      .eq('hidden', false);
+// Charger tous les wallpapers depuis JSON
+const allWallpapers = await loadAllWallpapers();
 
-    if (category) {
-      query = query.eq('category', category);
-    }
+// Filtrer et trier
+const filteredWallpapers = filterAndSortWallpapers(allWallpapers, { category, sort });
 
-    if (sort === 'popular') {
-      query = query.order('download_count', { ascending: false });
-    } else if (sort === 'name') {
-      query = query.order('title', { ascending: true, nullsFirst: false });
-    } else if (sort === 'author') {
-      query = query.order('author_name', { ascending: true, nullsFirst: false });
-    } else {
-      query = query.order('created_at', { ascending: false });
-    }
-
-    return query.range(from, to);
-  },
-  {
-    key: await CacheKeys.wallpapersPage(page, category || undefined, sort),
-    ttl: 86400,
-    lang,
-    contentType: 'wallpapers',
-    parts: [page, category, sort],
-  }
-);
-
-const wallpapers = rawWallpapers || [];
-
-// Count query avec cache (avec category dans la clé si filtré)
-const { data: wallpapersCount } = await cachedCount(
-  () => {
-    let countQuery = supabase
-      .from('wallpapers')
-      .select('*', { count: 'exact', head: true })
-      .eq('status', 'published')
-      .eq('hidden', false);
-    
-    if (category) {
-      countQuery = countQuery.eq('category', category);
-    }
-    
-    return countQuery;
-  },
-  {
-    key: await CacheKeys.wallpapersCount(category || undefined),
-    ttl: 86400,
-    contentType: 'wallpapers',
-    parts: category ? [category] : undefined,
-  }
-);
-
-const totalWallpapers = wallpapersCount || 0;
-const totalPages = Math.ceil(totalWallpapers / pageSize);
+// Paginer
+const { wallpapers, total, totalPages } = paginateWallpapers(filteredWallpapers, page, pageSize);
 
 // Generate pagination pages array
 const paginationPages: number[] = [];
@@ -99,7 +51,7 @@ if (totalPages > 1) {
 }
 const baseSubtitle = t('wallpapers.subtitle');
 const normalizedSubtitle = baseSubtitle.length > 0 ? baseSubtitle[0].toLowerCase() + baseSubtitle.slice(1) : baseSubtitle;
-const wallpapersSubtitle = totalWallpapers > 0 ? `${totalWallpapers} ${normalizedSubtitle}` : baseSubtitle;
+const wallpapersSubtitle = total > 0 ? `${total} ${normalizedSubtitle}` : baseSubtitle;
 
 const categories = [
   { value: 'minimalist', label: t('wallpapers.category.minimalist') },

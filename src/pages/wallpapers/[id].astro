@@ -1,8 +1,10 @@
 ---
-export const prerender = false;
+// Pré-rendu statique - charge depuis JSON index
+export const prerender = true;
 
 // Layout
 import BaseLayout from "@/layouts/BaseLayout.astro";
+import { Fragment } from "astro/jsx-runtime";
 // Fundation
 import Text from "@/components/fundations/elements/Text.astro";
 import Button from "@/components/fundations/components/Button.astro";
@@ -10,59 +12,47 @@ import Link from "@/components/fundations/components/Link.astro";
 import Wrapper from "@/components/fundations/containers/Wrapper.astro";
 import Seo from "@/components/fundations/head/Seo.astro";
 import WallpaperThumbnail from "@/components/wallpapers/WallpaperThumbnail.astro";
-import { supabase } from '@/lib/supabase/client';
-import { cachedQuery, CacheKeys } from '@/lib/supabase/cache';
+import { loadWallpaperById, loadAllWallpapers } from '@/lib/utils/wallpaper-loader';
 import { useTranslations, getLangFromUrl, getLangPrefix } from '@/i18n/utils';
 import { getGradientForId } from '@/lib/utils/gradients';
 import { normalizeSiteUrl, buildUrl } from '@/lib/utils/url';
 import { getWallpaperAuthorName } from '@/lib/utils/author';
-import type { Wallpaper } from '@/lib/supabase/schema';
+import type { WallpaperMetadata } from '@/lib/utils/wallpaper-loader';
+
+export async function getStaticPaths() {
+  const wallpapers = await loadAllWallpapers();
+  
+  return wallpapers.map((wallpaper) => ({
+    params: { id: wallpaper.id },
+    props: { wallpaper },
+  }));
+}
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 const langPrefix = getLangPrefix(lang);
 
-const id = Astro.params.id;
+const id = Astro.params.id || Astro.props.wallpaper?.id;
 
 if (!id) {
   return Astro.redirect(`${langPrefix}/wallpapers`);
 }
 
-// Fetch wallpaper avec cache
-const { data: wallpaper, error } = await cachedQuery(
-  () => supabase
-    .from('wallpapers')
-    .select('*')
-    .eq('id', id)
-    .eq('status', 'published')
-    .eq('hidden', false)
-    .single(),
-  {
-    key: await CacheKeys.wallpaperById(id),
-    ttl: 86400,
-    contentType: 'wallpapers',
-  }
-);
+// Charger le wallpaper depuis JSON (ou depuis props si pré-rendu)
+const wallpaper = Astro.props.wallpaper || await loadWallpaperById(id);
 
-if (error || !wallpaper) {
+if (!wallpaper) {
   return Astro.redirect(`${langPrefix}/wallpapers`);
 }
 
 // Récupérer d'autres wallpapers aléatoires (exclure celui actuel)
-const { data: otherWallpapers } = await supabase
-  .from('wallpapers')
-  .select('*')
-  .eq('status', 'published')
-  .eq('hidden', false)
-  .neq('id', id)
-  .order('created_at', { ascending: false })
-  .limit(10);
+const allWallpapers = await loadAllWallpapers();
+const otherWallpapers = allWallpapers
+  .filter(w => w.id !== wallpaper.id)
+  .sort(() => Math.random() - 0.5)
+  .slice(0, 6);
 
-// Mélanger aléatoirement et prendre 6 (pour avoir 6 + 1 bouton random = 7)
-const shuffled = otherWallpapers ? [...otherWallpapers].sort(() => Math.random() - 0.5).slice(0, 6) : [];
-
-const authorName = getWallpaperAuthorName(wallpaper);
-// Afficher les sections reddit/instagram séparément seulement si on a un author_name réel (pas un fallback)
+const authorName = wallpaper.author_name || (wallpaper.reddit_username ? `u/${wallpaper.reddit_username}` : '');
 const showSeparateUsernames = !!wallpaper.author_name;
 
 // Générer un gradient unique pour ce wallpaper
@@ -70,16 +60,24 @@ const gradient = getGradientForId(wallpaper.id);
 const gradientStyle = `background: linear-gradient(135deg, ${gradient.from} 0%, ${gradient.to} 100%);`;
 const textColorStyle = `color: ${gradient.text};`;
 
-const imageUrl = wallpaper.file_url || '/placeholder-wallpaper.jpg';
+const imageUrl = wallpaper.webp_path || wallpaper.thumbnail_path || '/placeholder-wallpaper.jpg';
 const siteUrl = normalizeSiteUrl(Astro.site);
-const ogImage = wallpaper.file_url || buildUrl(`/api/wallpapers/${wallpaper.id}/og-image.png`, siteUrl);
+const ogImage = wallpaper.webp_path || wallpaper.thumbnail_path || buildUrl(`/api/wallpapers/${wallpaper.id}/og-image.png`, siteUrl);
+
+// Préparer les textes pour éviter les template strings imbriqués
+const wallpaperTitle = wallpaper.title || 'Wallpaper';
+const wallpapersTitleText = t('wallpapers.title');
+const siteNameText = t('site.name');
+const wallpapersSubtitleText = t('wallpapers.subtitle');
+const seoTitle = `${wallpaperTitle} - ${wallpapersTitleText} - ${siteNameText}`;
+const seoDescription = wallpaper.title ? `${wallpapersSubtitleText} - ${wallpaper.title}` : wallpapersSubtitleText;
 ---
 
 <BaseLayout>
   <Fragment slot="head">
     <Seo
-      title={`${wallpaper.title || 'Wallpaper'} - ${t('wallpapers.title')} - ${t('site.name')}`}
-      description={wallpaper.title ? `${t('wallpapers.subtitle')} - ${wallpaper.title}` : t('wallpapers.subtitle')}
+      title={seoTitle}
+      description={seoDescription}
       canonical={`${siteUrl}${langPrefix}/wallpapers/${wallpaper.id}`}
       ogImage={ogImage}
       ogType="article"
@@ -91,7 +89,7 @@ const ogImage = wallpaper.file_url || buildUrl(`/api/wallpapers/${wallpaper.id}/
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
         <div class="lg:col-span-2">
           <div class="w-full max-w-2xl mx-auto overflow-hidden rounded-lg bg-base-100 border border-base-200">
-            {wallpaper.file_url ? (
+            {wallpaper.webp_path || wallpaper.thumbnail_path ? (
               <div class="relative">
                 <img
                   src={imageUrl}
@@ -174,7 +172,7 @@ const ogImage = wallpaper.file_url || buildUrl(`/api/wallpapers/${wallpaper.id}/
                   </dt>
                   <dd class="mt-1 text-base-600">
                     <Text tag="p" variant="textSM" class="text-base-600">
-                      {t(`wallpapers.category.${wallpaper.category}`)}
+                      {wallpaper.category ? t(`wallpapers.category.${wallpaper.category}` as any) : ''}
                     </Text>
                   </dd>
                 </div>
@@ -192,7 +190,7 @@ const ogImage = wallpaper.file_url || buildUrl(`/api/wallpapers/${wallpaper.id}/
                 </dt>
                 <dd class="mt-1 text-base-600">
                   <Text tag="p" variant="textSM" class="text-base-600">
-                    {t('wallpapers.downloads', { count: wallpaper.download_count })}
+                    {wallpaper.download_count > 0 ? t('wallpapers.downloads', { count: wallpaper.download_count }) : ''}
                   </Text>
                 </dd>
               </div>
@@ -309,9 +307,10 @@ const ogImage = wallpaper.file_url || buildUrl(`/api/wallpapers/${wallpaper.id}/
           </div>
 
           <div class="flex items-center mt-8 justify-between">
-            {wallpaper.file_url && (
+            {(wallpaper.original_path || wallpaper.webp_path) && (
               <a
-                href={`/api/wallpapers/${wallpaper.id}/download`}
+                href={wallpaper.original_path || wallpaper.webp_path}
+                download
                 class="block"
               >
                 <Button
@@ -351,7 +350,7 @@ const ogImage = wallpaper.file_url || buildUrl(`/api/wallpapers/${wallpaper.id}/
     </Wrapper>
   </section>
   
-  {shuffled && shuffled.length > 0 && (
+  {otherWallpapers && otherWallpapers.length > 0 && (
     <section>
       <Wrapper variant="standard" class="py-6">
         <Text
@@ -362,7 +361,7 @@ const ogImage = wallpaper.file_url || buildUrl(`/api/wallpapers/${wallpaper.id}/
           {t('wallpapers.related')}
         </Text>
         <div class="flex gap-4 overflow-x-auto scrollbar-hide pb-2">
-          {shuffled.map((wp) => (
+          {otherWallpapers.map((wp) => (
             <WallpaperThumbnail wallpaper={wp} />
           ))}
           <a

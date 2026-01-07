@@ -25,7 +25,13 @@
     "analyze-stats": "tsx scripts/analyze-stats.ts",
     "migrate-stats": "tsx scripts/migrate-stats.ts",
     "set-guide-stats": "tsx scripts/set-guide-stats.ts",
-    "create-launch-article": "tsx scripts/create-launch-article.ts"
+    "create-launch-article": "tsx scripts/create-launch-article.ts",
+    "export-news": "tsx scripts/export-news-to-markdown.ts",
+    "export-wallpapers": "tsx scripts/export-wallpapers-to-static.ts",
+    "export-resources": "tsx scripts/export-resources-to-json.ts",
+    "export-locations": "tsx scripts/export-locations-to-json.ts",
+    "convert-guide": "tsx scripts/convert-guide-to-markdown.ts",
+    "prebuild": "npm run export-news && npm run export-wallpapers && npm run export-resources && npm run export-locations && npm run convert-guide"
   },
   "dependencies": {
     "@astrojs/mdx": "^4.3.5",
@@ -42,11 +48,14 @@
     "alpinejs": "^3.15.2",
     "astro": "^5.13.8",
     "dotenv": "^16.6.1",
+    "bmp-js": "^0.1.0",
+    "pngjs": "^7.0.0",
     "leaflet": "^1.9.4",
     "lightningcss": "^1.30.2",
     "marked": "^17.0.1",
     "micromark-util-decode-numeric-character-reference": "^2.0.2",
     "satori": "^0.14.0",
+    "sharp": "^0.33.5",
     "tailwind-scrollbar-hide": "^4.0.0",
     "zod": "^3.22.4"
   },

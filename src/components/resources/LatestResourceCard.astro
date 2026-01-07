@@ -42,12 +42,20 @@ const formattedDate = createdDate.toLocaleDateString(
 >
   <div class="aspect-video w-full overflow-hidden bg-base-100 relative">
     {resource.thumbnail_url ? (
-      <img
-        src={thumbnailUrl}
-        alt={resource.title}
-        class="h-full w-full object-cover group-hover:scale-110 transition-transform duration-500"
-        loading="lazy"
-      />
+      <>
+        <img
+          src={thumbnailUrl}
+          alt={resource.title}
+          class="h-full w-full object-cover group-hover:scale-110 transition-transform duration-500"
+          loading="lazy"
+          onerror={`this.style.display='none'; this.nextElementSibling.style.display='flex';`}
+        />
+        <div class="h-full w-full flex items-center justify-center absolute inset-0" style={`display: none; ${gradientStyle}`}>
+          <Text tag="span" variant="textLG" class="font-semibold px-4 text-center" style={textColorStyle}>
+            {resource.title}
+          </Text>
+        </div>
+      </>
     ) : (
       <div class="h-full w-full flex items-center justify-center" style={gradientStyle}>
         <Text tag="span" variant="textLG" class="font-semibold px-4 text-center" style={textColorStyle}>

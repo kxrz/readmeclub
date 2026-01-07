@@ -32,14 +32,22 @@ const cleanDescription = stripMarkdown(resource.description);
   href={resourceUrl}
   class="group relative flex flex-col rounded-lg border border-base-200 bg-white p-4 hover:border-accent-300 hover:shadow-lg transition-all"
 >
-  <div class="aspect-video w-full overflow-hidden rounded-md bg-base-100 mb-3">
+  <div class="aspect-video w-full overflow-hidden rounded-md bg-base-100 mb-3 relative">
     {resource.thumbnail_url ? (
-      <img
-        src={thumbnailUrl}
-        alt={resource.title}
-        class="h-full w-full object-cover group-hover:scale-105 transition-transform"
-        loading="lazy"
-      />
+      <>
+        <img
+          src={thumbnailUrl}
+          alt={resource.title}
+          class="h-full w-full object-cover group-hover:scale-105 transition-transform"
+          loading="lazy"
+          onerror={`this.style.display='none'; this.nextElementSibling.style.display='flex';`}
+        />
+        <div class="h-full w-full flex items-center justify-center absolute inset-0" style={`display: none; ${gradientStyle}`}>
+          <Text tag="span" variant="textLG" class="font-semibold px-4 text-center" style={textColorStyle}>
+            {resource.title}
+          </Text>
+        </div>
+      </>
     ) : (
       <div class="h-full w-full flex items-center justify-center" style={gradientStyle}>
         <Text tag="span" variant="textLG" class="font-semibold px-4 text-center" style={textColorStyle}>

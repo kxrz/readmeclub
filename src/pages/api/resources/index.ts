@@ -103,12 +103,17 @@ export const POST: APIRoute = async ({ request }) => {
       });
     }
     
-    // Insert resource
-    const { data, error } = await supabase
+    // Insert resource avec pending_export pour batch processing
+    const { getSupabaseAdmin } = await import('@/lib/supabase/admin');
+    const supabaseAdmin = getSupabaseAdmin();
+    
+    const { data, error } = await supabaseAdmin
       .from('resources')
       .insert({
         ...validated,
         status: 'approved', // Resources are approved by default
+        pending_export: true, // Marqué comme en attente d'export (batch processing)
+        exported_to_static: false,
       })
       .select()
       .single();
@@ -123,17 +128,22 @@ export const POST: APIRoute = async ({ request }) => {
     // Increment submission count
     await incrementSubmissionCount(ipHash);
     
-    // Invalide le cache et pré-génère les nouveaux caches (en arrière-plan, ne bloque pas la réponse)
+    // Vérifier si on doit déclencher un batch (en arrière-plan, ne bloque pas)
     Promise.all([
       invalidateCache('resources'),
-      pregenerateCache('resources', supabase),
-      triggerVercelRebuild(), // Déclenche un rebuild pour mettre à jour les pages pré-rendues
+      (async () => {
+        const { checkAndTriggerBatch } = await import('@/lib/utils/resource-batch');
+        await checkAndTriggerBatch();
+      })(),
     ]).catch(err => {
-      console.error('Cache invalidation/pre-generation/rebuild failed:', err);
-      // Ne fait pas échouer la requête si le cache/rebuild échoue
+      console.error('Cache invalidation/batch check failed:', err);
     });
     
-    return new Response(JSON.stringify(data), {
+    return new Response(JSON.stringify({
+      success: true,
+      data,
+      message: 'Your resource has been submitted successfully! It will be added to the site within 24 hours.',
+    }), {
       status: 201,
       headers: { 'Content-Type': 'application/json' },
     });

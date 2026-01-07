@@ -115,7 +115,13 @@ try {
                   src={isImageFile && resource.file_url ? resource.file_url : thumbnailUrl}
                   alt={resource.title}
                   class="h-full w-full object-cover"
+                  onerror={`this.style.display='none'; this.nextElementSibling.style.display='flex';`}
                 />
+                <div class="h-full w-full flex items-center justify-center absolute inset-0" style={`display: none; ${gradientStyle}`}>
+                  <Text tag="span" variant="displaySM" class="font-semibold px-8 text-center" style={textColorStyle}>
+                    {resource.title}
+                  </Text>
+                </div>
                 {isImageFile && resource.file_url && (
                   <a
                     href={`/api/resources/${resource.id}/download`}

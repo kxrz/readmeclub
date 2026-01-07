@@ -21,6 +21,41 @@
       ],
       "destination": "https://readme.club/$1",
       "permanent": true
+    },
+    {
+      "source": "/fr/:path*",
+      "destination": "/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/es/:path*",
+      "destination": "/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/ru/:path*",
+      "destination": "/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/cn/:path*",
+      "destination": "/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/en/:path*",
+      "destination": "/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/news/:slug",
+      "destination": "/news",
+      "permanent": true
+    },
+    {
+      "source": "/:lang/news/:slug",
+      "destination": "/news",
+      "permanent": true
     }
   ]
 }

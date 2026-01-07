@@ -2,21 +2,22 @@
 import Text from "@/components/fundations/elements/Text.astro";
 import Link from "@/components/fundations/components/Link.astro";
 import type { News } from '@/lib/supabase/schema';
-import { useTranslations, getLangFromUrl, getLangPrefix } from '@/i18n/utils';
+import type { NewsArticle } from '@/lib/utils/news-loader';
+import { useTranslations } from '@/i18n/utils';
 
 interface Props {
-  news: News;
+  news: News | NewsArticle;
 }
 
 const { news } = Astro.props;
-const lang = getLangFromUrl(Astro.url);
+const lang = 'en';
 const t = useTranslations(lang);
-const langPrefix = getLangPrefix(lang);
 
-const newsUrl = langPrefix ? `${langPrefix}/news/${news.slug}` : `/news/${news.slug}`;
-const featuredImageUrl = news.featured_image_url || `/api/news/${news.id}/og-image.png`;
-const publishedDate = news.published_at ? new Date(news.published_at) : new Date(news.created_at);
-const formattedDate = publishedDate.toLocaleDateString(lang === 'en' ? 'en-US' : lang === 'fr' ? 'fr-FR' : lang === 'es' ? 'es-ES' : lang === 'ru' ? 'ru-RU' : 'zh-CN', {
+const newsUrl = '/news/' + news.slug;
+// Support both old format (featured_image_url) and new format (featured_image)
+const featuredImageUrl = ('featured_image_url' in news ? news.featured_image_url : news.featured_image) || null;
+const publishedDate = ('published_at' in news && news.published_at) ? new Date(news.published_at) : ('created_at' in news ? new Date(news.created_at) : new Date());
+const formattedDate = publishedDate.toLocaleDateString('en-US', {
   year: 'numeric',
   month: 'long',
   day: 'numeric'
@@ -34,7 +35,7 @@ const formattedDate = publishedDate.toLocaleDateString(lang === 'en' ? 'en-US' :
       class="h-full w-full object-cover group-hover:scale-105 transition-transform"
       loading="lazy"
       onerror="this.onerror=null; this.src=this.dataset.fallback;"
-      data-fallback={`/api/news/${news.id}/og-image.png`}
+      data-fallback={'slug' in news ? `/api/news/${news.slug}/og-image.png` : '/icon.svg'}
     />
   </div>
   

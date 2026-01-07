@@ -1,11 +1,12 @@
 ---
 import Text from "@/components/fundations/elements/Text.astro";
 import type { Wallpaper } from '@/lib/supabase/schema';
+import type { WallpaperMetadata } from '@/lib/utils/wallpaper-loader';
 import { useTranslations, getLangFromUrl, getLangPrefix } from '@/i18n/utils';
 import { getWallpaperAuthorName } from '@/lib/utils/author';
 
 interface Props {
-  wallpaper: Wallpaper;
+  wallpaper: Wallpaper | WallpaperMetadata;
 }
 
 const { wallpaper } = Astro.props;
@@ -14,8 +15,13 @@ const t = useTranslations(lang);
 const langPrefix = getLangPrefix(lang);
 
 const wallpaperUrl = langPrefix ? `${langPrefix}/wallpapers/${wallpaper.id}` : `/wallpapers/${wallpaper.id}`;
-const imageUrl = wallpaper.file_url || '/placeholder-wallpaper.jpg';
-const authorName = getWallpaperAuthorName(wallpaper);
+// Support both old format (file_url) and new format (thumbnail_path)
+const imageUrl = ('file_url' in wallpaper ? wallpaper.file_url : wallpaper.thumbnail_path) || '/placeholder-wallpaper.jpg';
+const authorName = 'author_name' in wallpaper && wallpaper.author_name 
+  ? wallpaper.author_name 
+  : ('reddit_username' in wallpaper && wallpaper.reddit_username 
+    ? `u/${wallpaper.reddit_username}` 
+    : '');
 ---
 
 <a

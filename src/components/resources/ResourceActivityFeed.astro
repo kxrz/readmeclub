@@ -3,6 +3,7 @@ import Text from "@/components/fundations/elements/Text.astro";
 import type { Resource } from '@/lib/supabase/schema';
 import { useTranslations, getLangFromUrl, getLangPrefix } from '@/i18n/utils';
 import { stripMarkdown } from '@/lib/utils/markdown';
+import { getGradientForId } from '@/lib/utils/gradients';
 
 interface Props {
   resource: Resource;
@@ -18,6 +19,11 @@ const thumbnailUrl = resource.thumbnail_url || `/api/resources/${resource.id}/og
 
 // Nettoyer le markdown pour l'affichage
 const cleanDescription = stripMarkdown(resource.description);
+
+// Générer un gradient unique pour cette ressource
+const gradient = getGradientForId(resource.id);
+const gradientStyle = `background: linear-gradient(135deg, ${gradient.from} 0%, ${gradient.to} 100%);`;
+const textColorStyle = `color: ${gradient.text};`;
 
 // Formater la date
 const createdDate = new Date(resource.created_at);
@@ -35,14 +41,22 @@ const formattedDate = createdDate.toLocaleDateString(
   href={resourceUrl}
   class="group relative flex items-start gap-4 p-4 rounded-lg border border-base-200 bg-white hover:border-accent-300 hover:shadow-md transition-all"
 >
-  <div class="flex-shrink-0">
+  <div class="flex-shrink-0 relative">
     {resource.thumbnail_url ? (
-      <img
-        src={thumbnailUrl}
-        alt={resource.title}
-        class="w-16 h-16 rounded-lg object-cover"
-        loading="lazy"
-      />
+      <>
+        <img
+          src={thumbnailUrl}
+          alt={resource.title}
+          class="w-16 h-16 rounded-lg object-cover"
+          loading="lazy"
+          onerror={`this.style.display='none'; this.nextElementSibling.style.display='flex';`}
+        />
+        <div class="w-16 h-16 rounded-lg absolute inset-0 flex items-center justify-center" style={`display: none; ${gradientStyle}`}>
+          <Text tag="span" variant="textXS" class="font-semibold px-2 text-center" style={textColorStyle}>
+            {resource.title.substring(0, 2).toUpperCase()}
+          </Text>
+        </div>
+      </>
     ) : (
       <div class="w-16 h-16 rounded-lg bg-base-100 flex items-center justify-center">
         <svg

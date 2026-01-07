@@ -1,0 +1,417 @@
+[
+  {
+    "id": "b2c83171-615b-43a5-97d2-ff3023f3a8d8",
+    "type": "tool",
+    "title": "cr2xt: desktop XTC converter",
+    "description": "E-book to XTC format converter based on Cool Reader and crengine for Windows, macOS and Linux.\n\nSupported document formats: fb2, fb3, epub (without DRM), rtf, doc, docx, odt, htm, Markdown, chm, pdb, mobi (without DRM), txt, trc, prc.\n\nSupports batch mode to convert all documents in a folder.",
+    "installation_instructions": "Download and install the version for your OS from the Releases page",
+    "external_link": "https://github.com/CrazyCoder/cr2xt",
+    "thumbnail_url": "https://i.imgur.com/QuYO5Ju.png",
+    "contributor_name": "JetSerge",
+    "contact_info": "sbaranov@gmail.com",
+    "tags": [],
+    "downloads_count": 0,
+    "created_at": "2026-01-02T23:27:51.158397+00:00",
+    "updated_at": "2026-01-06T13:22:22.301717+00:00"
+  },
+  {
+    "id": "8ac188ec-1b9b-4bc5-8f20-aefb7b04b023",
+    "type": "tool",
+    "title": "X4 Wallpaper Converter",
+    "description": "A web tool that allows for easy creation of wallpapers for the X4 or X3.",
+    "installation_instructions": "Simply upload or drag in any image or images you want to convert. The default settings will convert the wallpaper to the correct size and file type, then use any of the provided settings to adjust the results.",
+    "external_link": "https://wallpaperconverter.jakegreen.dev/",
+    "thumbnail_url": "https://www.reddit.com/r/xteinkereader/comments/1q1mu6q/batch_file_update_for_the_wallpaper_converter/#lightbox",
+    "contributor_name": "jake",
+    "contact_info": "him@jakegreen.dev",
+    "tags": [],
+    "downloads_count": 0,
+    "created_at": "2026-01-02T10:44:48.18386+00:00",
+    "updated_at": "2026-01-06T13:22:22.301717+00:00"
+  },
+  {
+    "id": "d8d3413c-be24-4261-a261-4b9feea784d7",
+    "type": "tool",
+    "title": "Wikipedia to TXT",
+    "description": "Paste a link to any Wikipedia article. This website will extract all the text and\ndownload it as a .txt file.",
+    "known_issues": "This is just a good resource I found for my own needs. I did not make it.",
+    "external_link": "https://wikitext.eluni.co/",
+    "contributor_name": "eponora",
+    "tags": [],
+    "downloads_count": 0,
+    "created_at": "2025-12-30T19:13:35.542774+00:00",
+    "updated_at": "2026-01-06T13:22:22.301717+00:00"
+  },
+  {
+    "id": "5375a2f2-5b18-4334-8b6f-d8022027f41b",
+    "type": "tool",
+    "title": "Xteink Flash Tools",
+    "description": "Flash English(or Chinese or Other) firmware from your browser",
+    "external_link": "https://xteink.dve.al/",
+    "tags": [],
+    "downloads_count": 0,
+    "created_at": "2025-12-24T17:37:47.319398+00:00",
+    "updated_at": "2026-01-06T13:22:22.301717+00:00"
+  },
+  {
+    "id": "43f43b5c-9817-4a01-96af-d28f2ceb3216",
+    "type": "tool",
+    "title": "EPUB2XTC",
+    "description": "EPUB to XTC Converter\n\nA dedicated tool for converting standard .epub files into the native .xtc binary format for the Xteink X4 e-reader. Available as a desktop app or a no-install web tool.\n\nKey Features:\n- Smart Navigation: Automatically generates a Table of Contents with page numbers and a Progress Bar with chapter ticks on every page.\n- Chapter Filtering: Option to hide specific chapters or sections from the TOC and progress bar without removing them from the book.\n- Live Preview: Real-time layout rendering with support for both Portrait and Landscape orientations.\n- Custom Layout: Full control over typography and margins optimized for e-ink displays.\n\nDesktop app:\nhttps://github.com/Rafal-P-Mazur/EPUB2XTC\n\nWeb version: https://epub2xtc.streamlit.app/",
+    "known_issues": "This project was created by a hobbyist with AI assistance. It is provided \"as-is\" and might encounter issues with heavily formatted EPUBs.",
+    "external_link": "https://github.com/Rafal-P-Mazur/EPUB2XTC",
+    "thumbnail_url": "https://github.com/Rafal-P-Mazur/EPUB2XTC/blob/main/images/xtc.png?raw=true",
+    "contributor_name": "rebuzus",
+    "tags": [],
+    "downloads_count": 0,
+    "created_at": "2025-12-22T21:41:32.342827+00:00",
+    "updated_at": "2026-01-06T13:22:22.301717+00:00"
+  },
+  {
+    "id": "5f5ce06e-71e3-4f50-9e65-c98b8f5c63a5",
+    "type": "link",
+    "title": "Flashcards Club - Generate EPUB Flashcards for E-Readers",
+    "description": "Generate flashcards optimized for e-ink displays. Create personalized learning materials instantly and study offline on your Xteink.",
+    "installation_instructions": "Flashcards Club generates EPUB flashcards perfectly formatted for e-readers. Specify any topic, difficulty level, and language - get ready-to-study flashcards in seconds.\n\nWhy it's perfect for e-ink devices:\n- Black & white optimized formatting\n- No battery drain (unlike flashcard apps)\n- Distraction-free learning\n- Works offline on your Xteink X4, Kobo, Kindle, Boox, PocketBook\n- Study for hours without eye strain\n\nFeatures:\n- Smart AI-powered generation\n- Online study mode + EPUB download\n- Curated library of pre-made flashcard sets\n- Free tier: 50 credits/month, up to 15 cards per set\n- Premium: unlimited generation, up to 75 cards per set\n\nPerfect for:\n- Language learning\n- Exam preparation\n- Technical concepts memorization\n- Vocabulary building\n- Any topic you want to master\n\nTransfer the EPUB to your e-reader and start learning with the focus only e-ink can provide.",
+    "external_link": "https://flashcards.readme.club/",
+    "thumbnail_url": "https://flashcards.readme.club/images/screenshots/feature-ereader.png",
+    "contributor_name": "iamkxrz",
+    "contact_info": "iamkxrz",
+    "tags": [],
+    "downloads_count": 0,
+    "created_at": "2025-12-12T15:55:06.83163+00:00",
+    "updated_at": "2026-01-06T13:22:22.301717+00:00"
+  },
+  {
+    "id": "3b70887d-ad86-4e4e-b7f6-369bc7175ac9",
+    "type": "documentation",
+    "title": "Getting Started with Your Xteink X4: A First Steps Guide",
+    "description": "**Just unboxed your Xteink X4?** Here's what matters most: charge it for 30 minutes via USB-C, then immediately run the firmware update (Sync → System Update). This single step will save you from layout glitches and stability issues. Don't skip rebuilding the index afterward—open any book, hit OK, select Index. These 5 minutes will make the difference between frustration and smooth sailing.\n\n**Your X4 isn't like other e-readers.** It has no touchscreen (that's a feature, not a bug), uses physical buttons for precise navigation, and works best with a well-organized microSD card. The learning curve is about 10 minutes—just enough time to read your first chapter. We've mapped out exactly which buttons do what, how to transfer books the easy way, and which settings to adjust first for the best reading experience.\n\n**This guide gets you reading in under 30 minutes.** From understanding the button layout to setting up WiFi transfers, organizing your library, and avoiding common newbie mistakes—it's all here in plain English. Download the complete PDF and keep it handy while you set up. Your future self (and your X4) will thank you.",
+    "file_url": "https://ykwwrqxcfsahcelqgzrs.supabase.co/storage/v1/object/public/resources/1765300067996-Getting%20Started%20with%20Your%20Xteink%20X4-%20A%20First%20Steps%20Guide.pdf",
+    "file_name": "Getting Started with Your Xteink X4- A First Steps Guide.pdf",
+    "thumbnail_url": "https://raw.githubusercontent.com/kxrz/images/refs/heads/main/Xteink%20X4%20Getting%20Started%20Guide.png",
+    "contributor_name": "iamkxrz",
+    "contact_info": "iamkxrz",
+    "tags": [],
+    "downloads_count": 1175,
+    "created_at": "2025-12-09T17:07:49.649723+00:00",
+    "updated_at": "2026-01-07T10:27:57.299071+00:00"
+  },
+  {
+    "id": "ac0c7df6-85c7-4c18-8bd6-f16747ac3d28",
+    "type": "link",
+    "title": "Discord Server",
+    "description": "Discord server for developers and users. Discussion of custom firmwares, converters, tools, mods, accessories, wallpapers, fonts.\n\nChannels for other small e-readers (M5 Paper S3, obook5, LILYGO  T5 Paper S3) and the upcoming Xteink models (X3, S4).",
+    "external_link": "https://discord.gg/2cdKUbWRE8",
+    "contributor_name": "JetSerge",
+    "contact_info": "sbaranov@gmail.com",
+    "tags": [],
+    "downloads_count": 0,
+    "created_at": "2025-12-07T06:35:19.85979+00:00",
+    "updated_at": "2026-01-06T13:22:22.301717+00:00"
+  },
+  {
+    "id": "828b7a7f-7816-49ab-89e8-1f0ae6741c1f",
+    "type": "documentation",
+    "title": "Analysis of XT4 Firmware (V3.0.2-EN.bin) - Font System Deep Dive",
+    "description": "Documentation of my findings analyzing OTA file. My goal was to extract system fonts and try to re-implement external non monospaced fonts like system ones.\nDuring that I've managed to extract .bin into blocks of system images. Unfortunately I came to a wall and my current hypothesis is that system fonts are using some internal functions we can't properly use for external fonts.\nFurther investigation is needed, as maybe we could prepare OTA file that can pass new font as internal one, which would allow us to use fonts like Bookerly as system ones.",
+    "file_url": "https://ykwwrqxcfsahcelqgzrs.supabase.co/storage/v1/object/public/resources/migrated/1765013900481-7bccf9ba-667a-47e2-9c70-a430bcd6b8e1.pdf",
+    "file_name": "Analysis of XT4 Firmware (V3.0.2-EN.bin) - Font System Deep Dive.pdf",
+    "contributor_name": "Lakafior",
+    "contact_info": "https://github.com/lakafior/XTEink-Web-Font-Maker",
+    "tags": [
+      "Advanced",
+      "Guide"
+    ],
+    "downloads_count": 60,
+    "created_at": "2025-12-06T09:38:22.558899+00:00",
+    "updated_at": "2026-01-07T08:45:03.734231+00:00"
+  },
+  {
+    "id": "afe61e94-101e-40d7-a5f3-be3cd670354d",
+    "type": "tool",
+    "title": "EPUB batch workflow (no more ugly ePub)",
+    "description": "A professional Python script for automating EPUB file processing and cleanup at scale. Process single files, entire directories, or recursively scan for EPUB files with an interactive menu-driven interface.",
+    "installation_instructions": "Features :\nInteractive CLI Menu with arrow keys and multi-step workflow\nSingle File or Batch Processing - process one EPUB or hundreds in a directory\nRecursive Scanning - find and process EPUBs in nested folders\nFull Workflow Automation:\nConvert EPUB to EPUB (refresh HTML with ebook-convert)\nRepair malformed HTML\nBeautify all files (proper indentation and formatting)\nRemove unused CSS rules\nCheck and auto-fix errors\nRemove all embedded fonts\nRun full workflow in one command\nVerbose Logging - clear step-by-step progress with detailed output\nColored Output - beautiful terminal interface with status indicators\nEnvironment Check - automatically detects missing dependencies and suggests fixes\nBatch Progress Tracking - see which files succeeded/failed when processing folders",
+    "file_url": "https://ykwwrqxcfsahcelqgzrs.supabase.co/storage/v1/object/public/resources/migrated/1765013898640-422d29da-218c-442f-877b-3ada95eaf3e6.png",
+    "file_name": "SCR-20251105-odxy.png",
+    "external_link": "https://github.com/kxrz/calibre_workflow",
+    "contributor_name": "iamkxrz",
+    "contact_info": "https://www.reddit.com/user/iamkxrz/",
+    "tags": [
+      "Utility"
+    ],
+    "downloads_count": 227,
+    "created_at": "2025-12-06T09:38:20.256419+00:00",
+    "updated_at": "2026-01-07T05:51:54.917907+00:00"
+  },
+  {
+    "id": "84fc8213-7dd6-49b3-aebf-786d33e71412",
+    "type": "documentation",
+    "title": "How to Extract Unencrypted Firmware Segments from Chinese OTA",
+    "description": "This is documentation of my tries of getting into system files. My first try was on English 3.0.2 OTA which I assume is encrypted and hard to work with.\nThis time I was trying to do it on Chinese version from this hub which seems unencrypted and easier to \"unpack\" and cut into partition segments. I've managed to do that, but because of lack of variables and documentations in those partitions, I think it would need now to be manually de-assembled. \nI leave all of my findings in hope someone more competent would find this useful for his own purposes.",
+    "installation_instructions": "➜  Downloads esptool.py image_info full_flash.bin\nesptool.py v4.10.0\nFile size: 16777216 (bytes)\nDetected image type: ESP32-C3\nImage version: 1\nEntry point: 403cc710\n3 segments\n\nSegment 1: len 0x0038c load 0x3fcd5810 file_offs 0x00000018 [DRAM,BYTE_ACCESSIBLE]\nSegment 2: len 0x006a0 load 0x403cc710 file_offs 0x000003ac [IRAM]\nSegment 3: len 0x025f4 load 0x403ce710 file_offs 0x00000a54 [IRAM]\nChecksum: 51 (valid)\nValidation Hash: 9bc05e897975f634f44fbdf8c976a7dcff713817af4f0a7fcc92a7a5ecfa3645 (valid)\n➜  Downloads dd if=full_flash.bin of=app0_partition.bin bs=1 skip=65536\n16711680+0 records in\n16711680+0 records out\n16711680 bytes transferred in 20.995467 secs (795966 bytes/sec)\n➜  Downloads esptool.py image_info app0_partition.bin\nesptool.py v4.10.0\nFile size: 16711680 (bytes)\nDetected image type: ESP32-C3\nImage version: 1\nEntry point: 40381a64\n6 segments\n\nSegment 1: len 0x4713d0 load 0x3c180020 file_offs 0x00000018 [DROM]\nSegment 2: len 0x04084 load 0x3fc91c00 file_offs 0x004713f0 [DRAM,BYTE_ACCESSIBLE]\nSegment 3: len 0x0ab94 load 0x40380000 file_offs 0x0047547c [IRAM]\nSegment 4: len 0x1781c8 load 0x42000020 file_offs 0x00480018 [IROM]\nSegment 5: len 0x06f64 load 0x4038ab94 file_offs 0x005f81e8 [IRAM]\nSegment 6: len 0x00034 load 0x50000000 file_offs 0x005ff154 [RTC_IRAM,RTC_DRAM]\nChecksum: 04 (valid)\nValidation Hash: 33430eb577d16e51353f56fd192dbe125b0bdb3c9bddd80410325b66a6fad5e5 (valid)\n➜  Downloads dd if=app0_partition.bin of=DROM_segment.bin bs=1 skip=24 count=4658128\n4658128+0 records in\n4658128+0 records out\n4658128 bytes transferred in 5.716548 secs (814850 bytes/sec)\n➜  Downloads dd if=app0_partition.bin of=DRAM_segment.bin bs=1 skip=4658160 count=16516\n16516+0 records in\n16516+0 records out\n16516 bytes transferred in 0.033076 secs (499335 bytes/sec)\n➜  Downloads dd if=app0_partition.bin of=IRAM1_segment.bin bs=1 skip=4674684 count=43924\n43924+0 records in\n43924+0 records out\n43924 bytes transferred in 0.080036 secs (548803 bytes/sec)\n➜  Downloads dd if=app0_partition.bin of=IROM_segment.bin bs=1 skip=4718616 count=1540552\n1540552+0 records in\n1540552+0 records out\n1540552 bytes transferred in 1.950438 secs (789849 bytes/sec)\n➜  Downloads dd if=app0_partition.bin of=IRAM2_segment.bin bs=1 skip=6259176 count=28516\n28516+0 records in\n28516+0 records out\n28516 bytes transferred in 0.057075 secs (499623 bytes/sec)\n➜  Downloads dd if=app0_partition.bin of=RTC_segment.bin bs=1 skip=6287700 count=52\n52+0 records in\n52+0 records out\n52 bytes transferred in 0.000457 secs (113786 bytes/sec)\n➜  Downloads \n",
+    "file_url": "https://ykwwrqxcfsahcelqgzrs.supabase.co/storage/v1/object/public/resources/migrated/1765013897367-933ad042-6233-4fa3-ac21-f69c7455fbdf.pdf",
+    "file_name": "How to Extract Unencrypted Firmware Segments from `full_flash.bin`.pdf",
+    "contributor_name": "Lakafior",
+    "contact_info": "https://github.com/lakafior/XTEink-Web-Font-Maker",
+    "tags": [
+      "Advanced"
+    ],
+    "downloads_count": 12,
+    "created_at": "2025-12-06T09:38:18.555584+00:00",
+    "updated_at": "2026-01-06T13:22:22.301717+00:00"
+  },
+  {
+    "id": "8d5cd1b8-40a4-4818-867c-a72179b5b5f0",
+    "type": "documentation",
+    "title": "Quick Reference Chart",
+    "description": "This guide provides the essential information for optimizing content for the XTeInk X4's 480×800 e-ink display. The key priorities are proper image sizing, file weight management, and understanding the device's formatting limitations.",
+    "file_url": "https://ykwwrqxcfsahcelqgzrs.supabase.co/storage/v1/object/public/resources/migrated/1765013895885-44f517b6-b9ae-4ccb-9143-e9a940842d7d.png",
+    "file_name": "Instagram Carousel Self Care Inspiration.png",
+    "contributor_name": "iamkxrz",
+    "contact_info": "https://www.reddit.com/user/iamkxrz/",
+    "tags": [
+      "Performance",
+      "Beginner-Friendly"
+    ],
+    "downloads_count": 57,
+    "created_at": "2025-12-06T09:38:17.279948+00:00",
+    "updated_at": "2026-01-07T08:44:54.967164+00:00"
+  },
+  {
+    "id": "a29874a7-72d7-443a-b3bc-85ccc3ce7a93",
+    "type": "other",
+    "title": "English Firmware Flash - 3.0.2",
+    "description": "This is a full flash dump of the English firmware at version 3.0.2.",
+    "version": "3.0.2",
+    "installation_instructions": "If you don't know what you're doing with this file, you run the risk of bricking your device.\n\nOnce your device is connected via USB to your computer, you should be able to download the file and run:\nesptool write_flash 0x00000 firmware_3.0.2_en.bin",
+    "file_url": "https://ykwwrqxcfsahcelqgzrs.supabase.co/storage/v1/object/public/resources/migrated/1765013887507-b7ba8a1f-1deb-4244-9fbb-9f2e353a444f.bin",
+    "file_name": "firmware_3.0.2_en.bin",
+    "contributor_name": "daveallie",
+    "contact_info": "u/daveallie",
+    "tags": [
+      "Advanced"
+    ],
+    "downloads_count": 87,
+    "created_at": "2025-12-06T09:38:12.170838+00:00",
+    "updated_at": "2026-01-07T02:48:20.79481+00:00"
+  },
+  {
+    "id": "33d29873-d233-4d2a-86a0-f914bf5d4b08",
+    "type": "link",
+    "title": "Xteink X4 Best Practices Guide: File Types, Sizes & Formats",
+    "description": "File Types, Sizes & Formats: all-in-one guide to know everything.",
+    "file_url": "https://ykwwrqxcfsahcelqgzrs.supabase.co/storage/v1/object/public/resources/migrated/1765013881722-275588d3-14d8-4a23-88a0-070f8982caa3.pdf",
+    "file_name": "XteinkX4-MiniGuide.pdf",
+    "thumbnail_url": "https://raw.githubusercontent.com/kxrz/images/refs/heads/main/XteinkX4-MiniGuide.png",
+    "contributor_name": "iamkxrz via Perplexity",
+    "contact_info": "https://www.perplexity.ai/",
+    "tags": [
+      "Guide"
+    ],
+    "downloads_count": 814,
+    "created_at": "2025-12-06T09:38:04.648076+00:00",
+    "updated_at": "2026-01-07T10:30:34.145319+00:00"
+  },
+  {
+    "id": "230f8096-81ed-48af-aa99-c6b585ed9c0a",
+    "type": "documentation",
+    "title": "Optimize Any EPUB for XTeInk X4 (Including DRM Removal)",
+    "description": "A simple guide to optimize any epub for Xteink X4 (including drm removal)",
+    "file_url": "https://ykwwrqxcfsahcelqgzrs.supabase.co/storage/v1/object/public/resources/migrated/1765013867482-36d7d5c9-e2b1-4718-83bd-02aebf329c61.pdf",
+    "file_name": "Optimize Any EPUB for XTelnk X4.pdf",
+    "contributor_name": "iamkxrz",
+    "contact_info": "https://www.reddit.com/user/iamkxrz/",
+    "tags": [
+      "Beginner-Friendly"
+    ],
+    "downloads_count": 485,
+    "created_at": "2025-12-06T09:37:49.167296+00:00",
+    "updated_at": "2026-01-07T11:05:06.478578+00:00"
+  },
+  {
+    "id": "520335f5-1b87-4b01-b2d1-cd7ccc1c193b",
+    "type": "tool",
+    "title": "Web Font Maker",
+    "description": "Web Based free and open source tool to convert ttf/otf font files to .bin file, with customizations like boldness, char spacing, Optical Alignment and with latin alphabet in mind.\nAll of original windows app settings are ported with some others for better handling of latin letters.\nThere's also gallery to browse, submit and download fonts created in the tool.",
+    "version": "2.0",
+    "compatibility": "tested on XT4 3.0.1 firmware ",
+    "installation_instructions": "1. Open page https://xteink.lakafior.com\n2. Choose ttf or otf font file from disk\n3. Move Display Scale slider until the text box is the size of e-reader\n4. Play around with font settings until yours font looks good\n5. Generate .bin file for reader, and/or upload results to gallery",
+    "known_issues": "None for now",
+    "file_url": "https://v5.airtableusercontent.com/v3/u/48/48/1764972000000/cYfjDDX8BYvnwbTUbo9YcQ/5SCMa0Xc3-9q0uRLjIGXmYvQRVFq8IoxTXNjCWoPCkShM1SAGekZLWucTq0sGDObB9kj-Vzs4onS_esNhKeaxg7PqmOzUCYDUjDUVNxp6OxdRBdaCqhru3CzS0G6B4-fVAhfCHwHkrak5UONClbFjTm2SrLzU0o4bMVs3Sf2ZkRen6mJjaBaR-jDyALHl8pz/KAOX_ciFfzF6QZ6Nge2IAwQ715iSEaEDpE8C5m7VVuc",
+    "file_name": "Screenshot 2025-11-14 at 11.50.44.png",
+    "external_link": "https://xteink.lakafior.com",
+    "contributor_name": "Lakafior",
+    "contact_info": "https://github.com/lakafior/XTEink-Web-Font-Maker",
+    "tags": [
+      "Utility",
+      "Customization"
+    ],
+    "downloads_count": 223,
+    "created_at": "2025-12-06T09:06:32.919082+00:00",
+    "updated_at": "2026-01-07T08:44:34.963641+00:00"
+  },
+  {
+    "id": "e4bfaa7c-4430-4c8d-9c3a-76707de3f665",
+    "type": "tool",
+    "title": "EPub -> XTC Converter update",
+    "description": "I’m really glad you’re enjoying my EPUB → XTC converter:\n\nhttp://x4converter.rho.sh\n\nI’ve just added a couple of new features that people have been requesting in comments:\n\n- Landscape rendering\n\n- Custom fonts\n\n- Higher image quality (But really slow rendering - https://streamable.com/d9gi6k)\n\n- Reading progress bar\n\n- Faster XTC rendering\n\nKeep in mind there may still be some bugs.\n\nFor example, the chapter percentage isn’t always perfectly accurate so if it's bother you then remember to turn it off. I also spotted that during rendering phase a preview looks broken - but don't worry XTC file should be fine.",
+    "installation_instructions": "https://www.reddit.com/r/xteinkereader/comments/1pe9rn1/xtc_converter_update/",
+    "external_link": "http://x4converter.rho.sh/",
+    "contributor_name": "h0rm0n",
+    "tags": [],
+    "downloads_count": 0,
+    "created_at": "2025-12-06T09:06:32.550577+00:00",
+    "updated_at": "2026-01-06T13:22:22.301717+00:00"
+  },
+  {
+    "id": "7da8584e-8aba-49a9-b737-75ab403ccca0",
+    "type": "tool",
+    "title": "ePaper Font Converter",
+    "description": "An all-in-one tool for adjusting, previewing, generating, and pushing fonts! \nConvert your favorite fonts for your portable e-ink readers - right from your phone. Dotink lets you easily transform ttf fonts into bin fonts optimized for e-ink devices, without needing a computer. \n\nKey Features: \n1. Use system fonts or import external .ttf font files. \n2. Customize character spacing, line height, size, and weight for better readability on your e-ink display. \n3. Preview font rendering in real time - closely simulating the actual e-ink device display. \n4. Supports multiple portable e-ink readers, including XTEINK X4, MoFei 3.7, and WuDaDa-XiaoMo. 5. \n",
+    "external_link": "https://apps.apple.com/us/app/dotink/id6754073002",
+    "contributor_name": "iamkxrz",
+    "contact_info": "https://www.reddit.com/user/iamkxrz/",
+    "tags": [
+      "Customization",
+      "Utility",
+      "Stable"
+    ],
+    "downloads_count": 0,
+    "created_at": "2025-12-06T09:06:31.861948+00:00",
+    "updated_at": "2026-01-06T13:22:22.301717+00:00"
+  },
+  {
+    "id": "8f165a48-1544-4c55-bd1f-c8807ec6a5d1",
+    "type": "plugin",
+    "title": "EPUB Workflow Plugin for Calibre",
+    "description": "Free Calibre plugin that batch-processes EPUBs with one click. Repairs, optimizes, and cleans your ebook files automatically. Always creates backups. Works on all platforms. And resizes images!",
+    "version": "1.0",
+    "compatibility": "X4",
+    "installation_instructions": "1. Download `epub_workflow_plugin.zip` from the GitHub repo\n2. In Calibre: **Preferences → Plugins → Load plugin from file**\n3. Select the ZIP file and restart Calibre\n4. Add the toolbar icon: **Preferences → Interface → Toolbars & menus**",
+    "file_name": "epub_workflow_plugin.zip",
+    "external_link": "https://github.com/kxrz/calibre_workflow/releases/tag/Running",
+    "thumbnail_url": "https://github.com/kxrz/calibre_workflow/blob/14a492a368a8adfde10354edc0397a188dc331b3/calibre_epub.png?raw=true",
+    "contributor_name": "iamkxrz",
+    "tags": [
+      "Beginner-Friendly"
+    ],
+    "downloads_count": 332,
+    "created_at": "2025-12-06T09:06:31.703294+00:00",
+    "updated_at": "2026-01-06T13:22:22.301717+00:00"
+  },
+  {
+    "id": "eb583bb2-f134-4f73-b3ea-eaf81f54e971",
+    "type": "documentation",
+    "title": "Guide to Firmware Updates, Backup and Flashing",
+    "description": "I have compiled a guide on how to flash, backup, and update firmware. The more advanced commands are linux-based, but you shouldn't need those to do a basic flash/backup.\nhttps://github.com/Joseph-Cannaday/xteink_x4-english",
+    "contributor_name": "foobar",
+    "contact_info": "a",
+    "tags": [
+      "Advanced"
+    ],
+    "downloads_count": 0,
+    "created_at": "2025-12-06T09:06:31.533514+00:00",
+    "updated_at": "2026-01-06T13:22:22.301717+00:00"
+  },
+  {
+    "id": "8df2c613-ad75-4ee8-9221-d4121e1f474b",
+    "type": "tool",
+    "title": "Image to BMP Converter (Screensavers)",
+    "description": "Convert any Image to BMP files for using as a screensaver on XTEINK X4. Supports compression if required",
+    "version": "1",
+    "installation_instructions": "- choose file to upload\n- choose crop or original\n- choose compression\n- export and transfer to Xteink\n\nAsk for any features or changes on Reddit - https://www.reddit.com/r/xteinkereader/s/mITry8xfsl",
+    "known_issues": "Higher compression will lose quality, but it may be faster to load on the device. ",
+    "external_link": "https://aryascripts.github.io/page-apps/bmp-convert/",
+    "contributor_name": "finding_femself",
+    "contact_info": "https://www.reddit.com/u/finding_femself",
+    "tags": [
+      "Customization",
+      "Utility",
+      "Theme"
+    ],
+    "downloads_count": 0,
+    "created_at": "2025-12-06T09:06:31.388541+00:00",
+    "updated_at": "2026-01-06T13:22:22.301717+00:00"
+  },
+  {
+    "id": "79660c19-1761-4df7-9208-1eb247959ba2",
+    "type": "tool",
+    "title": "Markdown to ePub",
+    "description": "A Python tool to convert Markdown files to beautifully formatted ePub books with an interactive terminal interface and advanced features.",
+    "version": "2.0",
+    "installation_instructions": "All instructions are on the GitHub page.",
+    "file_url": "https://v5.airtableusercontent.com/v3/u/48/48/1764972000000/2LDKZcW3aQ8NIfpi1wRNyQ/EOWvHkrha_uKWRWxLaLci2Cdb0ynTmTpUotas39kjR-gjVnsNvdsWK8tZKwNXYgsCqGDr7W9NW-gU44TyRDp3b3Xf1BopoYyWeqh2QpPwAr07ZxX0ioTMQtXDpNY3pSLJ7UxIpNEyuB_YKnwAXoK6w/znnjQvw63YxOfev9Qbgmyo6lcHbyQq-G1JNF3HlyQ0s",
+    "file_name": "cover.png",
+    "external_link": "https://github.com/kxrz/md_to_epub",
+    "contributor_name": "iamkxrz",
+    "contact_info": "https://www.reddit.com/user/iamkxrz/",
+    "tags": [
+      "Stable",
+      "Utility"
+    ],
+    "downloads_count": 59,
+    "created_at": "2025-12-06T09:06:31.243604+00:00",
+    "updated_at": "2026-01-07T03:23:06.023787+00:00"
+  },
+  {
+    "id": "886a0ea7-3b95-43c4-97cf-dfe9e8a4f392",
+    "type": "other",
+    "title": "Xteink X4 English Firmware Flash - 3.0.2",
+    "description": "The official update from the official XTEINK API server.",
+    "version": "3.0.2",
+    "installation_instructions": "If you don't know what you're doing with this file, you run the risk of bricking your device.",
+    "file_url": "https://v5.airtableusercontent.com/v3/u/48/48/1764972000000/L8T4ewgHyScQB-h_t6mBzg/BWc3EWFKyVyW4Ro3TwH-9IqvDR_CxejWbkui-0YyUl0JpAGGsEpVGFWvI_BW-hHcSDlMNzaieFeJa6u0dsdTDE8rd_-e4rONW4odUnYlLvFWnJK5artJgJFRyP93mcvVZA4MXv5QdlCs7Hv9JcLgTcAyaEvGViqKfFOt2ePU-aE/M9z-8C3IUIguKT0cjzCrdeyfann4ao5pqKT-NaDZI4c",
+    "file_name": "V3.0.2-EN.bin",
+    "external_link": "http://gotaserver.xteink.com/api/download/ESP32C3/V3.0.2/V3.0.2-EN.bin",
+    "contributor_name": "zeroballoons",
+    "contact_info": " ",
+    "tags": [
+      "Stable",
+      "Advanced"
+    ],
+    "downloads_count": 127,
+    "created_at": "2025-12-06T09:06:30.363892+00:00",
+    "updated_at": "2026-01-06T23:42:16.874072+00:00"
+  },
+  {
+    "id": "178177bc-16ff-46ba-a4f5-e3d8908eb5f3",
+    "type": "other",
+    "title": "Chinese XTOS firmware",
+    "description": "This is a complete firmware dump of Chinese XTOS 2.2.0",
+    "version": "2.2.0",
+    "compatibility": "X4 ",
+    "installation_instructions": "I will put together something for this at a later stage. In the interim, I would advise those using this do so at their own risk. ",
+    "file_url": "https://v5.airtableusercontent.com/v3/u/48/48/1764972000000/RkTgLeKkA6gDRefnnowD_w/EGgF3sSESCOYB5p-GNZFcragoeywcO11RWPXLsAHf5kLyNGkyMOsTGF0UyZogSxXXWxxidt4tNDlhmyzfdwAPKuhh6rY7C8TxCTyjU2QG1EffidP-AMtsuUIArCAoaqiABqZT0jqDUeCf-pMDOyBrYSAqH9pxtUwRjTryZuq8xM/geqBoe3bi2743roeCGSu0uOtW3kLOOaWt8U5V1sGkTw",
+    "file_name": "full_flash.bin",
+    "external_link": "https://gofile.io/d/tx31TN",
+    "contributor_name": "Mallmagician ",
+    "contact_info": "Mallmagician@gmail.com",
+    "tags": [
+      "Advanced"
+    ],
+    "downloads_count": 20,
+    "created_at": "2025-12-06T09:06:30.190873+00:00",
+    "updated_at": "2026-01-06T13:22:22.301717+00:00"
+  },
+  {
+    "id": "ffc5ef19-621c-4d08-9187-318f0b61bbe8",
+    "type": "documentation",
+    "title": "X4 User Guide (PDF)",
+    "description": "Comprehensive user manual for the XTeink X4, covering setup, features, and troubleshooting. You could read the community guide too, look up, it's in the menu.",
+    "version": "2025 Edition",
+    "compatibility": "All firmware versions",
+    "installation_instructions": "Open the PDF on your device or any PDF reader. No installation required.",
+    "known_issues": "None. Official guide from XTeink.",
+    "file_name": "XTEINK User Manual.pdf",
+    "external_link": "https://www.xteink.com/pages/support",
+    "tags": [
+      "Stable",
+      "Guide"
+    ],
+    "downloads_count": 124,
+    "created_at": "2025-12-06T09:06:29.582753+00:00",
+    "updated_at": "2026-01-06T13:22:22.301717+00:00"
+  }
+]

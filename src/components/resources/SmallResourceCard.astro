@@ -3,6 +3,7 @@ import Text from "@/components/fundations/elements/Text.astro";
 import type { Resource } from '@/lib/supabase/schema';
 import { useTranslations, getLangFromUrl, getLangPrefix } from '@/i18n/utils';
 import { stripMarkdown } from '@/lib/utils/markdown';
+import { getGradientForId } from '@/lib/utils/gradients';
 
 interface Props {
   resource: Resource;
@@ -18,6 +19,11 @@ const thumbnailUrl = resource.thumbnail_url || `/api/resources/${resource.id}/og
 
 // Nettoyer le markdown pour l'affichage dans la carte
 const cleanDescription = stripMarkdown(resource.description);
+
+// Générer un gradient unique pour cette ressource
+const gradient = getGradientForId(resource.id);
+const gradientStyle = `background: linear-gradient(135deg, ${gradient.from} 0%, ${gradient.to} 100%);`;
+const textColorStyle = `color: ${gradient.text};`;
 ---
 
 <a
@@ -26,15 +32,23 @@ const cleanDescription = stripMarkdown(resource.description);
   class="relative flex items-center gap-x-3 rounded-md bg-base-50 p-4 focus-outline-none"
 >
   <div
-    class="flex-shrink-0 p-1 size-16 bg-white rounded-full items-center flex justify-center"
+    class="flex-shrink-0 p-1 size-16 bg-white rounded-full items-center flex justify-center relative"
   >
     {resource.thumbnail_url ? (
-      <img
-        src={thumbnailUrl}
-        alt={resource.title}
-        class="object-cover size-10 rounded-full"
-        loading="lazy"
-      />
+      <>
+        <img
+          src={thumbnailUrl}
+          alt={resource.title}
+          class="object-cover size-10 rounded-full"
+          loading="lazy"
+          onerror={`this.style.display='none'; this.nextElementSibling.style.display='flex';`}
+        />
+        <div class="size-10 rounded-full absolute inset-0 m-auto flex items-center justify-center" style={`display: none; ${gradientStyle}`}>
+          <Text tag="span" variant="textXS" class="font-semibold" style={textColorStyle}>
+            {resource.title.substring(0, 2).toUpperCase()}
+          </Text>
+        </div>
+      </>
     ) : (
       <div class="size-10 rounded-full bg-base-200 flex items-center justify-center">
         <Text tag="span" variant="textXS" class="font-semibold text-base-600">

@@ -1,39 +1,22 @@
 ---
+export const prerender = true; // Page statique
+
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import Text from "@/components/fundations/elements/Text.astro";
 import Wrapper from "@/components/fundations/containers/Wrapper.astro";
 import { useTranslations, getLangFromUrl } from '@/i18n/utils';
 import Seo from '@/components/fundations/head/Seo.astro';
-import { supabase } from '@/lib/supabase/client';
+import { loadLocationStats, generateLocationMarkers } from '@/lib/utils/location-loader';
 import { countries } from '@/lib/utils/countries';
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 
-// Fetch location stats
-const { data: locationStats } = await supabase
-  .from('location_declarations')
-  .select('country_code')
-  .order('created_at', { ascending: false });
+// Charger les statistiques depuis JSON statique
+const { stats, total, countries: countriesCount, period } = await loadLocationStats();
 
-// Aggregate by country_code
-const stats: Record<string, number> = {};
-let total = 0;
-if (locationStats) {
-  for (const declaration of locationStats) {
-    const code = declaration.country_code.toUpperCase();
-    stats[code] = (stats[code] || 0) + 1;
-    total++;
-  }
-}
-
-// Get coordinates for countries with data
-const markers = Object.entries(stats).map(([code, count]) => ({
-  code,
-  count,
-  name: countries[code]?.name || code,
-  coords: countries[code]?.coords || null,
-})).filter(m => m.coords !== null);
+// Générer les markers pour la carte
+const markers = generateLocationMarkers(stats);
 ---
 
 <BaseLayout>
@@ -74,27 +57,14 @@ const markers = Object.entries(stats).map(([code, count]) => ({
                 {`${total} ${total === 1 ? 'user' : 'users'}`}
               </Text>
               <Text tag="p" variant="textBase" class="text-base-600">
-                {`${Object.keys(stats).length} ${Object.keys(stats).length === 1 ? 'country' : 'countries'}`}
+                {`${countriesCount} ${countriesCount === 1 ? 'country' : 'countries'}`}
               </Text>
-            </div>
-            
-            <!-- Declare Location Form -->
-            <div class="flex items-center gap-4">
-              <select
-                id="countrySelect"
-                class="px-4 py-2 border border-base-200 rounded-lg focus:ring-2 focus:ring-accent-400 focus:border-accent-400 min-w-[200px]"
-              >
-                <option value="">{t('location.select_country')}</option>
-                {Object.entries(countries).sort((a, b) => a[1].name.localeCompare(b[1].name)).map(([code, country]) => (
-                  <option value={code}>{country.name} ({code})</option>
-                ))}
-              </select>
-              <button
-                id="declareBtn"
-                class="px-6 py-2 bg-accent-500 text-white hover:bg-accent-600 rounded-lg transition-colors"
-              >
-                {t('location.submit')}
-              </button>
+              <Text tag="p" variant="textSm" class="text-base-500 mt-1">
+                Data as of January 1, 2026
+              </Text>
+              <Text tag="p" variant="textSm" class="text-base-400 mt-1 italic">
+                This tool is no longer being updated
+              </Text>
             </div>
           </div>
         </div>
@@ -109,13 +79,18 @@ const markers = Object.entries(stats).map(([code, count]) => ({
             </Text>
           </div>
         ) : (
-          <!-- Statistics Table -->
-          <div class="bg-base-50 rounded-lg border border-base-200 overflow-hidden">
-            <div class="p-6 border-b border-base-200">
-              <Text tag="h2" variant="textXL" class="font-semibold text-base-900">
-                {t('location.stats_table')}
-              </Text>
-            </div>
+          <!-- Statistics Table (Hidden by default) -->
+          <details class="bg-base-50 rounded-lg border border-base-200 overflow-hidden">
+            <summary class="p-6 border-b border-base-200 cursor-pointer hover:bg-base-100 transition-colors">
+              <div class="flex items-center justify-between">
+                <Text tag="h2" variant="textXL" class="font-semibold text-base-900">
+                  {t('location.stats_table')}
+                </Text>
+                <svg class="w-5 h-5 text-base-500 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+              </div>
+            </summary>
             <div class="overflow-x-auto">
               <table class="w-full">
                 <thead class="bg-base-100">
@@ -167,7 +142,7 @@ const markers = Object.entries(stats).map(([code, count]) => ({
                 </tbody>
               </table>
             </div>
-          </div>
+          </details>
         )}
       </div>
     </Wrapper>
@@ -175,13 +150,22 @@ const markers = Object.entries(stats).map(([code, count]) => ({
 </BaseLayout>
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<style>
+  details[open] summary svg {
+    transform: rotate(180deg);
+  }
+</style>
 <script>
   // Wait for DOM and Leaflet to be ready
   document.addEventListener('DOMContentLoaded', () => {
     // Load Leaflet dynamically
-    const script = document.createElement('script');
-    script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
-    script.onload = () => {
+    const leafletScript = document.createElement('script');
+    leafletScript.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+    leafletScript.onload = () => {
+      // Load Leaflet.heat plugin after Leaflet is loaded
+      const heatScript = document.createElement('script');
+      heatScript.src = 'https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js';
+      heatScript.onload = () => {
       // Initialize map with bounds to prevent zooming out too far
       const map = L.map('map', {
         minZoom: 2,
@@ -205,96 +189,89 @@ const markers = Object.entries(stats).map(([code, count]) => ({
       // Calculate max count for scaling
       const maxCount = Math.max(...markersData.map((m: any) => m.count), 1);
       
-      // Function to calculate circle radius based on count
-      const getRadius = (count: number) => {
-        // Minimum radius: 8px, Maximum radius: 50px
-        // Scale logarithmically for better visual distribution
-        const minRadius = 8;
-        const maxRadius = 50;
-        const ratio = Math.log(count + 1) / Math.log(maxCount + 1);
-        return minRadius + (maxRadius - minRadius) * ratio;
-      };
+      // Prepare heatmap data: [lat, lng, intensity]
+      // Intensity is normalized between 0 and 1, with multiple points per country for better coverage
+      const heatmapData: number[][] = [];
+      const countryMarkers: any[] = [];
       
-      // Function to get color based on count
-      const getColor = (count: number) => {
-        const ratio = count / maxCount;
-        if (ratio > 0.7) return '#bc6c25'; // copperwood (high)
-        if (ratio > 0.4) return '#dda15e'; // sunlit-clay (medium-high)
-        if (ratio > 0.2) return '#606c38'; // olive-leaf (medium)
-        return '#283618'; // black-forest (low)
-      };
-      
-      // Add circle markers for each country
       markersData.forEach(({ code, count, name, coords }: any) => {
         if (coords && coords.length === 2) {
           const [lat, lng] = coords;
-          const radius = getRadius(count);
-          const color = getColor(count);
+          const intensity = count / maxCount;
           
-          const circle = L.circleMarker([lat, lng], {
-            radius: radius,
-            fillColor: color,
-            color: '#fff',
-            weight: 2,
-            opacity: 1,
-            fillOpacity: 0.7,
-          }).addTo(map);
+          // Add multiple points around the country center to create a zone effect
+          // More points = larger zone, intensity decreases with distance
+          const pointsPerCountry = Math.max(3, Math.ceil(count / 2));
+          const spreadRadius = 0.5; // degrees (roughly 50km)
           
-          circle.bindPopup(`
-            <div class="p-2">
-              <strong>${name}</strong> (${code})<br>
-              ${count} ${count === 1 ? 'user' : 'users'}
-            </div>
-          `);
+          for (let i = 0; i < pointsPerCountry; i++) {
+            const angle = (i / pointsPerCountry) * Math.PI * 2;
+            const distance = (i / pointsPerCountry) * spreadRadius;
+            const offsetLat = lat + (distance * Math.cos(angle));
+            const offsetLng = lng + (distance * Math.sin(angle));
+            // Intensity decreases with distance from center
+            const pointIntensity = intensity * (1 - (i / pointsPerCountry) * 0.5);
+            heatmapData.push([offsetLat, offsetLng, pointIntensity]);
+          }
           
-          // Add hover effect
-          circle.on('mouseover', function() {
-            this.setStyle({
-              fillOpacity: 0.9,
-              weight: 3,
-            });
-          });
+          // Also add the center point with full intensity
+          heatmapData.push([lat, lng, intensity]);
           
-          circle.on('mouseout', function() {
-            this.setStyle({
-              fillOpacity: 0.7,
-              weight: 2,
-            });
-          });
+          // Store marker info for popups
+          countryMarkers.push({ lat, lng, code, count, name });
         }
       });
       
-      // Declare location handler
-      document.getElementById('declareBtn')?.addEventListener('click', async () => {
-        const select = document.getElementById('countrySelect') as HTMLSelectElement;
-        const countryCode = select.value;
+      // Create heatmap layer with zones d'affluence
+      if (heatmapData.length > 0) {
+        const heatLayer = L.heatLayer(heatmapData, {
+          radius: 35, // Larger radius for zone effect
+          blur: 25, // Blur for smooth zones
+          maxZoom: 10,
+          gradient: {
+            0.0: '#283618', // black-forest (low)
+            0.3: '#606c38', // olive-leaf (medium)
+            0.6: '#dda15e', // sunlit-clay (medium-high)
+            1.0: '#bc6c25'  // copperwood (high)
+          },
+          max: 1.0,
+          minOpacity: 0.3
+        }).addTo(map);
+      }
+      
+      // Add invisible markers for popups (hover/click interaction)
+      countryMarkers.forEach(({ lat, lng, code, count, name }) => {
+        const marker = L.marker([lat, lng], {
+          opacity: 0, // Invisible but clickable
+          interactive: true
+        }).addTo(map);
         
-        if (!countryCode) {
-          alert('Please select a country');
-          return;
-        }
+        marker.bindPopup(`
+          <div class="p-2">
+            <strong>${name}</strong> (${code})<br>
+            ${count} ${count === 1 ? 'user' : 'users'}
+          </div>
+        `);
         
-        try {
-          const res = await fetch('/api/location/declare', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ country_code: countryCode }),
-          });
-          
-          const data = await res.json();
-          
-          if (!res.ok) {
-            throw new Error(data.error || 'Failed to declare location');
-          }
-          
-          alert('Location declared successfully!');
-          window.location.reload();
-        } catch (error: any) {
-          alert(`Error: ${error.message}`);
-        }
+        // Create a larger invisible circle for easier hover
+        const hoverCircle = L.circle([lat, lng], {
+          radius: 200000, // ~200km radius
+          fillColor: 'transparent',
+          fillOpacity: 0,
+          color: 'transparent',
+          weight: 0,
+          interactive: true
+        }).addTo(map);
+        
+        hoverCircle.on('mouseover', () => {
+          marker.openPopup();
+        });
       });
-    };
-    document.head.appendChild(script);
+      
+      };
+      document.head.appendChild(heatScript);
+      };
+      document.head.appendChild(leafletScript);
   });
 </script>
 <script id="markers-data" type="application/json" set:html={JSON.stringify(markers)}></script>

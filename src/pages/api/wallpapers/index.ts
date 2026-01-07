@@ -106,9 +106,11 @@ export const POST: APIRoute = async ({ request }) => {
       .from('wallpapers')
       .insert({
         ...validated,
-        status: 'published', // Par défaut publié
+        status: 'published', // Par défaut publié (modération manuelle si nécessaire)
         hidden: false,
         submitted_ip_hash: ipHash,
+        pending_export: true, // Marqué comme en attente d'export (batch processing)
+        download_count: 0, // Compteur de téléchargements initialisé à 0
       })
       .select()
       .single();
@@ -123,14 +125,15 @@ export const POST: APIRoute = async ({ request }) => {
     // Increment submission count
     await incrementSubmissionCount(ipHash);
     
-    // Invalide le cache et pré-génère les nouveaux caches (en arrière-plan, ne bloque pas la réponse)
+    // Vérifier si on doit déclencher un batch (en arrière-plan, ne bloque pas)
     Promise.all([
       invalidateCache('wallpapers'),
-      pregenerateCache('wallpapers', supabaseAdmin),
-      triggerVercelRebuild(), // Déclenche un rebuild pour mettre à jour les pages pré-rendues
+      (async () => {
+        const { checkAndTriggerBatch } = await import('@/lib/utils/wallpaper-batch');
+        await checkAndTriggerBatch();
+      })(),
     ]).catch(err => {
-      console.error('Cache invalidation/pre-generation/rebuild failed:', err);
-      // Ne fait pas échouer la requête si le cache/rebuild échoue
+      console.error('Cache invalidation/batch check failed:', err);
     });
     
     return new Response(JSON.stringify({ success: true, data }), {

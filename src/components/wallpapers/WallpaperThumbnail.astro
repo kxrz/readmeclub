@@ -1,9 +1,10 @@
 ---
 import type { Wallpaper } from '@/lib/supabase/schema';
+import type { WallpaperMetadata } from '@/lib/utils/wallpaper-loader';
 import { useTranslations, getLangFromUrl, getLangPrefix } from '@/i18n/utils';
 
 interface Props {
-  wallpaper: Wallpaper;
+  wallpaper: Wallpaper | WallpaperMetadata;
 }
 
 const { wallpaper } = Astro.props;
@@ -11,7 +12,8 @@ const lang = getLangFromUrl(Astro.url);
 const langPrefix = getLangPrefix(lang);
 
 const wallpaperUrl = langPrefix ? `${langPrefix}/wallpapers/${wallpaper.id}` : `/wallpapers/${wallpaper.id}`;
-const imageUrl = wallpaper.file_url || '/placeholder-wallpaper.jpg';
+// Support both old format (file_url) and new format (thumbnail_path)
+const imageUrl = ('file_url' in wallpaper ? wallpaper.file_url : wallpaper.thumbnail_path) || '/placeholder-wallpaper.jpg';
 ---
 
 <a

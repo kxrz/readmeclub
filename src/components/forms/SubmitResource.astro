@@ -17,7 +17,8 @@ const t = useTranslations(lang);
     hasFile: false,
     hasExternalLink: false,
     error: null,
-    success: false
+    success: false,
+    successMessage: ''
   }"
   @submit.prevent="uploading = true; error = null; success = false"
 >
@@ -275,7 +276,7 @@ const t = useTranslations(lang);
   <div x-show="success" x-transition class="p-6 bg-green-50 border-2 border-green-400 rounded-lg shadow-sm">
     <Text tag="p" variant="textBase" class="text-green-800 font-semibold leading-relaxed">
       <span class="text-green-600 text-xl mr-2">✓</span>
-      {t('form.success_message')}
+      <span x-text="successMessage || '{t(\'form.success_message\')}'"></span>
     </Text>
   </div>
 
@@ -463,9 +464,12 @@ const t = useTranslations(lang);
         throw new Error(error.error || 'Submission failed');
       }
       
+      const responseData = await res.json();
+      
       if (alpineData) {
         alpineData.success = true;
         alpineData.uploading = false;
+        alpineData.successMessage = responseData.message || 'Resource submitted successfully! It will be added to the site within 24 hours.';
         form.reset();
         // Reset Alpine state
         alpineData.hasFile = false;
@@ -476,7 +480,7 @@ const t = useTranslations(lang);
           form.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }, 100);
       } else {
-        alert('Resource submitted successfully!');
+        alert(responseData.message || 'Resource submitted successfully! It will be added to the site within 24 hours.');
         form.reset();
       }
     } catch (error: any) {

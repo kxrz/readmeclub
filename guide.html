@@ -1,0 +1,1294 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta charset="utf-8" />
+		<link rel="stylesheet" type="text/css" href="css/style.css" />
+		<title>Xteink X4 Complete Community Guide</title>
+	</head>
+<body>
+<h1>Xteink X4 Complete Community Guide</h1>
+
+<p><strong>November 2025 Edition</strong></p>
+
+<h2>⚠️ Important Disclaimer</h2>
+
+<p>This is an <strong>unofficial, volunteer-compiled user guide</strong> for the Xteink X4 e-reader, assembled in November 2025 from publicly available information, official documentation, and community experiences shared on Reddit. This is a <strong>living document</strong>—information may change as device firmware evolves and new features are released.</p>
+
+<p><strong>Always verify time-sensitive information directly with:</strong></p>
+
+<ul>
+	<li><strong>Official website:</strong> https://www.xteink.com/</li>
+	<li><strong>Official support:</strong> support@xteink.com</li>
+	<li><strong>Community:</strong> https://www.reddit.com/r/xteinkereader/</li>
+</ul>
+
+<p><strong>Warranty, support policies, pricing, and official specifications</strong> are subject to change. This guide is for reference only; always defer to official sources for binding information.</p>
+
+<h2>Why This Guide Exists &amp; How to Use It</h2>
+
+<p>This guide was created to help Xteink X4 users (old and new) get the most out of their reading experience. While exploring the community, I noticed that most of the best tips, tricks, and troubleshooting advice were dispersed across hundreds of posts, making it hard for people to find key information quickly. By compiling these insights into one structured resource, the goal is to make setup, customization, and daily use as smooth as possible, and to save you countless hours scrolling or experimenting.</p>
+
+<p>Use each section to get answers for setup, file management, accessories, and advanced tweaks. For even more community resources—custom fonts, batch converters, or user guides—visit the <strong>Xteink Community Hub</strong> at https://xteink.dontthinkjustbuild.com/. And if you have questions or want to share your own solutions, join us on https://www.reddit.com/r/xteinkereader/.</p>
+
+<p>Thanks for checking out this guide. Hope it makes your Xteink X4 experience enjoyable and hassle-free!</p>
+
+<p>— Florent (iamkxrz on Reddit)</p>
+
+<h2>TL;DR – 10 Essential Things Before You Begin</h2>
+
+<ol>
+	<li><strong>Purchase ONLY through the official https://www.xteink.com/ website.</strong> Do not purchase from AliExpress or other third-party marketplaces. There is no official Xteink presence on AliExpress; devices purchased there are unsupported and may not be authentic.</li>
+	<li><strong>Update firmware immediately after receiving your device</strong> (Sync → System Update). Regular updates fix bugs, improve performance, and add features. Check support@xteink.com or r/xteinkereader for the latest information.</li>
+	<li><strong>The community hub at https://xteink.dontthinkjustbuild.com/ is your reference for tools, resources, and community guides.</strong> This is maintained by volunteers and aggregates user-created resources, custom fonts, batch converters, wallpapers, and more.</li>
+	<li><strong>EPUB files work best with Calibre optimization.</strong> Use the <strong>EPUB Workflow Plugin for Calibre</strong> at https://xteink-community-hub.replit.app/ddl?record=recdl1eCLELhoWfr4 to batch-process EPUBs with one click. Check https://www.reddit.com/r/xteinkereader/ for the latest optimization guides.</li>
+	<li><strong>Image and font support are limited.</strong> Images must be ≤1024×1024 pixels and &lt;2 MB. Custom fonts need special .bin format conversion. Use the <strong>Web Font Maker</strong> at https://xteink.lakafior.com to convert TTF fonts to .bin format online, or the <strong>ePaper Font Converter</strong> (iOS app) at https://apps.apple.com/us/app/dotink/id6754073002.</li>
+	<li><strong>File transfer works via WiFi hotspot or microSD card.</strong> The hotspot method is most user-friendly. Always format your microSD to <strong>exFAT</strong> (not FAT32) to avoid file size issues.</li>
+	<li><strong>There is no built-in frontlight.</strong> The device is not readable in complete darkness. Use the official magnetic reading light or any standard book light if you need to read in low light.</li>
+	<li><strong>Battery life is measured in weeks, not days.</strong> E Ink technology is extremely efficient; WiFi and Bluetooth drain the most power. Most users report 2-4 weeks between charges with regular reading.</li>
+	<li><strong>Warranty and support terms must be verified live</strong> on https://www.xteink.com/pages/contact or by emailing support@xteink.com at the time you need support. Terms can change and community information is not binding.</li>
+	<li><strong>For questions, problems, or to share discoveries, visit https://www.reddit.com/r/xteinkereader/</strong> where the community and developers actively participate and answer questions.</li>
+</ol>
+
+<h2>Table of Contents</h2>
+
+<ol>
+	<li>Setup and Configuration</li>
+	<li>Device Overview and Hardware</li>
+	<li>Initial Configuration and First Use</li>
+	<li>File Management and Organization</li>
+	<li>EPUB Optimization and File Preparation</li>
+	<li>Reading Experience and Customization</li>
+	<li>Fonts and Languages</li>
+	<li>Connectivity and File Transfer</li>
+	<li>Battery Life and Power Management</li>
+	<li>Accessories and Attachments</li>
+	<li>Buttons, Controls, and Navigation</li>
+	<li>Troubleshooting and Common Issues</li>
+	<li>Performance Optimization</li>
+	<li>Advanced Features</li>
+	<li>Supported Content Formats</li>
+	<li>FAQ and Community Answers</li>
+	<li>Contributing and Resources</li>
+	<li>Complete Sources and Credits</li>
+</ol>
+
+<h2>1. Setup and Configuration</h2>
+
+<h3>Where to Purchase and Getting Started</h3>
+
+<p><strong>The only recommended source for purchasing the Xteink X4 is the official website: https://www.xteink.com/</strong></p>
+
+<p>This ensures you receive an authentic device with full manufacturer support, warranty coverage, and access to official customer service. Devices purchased from the official site include genuine hardware, pre-loaded firmware, and access to technical support through support@xteink.com.</p>
+
+<p><strong>AliExpress and third-party marketplaces are not official sales channels.</strong> There is no official Xteink store on AliExpress or other platforms. Community members strongly advise against purchasing from these sources because:</p>
+
+<ul>
+	<li>No guarantee of authenticity or genuine warranty support</li>
+	<li>Unclear device history and firmware version</li>
+	<li>Support requests may be redirected or ignored</li>
+	<li>Returns and refunds are handled through marketplace policies, not the manufacturer</li>
+	<li>Device firmware may be outdated</li>
+</ul>
+
+<p>If you have already purchased from a third-party source, contact support@xteink.com to clarify your warranty status.</p>
+
+<h3>Unboxing and First Steps</h3>
+
+<p>Upon receiving your Xteink X4 from the official website, you will find:</p>
+
+<ul>
+	<li>The X4 e-reader device itself</li>
+	<li>One 32GB microSD card (pre-installed in the device)</li>
+	<li>USB-C charging cable and power adapter</li>
+	<li>USB-A microSD card reader (for direct file transfer via computer)</li>
+	<li>2 MagSafe ring stickers (for phones without built-in MagSafe)</li>
+	<li>2 quality screen protectors</li>
+	<li>Quick Start Guide (in the device&#39;s language of origin)</li>
+</ul>
+
+<p><strong>Verify all items are present and undamaged immediately upon receipt.</strong> Check that the microSD card is properly seated (push gently until it clicks into place) and that the device powers on when the Power button is held for 2-3 seconds.</p>
+
+<h3>Firmware Update – Critical First Step</h3>
+
+<p><strong>The absolute first action after powering on your device should be to update the firmware.</strong> Even if the device shipped with current firmware, checking for updates ensures you have the latest bug fixes, performance improvements, and feature additions. Firmware updates are delivered over-the-air (OTA) and are cumulative.</p>
+
+<p>To update firmware:</p>
+
+<ol>
+	<li>Press the Power button to turn on the device</li>
+	<li>Connect to WiFi (Settings → WiFi) or use the built-in hotspot (192.168.3.3, password: 12345678)</li>
+	<li>Navigate to Sync → System Update</li>
+	<li>The device will check for available updates</li>
+	<li>If an update is available, confirm and allow the installation to complete (usually 2-5 minutes)</li>
+	<li>The device will restart automatically</li>
+</ol>
+
+<p><strong>After the firmware update completes</strong>, open any book file, press the OK button to access the menu, select &quot;Index,&quot; and choose &quot;Rebuild Index.&quot; This reindexing process ensures the device properly catalogs all your files and reading history.</p>
+
+<p>Firmware updates typically arrive regularly with bug fixes and improvements. For the latest information, check https://www.reddit.com/r/xteinkereader/ or contact support@xteink.com.</p>
+
+<h3>Initial Hardware Setup</h3>
+
+<p>The Xteink X4 is exceptionally simple to set up physically. If your phone lacks built-in MagSafe support (phones before iPhone 12), apply the 2 MagSafe ring stickers to your phone or case. The X4 itself has integrated magnets on the back that align with the MagSafe standard, enabling immediate attachment to compatible phones, cases, and accessories.</p>
+
+<p>Apply one or both of the included screen protectors to the front of the X4 if desired. Many users apply one immediately to protect against scratches during initial use, and save the second as a backup.</p>
+
+<p>Charge the device for at least 30 minutes using the included USB-C cable before first use. You&#39;ll see a battery indicator on screen while charging. The device is ready to use once the charging graphic indicates a full battery.</p>
+
+<h2>2. Device Overview and Hardware</h2>
+
+<h3>Physical Dimensions and Portability</h3>
+
+<p>The Xteink X4 is engineered for extreme portability, making it one of the lightest and most compact dedicated e-readers available. The device weighs just <strong>74 grams</strong>—lighter than a deck of playing cards (94g), significantly lighter than any smartphone (modern phones weigh 150-250g), and only marginally heavier than two AA batteries combined (90g).</p>
+
+<p>The physical dimensions are equally compact: <strong>114mm × 69mm × 5.9mm</strong> (approximately <strong>4.49 × 2.72 × 0.23 inches</strong>). These measurements mean the X4 is smaller than a standard credit card in both length and width, though slightly thicker. This combination of weight and size makes the device genuinely pocket-friendly—it fits comfortably in shirt breast pockets, jeans front pockets, jacket interior pockets, small messenger bags, or even large wallet compartments. Many users report carrying the X4 without noticing it&#39;s there.</p>
+
+<p>The compact size enables reading scenarios impossible with larger e-readers: reading while standing on crowded public transit, reading while eating lunch at your desk, tucking it into a lanyard around your neck, or clipping it to a belt or bag strap. For travelers, the X4 replaces dozens of physical books (a typical EPUB is 1-3MB, so you fit 700-1000 books on the included 32GB microSD) while weighing less than a single paperback. Ultralight backpackers, digital nomads, and anyone prioritizing minimalism finds the X4 transformative.</p>
+
+<h3>Display and Screen Technology</h3>
+
+<p>The Xteink X4 features a <strong>4.3-inch electronic ink (E Ink) display</strong> with a resolution of <strong>480 × 800 pixels</strong>, delivering <strong>220 pixels per inch (PPI)</strong>. This pixel density is sufficiently high to render text without visible pixelation at normal reading distances, creating sharp, crisp typography comparable to printed books.</p>
+
+<p>The display technology is Electronic Paper (E Ink), which differs fundamentally from LCD and OLED screens used in phones and tablets. E Ink displays only consume power when changing the image (when you turn a page). Maintaining a static display uses essentially zero power—this is why battery life is measured in weeks rather than hours. The technology produces exceptional contrast and readability even in bright sunlight (unlike LCD/OLED which become washed out), while generating zero blue light (no sleep disruption from nighttime reading).</p>
+
+<p><strong>Screen size implications:</strong> At 4.3 inches, the screen is notably smaller than typical e-readers (most range from 6-8 inches). This results in displaying approximately 5-6 words per line and 13-15 lines of text simultaneously, depending on font size and margin settings. New users often express initial concern about this, but adaptation happens quickly—most users report comfortable reading after just one or two hours, and the forced focus of a smaller screen can actually reduce eye strain and improve concentration compared to larger displays. The frequent page turns create natural reading rhythm and break points.</p>
+
+<p>The display is laminated (minimal air gap between the E Ink panel and protective glass), resulting in excellent contrast and a genuinely paper-like visual experience. The screen is flush with the device body (not recessed), contributing to the sleek aesthetic.</p>
+
+<p>The X4 is available in two color options: <strong>black</strong> and <strong>white</strong>. The colors refer to the device body/bezel, not the screen itself (all E Ink displays appear as black text on white/gray background regardless). Both perform identically; the choice is entirely aesthetic.</p>
+
+<h3>Processor, OS, and System Architecture</h3>
+
+<p>The Xteink X4 runs a <strong>custom-designed, lightweight operating system</strong> specifically optimized for reading. It is <strong>not Android</strong>, nor is it based on any other general-purpose mobile OS. This purpose-built approach means the device is exceptionally fast at its intended function (opening books, navigating chapters, rendering text) while maintaining week-long battery life because there&#39;s no OS overhead from apps, notifications, background services, or UI animations.</p>
+
+<p>The device uses an <strong>ESP32-based architecture</strong>—a microcontroller platform known for WiFi/Bluetooth capabilities, low power consumption, and sufficient processing power for e-reader tasks.</p>
+
+<p>The custom OS means the X4 is fundamentally focused: there are no distractions, notifications, background apps, or task switching. You turn it on to read; you turn it off when done. This simplicity is a feature, not a limitation—it creates what many users describe as the most distraction-free reading experience available.</p>
+
+<h3>Connectivity: WiFi and Bluetooth</h3>
+
+<p>The Xteink X4 includes <strong>WiFi connectivity supporting 802.11n (WiFi 4) on the 2.4 GHz frequency band only</strong>. It does <strong>not support 5 GHz networks</strong> or newer WiFi 6 standards. This is important to know when troubleshooting WiFi issues.</p>
+
+<p>WiFi on the X4 serves purposes including firmware updates and file transfer via hotspot.</p>
+
+<p>The device also includes <strong>Bluetooth support</strong> primarily for connecting <strong>wireless page-turner accessories</strong>—small handheld devices with buttons that allow hands-free page navigation. Bluetooth connections persist between sessions once paired, so devices automatically reconnect when within range.</p>
+
+<h3>Storage: MicroSD Card and Capacity</h3>
+
+<p>The Xteink X4 uses a <strong>microSD card for all file storage</strong>. The device comes with a <strong>32GB microSD card pre-installed</strong>, which is sufficient for most readers—capacity depends on file format and size, but typically accommodates <strong>700-1000 ebooks</strong> (average EPUB: 1-3MB; average TXT: smaller; illustrated books can be 10-50MB).</p>
+
+<p><strong>Critical requirement: always format to exFAT</strong>, not FAT32. This is because:</p>
+
+<ul>
+	<li>FAT32 has a 4GB maximum file size per file, problematic for large TXT or EPUB files</li>
+	<li>exFAT supports files of any size, is fully compatible with Windows/Mac/Linux, and maintains Unicode support for international filenames</li>
+	<li>The X4 firmware fully supports exFAT with no compatibility issues</li>
+</ul>
+
+<p>The microSD card is inserted into the <strong>microSD slot on the left side of the device</strong> (when holding it normally). Insert gently until you hear a click—this indicates proper seating. To remove, push slightly until you hear another click and the card pops out.</p>
+
+<h3>Buttons and Physical Controls</h3>
+
+<p>The Xteink X4 employs an entirely <strong>button-based control interface</strong> with no touchscreen. This design choice has significant implications:</p>
+
+<p><strong>Front buttons (4 total, arranged in two pairs):</strong></p>
+
+<ul>
+	<li><strong>Left pair:</strong> Back button (left side), OK/Confirm button (right side)</li>
+	<li><strong>Right pair:</strong> Up button (upper position), Down button (lower position)</li>
+</ul>
+
+<p>These buttons function differently depending on context. In menus, Up/Down navigate options and OK confirms selections. During reading, Up/Down can turn pages or perform other assigned functions. Back always exits menus and returns to books.</p>
+
+<p><strong>Side buttons (2 total, on right edge):</strong></p>
+
+<ul>
+	<li><strong>Upper button:</strong> Default = Previous Page</li>
+	<li><strong>Lower button:</strong> Default = Next Page</li>
+</ul>
+
+<p><strong>Additional buttons:</strong></p>
+
+<ul>
+	<li><strong>Power button</strong> (top right corner) — short press wakes from sleep, long press powers on/off completely</li>
+	<li><strong>Reset button</strong> (recessed, left side near microSD slot) — used only for force-restart if device becomes unresponsive</li>
+</ul>
+
+<p>The button-only interface takes perhaps 5-15 minutes to adapt to for users coming from touchscreen devices, but becomes intuitive quickly. Advantages include: no accidental touches while reading, more precise navigation control, the ability to read without touching the screen (avoiding fingerprints), functionality even with gloves, and clear tactile feedback.</p>
+
+<h3>Battery and Power</h3>
+
+<p>The Xteink X4 houses a <strong>650 mAh battery</strong>. E Ink technology is so efficient that this modest battery delivers exceptional battery life—weeks of use on a single charge under normal reading conditions.</p>
+
+<p><strong>Real-world battery life reports from the community:</strong></p>
+
+<ul>
+	<li><strong>Light readers</strong> (30-60 minutes daily): 4-6 weeks between charges</li>
+	<li><strong>Moderate readers</strong> (1-3 hours daily): 2-3 weeks between charges</li>
+	<li><strong>Heavy readers</strong> (4-5+ hours daily): 1-2 weeks between charges</li>
+	<li><strong>Minimal use:</strong> Users report going a month without charging</li>
+</ul>
+
+<p><strong>Power consumption factors:</strong></p>
+
+<ul>
+	<li><strong>Page turns</strong> consume a small amount of power (the largest discretionary consumer)</li>
+	<li><strong>WiFi connectivity</strong> uses significant power when active; disable when not transferring files</li>
+	<li><strong>Bluetooth</strong> moderate drain when actively connected</li>
+	<li><strong>Processor activity</strong> minimal since there&#39;s no background OS activity</li>
+	<li><strong>Display maintenance</strong> nearly zero power—E Ink doesn&#39;t drain power maintaining a static image</li>
+</ul>
+
+<h2>3. Initial Configuration and First Use</h2>
+
+<h3>Language and Interface Settings</h3>
+
+<p>When you first power on the Xteink X4, you&#39;ll be prompted to select your preferred language. The device supports:</p>
+
+<ul>
+	<li><strong>English</strong></li>
+	<li><strong>Simplified Chinese (简体中文)</strong></li>
+	<li><strong>Traditional Chinese (繁體中文)</strong></li>
+	<li><strong>Japanese (日本語)</strong></li>
+</ul>
+
+<p>Your language selection applies to the entire interface and persists even after firmware updates.</p>
+
+<h3>WiFi Configuration</h3>
+
+<p>The Xteink X4 can operate in two WiFi modes: <strong>connecting to an existing network</strong> or <strong>creating its own hotspot</strong>.</p>
+
+<h4><strong>Connecting to Existing WiFi</strong></h4>
+
+<p>Navigate to Settings → WiFi Connection and select your network from the list. If your network doesn&#39;t appear, ensure it&#39;s broadcasting on the 2.4 GHz frequency band (not 5 GHz only). Use the on-screen keyboard to enter your password:</p>
+
+<ul>
+	<li>OK button: Select letters</li>
+	<li>Up/Down buttons: Navigate the character grid</li>
+	<li>Back button: Delete/backspace</li>
+</ul>
+
+<p>The device remembers this network for future automatic connections.</p>
+
+<h4><strong>Hotspot Mode</strong></h4>
+
+<p>The X4 can create its own WiFi network for file transfer without requiring external WiFi infrastructure. To enable:</p>
+
+<ul>
+	<li>Navigate to Sync → WiFi Hotspot</li>
+	<li>The device broadcasts a network named &quot;E-Paper&quot; (or similar)</li>
+	<li>Default password: <strong>12345678</strong></li>
+	<li>Connect from any computer or phone to this network, then open a web browser to <strong>192.168.3.3</strong></li>
+</ul>
+
+<p>The hotspot provides a simple file upload interface accessible through any web browser.</p>
+
+<h3>MicroSD Card and Storage Setup</h3>
+
+<p><strong>Format the microSD card to exFAT before first use</strong> if you plan to upgrade from the included card. To format on Windows:</p>
+
+<ol>
+	<li>Insert the card using a card reader</li>
+	<li>Open File Explorer, right-click the drive</li>
+	<li>Select &quot;Format&quot;</li>
+	<li>Choose &quot;exFAT&quot; from the file system dropdown</li>
+	<li>Click &quot;Start&quot;</li>
+</ol>
+
+<p>On Mac, use Disk Utility; on Linux, use GParted or command-line tools. Once formatted, insert the card into the device until it clicks into place.</p>
+
+<h3>Button Customization and Control Settings</h3>
+
+<p>Navigate to Settings → Customize Main Button to reassign the four front buttons to different functions. Settings → Swap Side Button reverses the page-turn buttons—useful for left-handed users or if you prefer navigation reversed.</p>
+
+<p>Settings → Hold Power adjusts how long to press Power for on/off (prevents accidental shutdowns if you rest your hand on the device).</p>
+
+<h3>Sleep and Auto-Off Timers</h3>
+
+<p>Configure power management through Settings:</p>
+
+<ul>
+	<li><strong>Sleep Time:</strong> How long without button presses before the screen turns off (recommended: 5-10 minutes)</li>
+	<li><strong>Power-Off Timer:</strong> Complete shutdown time (recommended: 20-30 minutes)</li>
+</ul>
+
+<p>These settings optimize battery life while preventing unnecessary shutdowns during reading pauses.</p>
+
+<h3>Firmware Update and Index Rebuild</h3>
+
+<p>After initial setup and any firmware update, navigate to any book file, press OK to open the menu, select &quot;Index,&quot; and choose &quot;Rebuild Index.&quot; This typically takes 30-60 seconds and should be performed after each major firmware update.</p>
+
+<h2>4. File Management and Organization</h2>
+
+<h3>Creating a Logical Folder Structure</h3>
+
+<p>The Xteink X4 scans for compatible files in the root directory of the microSD card and in any subfolders you create. Creating a logical folder structure dramatically improves navigation and experience, especially as your library grows.</p>
+
+<p><strong>Organization approaches:</strong></p>
+
+<ul>
+	<li><strong>By Genre:</strong> Fiction, Non-Fiction, Science Fiction, Mystery, Romance, etc.</li>
+	<li><strong>By Author:</strong> Creates a folder for each author with all their works inside</li>
+	<li><strong>By Status:</strong> To-Read, Currently-Reading, Completed</li>
+	<li><strong>By Language:</strong> English, French, Spanish, etc.</li>
+	<li><strong>Hybrid approach:</strong> Fiction → Science Fiction → Asimov, for example</li>
+</ul>
+
+<p>Files and folders display alphabetically in the Folder menu. Consider prefixing folder names with numbers for custom ordering: 01-To-Read, 02-Currently-Reading, 03-Completed.</p>
+
+<h3>Supported File Types and Formats</h3>
+
+<p><strong>Books:</strong></p>
+
+<ul>
+	<li><strong>EPUB</strong> — recommended format, maintains formatting, table of contents, chapter navigation</li>
+	<li><strong>TXT</strong> — supported, plain unformatted text, excellent for simple content</li>
+</ul>
+
+<p><strong>Images:</strong></p>
+
+<ul>
+	<li><strong>JPG</strong> — supported for wallpapers and in-EPUB illustrations</li>
+	<li><strong>BMP</strong> — supported for wallpapers and in-EPUB illustrations</li>
+</ul>
+
+<p><strong>Fonts:</strong></p>
+
+<ul>
+	<li><strong>Custom fonts (.bin)</strong> — proprietary format for custom typography</li>
+</ul>
+
+<p><strong>Not supported:</strong></p>
+
+<ul>
+	<li><strong>PDF</strong> — not natively readable; use Calibre to convert to EPUB first</li>
+	<li><strong>Markdown (.md)</strong> — convert to TXT or EPUB using Calibre or the <strong>Markdown to ePub</strong> converter at https://xteink-community-hub.replit.app/ddl?record=recno5uXi4QvR1uZ3</li>
+	<li><strong>Other formats</strong> (MOBI, AZW, DOCX, etc.) — convert using Calibre</li>
+</ul>
+
+<h3>MicroSD Card Formatting and Optimization</h3>
+
+<p>Always format microSD cards to <strong>exFAT</strong> using your computer before inserting into the X4. The device works with the included 32GB card but will also accept larger cards (verify with the community on r/xteinkereader for current recommendations).</p>
+
+<p><strong>File system details:</strong></p>
+
+<ul>
+	<li>exFAT: No maximum file size per file, supports Unicode filenames, fully compatible with Windows/Mac/Linux</li>
+	<li>FAT32: Maximum 4GB per file (problematic for large TXT files)</li>
+	<li><strong>Recommendation:</strong> Always use exFAT for new cards</li>
+</ul>
+
+<h3>File Organization Best Practices</h3>
+
+<p>Place book files either in the root directory or in organized subfolders. The device displays up to 100-200 files per folder comfortably; more can cause slight menu lag. For very large libraries:</p>
+
+<ul>
+	<li>Create 10-20 top-level folders</li>
+	<li>Distribute books across folders to keep folder sizes manageable</li>
+	<li>Use meaningful folder names for quick navigation</li>
+</ul>
+
+<h3>Backup and Library Management</h3>
+
+<p>Maintain backup copies of your ebook library on your computer or cloud storage. This protects against:</p>
+
+<ul>
+	<li>MicroSD card failure or corruption</li>
+	<li>Accidental file deletion</li>
+	<li>Device loss or damage</li>
+</ul>
+
+<h2>5. EPUB Optimization and File Preparation</h2>
+
+<h3>Why EPUB Optimization Matters</h3>
+
+<p>EPUBs vary tremendously in quality, formatting, and structure. Some are carefully crafted by professional publishers; others are hastily scanned and OCR&#39;d. Files from different sources may have malformed HTML, inconsistent formatting, broken table of contents, embedded fonts that conflict with the X4&#39;s rendering, unused CSS styling that bloats file size, or typographical inconsistencies.</p>
+
+<p>Optimizing EPUBs before transferring them to the X4 prevents most common display and navigation issues.</p>
+
+<h3>Calibre: Essential Tool</h3>
+
+<p><strong>Calibre</strong> is a free, open-source ebook management application available for Windows, Mac, and Linux. Download from https://calibre-ebook.com/</p>
+
+<h3>EPUB Optimization Tools</h3>
+
+<p>The community has created several tools to streamline EPUB optimization:</p>
+
+<p><strong>1. EPUB Workflow Plugin for Calibre</strong> (One-click optimization)</p>
+
+<ul>
+	<li><strong>URL:</strong> https://xteink-community-hub.replit.app/ddl?record=recdl1eCLELhoWfr4</li>
+	<li><strong>GitHub:</strong> https://github.com/kxrz/calibre_workflow</li>
+	<li><strong>Features:</strong> Batch-processes EPUBs with one click, repairs, optimizes, and cleans ebook files automatically, creates backups, works on all platforms, resizes images</li>
+	<li><strong>Installation:</strong> Download the ZIP file, in Calibre go to Preferences → Plugins → Load plugin from file, select the ZIP, restart Calibre</li>
+	<li><strong>Best for:</strong> Users wanting complete automation in one click</li>
+</ul>
+
+<p><strong>2. EPUB Batch Workflow (Python Script)</strong> (For advanced users)</p>
+
+<ul>
+	<li><strong>URL:</strong> https://xteink-community-hub.replit.app/ddl?record=recnVPtwxYP3pAkzG</li>
+	<li><strong>GitHub:</strong> https://github.com/kxrz/calibre_workflow</li>
+	<li><strong>Features:</strong> Interactive CLI menu, single file or batch processing, recursive directory scanning, full workflow automation with verbose logging</li>
+	<li><strong>Best for:</strong> Users processing large libraries or nested folder structures</li>
+</ul>
+
+<p><strong>3. Markdown to ePub Converter</strong> (For converting Markdown files)</p>
+
+<ul>
+	<li><strong>URL:</strong> https://xteink-community-hub.replit.app/ddl?record=recno5uXi4QvR1uZ3</li>
+	<li><strong>GitHub:</strong> https://github.com/kxrz/md_to_epub</li>
+	<li><strong>Features:</strong> Converts Markdown files to beautifully formatted ePub books with interactive terminal interface</li>
+	<li><strong>Best for:</strong> Writers and note-takers wanting to convert Markdown documents to readable ebooks</li>
+</ul>
+
+<h3>Common EPUB Optimization Steps</h3>
+
+<p>If using Calibre manually, common optimization steps include:</p>
+
+<ul>
+	<li><strong>Repair HTML</strong> — fixes broken or malformed HTML tags and structural issues</li>
+	<li><strong>Beautify All Files</strong> — reformats internal HTML and CSS for consistency</li>
+	<li><strong>Delete Unused CSS</strong> — removes CSS rules that aren&#39;t applied to content, reducing file size</li>
+	<li><strong>Smarten Punctuation</strong> — converts straight quotes to curly quotes and fixes em-dashes</li>
+	<li><strong>Check File</strong> — validates no remaining errors or warnings</li>
+</ul>
+
+<h3>Common Issues and Solutions</h3>
+
+<p><strong>Word spacing problems in English:</strong> Ensure you&#39;re running the latest firmware. If you&#39;re already on current firmware, try re-optimizing the EPUB and pay special attention to punctuation normalization.</p>
+
+<p><strong>Books starting at wrong chapter:</strong> Use Calibre to Repair HTML, which usually fixes internal navigation structure.</p>
+
+<p><strong>Missing or incorrect images:</strong> Images must be ≤1024×1024 pixels and &lt;2 MB. Use Calibre to view and resize images if needed.</p>
+
+<p><strong>Font-related issues:</strong> The X4 uses its own fonts; embedded fonts in EPUBs can cause conflicts. Use Calibre to strip embedded fonts, allowing the X4&#39;s native fonts to render all text.</p>
+
+<p><strong>Characters appearing as boxes/question marks:</strong> The font is missing glyphs for those characters. Switch to a custom font that includes the necessary character set.</p>
+
+<h3>Batch Processing Libraries</h3>
+
+<p>For large existing libraries, process files in batches using Calibre or the community tools:</p>
+
+<ol>
+	<li>Use the <strong>EPUB Workflow Plugin</strong> or <strong>EPUB Batch Workflow</strong> script</li>
+	<li>Select all your EPUB files</li>
+	<li>Run the automated optimization</li>
+	<li>Transfer the optimized batch to the X4</li>
+</ol>
+
+<h2>6. Reading Experience and Customization</h2>
+
+<h3>Reading Menu and Features</h3>
+
+<p>Press the OK button while reading to access the reading menu. Available options include:</p>
+
+<ul>
+	<li><strong>Bluetooth</strong> — connect to page-turner accessories</li>
+	<li><strong>Auto Flip</strong> — automatic page turning at set intervals (0-9 seconds)</li>
+	<li><strong>Chapter Navigation</strong> — jump to previous/current/next chapter or forward up to 100 chapters</li>
+	<li><strong>Progress Bar</strong> — display percentage through the book</li>
+	<li><strong>Go To</strong> — jump directly to any specific page number</li>
+	<li><strong>Night Mode</strong> — switch between light and dark display modes</li>
+	<li><strong>Index Rebuild</strong> — refresh file index</li>
+	<li><strong>Direction</strong> — toggle between portrait and landscape orientation</li>
+	<li><strong>Font</strong> — switch between installed fonts without restarting the book</li>
+</ul>
+
+<h3>Text and Display Customization</h3>
+
+<p>The X4 offers limited but functional customization:</p>
+
+<p><strong>Font size:</strong> Adjust via default menu or switch between fonts with different base sizes.</p>
+
+<p><strong>Orientation:</strong> Portrait (default) and landscape both supported. The device can also rotate 180° for reading upside-down.</p>
+
+<p><strong>Dark mode:</strong> Toggle between light background (black text on white) and dark mode (white/light text on black background).</p>
+
+<h3>Lock Screen and Wallpapers</h3>
+
+<p>When powered off, the X4 displays a custom image or automatically displays the cover of the last EPUB you read. To set a custom lock screen:</p>
+
+<ol>
+	<li>Navigate to Settings → Power-off Screen → Custom</li>
+	<li>Select any JPG or BMP image from your Folder</li>
+	<li>Image should be roughly 480×800 pixels</li>
+</ol>
+
+<p><strong>Community-shared wallpapers:</strong> Visit https://xteink-community-hub.replit.app/ to download pre-made BMP wallpapers, or use the <strong>Image to BMP Converter</strong> at https://aryascripts.github.io/page-apps/bmp-convert/ to convert any image to BMP format for your lock screen.</p>
+
+<h3>Bookmarks and Reading History</h3>
+
+<p>The X4 automatically saves your reading position in the <strong>last 20 books you&#39;ve opened</strong>. Resuming any book in your history returns you to your exact last-read location.</p>
+
+<p><strong>Custom bookmarks:</strong> The device saves your current position as you read, but custom bookmarks within individual books are not supported in current firmware. This is a frequently requested feature.</p>
+
+<h3>Performance and Page Turning</h3>
+
+<p>The X4 handles large books (1000+ pages) without performance degradation. Page turns remain instantaneous whether reading a 200-page novella or a 1000-page epic fantasy novel. The indexing system is well-optimized.</p>
+
+<h2>7. Fonts and Languages</h2>
+
+<h3>Built-in Fonts</h3>
+
+<p>The Xteink X4 ships with <strong>two default fonts</strong> pre-installed and optimized for E Ink display:</p>
+
+<ul>
+	<li>A serif font (similar to Times New Roman)</li>
+	<li>A sans-serif font (similar to Arial)</li>
+</ul>
+
+<p>Both fonts are available in multiple sizes and include complete glyphs for English, Simplified Chinese, Traditional Chinese, and Japanese.</p>
+
+<h3>Language Support and International Use</h3>
+
+<p>The Xteink X4 officially supports <strong>four interface and reading languages</strong>:</p>
+
+<ul>
+	<li>English</li>
+	<li>Simplified Chinese (简体中文)</li>
+	<li>Traditional Chinese (繁體中文)</li>
+	<li>Japanese (日本語)**</li>
+</ul>
+
+<p>Community members have successfully tested various other languages with the default font. For languages requiring specialized character sets (Arabic, Hebrew, Thai, Korean, Devanagari, etc.), you need to convert a TTF (TrueType Font) file containing all necessary glyphs to the X4&#39;s .bin format.</p>
+
+<h3>Custom Fonts: Resources and Tools</h3>
+
+<p>The community has created several tools to generate custom .bin fonts:</p>
+
+<p><strong>1. Web Font Maker</strong> (Browser-based, recommended for beginners)</p>
+
+<ul>
+	<li><strong>URL:</strong> https://xteink.lakafior.com</li>
+	<li><strong>Features:</strong> Web-based, no installation needed, live preview, font gallery to browse and download pre-made fonts</li>
+	<li><strong>Process:</strong> </li>
+	<li>Open https://xteink.lakafior.com</li>
+	<li>Upload your TTF or OTF font file</li>
+	<li>Adjust font settings (size, spacing, weight, optical alignment)</li>
+	<li>Preview in real-time</li>
+	<li>Generate .bin file or upload to gallery for others</li>
+	<li><strong>Best for:</strong> Users wanting easy, visual control over font settings</li>
+</ul>
+
+<p><strong>2. ePaper Font Converter</strong> (iOS app)</p>
+
+<ul>
+	<li><strong>URL:</strong> https://apps.apple.com/us/app/dotink/id6754073002</li>
+	<li><strong>Features:</strong> Convert fonts directly on iPhone/iPad, preview rendering simulating e-ink display, customize character spacing, line height, size, weight</li>
+	<li><strong>Supports:</strong> XTEINK X4, MoFei 3.7, WuDaDa-XiaoMo</li>
+	<li><strong>Best for:</strong> iPhone/iPad users wanting all-in-one font conversion on their phone</li>
+</ul>
+
+<p><strong>3. Analysis of XT4 Firmware - Font System Documentation</strong> (For advanced users)</p>
+
+<ul>
+	<li><strong>URL:</strong> https://xteink-community-hub.replit.app/ddl?record=recWKLZW9GYgih1Dw</li>
+	<li><strong>Content:</strong> Deep technical documentation of font system, extraction techniques, and experimental approaches</li>
+	<li><strong>Best for:</strong> Developers interested in understanding font architecture</li>
+</ul>
+
+<h3>Installing Custom .bin Fonts</h3>
+
+<p><strong>How to install pre-made .bin fonts:</strong></p>
+
+<ol>
+	<li>Download the .bin file from the community hub or tools above</li>
+	<li>Place it in the root directory of your microSD card or in a dedicated &quot;Fonts&quot; folder</li>
+	<li>Navigate to Folder on the device and find the font file</li>
+	<li>Long-press on the font filename to see options:</li>
+	<li><strong>Preview</strong> — see how the font looks</li>
+	<li><strong>Set as reading font</strong> — make it the default for new books</li>
+	<li><strong>Restore default</strong> — revert to built-in fonts</li>
+	<li><strong>Delete</strong> — remove from device</li>
+</ol>
+
+<h3>Recommended Community Fonts</h3>
+
+<p>The hub features pre-converted fonts including:</p>
+
+<ul>
+	<li><strong>Literata</strong> (multiple sizes) — elegant serif font for classic reading</li>
+	<li><strong>ABeeZee</strong> — supports English, Spanish, Portuguese, Italian, Dutch, Swedish, Danish, Finnish, Norwegian, Icelandic, German</li>
+	<li><strong>Azeret</strong> — monospaced condensed font</li>
+	<li>Various others shared by the community</li>
+</ul>
+
+<h3>Switching and Managing Multiple Fonts</h3>
+
+<p>You can install multiple fonts on your X4. While reading, press OK → Font to instantly switch between any installed font without restarting the book.</p>
+
+<h2>8. Connectivity and File Transfer</h2>
+
+<h3>WiFi Modes: Connecting to Existing Networks</h3>
+
+<p>The X4 can connect to standard WiFi networks (2.4 GHz only) for firmware updates and potentially future features.</p>
+
+<p><strong>To connect to WiFi:</strong></p>
+
+<ol>
+	<li>Navigate to Settings → WiFi Connection</li>
+	<li>Select your network from the list (must be 2.4 GHz)</li>
+	<li>Use the on-screen keyboard to enter password</li>
+	<li>Confirm and wait for connection</li>
+</ol>
+
+<p><strong>Troubleshooting WiFi:</strong></p>
+
+<ul>
+	<li>Network not appearing? Ensure it broadcasts on 2.4 GHz, not 5 GHz only</li>
+	<li>Won&#39;t connect? Verify password is correct, move closer to router, restart both router and X4</li>
+	<li>Update download stuck? Switch to a different network or use hotspot mode instead</li>
+</ul>
+
+<h3>Hotspot Mode: Creating a File Transfer Network</h3>
+
+<p>The X4 can create its own WiFi hotspot for file transfer without requiring external WiFi infrastructure.</p>
+
+<p><strong>To enable hotspot:</strong></p>
+
+<ol>
+	<li>Navigate to Sync → WiFi Hotspot</li>
+	<li>Device broadcasts network &quot;E-Paper&quot; (or similar)</li>
+	<li>Default password: <strong>12345678</strong></li>
+</ol>
+
+<p><strong>To transfer files via hotspot:</strong></p>
+
+<ol>
+	<li>On your computer or phone, connect to the &quot;E-Paper&quot; WiFi network</li>
+	<li>Open a web browser and navigate to <strong>192.168.3.3</strong></li>
+	<li>A file upload interface appears</li>
+	<li>Select files from your computer and upload directly to X4&#39;s microSD</li>
+	<li>Files appear in your Folder menu</li>
+</ol>
+
+<h3>File Transfer via MicroSD Card</h3>
+
+<p>The traditional file transfer method using the included USB-A microSD card reader:</p>
+
+<p><strong>Method:</strong></p>
+
+<ol>
+	<li>Power off the X4</li>
+	<li>Remove the microSD card</li>
+	<li>Insert the microSD into the USB-A reader</li>
+	<li>Connect reader to your computer&#39;s USB port</li>
+	<li>Drag and drop files into folders on the card</li>
+	<li>Eject the drive safely</li>
+	<li>Insert card back into X4 until it clicks</li>
+	<li>Power on; device automatically scans for new files</li>
+</ol>
+
+<p>This method is reliable, fast, and works offline.</p>
+
+<h3>Bluetooth Connectivity</h3>
+
+<p>Bluetooth on the X4 is primarily used for connecting <strong>wireless page-turner accessories</strong>—small handheld devices with buttons allowing hands-free page navigation.</p>
+
+<p><strong>To connect Bluetooth:</strong></p>
+
+<ol>
+	<li>Press OK while reading to open menu</li>
+	<li>Select &quot;Bluetooth&quot;</li>
+	<li>Choose &quot;Scan for new devices&quot;</li>
+	<li>Pair your page-turner when it appears</li>
+	<li>Once paired, devices auto-reconnect when powered on and in range</li>
+</ol>
+
+<h2>9. Battery Life and Power Management</h2>
+
+<h3>Battery Capacity and Real-World Performance</h3>
+
+<p>The Xteink X4 houses a <strong>650 mAh lithium-ion battery</strong>. E Ink technology&#39;s extreme efficiency results in exceptional battery life. The battery only drains when actively using power (page turns, WiFi, Bluetooth); displaying static text uses virtually zero power.</p>
+
+<h3>Charging Specifications</h3>
+
+<p>Charge the X4 using <strong>any standard USB-C cable and adapter</strong>:</p>
+
+<ul>
+	<li>Compatible with any USB charger (phone chargers, power banks, computer USB ports)</li>
+	<li>Supports standard USB power delivery protocols</li>
+	<li>Automatically regulates charging speed</li>
+</ul>
+
+<p><strong>Charging times:</strong></p>
+
+<ul>
+	<li>0-100% with standard 5V/1A adapter: approximately 2-3 hours</li>
+</ul>
+
+<h3>Sleep, Standby, and Power-Off Modes</h3>
+
+<p>The X4 offers three power states, each with different power consumption:</p>
+
+<p><strong>Sleep Mode (Screen Off):</strong></p>
+
+<ul>
+	<li>Activated after configurable inactivity time</li>
+	<li>Screen turns off; device remains responsive</li>
+	<li>Power consumption: minimal</li>
+	<li>Reading position: fully preserved</li>
+	<li>Reactivate: any button press wakes device</li>
+</ul>
+
+<p><strong>Standby/Complete Power-Off:</strong></p>
+
+<ul>
+	<li>Initiated by holding Power button for configured duration</li>
+	<li>Device shuts down completely</li>
+	<li>Power consumption: battery maintains charge for weeks/months</li>
+	<li>Lock screen displays: the cover of your last-read book (or custom wallpaper)</li>
+	<li>Reading progress: fully preserved</li>
+</ul>
+
+<p><strong>Settings for optimal power management:</strong></p>
+
+<ul>
+	<li>Sleep Time: 5-10 minutes</li>
+	<li>Power-Off Timer: 20-30 minutes</li>
+</ul>
+
+<h3>Battery Maintenance and Longevity</h3>
+
+<p><strong>Normal use:</strong> Simply charge when convenient; the device&#39;s low power consumption means charging is infrequent.</p>
+
+<p><strong>Battery lifespan degradation:</strong> Expect capacity loss over time. Most users find the device&#39;s battery acceptable for 2-3 years of regular use.</p>
+
+<p><strong>If battery capacity degrades significantly</strong> (from 2-3 weeks to several days with same usage):</p>
+
+<ol>
+	<li>Ensure you&#39;re running latest firmware</li>
+	<li>Check WiFi/Bluetooth not constantly enabled</li>
+	<li>Verify no unusual power draw</li>
+	<li>If problems persist, contact support@xteink.com about battery service or replacement</li>
+</ol>
+
+<p><strong>Extend battery between charges:</strong></p>
+
+<ul>
+	<li>Disable WiFi when not transferring files</li>
+	<li>Disable Bluetooth if not using page-turners</li>
+	<li>These measures can extend battery life by 30-50%</li>
+</ul>
+
+<h2>10. Accessories and Attachments</h2>
+
+<h3>Official Xteink Accessories</h3>
+
+<p>Xteink offers three officially-designed accessories specifically optimized for the X4:</p>
+
+<p><strong>Magnetic Case:</strong></p>
+
+<ul>
+	<li>Attaches magnetically to the X4&#39;s back (no adhesive; perfectly removable)</li>
+	<li>Integrated stand for hands-free reading at desks or tables</li>
+	<li>Comprehensive protection from drops, scratches, and impacts</li>
+	<li>Doesn&#39;t interfere with MagSafe functionality</li>
+</ul>
+
+<p><strong>Magnetic Reading Light:</strong></p>
+
+<ul>
+	<li>Magnetic attachment to device (no adhesive; fully removable)</li>
+	<li>Continuous brightness adjustment (no discrete steps; smooth dimming)</li>
+	<li>Dual color temperature: warm white and cool white switchable</li>
+	<li>Flexible positioning</li>
+	<li>USB-rechargeable battery</li>
+</ul>
+
+<p><strong>MagSafe Ring Stickers (2 included):</strong></p>
+
+<ul>
+	<li>Adhesive stickers adding MagSafe magnets to phones/cases</li>
+	<li>Allow attachment of X4 to phones without built-in MagSafe</li>
+</ul>
+
+<p>All accessories are available directly from https://www.xteink.com/</p>
+
+<h3>MagSafe and Magnetic Attachment</h3>
+
+<p>The X4 has integrated magnets on its back, enabling attachment to any MagSafe-compatible device, surface, or accessory.</p>
+
+<p><strong>Compatible devices:</strong></p>
+
+<ul>
+	<li>iPhone 12 and newer (built-in MagSafe magnets)</li>
+	<li>Any phone or case with attached MagSafe ring sticker</li>
+</ul>
+
+<p><strong>Magnetic attachment strength:</strong></p>
+
+<ul>
+	<li>Strong enough for normal handling, walking, casual movement</li>
+	<li>Weak enough that the lightweight X4 detaches rather than pulling down heavy phones (safety feature)</li>
+	<li>Detaching and re-attaching won&#39;t damage X4 or phone</li>
+</ul>
+
+<p><strong>Use cases enabled by MagSafe:</strong></p>
+
+<ul>
+	<li>Attach X4 to back of phone for reading while browsing on front</li>
+	<li>Use iPhone&#39;s kickstand to prop both phone and X4 together</li>
+	<li>Attach to phone held in front-facing car mount for passenger reading</li>
+	<li>Quick switching between phone tasks and reading</li>
+</ul>
+
+<p><strong>Note on magnetic field:</strong> The magnetic field does not interfere with WiFi, Bluetooth, microSD, or any device functions.</p>
+
+<h2>11. Buttons, Controls, and Navigation</h2>
+
+<h3>Button Layout and Primary Functions</h3>
+
+<p>The Xteink X4 employs seven physical buttons for all navigation and control:</p>
+
+<p><strong>Front Panel (4 buttons):</strong></p>
+
+<ul>
+	<li><strong>Top-Left: Back Button</strong> — exits menus, returns to books</li>
+	<li><strong>Top-Right: OK/Confirm Button</strong> — selects menu options, opens menus</li>
+	<li><strong>Bottom-Left: Up Button</strong> — navigates up in menus</li>
+	<li><strong>Bottom-Right: Down Button</strong> — navigates down in menus</li>
+</ul>
+
+<p><strong>Right Side (2 buttons):</strong></p>
+
+<ul>
+	<li><strong>Upper Button (Default: Previous Page)</strong> — turn pages backward</li>
+	<li><strong>Lower Button (Default: Next Page)</strong> — turn pages forward</li>
+</ul>
+
+<p><strong>Additional Buttons:</strong></p>
+
+<ul>
+	<li><strong>Power Button</strong> — short press: sleep/wake; long press: power on/off</li>
+	<li><strong>Reset Button</strong> (recessed, left side) — emergency force-restart if device unresponsive</li>
+</ul>
+
+<h3>Context-Sensitive Button Functions</h3>
+
+<p>Button functions change based on context:</p>
+
+<p><strong>While Reading:</strong></p>
+
+<ul>
+	<li>Up/Down buttons (or side buttons): turn pages</li>
+	<li>OK button: open reading menu</li>
+	<li>Back button: return to book list</li>
+	<li>Power button: enter sleep mode (short press) or power off (long press)</li>
+</ul>
+
+<p><strong>In Menus:</strong></p>
+
+<ul>
+	<li>Up/Down buttons: navigate options</li>
+	<li>OK button: select/confirm option</li>
+	<li>Back button: exit menu, return to previous screen</li>
+</ul>
+
+<h3>Button Customization via Settings</h3>
+
+<p>Navigate to <strong>Settings → Customize Main Button</strong> to reassign the four front buttons. <strong>Settings → Swap Side Button</strong> reverses the page-turn button meanings—useful for left-handed users.</p>
+
+<h3>Advanced Button Techniques</h3>
+
+<p><strong>Bookmarking:</strong> While reading, press and hold the OK button. A brief flash animation appears confirming a bookmark was added.</p>
+
+<p><strong>Quick Menu Exit:</strong> Press and hold Back button to rapidly exit nested menus and return directly to reading.</p>
+
+<p><strong>Soft Reset:</strong> Press the reset button once, then immediately press and hold Power button. Device restarts.</p>
+
+<h3>Adaptability and Learning Curve</h3>
+
+<p>The button-only interface takes approximately 5-15 minutes to adapt to if you&#39;re coming from touchscreen devices. Most users report quick muscle-memory development and preference for buttons after adaptation.</p>
+
+<h2>12. Troubleshooting and Common Issues</h2>
+
+<h3>File Recognition and Storage Issues</h3>
+
+<p><strong>MicroSD card not recognized:</strong></p>
+
+<ul>
+	<li>Ensure card is inserted fully and clicks into place</li>
+	<li>Remove and reinsert</li>
+	<li>Try card in computer to verify it&#39;s not defective</li>
+	<li>Format card to exFAT using computer; reinsert in X4</li>
+	<li>Try a different brand card</li>
+</ul>
+
+<p><strong>Specific files don&#39;t appear:</strong></p>
+
+<ul>
+	<li>Ensure files are in a folder the device scans (root directory or subfolders)</li>
+	<li>Check file extensions are supported (.epub, .txt, .jpg, .bmp)</li>
+	<li>If file was recently transferred, rebuild index</li>
+</ul>
+
+<p><strong>File appears but won&#39;t open:</strong></p>
+
+<ul>
+	<li>EPUB: Optimize with Calibre or use the EPUB Workflow Plugin</li>
+	<li>TXT: If in non-UTF-8 encoding, try converting to UTF-8</li>
+	<li>Check file isn&#39;t zero bytes (empty)</li>
+</ul>
+
+<h3>Display and Text Rendering Issues</h3>
+
+<p><strong>Characters display as boxes/question marks:</strong></p>
+
+<ul>
+	<li>Current font is missing glyphs for those characters</li>
+	<li>Switch to a different font</li>
+	<li>Check the community hub for fonts supporting your language</li>
+</ul>
+
+<p><strong>Word spacing issues or text alignment problems:</strong></p>
+
+<ul>
+	<li>Ensure firmware is latest version (newer versions improve English hyphenation)</li>
+	<li>Update firmware if necessary</li>
+	<li>Re-optimize EPUB with Calibre workflow</li>
+</ul>
+
+<p><strong>Images in EPUB don&#39;t display:</strong></p>
+
+<ul>
+	<li>Verify images are JPG or BMP format</li>
+	<li>Check image dimensions (≤1024×1024 px) and size (&lt;2 MB)</li>
+	<li>Update to latest firmware for improved image support</li>
+	<li>Re-optimize EPUB and re-transfer to device</li>
+</ul>
+
+<h3>Navigation and Functionality Issues</h3>
+
+<p><strong>Specific EPUB won&#39;t open or shows errors:</strong></p>
+
+<ul>
+	<li>Convert EPUB to TXT using Calibre (strips formatting but preserves text)</li>
+	<li>Or re-optimize EPUB with Calibre workflow and re-transfer</li>
+	<li>Or delete file and re-download from source</li>
+</ul>
+
+<p><strong>EPUB starts at wrong chapter:</strong></p>
+
+<ul>
+	<li>Use Calibre → Repair HTML to fix internal structure</li>
+</ul>
+
+<p><strong>Chapter navigation doesn&#39;t work:</strong></p>
+
+<ul>
+	<li>Book may lack proper table of contents</li>
+	<li>Use Calibre to repair and rebuild internal structure</li>
+</ul>
+
+<h3>System Performance Issues</h3>
+
+<p><strong>Device freezes or becomes unresponsive:</strong></p>
+
+<ul>
+	<li>First attempt: soft reset (press reset button, then hold Power to restart)</li>
+	<li>This resolves ~90% of freeze issues</li>
+	<li>If still frozen, let battery drain completely, then charge and restart</li>
+</ul>
+
+<p><strong>Menu navigation is slow or laggy:</strong></p>
+
+<ul>
+	<li>Disable WiFi and Bluetooth</li>
+	<li>Reduce number of files in current folder</li>
+	<li>Rebuild index</li>
+	<li>Update firmware</li>
+</ul>
+
+<h2>13. Performance Optimization</h2>
+
+<h3>EPUB File Optimization</h3>
+
+<p>Before transferring books to your X4, use the community tools:</p>
+
+<ul>
+	<li><strong>EPUB Workflow Plugin for Calibre:</strong> https://xteink-community-hub.replit.app/ddl?record=recdl1eCLELhoWfr4</li>
+	<li><strong>EPUB Batch Workflow Script:</strong> https://xteink-community-hub.replit.app/ddl?record=recnVPtwxYP3pAkzG</li>
+</ul>
+
+<h3>Library Organization and File Structure</h3>
+
+<p><strong>Optimal file structure:</strong></p>
+
+<ul>
+	<li>Root directory with 10-20 top-level folders</li>
+	<li>Each folder contains 100-200 books maximum</li>
+	<li>Meaningful folder names for quick navigation</li>
+</ul>
+
+<p><strong>Performance benefits:</strong></p>
+
+<ul>
+	<li>Folder menu displays faster with fewer items</li>
+	<li>Navigation is more intuitive</li>
+</ul>
+
+<h3>Firmware Maintenance</h3>
+
+<ul>
+	<li><strong>Update regularly</strong> — firmware updates include performance optimizations</li>
+	<li><strong>Rebuild index after updates</strong> — ensures proper catalog refresh</li>
+	<li><strong>Check community</strong> — r/xteinkereader discusses performance improvements in each update</li>
+</ul>
+
+<h2>14. Advanced Features</h2>
+
+<h3>Custom Lock Screen Wallpapers</h3>
+
+<p>Customize your X4&#39;s lock screen:</p>
+
+<p><strong>Process:</strong></p>
+
+<ol>
+	<li>Prepare a JPG or BMP image (~480×800 pixels for best fit)</li>
+	<li>Use <strong>Image to BMP Converter</strong> at https://aryascripts.github.io/page-apps/bmp-convert/ if needed</li>
+	<li>Transfer image to device via hotspot or microSD</li>
+	<li>Navigate to Settings → Power-off Screen → Custom</li>
+	<li>Select your image from Folder</li>
+	<li>Power off device</li>
+</ol>
+
+<p><strong>Community wallpapers:</strong> Download pre-made BMP wallpapers from https://xteink-community-hub.replit.app/ddl?record=recqv0fC8Zr7aTbfg or browse the hub for other screensaver options.</p>
+
+<h3>Button Remapping</h3>
+
+<p>Beyond the basic Customize Main Button feature, you can create custom button configurations through settings.</p>
+
+<h3>WiFi Hotspot Advanced Usage</h3>
+
+<p>Beyond basic file transfer, the hotspot can be used for:</p>
+
+<ul>
+	<li>Shared reading (transfer books to friend&#39;s X4)</li>
+	<li>Batch library transfers (upload multiple files simultaneously)</li>
+</ul>
+
+<h2>15. Supported Content Formats</h2>
+
+<h3>Primary Formats</h3>
+
+<p><strong>EPUB (Electronic Publication):</strong></p>
+
+<ul>
+	<li>Standard for ebooks; most compatible format for X4</li>
+	<li>Supports formatting, table of contents, chapter navigation</li>
+	<li>Can include embedded images</li>
+	<li>Best results after Calibre optimization</li>
+</ul>
+
+<p><strong>TXT (Plain Text):</strong></p>
+
+<ul>
+	<li>Simple unformatted text; fully supported</li>
+	<li>Excellent for straightforward content</li>
+	<li>UTF-8 and GBK encoding supported</li>
+	<li>No table of contents or chapter navigation</li>
+</ul>
+
+<h3>Image Formats</h3>
+
+<p><strong>JPG and BMP:</strong></p>
+
+<ul>
+	<li>Can be displayed as lock screen wallpapers</li>
+	<li>Can be embedded within EPUB files</li>
+	<li>Supported specs: ≤1024×1024 pixels, &lt;2 MB, 3:5 aspect ratio preferred</li>
+</ul>
+
+<h3>Font Formats</h3>
+
+<p><strong>Custom .bin Fonts:</strong></p>
+
+<ul>
+	<li>Proprietary format for custom typography</li>
+	<li>Converted from TTF using community tools</li>
+</ul>
+
+<h3>Unsupported Formats</h3>
+
+<p><strong>PDF:</strong></p>
+
+<ul>
+	<li><strong>NOT natively supported</strong></li>
+	<li><strong>Solution:</strong> Convert to EPUB using Calibre first</li>
+</ul>
+
+<p><strong>Markdown (.md):</strong></p>
+
+<ul>
+	<li><strong>NOT natively supported</strong></li>
+	<li><strong>Solution:</strong> Use the <strong>Markdown to ePub</strong> converter at https://xteink-community-hub.replit.app/ddl?record=recno5uXi4QvR1uZ3</li>
+</ul>
+
+<p><strong>Other Formats (MOBI, AZW, DOCX, etc.):</strong></p>
+
+<ul>
+	<li>Not natively supported</li>
+	<li>Use Calibre to convert to EPUB or TXT</li>
+</ul>
+
+<h2>16. FAQ and Community Answers</h2>
+
+<h3>Frequently Asked Questions</h3>
+
+<p><strong>Q: Can I read in complete darkness?</strong></p>
+
+<p>A: No. E Ink requires ambient light to display. Use a book light for dark environments.</p>
+
+<p><strong>Q: How does battery life compare to phones?</strong></p>
+
+<p>A: E Ink is radically more efficient than LCD/OLED. X4 lasts 2-4 weeks; phones typically last a day.</p>
+
+<p><strong>Q: Can I read PDFs?</strong></p>
+
+<p>A: Not directly, but Calibre can convert PDFs to EPUB, which then works on X4.</p>
+
+<p><strong>Q: How do I transfer files?</strong></p>
+
+<p>A: Two methods: (1) WiFi hotspot or (2) MicroSD card reader. Hotspot is most user-friendly.</p>
+
+<p><strong>Q: Can I use page-turners?</strong></p>
+
+<p>A: Yes. Bluetooth page-turners using standard keyboard protocols work.</p>
+
+<p><strong>Q: Is there a warranty?</strong></p>
+
+<p>A: Yes, but verify current terms directly at https://www.xteink.com/pages/contact or contact support@xteink.com. Terms may change.</p>
+
+<p><strong>Q: Where do I get books?</strong></p>
+
+<p>A: Project Gutenberg (free classics), library lending (Libby/OverDrive), and DRM-free indie stores (Smashwords, Draft2Digital).</p>
+
+<h3>Where to Find Additional Help</h3>
+
+<p><strong>Official Resources:</strong></p>
+
+<ul>
+	<li>Website: https://www.xteink.com/</li>
+	<li>Contact: support@xteink.com</li>
+	<li>Support pages: https://www.xteink.com/pages/contact</li>
+</ul>
+
+<p><strong>Community Resources:</strong></p>
+
+<ul>
+	<li>Reddit: https://www.reddit.com/r/xteinkereader/ — active community with developer participation</li>
+	<li>Community Hub: https://xteink.dontthinkjustbuild.com/ — fonts, guides, tools, resources</li>
+</ul>
+
+<h2>17. Contributing and Resources</h2>
+
+<h3>About This Guide</h3>
+
+<p>This guide is a <strong>collaborative, volunteer-driven project</strong> compiled from official documentation, real-world user experiences, and community wisdom. It represents a snapshot of information as of <strong>November 2025</strong>. Firmware updates, new features, and community discoveries continue to evolve.</p>
+
+<h3>Supporting the Community</h3>
+
+<p>The community hub and guides like this one are maintained entirely by volunteers with no commercial affiliation. Supporting these efforts helps keep resources online and growing.</p>
+
+<h3>Getting Involved</h3>
+
+<p>The Xteink community welcomes participation:</p>
+
+<ul>
+	<li><strong>Share your discoveries</strong> on https://www.reddit.com/r/xteinkereader/</li>
+	<li><strong>Contribute tools or scripts</strong> to the community hub</li>
+	<li><strong>Create and share custom fonts</strong> with other users</li>
+	<li><strong>Write guides or tutorials</strong> for specific use cases</li>
+	<li><strong>Answer questions</strong> in the community to help newcomers</li>
+</ul>
+
+<h2>18. Complete Sources and Credits</h2>
+
+<h3>Official Sources</h3>
+
+<ul>
+	<li><strong>Official Website:</strong> https://www.xteink.com/</li>
+	<li><strong>Official Support Email:</strong> support@xteink.com</li>
+	<li><strong>Contact Page:</strong> https://www.xteink.com/pages/contact</li>
+	<li><strong>Shipping Policy:</strong> https://www.xteink.com/pages/shipping-policy</li>
+	<li><strong>Exchange &amp; Return:</strong> https://www.xteink.com/pages/exchange-return</li>
+	<li><strong>Official PDF User Manual:</strong> https://cdn.shopify.com/s/files/1/0759/9344/8689/files/X4_User_Manual_ENG.pdf</li>
+</ul>
+
+<h3>Community Resources</h3>
+
+<ul>
+	<li><strong>Primary Community:</strong> https://www.reddit.com/r/xteinkereader/</li>
+	<li><strong>Community Hub:</strong> https://xteink.dontthinkjustbuild.com/</li>
+	<li><strong>Calibre (Ebook Management):</strong> https://calibre-ebook.com/</li>
+</ul>
+
+<h3>Community Tools and Resources (from CSV)</h3>
+
+<p><strong>File Optimization:</strong></p>
+
+<ul>
+	<li>EPUB Workflow Plugin for Calibre: https://xteink-community-hub.replit.app/ddl?record=recdl1eCLELhoWfr4</li>
+	<li>EPUB Batch Workflow (Python): https://xteink-community-hub.replit.app/ddl?record=recnVPtwxYP3pAkzG</li>
+	<li>Markdown to ePub Converter: https://xteink-community-hub.replit.app/ddl?record=recno5uXi4QvR1uZ3</li>
+</ul>
+
+<p><strong>Font Tools:</strong></p>
+
+<ul>
+	<li>Web Font Maker: https://xteink.lakafior.com</li>
+	<li>ePaper Font Converter (iOS): https://apps.apple.com/us/app/dotink/id6754073002</li>
+</ul>
+
+<p><strong>Other Utilities:</strong></p>
+
+<ul>
+	<li>Image to BMP Converter: https://aryascripts.github.io/page-apps/bmp-convert/</li>
+	<li>Community Wallpapers: https://xteink-community-hub.replit.app/ddl?record=recqv0fC8Zr7aTbfg</li>
+</ul>
+
+<p><strong>Documentation:</strong></p>
+
+<ul>
+	<li>Firmware Update Guide: https://github.com/Joseph-Cannaday/xteink_x4-english</li>
+	<li>Font System Deep Dive: https://xteink-community-hub.replit.app/ddl?record=recWKLZW9GYgih1Dw</li>
+	<li>Firmware Extraction Guide: https://xteink-community-hub.replit.app/ddl?record=recxOUXXFx3ObllH3</li>
+</ul>
+
+<h3>Document Information</h3>
+
+<ul>
+	<li><strong>Guide Title:</strong> Xteink X4 Complete Community Guide</li>
+	<li><strong>Edition:</strong> November 2025</li>
+	<li><strong>Status:</strong> Unofficial, volunteer-compiled</li>
+	<li><strong>Last Updated:</strong> November 17, 2025</li>
+	<li><strong>Disclaimer:</strong> Always verify official information at https://www.xteink.com/ for time-sensitive details</li>
+</ul>
+
+<h2>Closing Words</h2>
+
+<p>The Xteink X4 represents a specific vision of e-reading: minimal, portable, focused, and accessible. This guide aims to serve as a comprehensive reference for every aspect of ownership—from initial setup to advanced customization.</p>
+
+<p>The device&#39;s greatest strengths (extreme portability, distraction-free reading, affordable pricing, exceptional battery life) make it exceptional for specific use cases, even as its limitations (no frontlight, small screen, limited format support) prevent it from being a universal solution.</p>
+
+<p>The active development from Xteink (regular firmware updates), engaged community (sharing resources, troubleshooting, collaborating), and growing ecosystem suggest the X4 is not just a product but the beginning of a meaningful community.</p>
+
+<p>For questions, updates, contributions, or to simply share your X4 experience, visit:</p>
+
+<ul>
+	<li>https://www.reddit.com/r/xteinkereader/ — Reddit community</li>
+	<li>https://xteink.dontthinkjustbuild.com/ — Community hub</li>
+</ul>
+
+<p><strong>Happy reading!</strong></p>
+
+<p><em>This guide was compiled from official Xteink documentation, the official PDF user manual, community discussions from r/xteinkereader, and real-world user experiences. Information is current as of November 17, 2025. Firmware and features continue to evolve—always verify official information at https://www.xteink.com/ for the latest specifications and support.</em></p>
+
+<p><em>This is a volunteer, non-commercial project. No commercial affiliation with Xteink is implied.</em></p>
+
+</body>
+</html>
+

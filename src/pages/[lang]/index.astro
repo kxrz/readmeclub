@@ -21,104 +21,55 @@ import SmallMoreCard from "@/components/resources/SmallMoreCard.astro";
 import LatestResourceCard from "@/components/resources/LatestResourceCard.astro";
 import LatestMoreCard from "@/components/resources/LatestMoreCard.astro";
 import MoreCard from "@/components/common/MoreCard.astro";
-import NewsCard from "@/components/news/NewsCard.astro";
 import Seo from "@/components/fundations/head/Seo.astro";
 import { supabase } from '@/lib/supabase/client';
 import { cachedQuery, CacheKeys } from '@/lib/supabase/cache';
 import { useTranslations } from '@/i18n/utils';
 import type { Lang } from '@/i18n/utils';
+import { loadAllWallpapers } from '@/lib/utils/wallpaper-loader';
+import { loadAllResources, filterAndSortResources } from '@/lib/utils/resource-loader';
 
 const lang = (Astro.params.lang || 'en') as Lang;
 const t = useTranslations(lang);
 const siteUrl = Astro.site || 'https://readme.club';
 
-// Fetch latest resources for activity feed (avec cache)
-const { data: latestResources } = await cachedQuery(
-  () => supabase
-    .from('resources')
-    .select('*')
-    .eq('status', 'approved')
-    .eq('hidden', false)
-    .order('created_at', { ascending: false })
-    .limit(5),
-  {
-    key: await CacheKeys.latestResources(lang),
-    ttl: 86400,
-    lang,
-    contentType: 'resources',
-  }
-);
+// Charger les resources depuis JSON statique
+const allResources = await loadAllResources();
 
-// Fetch featured resources (avec cache)
-const { data: featuredResources } = await cachedQuery(
-  () => supabase
-    .from('resources')
-    .select('*')
-    .eq('status', 'approved')
-    .eq('hidden', false)
-    .order('downloads_count', { ascending: false })
-    .limit(8),
-  {
-    key: await CacheKeys.featuredResources(lang),
-    ttl: 86400,
-    lang,
-    contentType: 'resources',
-  }
-);
+// Latest resources pour activity feed
+const latestResources = filterAndSortResources(allResources, {
+  sortBy: 'created_at',
+  sortOrder: 'desc',
+}).slice(0, 5);
 
-// Fetch starred resources (avec cache)
-const { data: starredResources } = await cachedQuery(
-  () => supabase
-    .from('resources')
-    .select('*')
-    .eq('status', 'approved')
-    .eq('hidden', false)
-    .eq('starred', true)
-    .order('created_at', { ascending: false })
-    .limit(6),
-  {
-    key: await CacheKeys.starredResources(lang),
-    ttl: 86400,
-    lang,
-    contentType: 'resources',
-  }
-);
+// Featured resources (most downloaded)
+const featuredResources = filterAndSortResources(allResources, {
+  sortBy: 'downloads_count',
+  sortOrder: 'desc',
+})
+  .filter(r => (r.downloads_count || 0) > 0)
+  .slice(0, 8);
 
-// Fetch latest wallpapers (avec cache)
-const { data: latestWallpapers } = await cachedQuery(
-  () => supabase
-    .from('wallpapers')
-    .select('*')
-    .eq('status', 'published')
-    .eq('hidden', false)
-    .order('created_at', { ascending: false })
-    .limit(4),
-  {
-    key: await CacheKeys.latestWallpapers(lang),
-    ttl: 86400,
-    lang,
-    contentType: 'wallpapers',
-  }
-);
+// Starred resources
+const starredResources = filterAndSortResources(allResources, {
+  sortBy: 'created_at',
+  sortOrder: 'desc',
+})
+  .filter(r => r.starred === true)
+  .slice(0, 6);
 
-// Fetch latest news articles (avec cache)
-const { data: latestNews } = await cachedQuery(
-  () => supabase
-    .from('news')
-    .select('*')
-    .eq('status', 'published')
-    .eq('hidden', false)
-    .order('featured', { ascending: false })
-    .order('published_at', { ascending: false, nullsFirst: false })
-    .order('created_at', { ascending: false })
-    .limit(3),
-  {
-    key: await CacheKeys.latestNews(lang),
-    ttl: 86400,
-    lang,
-    contentType: 'news',
-  }
-);
+// Charger les wallpapers depuis les fichiers statiques
+const allWallpapers = await loadAllWallpapers();
+const latestWallpapers = allWallpapers
+  .filter(w => !w.hidden)
+  .sort((a, b) => {
+    const dateA = a.created_at ? new Date(a.created_at).getTime() : 0;
+    const dateB = b.created_at ? new Date(b.created_at).getTime() : 0;
+    return dateB - dateA;
+  })
+  .slice(0, 4);
+
+// News retirées - maintenant affichées uniquement sur /news
 ---
 
 <BaseLayout>
@@ -240,53 +191,6 @@ const { data: latestNews } = await cachedQuery(
     </section>
   )}
 
-  {latestNews && latestNews.length > 0 && (
-    <section>
-      <Wrapper variant="standard" class="pt-6 pb-24">
-        <div class="flex flex-col gap-4 lg:flex-row lg:justify-between border-t border-base-200 pt-2">
-          <Text
-            tag="h2"
-            variant="textXS"
-            class="font-medium uppercase text-base-600"
-          >
-            {t('news.latest')}
-          </Text>
-          <Text
-            tag="a"
-            variant="textXS"
-            href={`/${lang}/news`}
-            aria-label={t('nav.news')}
-            class="text-base-600 uppercase hover:text-accent-500 flex items-center gap-1 transition-all duration-200"
-          >
-            {t('common.view')} all
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              class="icon icon-tabler icons-tabler-outline icon-tabler-arrow-narrow-right"
-            >
-              <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-              <path d="M5 12l14 0"></path>
-              <path d="M15 16l4 -4"></path>
-              <path d="M15 8l4 4"></path>
-            </svg>
-          </Text>
-        </div>
-        <div class="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3 mt-8">
-          {latestNews.map((article) => (
-            <NewsCard news={article} />
-          ))}
-          <MoreCard href={`/${lang}/news`} label={t('common.view') + ' all'} variant="news" />
-        </div>
-      </Wrapper>
-    </section>
-  )}
 
   {starredResources && starredResources.length > 0 && (
     <section>

@@ -1,9 +1,0 @@
----
-// Redirection vers resources avec filtre wallpaper
-import { getLangFromUrl, getLangPrefix } from '@/i18n/utils';
-
-const lang = getLangFromUrl(Astro.url);
-const langPrefix = getLangPrefix(lang);
-
-return Astro.redirect(`${langPrefix}/resources?type=wallpaper`);
----

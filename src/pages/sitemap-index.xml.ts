@@ -1,5 +1,6 @@
 import type { APIRoute } from 'astro';
-import { supabase } from '@/lib/supabase/client';
+import { loadAllResources } from '@/lib/utils/resource-loader';
+import { loadAllWallpapers } from '@/lib/utils/wallpaper-loader';
 
 const siteUrl = 'https://readme.club';
 const locales = ['en', 'fr', 'es', 'ru', 'cn'];
@@ -16,6 +17,7 @@ const staticPages = [
   'guide',
   'disclaimer',
   'submit',
+  'news',
 ];
 
 export const GET: APIRoute = async () => {
@@ -30,15 +32,11 @@ export const GET: APIRoute = async () => {
     }
   }
 
-  // Ressources dynamiques
+  // Ressources depuis JSON statique
   try {
-    const { data: resources } = await supabase
-      .from('resources')
-      .select('id')
-      .eq('status', 'approved')
-      .eq('hidden', false);
+    const resources = await loadAllResources();
 
-    if (resources) {
+    if (resources && resources.length > 0) {
       for (const locale of locales) {
         const prefix = locale === 'en' ? '' : `/${locale}`;
         for (const resource of resources) {
@@ -47,18 +45,14 @@ export const GET: APIRoute = async () => {
       }
     }
   } catch (error) {
-    console.error('Error fetching resources for sitemap:', error);
+    console.error('Error loading resources for sitemap:', error);
   }
 
-  // Wallpapers dynamiques
+  // Wallpapers depuis JSON statique
   try {
-    const { data: wallpapers } = await supabase
-      .from('wallpapers')
-      .select('id')
-      .eq('status', 'published')
-      .eq('hidden', false);
+    const wallpapers = await loadAllWallpapers();
 
-    if (wallpapers) {
+    if (wallpapers && wallpapers.length > 0) {
       for (const locale of locales) {
         const prefix = locale === 'en' ? '' : `/${locale}`;
         for (const wallpaper of wallpapers) {
@@ -67,7 +61,7 @@ export const GET: APIRoute = async () => {
       }
     }
   } catch (error) {
-    console.error('Error fetching wallpapers for sitemap:', error);
+    console.error('Error loading wallpapers for sitemap:', error);
   }
 
   // Générer le XML du sitemap

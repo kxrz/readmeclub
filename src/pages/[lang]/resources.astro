@@ -1,14 +1,21 @@
 ---
-export const prerender = false; // Page avec paramètre [lang] dynamique, nécessite SSR
+export const prerender = true;
+
+export async function getStaticPaths() {
+  const langs = ['en', 'fr', 'es', 'ru', 'cn'];
+  return langs.map((lang) => ({
+    params: { lang },
+  }));
+}
 
 import BaseLayout from "@/layouts/BaseLayout.astro";
+import { Fragment } from "astro/jsx-runtime";
 import Text from "@/components/fundations/elements/Text.astro";
 import Link from "@/components/fundations/components/Link.astro";
 import Wrapper from "@/components/fundations/containers/Wrapper.astro";
 import ResourceCard from "@/components/resources/ResourceCard.astro";
 import Seo from "@/components/fundations/head/Seo.astro";
-import { supabase } from '@/lib/supabase/client';
-import { cachedQuery, cachedCount, CacheKeys } from '@/lib/supabase/cache';
+import { loadAllResources, filterAndSortResources, paginateResources } from '@/lib/utils/resource-loader';
 import { useTranslations } from '@/i18n/utils';
 import type { Lang } from '@/i18n/utils';
 
@@ -21,70 +28,54 @@ const url = Astro.url;
 const type = url.searchParams.get('type') || null;
 const page = parseInt(url.searchParams.get('page') || '1');
 const limit = 50;
-const offset = (page - 1) * limit;
 
-// Fetch resources avec cache
-const { data: resources, error } = await cachedQuery(
-  () => {
-    let query = supabase
-      .from('resources')
-      .select('*')
-      .eq('status', 'approved')
-      .eq('hidden', false)
-      .order('created_at', { ascending: false })
-      .range(offset, offset + limit - 1);
-    
-    if (type) {
-      query = query.eq('type', type);
+// Charger toutes les resources depuis JSON statique
+const allResources = await loadAllResources();
+
+// Filtrer et trier
+const filteredResources = filterAndSortResources(allResources, {
+  type: type || undefined,
+  sortBy: 'created_at',
+  sortOrder: 'desc',
+});
+
+// Paginer
+const pagination = paginateResources(filteredResources, page, limit);
+const resources = pagination.data;
+const totalPages = pagination.totalPages;
+
+// Générer les pages de pagination
+function generatePaginationPages(current: number, total: number): (number | string)[] {
+  const pages: (number | string)[] = [];
+  
+  if (total <= 7) {
+    // Afficher toutes les pages si <= 7
+    for (let i = 1; i <= total; i++) {
+      pages.push(i);
     }
-    
-    return query;
-  },
-  {
-    key: await CacheKeys.resourcesPage(page, type || undefined),
-    ttl: 86400,
-    lang,
-    contentType: 'resources',
-    parts: [page, type],
-  }
-);
-
-// Get total count avec cache (avec type dans la clé si filtré)
-const { data: count } = await cachedCount(
-  () => {
-    let countQuery = supabase
-      .from('resources')
-      .select('*', { count: 'exact', head: true })
-      .eq('status', 'approved')
-      .eq('hidden', false);
-    
-    if (type) {
-      countQuery = countQuery.eq('type', type);
-    }
-    
-    return countQuery;
-  },
-  {
-    key: await CacheKeys.resourcesCount(type || undefined),
-    ttl: 86400,
-    contentType: 'resources',
-    parts: type ? [type] : undefined,
-  }
-);
-
-const totalPages = Math.ceil((count || 0) / limit);
-
-// Generate pagination pages array
-const paginationPages: number[] = [];
-if (totalPages > 1) {
-  for (let i = 1; i <= totalPages; i++) {
-    if (i === 1 || i === totalPages || (i >= page - 1 && i <= page + 1)) {
-      paginationPages.push(i);
-    } else if (i === page - 2 || i === page + 2) {
-      paginationPages.push(-1); // -1 represents ellipsis
+  } else {
+    // Logique de pagination avec ellipses
+    if (current <= 3) {
+      for (let i = 1; i <= 4; i++) pages.push(i);
+      pages.push('ellipsis');
+      pages.push(total);
+    } else if (current >= total - 2) {
+      pages.push(1);
+      pages.push('ellipsis');
+      for (let i = total - 3; i <= total; i++) pages.push(i);
+    } else {
+      pages.push(1);
+      pages.push('ellipsis');
+      for (let i = current - 1; i <= current + 1; i++) pages.push(i);
+      pages.push('ellipsis');
+      pages.push(total);
     }
   }
+  
+  return pages;
 }
+
+const paginationPages = totalPages > 1 ? generatePaginationPages(pagination.currentPage, totalPages) : [];
 
 const resourceTypes = [
   { value: 'tool', label: t('resources.type.tool') },
@@ -179,7 +170,7 @@ const resourceTypes = [
       
       <!-- Resources Grid -->
       {resources && resources.length > 0 ? (
-        <>
+        <Fragment>
           <div class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3 mt-2">
             {resources.map((resource) => (
               <ResourceCard resource={resource} />
@@ -189,9 +180,9 @@ const resourceTypes = [
           {/* Pagination */}
           {totalPages > 1 && (
             <div class="flex items-center justify-center gap-2 mt-12">
-              {page > 1 && (
+              {pagination.currentPage > 1 && (
                 <a
-                  href={`/${lang}/resources${type ? `?type=${type}${page > 2 ? `&page=${page - 1}` : ''}` : page > 2 ? `?page=${page - 1}` : ''}`}
+                  href={`/${lang}/resources${type ? `?type=${type}${pagination.currentPage > 2 ? `&page=${pagination.currentPage - 1}` : ''}` : pagination.currentPage > 2 ? `?page=${pagination.currentPage - 1}` : ''}`}
                   class="px-4 py-2 text-sm text-base-700 bg-white border border-base-200 rounded-lg hover:border-accent-300 hover:text-accent-500 transition-colors"
                 >
                   {t('common.previous')}
@@ -200,28 +191,29 @@ const resourceTypes = [
               
               <div class="flex items-center gap-1">
                 {paginationPages.map((p) => {
-                  if (p === -1) {
+                  if (p === 'ellipsis') {
                     return <span class="px-2 text-base-500">...</span>;
                   }
-                  const pageUrl = `/${lang}/resources${type ? `?type=${type}${p > 1 ? `&page=${p}` : ''}` : p > 1 ? `?page=${p}` : ''}`;
+                  const pageNum = p as number;
+                  const pageUrl = `/${lang}/resources${type ? `?type=${type}${pageNum > 1 ? `&page=${pageNum}` : ''}` : pageNum > 1 ? `?page=${pageNum}` : ''}`;
                   return (
                     <a
                       href={pageUrl}
                       class={`px-4 py-2 text-sm rounded-lg transition-colors ${
-                        p === page
+                        pageNum === pagination.currentPage
                           ? 'bg-base-900 text-white'
                           : 'text-base-700 bg-white border border-base-200 hover:border-accent-300 hover:text-accent-500'
                       }`}
                     >
-                      {p}
+                      {pageNum}
                     </a>
                   );
                 })}
               </div>
 
-              {page < totalPages && (
+              {pagination.currentPage < totalPages && (
                 <a
-                  href={`/${lang}/resources${type ? `?type=${type}&page=${page + 1}` : `?page=${page + 1}`}`}
+                  href={`/${lang}/resources${type ? `?type=${type}&page=${pagination.currentPage + 1}` : `?page=${pagination.currentPage + 1}`}`}
                   class="px-4 py-2 text-sm text-base-700 bg-white border border-base-200 rounded-lg hover:border-accent-300 hover:text-accent-500 transition-colors"
                 >
                   {t('common.next')}
@@ -229,7 +221,7 @@ const resourceTypes = [
               )}
             </div>
           )}
-        </>
+        </Fragment>
       ) : (
         <div class="text-center py-12">
           <Text tag="p" variant="textBase" class="text-base-500">

@@ -1,23 +1,22 @@
 ---
 import Text from "@/components/fundations/elements/Text.astro";
 import type { News } from '@/lib/supabase/schema';
-import { useTranslations, getLangFromUrl, getLangPrefix } from '@/i18n/utils';
+import type { NewsArticle } from '@/lib/utils/news-loader';
 
 interface Props {
-  news: News;
+  news: News | NewsArticle;
 }
 
 const { news } = Astro.props;
-const lang = getLangFromUrl(Astro.url);
-const t = useTranslations(lang);
-const langPrefix = getLangPrefix(lang);
+const lang = 'en';
 
-const newsUrl = langPrefix ? `${langPrefix}/news/${news.slug}` : `/news/${news.slug}`;
+const newsUrl = '/news/' + news.slug;
 const publishedDate = news.published_at ? new Date(news.published_at) : new Date(news.created_at);
-const formattedDate = publishedDate.toLocaleDateString(lang === 'en' ? 'en-US' : lang === 'fr' ? 'fr-FR' : lang === 'es' ? 'es-ES' : lang === 'ru' ? 'ru-RU' : 'zh-CN', {
-  month: 'short',
-  day: 'numeric'
-});
+// Formater la date manuellement pour éviter toLocaleDateString
+const monthNamesShort = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const month = monthNamesShort[publishedDate.getMonth()];
+const day = publishedDate.getDate();
+const formattedDate = month + ' ' + day;
 ---
 
 <a

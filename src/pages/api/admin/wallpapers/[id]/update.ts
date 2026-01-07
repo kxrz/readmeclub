@@ -43,6 +43,12 @@ export const PUT: APIRoute = async ({ params, request, cookies }) => {
     }
     
     const supabaseAdmin = getSupabaseAdmin();
+    
+    // Si on publie un wallpaper, le marquer comme pending_export
+    if (validated.status === 'published') {
+      updateData.pending_export = true;
+    }
+    
     const { data, error } = await supabaseAdmin
       .from('wallpapers')
       .update(updateData)
@@ -57,13 +63,18 @@ export const PUT: APIRoute = async ({ params, request, cookies }) => {
       });
     }
     
-    // Invalide le cache car n'importe quel champ peut affecter l'affichage
+    // Invalide le cache
     Promise.all([
       invalidateCache('wallpapers'),
-      pregenerateCache('wallpapers', supabaseAdmin),
-      triggerVercelRebuild(), // Déclenche un rebuild pour mettre à jour les pages pré-rendues
+      // Vérifier si on doit déclencher un batch (si publié)
+      validated.status === 'published' 
+        ? (async () => {
+            const { checkAndTriggerBatch } = await import('@/lib/utils/wallpaper-batch');
+            await checkAndTriggerBatch();
+          })()
+        : Promise.resolve(),
     ]).catch(err => {
-      console.error('Cache invalidation/pre-generation/rebuild failed:', err);
+      console.error('Cache invalidation/batch check failed:', err);
     });
     
     return new Response(JSON.stringify(data), {

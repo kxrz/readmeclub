@@ -25,7 +25,7 @@ export default defineConfig({
   site: 'https://readme.club',
   i18n: {
     defaultLocale: "en",
-    locales: ["en", "fr", "es", "ru", "cn"],
+    locales: ["en"],
     routing: {
       prefixDefaultLocale: false
     }

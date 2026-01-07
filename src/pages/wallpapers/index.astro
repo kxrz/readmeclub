@@ -1,5 +1,6 @@
 ---
-export const prerender = false; // Pagination dynamique nécessite SSR
+// Pré-rendu statique - charge depuis JSON index
+export const prerender = true;
 
 // Layout
 import BaseLayout from "@/layouts/BaseLayout.astro";
@@ -7,8 +8,7 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 import Text from "@/components/fundations/elements/Text.astro";
 import Wrapper from "@/components/fundations/containers/Wrapper.astro";
 import WallpaperCard from "@/components/wallpapers/WallpaperCard.astro";
-import { supabase } from '@/lib/supabase/client';
-import { cachedQuery, cachedCount, CacheKeys } from '@/lib/supabase/cache';
+import { loadAllWallpapers, filterAndSortWallpapers, paginateWallpapers } from '@/lib/utils/wallpaper-loader';
 import { useTranslations, getLangFromUrl, getLangPrefix } from '@/i18n/utils';
 
 const lang = getLangFromUrl(Astro.url);
@@ -17,74 +17,19 @@ const langPrefix = getLangPrefix(lang);
 
 const url = Astro.url;
 const category = url.searchParams.get('category') || null;
-const sort = url.searchParams.get('sort') || 'latest';
+const sort = (url.searchParams.get('sort') || 'latest') as 'latest' | 'popular' | 'name' | 'author';
 const pageParam = url.searchParams.get('page');
 const page = Math.max(1, parseInt(pageParam || '1', 10));
 const pageSize = 24;
-const from = (page - 1) * pageSize;
-const to = from + pageSize;
 
-// Query avec cache (TTL long car invalidation manuelle)
-const { data: rawWallpapers } = await cachedQuery(
-  () => {
-    let query = supabase
-      .from('wallpapers')
-      .select('*')
-      .eq('status', 'published')
-      .eq('hidden', false);
+// Charger tous les wallpapers depuis JSON
+const allWallpapers = await loadAllWallpapers();
 
-    if (category) {
-      query = query.eq('category', category);
-    }
+// Filtrer et trier
+const filteredWallpapers = filterAndSortWallpapers(allWallpapers, { category, sort });
 
-    if (sort === 'popular') {
-      query = query.order('download_count', { ascending: false });
-    } else if (sort === 'name') {
-      query = query.order('title', { ascending: true, nullsFirst: false });
-    } else if (sort === 'author') {
-      query = query.order('author_name', { ascending: true, nullsFirst: false });
-    } else {
-      query = query.order('created_at', { ascending: false });
-    }
-
-    return query.range(from, to);
-  },
-  {
-    key: await CacheKeys.wallpapersPage(page, category || undefined, sort),
-    ttl: 86400, // 24h - invalidation manuelle
-    lang,
-    contentType: 'wallpapers',
-    parts: [page, category, sort],
-  }
-);
-
-const wallpapers = rawWallpapers || [];
-
-// Count query avec cache (avec category dans la clé si filtré)
-const { data: wallpapersCount } = await cachedCount(
-  () => {
-    let countQuery = supabase
-      .from('wallpapers')
-      .select('*', { count: 'exact', head: true })
-      .eq('status', 'published')
-      .eq('hidden', false);
-    
-    if (category) {
-      countQuery = countQuery.eq('category', category);
-    }
-    
-    return countQuery;
-  },
-  {
-    key: await CacheKeys.wallpapersCount(category || undefined),
-    ttl: 86400,
-    contentType: 'wallpapers',
-    parts: category ? [category] : undefined,
-  }
-);
-
-const totalWallpapers = wallpapersCount || 0;
-const totalPages = Math.ceil(totalWallpapers / pageSize);
+// Paginer
+const { wallpapers, total, totalPages } = paginateWallpapers(filteredWallpapers, page, pageSize);
 
 // Generate pagination pages array
 const paginationPages: number[] = [];
@@ -99,7 +44,7 @@ if (totalPages > 1) {
 }
 const baseSubtitle = t('wallpapers.subtitle');
 const normalizedSubtitle = baseSubtitle.length > 0 ? baseSubtitle[0].toLowerCase() + baseSubtitle.slice(1) : baseSubtitle;
-const wallpapersSubtitle = totalWallpapers > 0 ? `${totalWallpapers} ${normalizedSubtitle}` : baseSubtitle;
+const wallpapersSubtitle = total > 0 ? `${total} ${normalizedSubtitle}` : baseSubtitle;
 
 const categories = [
   { value: 'minimalist', label: t('wallpapers.category.minimalist') },
@@ -117,14 +62,13 @@ const sortOptions = [
   { value: 'author', label: t('common.sort.author') },
 ];
 
-// Helper function pour construire l'URL de pagination
+// Helper function pour construire l'URL de pagination (retourne seulement la query string)
 function buildWallpapersUrl(category: string | null, sort: string, pageNum: number): string {
   const params = new URLSearchParams();
   if (category) params.set('category', category);
   if (sort !== 'latest') params.set('sort', sort);
   if (pageNum > 1) params.set('page', pageNum.toString());
-  const prefix = lang === 'en' ? '' : `/${lang}`;
-  return params.toString() ? `${prefix}/wallpapers?${params.toString()}` : `${prefix}/wallpapers`;
+  return params.toString() ? `?${params.toString()}` : '';
 }
 ---
 
@@ -182,7 +126,7 @@ function buildWallpapersUrl(category: string | null, sort: string, pageNum: numb
               const params = new URLSearchParams();
               if (sort !== 'latest') params.set('sort', sort);
               params.set('category', cat.value);
-              const categoryUrl = params.toString() ? `${lang === 'en' ? '' : `/${lang}`}/wallpapers?${params.toString()}` : `${lang === 'en' ? '' : `/${lang}`}/wallpapers?category=${cat.value}`;
+              const categoryUrl = `${langPrefix}/wallpapers?${params.toString()}`;
               return (
                 <a
                   href={categoryUrl}
@@ -198,7 +142,7 @@ function buildWallpapersUrl(category: string | null, sort: string, pageNum: numb
             })}
             {category && (
               <a
-                href={`${lang === 'en' ? '' : `/${lang}`}/wallpapers${sort !== 'latest' ? `?sort=${sort}` : ''}`}
+                href={`${langPrefix}/wallpapers${sort !== 'latest' ? `?sort=${sort}` : ''}`}
                 class="px-2.5 py-1 md:px-3 md:py-1 rounded-full text-xs font-medium transition-colors bg-base-200 text-base-600 hover:bg-base-300 hover:text-base-700"
                 title="Reset filter"
               >
@@ -220,7 +164,7 @@ function buildWallpapersUrl(category: string | null, sort: string, pageNum: numb
               const params = new URLSearchParams();
               if (category) params.set('category', category);
               if (option.value !== 'latest') params.set('sort', option.value);
-              const sortUrl = params.toString() ? `${lang === 'en' ? '' : `/${lang}`}/wallpapers?${params.toString()}` : `${lang === 'en' ? '' : `/${lang}`}/wallpapers`;
+              const sortUrl = params.toString() ? `${langPrefix}/wallpapers?${params.toString()}` : `${langPrefix}/wallpapers`;
               return (
                 <a
                   href={sortUrl}
@@ -236,7 +180,7 @@ function buildWallpapersUrl(category: string | null, sort: string, pageNum: numb
             })}
             {sort !== 'latest' && (
               <a
-                href={`${lang === 'en' ? '' : `/${lang}`}/wallpapers${category ? `?category=${category}` : ''}`}
+                href={`${langPrefix}/wallpapers${category ? `?category=${category}` : ''}`}
                 class="px-2.5 py-1 md:px-3 md:py-1 rounded-full text-xs font-medium transition-colors bg-base-200 text-base-600 hover:bg-base-300 hover:text-base-700"
                 title="Reset sort"
               >
@@ -265,7 +209,7 @@ function buildWallpapersUrl(category: string | null, sort: string, pageNum: numb
             <div class="flex items-center justify-center gap-2 mt-12">
               {page > 1 && (
                 <a
-                  href={buildWallpapersUrl(category, sort, page - 1)}
+                  href={`${langPrefix}/wallpapers${buildWallpapersUrl(category, sort, page - 1)}`}
                   class="px-4 py-2 text-sm text-base-700 bg-white border border-base-200 rounded-lg hover:border-accent-300 hover:text-accent-500 transition-colors"
                 >
                   {t('common.previous')}
@@ -277,7 +221,7 @@ function buildWallpapersUrl(category: string | null, sort: string, pageNum: numb
                   if (p === -1) {
                     return <span class="px-2 text-base-500">...</span>;
                   }
-                  const pageUrl = buildWallpapersUrl(category, sort, p);
+                  const pageUrl = `${langPrefix}/wallpapers${buildWallpapersUrl(category, sort, p)}`;
                   return (
                     <a
                       href={pageUrl}
@@ -295,7 +239,7 @@ function buildWallpapersUrl(category: string | null, sort: string, pageNum: numb
 
               {page < totalPages && (
                 <a
-                  href={buildWallpapersUrl(category, sort, page + 1)}
+                  href={`${langPrefix}/wallpapers${buildWallpapersUrl(category, sort, page + 1)}`}
                   class="px-4 py-2 text-sm text-base-700 bg-white border border-base-200 rounded-lg hover:border-accent-300 hover:text-accent-500 transition-colors"
                 >
                   {t('common.next')}
