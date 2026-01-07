@@ -15,9 +15,18 @@ const t = useTranslations(lang);
 const langPrefix = getLangPrefix(lang);
 
 const wallpaperUrl = langPrefix ? `${langPrefix}/wallpapers/${wallpaper.id}` : `/wallpapers/${wallpaper.id}`;
-// Utiliser le fichier original BMP au lieu du WebP compressé
-// Toujours utiliser original.bmp qui est stocké dans chaque dossier wallpaper
-const imageUrl = `/wallpapers/${wallpaper.id}/original.bmp`;
+// Utiliser le thumbnail optimisé (JPG pour BMP, WebP pour autres formats)
+const thumbnailPath = ('thumbnail_path' in wallpaper && wallpaper.thumbnail_path) 
+  ? wallpaper.thumbnail_path 
+  : `/wallpapers/${wallpaper.id}/thumbnail.webp`;
+// Déterminer le format selon original_path ou thumbnail_path
+const isBmp = ('original_path' in wallpaper && wallpaper.original_path?.endsWith('.bmp')) || 
+              thumbnailPath.endsWith('.jpg');
+const imageUrl = isBmp 
+  ? (('thumbnail_path' in wallpaper && wallpaper.thumbnail_path) 
+      ? wallpaper.thumbnail_path 
+      : `/wallpapers/${wallpaper.id}/thumbnail.jpg`)
+  : thumbnailPath;
 const authorName = 'author_name' in wallpaper && wallpaper.author_name 
   ? wallpaper.author_name 
   : ('reddit_username' in wallpaper && wallpaper.reddit_username 

@@ -284,9 +284,9 @@ async function convertToWebP(
       await pipeline
         .webp({ 
           quality: Math.max(1, Math.min(100, quality)), // S'assurer que quality est entre 1 et 100
-          effort: options?.effort ?? 6, // Maximum compression effort
+          effort: options?.effort ?? 4, // Compression modérée (4) pour meilleur équilibre qualité/taille
           smartSubsample: options?.smartSubsample ?? true, // Optimisation supplémentaire
-          nearLossless: false, // Compression lossy pour meilleure taille
+          nearLossless: options?.nearLossless ?? false, // Compression quasi-lossless si demandé
         })
         .toFile(outputPath);
     } catch (webpError: any) {
@@ -428,74 +428,214 @@ async function exportWallpaper(
     let bufferForConversion = originalBuffer;
     
     if (isBMP) {
-      const pngPath = path.join(wallpaperDir, 'intermediate.png');
-      try {
-        // Vérifier si le PNG existe déjà
-        bufferForConversion = await fs.readFile(pngPath);
-        console.log(`📁 PNG intermédiaire déjà présent`);
-      } catch {
-        // Convertir BMP -> PNG avec bmp-js et pngjs (bibliothèques pures JS)
-        console.log(`🔄 Conversion BMP -> PNG avec bmp-js/pngjs...`);
+      // Pour les BMP, convertir en JPG en niveaux de gris (grayscale)
+      const jpgPath = path.join(wallpaperDir, 'image.jpg');
+      
+      // Si forceRegenerate est activé, supprimer le JPG et PNG intermédiaire existants
+      if (forceRegenerate) {
         try {
-          const bmpModule = await import('bmp-js');
-          const { PNG } = await import('pngjs');
+          await fs.unlink(jpgPath);
+          console.log(`🗑️  JPG existant supprimé (régénération forcée)`);
+        } catch {
+          // Fichier n'existe pas, c'est OK
+        }
+        try {
+          const pngPath = path.join(wallpaperDir, 'intermediate.png');
+          await fs.unlink(pngPath);
+          console.log(`🗑️  PNG intermédiaire supprimé (régénération forcée)`);
+        } catch {
+          // Fichier n'existe pas, c'est OK
+        }
+      }
+      
+      try {
+        // Vérifier si le JPG existe déjà et est valide
+        const stats = await fs.stat(jpgPath);
+        if (stats.size === 0 || stats.size < 100) { // Moins de 100 bytes = probablement corrompu
+          throw new Error(`JPG existant invalide (${stats.size} bytes), régénération nécessaire`);
+        }
+        bufferForConversion = await fs.readFile(jpgPath);
+        
+        // Vérifier que Sharp peut lire le fichier
+        const testMetadata = await sharp(bufferForConversion).metadata();
+        if (!testMetadata.width || !testMetadata.height) {
+          throw new Error('JPG existant non lisible par Sharp, régénération nécessaire');
+        }
+        
+        // Vérifier la luminosité pour détecter les images noires
+        const statsImg = await sharp(bufferForConversion).stats();
+        const avgBrightness = statsImg.channels.length === 1 
+          ? statsImg.channels[0].mean 
+          : (statsImg.channels[0].mean + statsImg.channels[1].mean + statsImg.channels[2].mean) / 3;
+        
+        if (avgBrightness < 10) {
+          throw new Error(`JPG existant trop sombre (luminosité: ${avgBrightness.toFixed(1)}), régénération nécessaire`);
+        }
+        
+        console.log(`📁 JPG déjà présent (${(stats.size / 1024).toFixed(2)} KB, ${testMetadata.width}x${testMetadata.height}, luminosité: ${avgBrightness.toFixed(1)})`);
+      } catch {
+        console.log(`🔄 Conversion BMP -> JPG en niveaux de gris (qualité maximale)...`);
+        
+        // Essayer d'abord Sharp directement avec conversion en niveaux de gris
+        let sharpWorked = false;
+        try {
+          console.log(`🔄 Tentative avec Sharp directement (niveaux de gris)...`);
+          await sharp(originalPath)
+            .greyscale()
+            .jpeg({ 
+              quality: 100,
+              mozjpeg: true,
+            })
+            .toFile(jpgPath);
           
-          // bmp-js peut être exporté différemment selon la version
-          const bmp = (bmpModule as any).default || bmpModule;
-          
-          // Décoder le BMP
-          const bmpData = bmp.decode(originalBuffer);
-          
-          // Créer un PNG avec les mêmes dimensions
-          const png = new PNG({
-            width: bmpData.width,
-            height: bmpData.height,
-            bitDepth: 8,
-            colorType: 2, // RGB
-            inputColorType: 4, // RGBA
-            inputHasAlpha: true
-          });
-          
-          // Copier les données du BMP vers le PNG
-          png.data = bmpData.data;
-          
-          // Sauvegarder le PNG en utilisant un stream
-          await new Promise<void>((resolve, reject) => {
-            const writeStream = createWriteStream(pngPath);
-            png.pack().pipe(writeStream)
-              .on('finish', resolve)
-              .on('error', reject);
-          });
-          
-          bufferForConversion = await fs.readFile(pngPath);
-          
-          // Valider que le PNG est valide en testant avec Sharp
+          // Valider le JPG généré
+          const testJpg = await fs.readFile(jpgPath);
+          const testMetadata = await sharp(testJpg).metadata();
+          if (testMetadata.width && testMetadata.height) {
+            // Vérifier la luminosité moyenne
+            const stats = await sharp(testJpg).stats();
+            const avgBrightness = stats.channels.length === 1 
+              ? stats.channels[0].mean 
+              : (stats.channels[0].mean + stats.channels[1].mean + stats.channels[2].mean) / 3;
+            
+            if (avgBrightness > 10) { // Si la luminosité moyenne est > 10, ce n'est probablement pas tout noir
+              bufferForConversion = testJpg;
+              sharpWorked = true;
+              console.log(`✅ BMP converti en JPG avec Sharp directement (${testMetadata.width}x${testMetadata.height}, luminosité: ${avgBrightness.toFixed(1)})`);
+            } else {
+              console.log(`⚠️  Sharp a généré un JPG trop sombre (luminosité: ${avgBrightness.toFixed(1)}), utilisation du fallback...`);
+            }
+          }
+        } catch (sharpError: any) {
+          console.log(`⚠️  Sharp ne peut pas convertir directement (${sharpError.message}), utilisation du fallback...`);
+        }
+        
+        // Si Sharp n'a pas fonctionné, utiliser bmp-js + pngjs
+        if (!sharpWorked) {
           try {
+            // Décoder le BMP avec bmp-js
+            const bmpModule = await import('bmp-js');
+            const { PNG } = await import('pngjs');
+            const bmp = (bmpModule as any).default || bmpModule;
+            const bmpData = bmp.decode(originalBuffer);
+            
+            console.log(`📊 BMP décodé: ${bmpData.width}x${bmpData.height}, données: ${bmpData.data.length} bytes`);
+            
+            // bmp-js retourne ABGR (4 bytes par pixel)
+            const abgrData = bmpData.data;
+            const pixelCount = bmpData.width * bmpData.height;
+            const grayData = Buffer.alloc(pixelCount);
+            
+            // Vérifier quelques pixels pour comprendre le format
+            if (abgrData.length > 0) {
+              const sampleR = abgrData[3];
+              const sampleG = abgrData[2];
+              const sampleB = abgrData[1];
+              const sampleA = abgrData[0];
+              console.log(`📊 Échantillon pixel [0]: A=${sampleA}, B=${sampleB}, G=${sampleG}, R=${sampleR}`);
+            }
+            
+            // Conversion ABGR -> Grayscale
+            // ABGR format: [A, B, G, R] -> on veut R, G, B pour calculer le gris
+            for (let i = 0; i < abgrData.length; i += 4) {
+              const r = abgrData[i + 3]; // Red (dernier byte)
+              const g = abgrData[i + 2]; // Green
+              const b = abgrData[i + 1]; // Blue
+              // Alpha ignoré pour le calcul du gris
+              
+              // Calculer le niveau de gris avec la formule standard
+              const gray = Math.round(0.299 * r + 0.587 * g + 0.114 * b);
+              grayData[Math.floor(i / 4)] = gray;
+            }
+            
+            // Vérifier quelques valeurs de gris générées
+            if (grayData.length > 0) {
+              const sampleGray = grayData[0];
+              const avgGray = grayData.reduce((sum, val) => sum + val, 0) / grayData.length;
+              console.log(`📊 Échantillon gris [0]: ${sampleGray}, moyenne: ${avgGray.toFixed(1)}`);
+              
+              if (avgGray < 10) {
+                console.warn(`⚠️  Les valeurs de gris sont très faibles, vérification de la conversion...`);
+              }
+            }
+            
+            // Créer un PNG en niveaux de gris avec pngjs
+            const pngPath = path.join(wallpaperDir, 'intermediate.png');
+            const png = new PNG({
+              width: bmpData.width,
+              height: bmpData.height,
+              bitDepth: 8,
+              colorType: 0, // Grayscale
+              inputColorType: 0,
+              inputHasAlpha: false,
+            });
+            
+            png.data = grayData;
+            
+            // Sauvegarder le PNG
+            await new Promise<void>((resolve, reject) => {
+              const writeStream = createWriteStream(pngPath);
+              png.pack().pipe(writeStream)
+                .on('finish', resolve)
+                .on('error', reject);
+            });
+            
+            // Valider le PNG généré
+            const pngBuffer = await fs.readFile(pngPath);
+            const pngMetadata = await sharp(pngBuffer).metadata();
+            if (!pngMetadata.width || !pngMetadata.height) {
+              throw new Error('PNG généré invalide');
+            }
+            
+            // Vérifier la luminosité du PNG
+            const pngStats = await sharp(pngBuffer).stats();
+            const pngBrightness = pngStats.channels[0].mean;
+            console.log(`📊 Luminosité PNG: ${pngBrightness.toFixed(1)}`);
+            
+            if (pngBrightness < 10) {
+              console.warn(`⚠️  PNG généré très sombre, problème possible dans la conversion`);
+            }
+            
+            console.log(`✅ PNG en niveaux de gris créé avec pngjs (${pngMetadata.width}x${pngMetadata.height})`);
+            
+            // Convertir PNG -> JPG en niveaux de gris avec Sharp
+            await sharp(pngBuffer)
+              .greyscale() // S'assurer que c'est en niveaux de gris
+              .jpeg({ 
+                quality: 100,
+                mozjpeg: true,
+              })
+              .toFile(jpgPath);
+            
+            bufferForConversion = await fs.readFile(jpgPath);
             const testMetadata = await sharp(bufferForConversion).metadata();
             if (!testMetadata.width || !testMetadata.height) {
-              throw new Error('PNG généré invalide (pas de métadonnées)');
+              throw new Error('JPG généré invalide');
             }
-            console.log(`✅ BMP converti en PNG (${(bufferForConversion.length / 1024).toFixed(2)} KB, ${testMetadata.width}x${testMetadata.height})`);
-          } catch (validationError: any) {
-            throw new Error(`PNG généré invalide pour Sharp: ${validationError.message}`);
+            
+            // Vérifier la luminosité du JPG final
+            const jpgStats = await sharp(bufferForConversion).stats();
+            const jpgBrightness = jpgStats.channels.length === 1 
+              ? jpgStats.channels[0].mean 
+              : (jpgStats.channels[0].mean + jpgStats.channels[1].mean + jpgStats.channels[2].mean) / 3;
+            console.log(`📊 Luminosité JPG final: ${jpgBrightness.toFixed(1)}`);
+            
+            console.log(`✅ PNG converti en JPG en niveaux de gris (${(bufferForConversion.length / 1024 / 1024).toFixed(2)} MB, ${testMetadata.width}x${testMetadata.height}, qualité: 100)`);
+          } catch (conversionError: any) {
+            console.error(`❌ Échec conversion BMP->JPG: ${conversionError.message}`);
+            await writeLog({
+              timestamp: new Date().toISOString(),
+              wallpaperId: wallpaper.id,
+              wallpaperTitle: wallpaper.title,
+              step: 'bmp-to-jpg-grayscale',
+              error: `Échec conversion BMP->JPG: ${conversionError.message}`,
+              details: { 
+                conversionError: conversionError.message,
+                stack: conversionError.stack,
+              },
+            });
+            return false;
           }
-        } catch (conversionError: any) {
-          console.error(`❌ Échec conversion BMP->PNG: ${conversionError.message}`);
-          if (conversionError.stack) {
-            console.error(`   Stack: ${conversionError.stack.split('\n').slice(0, 3).join('\n')}`);
-          }
-          await writeLog({
-            timestamp: new Date().toISOString(),
-            wallpaperId: wallpaper.id,
-            wallpaperTitle: wallpaper.title,
-            step: 'bmp-to-png',
-            error: `Échec conversion BMP->PNG: ${conversionError.message}`,
-            details: { 
-              conversionError: conversionError.message,
-              stack: conversionError.stack,
-            },
-          });
-          return false;
         }
       }
     }
@@ -529,79 +669,84 @@ async function exportWallpaper(
       return false;
     }
     
-    // Calculer la taille optimale pour le WebP (max 1920px de largeur, mais adapter selon l'image)
-    const maxDisplayWidth = 1920;
-    const targetWidth = imageMetadata.width && imageMetadata.width > maxDisplayWidth 
-      ? maxDisplayWidth 
-      : imageMetadata.width;
+    // Pour les BMP, utiliser le JPG déjà créé
+    // Pour les autres formats, convertir en WebP
+    let finalImagePath: string;
+    let finalImageStats: any;
     
-    // Qualité adaptative selon la taille de l'image et le nombre de pixels
-    // Plus l'image est grande, plus on peut réduire la qualité sans perte visible
-    const totalPixels = (imageMetadata.width || 0) * (imageMetadata.height || 0);
-    const megapixels = totalPixels / 1000000;
-    
-    // Qualité réduite pour meilleure compression (60-65 au lieu de 70-75)
-    let adaptiveQuality: number;
-    if (megapixels > 8) {
-      adaptiveQuality = 55; // Très grandes images (>8MP) - compression maximale
-    } else if (megapixels > 4) {
-      adaptiveQuality = 60; // Grandes images (4-8MP)
-    } else if (megapixels > 2) {
-      adaptiveQuality = 63; // Images moyennes (2-4MP)
+    if (isBMP) {
+      // Le JPG a déjà été créé dans la section précédente
+      finalImagePath = path.join(wallpaperDir, 'image.jpg');
+      finalImageStats = await fs.stat(finalImagePath);
+      console.log(`✅ JPG utilisé: image.jpg (${(finalImageStats.size / 1024 / 1024).toFixed(2)} MB, ${imageMetadata.width}x${imageMetadata.height}, qualité: 100)`);
     } else {
-      adaptiveQuality = 65; // Petites images (<2MP)
+      // Pour les autres formats, convertir en WebP avec qualité maximale
+      const targetWidth = undefined; // Pas de redimensionnement
+      const quality = 100; // Qualité maximale
+      
+      const webpPath = path.join(wallpaperDir, 'image.webp');
+      const webpConverted = await convertToWebP(bufferForConversion, webpPath, quality, targetWidth, {
+        effort: 2,
+        smartSubsample: false,
+        nearLossless: true,
+      }, wallpaper.id, wallpaper.title);
+      
+      if (!webpConverted) {
+        console.error(`❌ Échec de la conversion WebP pour ${wallpaper.id}`);
+        return false;
+      }
+      
+      finalImagePath = webpPath;
+      finalImageStats = await fs.stat(webpPath);
+      console.log(`✅ WebP créé: image.webp (${(finalImageStats.size / 1024 / 1024).toFixed(2)} MB, ${imageMetadata.width}x${imageMetadata.height}, qualité: ${quality})`);
     }
     
-    // Convertir en WebP pour le front (optimisé, qualité adaptative)
-    const webpPath = path.join(wallpaperDir, 'image.webp');
-    const webpConverted = await convertToWebP(bufferForConversion, webpPath, adaptiveQuality, targetWidth, {
-      effort: 6, // Maximum compression
-      smartSubsample: true,
-    }, wallpaper.id, wallpaper.title);
+    // Créer la vignette (thumbnail)
+    const thumbnailPath = path.join(wallpaperDir, isBMP ? 'thumbnail.jpg' : 'thumbnail.webp');
     
-    if (!webpConverted) {
-      console.error(`❌ Échec de la conversion WebP pour ${wallpaper.id}`);
-      return false;
-    }
-    
-    const webpStats = await fs.stat(webpPath);
-    let compressionInfo = '';
-    try {
-      const originalStats = await fs.stat(originalPath);
-      const compressionRatio = ((1 - webpStats.size / originalStats.size) * 100).toFixed(1);
-      const originalSizeMB = (originalStats.size / 1024 / 1024).toFixed(2);
-      const webpSizeMB = (webpStats.size / 1024 / 1024).toFixed(2);
-      const savedMB = ((originalStats.size - webpStats.size) / 1024 / 1024).toFixed(2);
-      compressionInfo = ` (${originalSizeMB} MB → ${webpSizeMB} MB, économie: ${savedMB} MB / -${compressionRatio}%, ${imageMetadata.width}x${imageMetadata.height}, qualité: ${adaptiveQuality})`;
-    } catch {
-      // Original n'existe pas (cas BMP), on affiche juste la taille
-      compressionInfo = ` (${(webpStats.size / 1024 / 1024).toFixed(2)} MB, ${imageMetadata.width}x${imageMetadata.height}, qualité: ${adaptiveQuality})`;
-    }
-    console.log(`✅ WebP créé: image.webp${compressionInfo}`);
-    
-    // Créer la vignette (thumbnail) - max 400px de largeur, qualité réduite pour meilleure compression
-    const thumbnailPath = path.join(wallpaperDir, 'thumbnail.webp');
-    const thumbnailQuality = 55; // Qualité réduite pour thumbnails
-    const thumbnailConverted = await convertToWebP(bufferForConversion, thumbnailPath, thumbnailQuality, 400, {
-      effort: 6, // Maximum compression
-      smartSubsample: true,
-    }, wallpaper.id, wallpaper.title);
-    
-    if (!thumbnailConverted) {
-      console.error(`❌ Échec de la conversion thumbnail pour ${wallpaper.id}`);
-      return false;
+    if (isBMP) {
+      // Pour les BMP, créer un thumbnail JPG en niveaux de gris avec qualité maximale
+      const jpgPath = path.join(wallpaperDir, 'image.jpg');
+      const thumbnailSource = await fs.readFile(jpgPath);
+      
+      await sharp(thumbnailSource)
+        .greyscale() // S'assurer que c'est en niveaux de gris
+        .resize(400, null, {
+          withoutEnlargement: true,
+          fit: 'inside',
+        })
+        .jpeg({ 
+          quality: 100, // Qualité maximale pour thumbnails aussi
+          mozjpeg: true,
+        })
+        .toFile(thumbnailPath);
+    } else {
+      // Pour les autres formats, créer un thumbnail WebP
+      const thumbnailQuality = 100; // Qualité maximale
+      const thumbnailConverted = await convertToWebP(bufferForConversion, thumbnailPath, thumbnailQuality, 400, {
+        effort: 2,
+        smartSubsample: false,
+      }, wallpaper.id, wallpaper.title);
+      
+      if (!thumbnailConverted) {
+        console.error(`❌ Échec de la conversion thumbnail pour ${wallpaper.id}`);
+        return false;
+      }
     }
     
     const thumbStats = await fs.stat(thumbnailPath);
-    console.log(`✅ Thumbnail créé: thumbnail.webp (${(thumbStats.size / 1024).toFixed(2)} KB, qualité: ${thumbnailQuality})`);
+    console.log(`✅ Thumbnail créé: ${isBMP ? 'thumbnail.jpg' : 'thumbnail.webp'} (${(thumbStats.size / 1024).toFixed(2)} KB, qualité: 100)`);
     
     // Créer les chemins relatifs depuis /public
-    const relativeWebpPath = `/wallpapers/${wallpaper.id}/image.webp`;
-    const relativeThumbnailPath = `/wallpapers/${wallpaper.id}/thumbnail.webp`;
-    // Pour les BMP, on pointe vers le WebP comme "original" puisqu'on ne sauvegarde pas le BMP
-    const relativeOriginalPath = originalExt.toLowerCase() === 'bmp' 
-      ? `/wallpapers/${wallpaper.id}/image.webp`
-      : `/wallpapers/${wallpaper.id}/original.${originalExt}`;
+    // Pour les BMP, utiliser JPG ; pour les autres formats, utiliser WebP
+    const relativeImagePath = isBMP 
+      ? `/wallpapers/${wallpaper.id}/image.jpg`
+      : `/wallpapers/${wallpaper.id}/image.webp`;
+    const relativeThumbnailPath = isBMP
+      ? `/wallpapers/${wallpaper.id}/thumbnail.jpg`
+      : `/wallpapers/${wallpaper.id}/thumbnail.webp`;
+    // Toujours garder le BMP original pour téléchargement
+    const relativeOriginalPath = `/wallpapers/${wallpaper.id}/original.${originalExt}`;
     
     // Marquer comme exporté dans Supabase (et retirer pending_export)
     const { error: updateError } = await supabase
@@ -609,7 +754,7 @@ async function exportWallpaper(
       .update({
         exported_to_static: true,
         pending_export: false, // Plus en attente
-        static_webp_path: relativeWebpPath,
+        static_webp_path: relativeImagePath, // JPG pour BMP, WebP pour autres
         static_thumbnail_path: relativeThumbnailPath,
         static_original_path: relativeOriginalPath,
       })
@@ -753,7 +898,11 @@ async function main() {
       if (success) {
         successCount++;
         
-        // Ajouter aux métadonnées
+        // Déterminer le format selon l'extension du fichier original
+        const originalExt = wallpaper.file_name.split('.').pop()?.toLowerCase() || 'png';
+        const isBmpWallpaper = originalExt === 'bmp';
+        
+        // Ajouter aux métadonnées avec les bons chemins selon le format
         exportedMetadata.push({
           id: wallpaper.id,
           title: wallpaper.title,
@@ -766,9 +915,13 @@ async function main() {
           file_size: wallpaper.file_size,
           download_count: wallpaper.download_count,
           created_at: wallpaper.created_at,
-          webp_path: `/wallpapers/${wallpaper.id}/image.webp`,
-          thumbnail_path: `/wallpapers/${wallpaper.id}/thumbnail.webp`,
-          original_path: `/wallpapers/${wallpaper.id}/original.${wallpaper.file_name.split('.').pop() || 'png'}`,
+          webp_path: isBmpWallpaper 
+            ? `/wallpapers/${wallpaper.id}/image.jpg`
+            : `/wallpapers/${wallpaper.id}/image.webp`,
+          thumbnail_path: isBmpWallpaper
+            ? `/wallpapers/${wallpaper.id}/thumbnail.jpg`
+            : `/wallpapers/${wallpaper.id}/thumbnail.webp`,
+          original_path: `/wallpapers/${wallpaper.id}/original.${originalExt}`,
         });
       } else {
         errorCount++;
@@ -821,22 +974,32 @@ async function main() {
   
   if (allExported) {
     // Créer l'index avec tous les wallpapers exportés
-    const allMetadata: WallpaperMetadata[] = allExported.map(w => ({
-      id: w.id,
-      title: w.title,
-      category: w.category,
-      author_name: w.author_name,
-      reddit_username: w.reddit_username,
-      instagram_username: w.instagram_username,
-      width: w.width,
-      height: w.height,
-      file_size: w.file_size,
-      download_count: w.download_count,
-      created_at: w.created_at,
-      webp_path: w.static_webp_path || `/wallpapers/${w.id}/image.webp`,
-      thumbnail_path: w.static_thumbnail_path || `/wallpapers/${w.id}/thumbnail.webp`,
-      original_path: w.static_original_path || `/wallpapers/${w.id}/original.png`,
-    }));
+    const allMetadata: WallpaperMetadata[] = allExported.map(w => {
+      // Déterminer le format selon original_path
+      const originalPath = w.static_original_path || w.file_url || '';
+      const isBmpWallpaper = originalPath.endsWith('.bmp') || w.file_name?.toLowerCase().endsWith('.bmp');
+      
+      return {
+        id: w.id,
+        title: w.title,
+        category: w.category,
+        author_name: w.author_name,
+        reddit_username: w.reddit_username,
+        instagram_username: w.instagram_username,
+        width: w.width,
+        height: w.height,
+        file_size: w.file_size,
+        download_count: w.download_count,
+        created_at: w.created_at,
+        webp_path: w.static_webp_path || (isBmpWallpaper 
+          ? `/wallpapers/${w.id}/image.jpg`
+          : `/wallpapers/${w.id}/image.webp`),
+        thumbnail_path: w.static_thumbnail_path || (isBmpWallpaper
+          ? `/wallpapers/${w.id}/thumbnail.jpg`
+          : `/wallpapers/${w.id}/thumbnail.webp`),
+        original_path: w.static_original_path || `/wallpapers/${w.id}/original.${w.file_name?.split('.').pop() || 'png'}`,
+      };
+    });
     
     await createWallpapersIndex(allMetadata);
   }

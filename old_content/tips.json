@@ -130,7 +130,7 @@
     {
       "id": 24,
       "category": "Fonts And Languages",
-      "tip": "All specialized characters (Polish, German, Greek, Slavic characters) display perfectly with the default font"
+      "tip": "Most specialized characters (Polish, Greek, Slavic) display well with the default font, but please note that some specific characters like the German ß require a custom font for correct rendering."
     },
     {
       "id": 25,

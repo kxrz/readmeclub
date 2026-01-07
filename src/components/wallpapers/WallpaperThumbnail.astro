@@ -12,8 +12,17 @@ const lang = getLangFromUrl(Astro.url);
 const langPrefix = getLangPrefix(lang);
 
 const wallpaperUrl = langPrefix ? `${langPrefix}/wallpapers/${wallpaper.id}` : `/wallpapers/${wallpaper.id}`;
-// Utiliser le fichier original BMP au lieu du WebP compressé
-const imageUrl = `/wallpapers/${wallpaper.id}/original.bmp`;
+// Utiliser le thumbnail optimisé (JPG pour BMP, WebP pour autres formats)
+const thumbnailPath = ('thumbnail_path' in wallpaper && wallpaper.thumbnail_path) 
+  ? wallpaper.thumbnail_path 
+  : `/wallpapers/${wallpaper.id}/thumbnail.webp`;
+const isBmp = ('original_path' in wallpaper && wallpaper.original_path?.endsWith('.bmp')) || 
+              thumbnailPath.endsWith('.jpg');
+const imageUrl = isBmp 
+  ? (('thumbnail_path' in wallpaper && wallpaper.thumbnail_path) 
+      ? wallpaper.thumbnail_path 
+      : `/wallpapers/${wallpaper.id}/thumbnail.jpg`)
+  : thumbnailPath;
 ---
 
 <a

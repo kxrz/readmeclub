@@ -89,22 +89,32 @@ export async function loadAllWallpapers(): Promise<WallpaperMetadata[]> {
     }
     
     // Convertir au format metadata
-    return data.map(w => ({
-      id: w.id,
-      title: w.title,
-      category: w.category,
-      author_name: w.author_name,
-      reddit_username: w.reddit_username,
-      instagram_username: w.instagram_username,
-      width: w.width,
-      height: w.height,
-      file_size: w.file_size,
-      download_count: w.download_count,
-      created_at: w.created_at,
-      webp_path: w.static_webp_path || w.file_url,
-      thumbnail_path: w.static_thumbnail_path || w.file_url,
-      original_path: w.static_original_path || w.file_url,
-    }));
+    return data.map(w => {
+      // Déterminer le format selon original_path ou file_name
+      const originalPath = w.static_original_path || w.file_url || '';
+      const isBmpWallpaper = originalPath.endsWith('.bmp') || w.file_name?.toLowerCase().endsWith('.bmp');
+      
+      return {
+        id: w.id,
+        title: w.title,
+        category: w.category,
+        author_name: w.author_name,
+        reddit_username: w.reddit_username,
+        instagram_username: w.instagram_username,
+        width: w.width,
+        height: w.height,
+        file_size: w.file_size,
+        download_count: w.download_count,
+        created_at: w.created_at,
+        webp_path: w.static_webp_path || (isBmpWallpaper 
+          ? `/wallpapers/${w.id}/image.jpg`
+          : `/wallpapers/${w.id}/image.webp`),
+        thumbnail_path: w.static_thumbnail_path || (isBmpWallpaper
+          ? `/wallpapers/${w.id}/thumbnail.jpg`
+          : `/wallpapers/${w.id}/thumbnail.webp`),
+        original_path: w.static_original_path || `/wallpapers/${w.id}/original.${w.file_name?.split('.').pop() || 'png'}`,
+      };
+    });
   } catch (error) {
     console.error('Erreur lors du fallback Supabase:', error);
     return [];

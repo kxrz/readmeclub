@@ -69,8 +69,13 @@ const gradient = getGradientForId(wallpaper.id);
 const gradientStyle = `background: linear-gradient(135deg, ${gradient.from} 0%, ${gradient.to} 100%);`;
 const textColorStyle = `color: ${gradient.text};`;
 
-// Utiliser le fichier original BMP au lieu du WebP compressé
-const imageUrl = `/wallpapers/${wallpaper.id}/original.bmp`;
+// Déterminer le format selon original_path
+const isBmp = wallpaper.original_path?.endsWith('.bmp') || wallpaper.webp_path?.endsWith('.jpg');
+// Utiliser JPG pour BMP, WebP pour autres formats
+const imageUrl = isBmp
+  ? (wallpaper.webp_path || `/wallpapers/${wallpaper.id}/image.jpg`)
+  : (wallpaper.webp_path || `/wallpapers/${wallpaper.id}/image.webp`);
+const originalBmpUrl = `/wallpapers/${wallpaper.id}/original.bmp`;
 const ogImage = wallpaper.webp_path || wallpaper.thumbnail_path || buildUrl(`/api/wallpapers/${wallpaper.id}/og-image.png`, siteUrl);
 
 // Préparer les textes pour éviter les template strings imbriqués
@@ -108,7 +113,7 @@ const seoDescription = wallpaper.title ? `${wallpapersSubtitleText} - ${wallpape
                   decoding="async"
                 />
                 <a
-                  href={imageUrl}
+                  href={originalBmpUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   class="absolute top-4 right-4 bg-white/90 hover:bg-white backdrop-blur-sm rounded-full p-2 shadow-sm transition-colors"
@@ -315,37 +320,65 @@ const seoDescription = wallpaper.title ? `${wallpapersSubtitleText} - ${wallpape
             </dl>
           </div>
 
-          <div class="flex items-center mt-8 justify-between">
-            {(wallpaper.original_path || wallpaper.webp_path) && (
-              <a
-                href={wallpaper.original_path || wallpaper.webp_path}
-                download
-                class="block"
+          <div class="flex items-center mt-8 justify-between gap-3">
+            {/* Bouton télécharger BMP original */}
+            <a
+              href={originalBmpUrl}
+              download={`${wallpaper.title || 'wallpaper'}.bmp`}
+              class="block"
+            >
+              <Button
+                variant="accent"
+                size="xs"
+                class="justify-center flex items-center gap-1 w-auto"
               >
-                <Button
-                  variant="accent"
-                  size="xs"
-                  class="justify-center flex items-center gap-1 w-auto"
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="icon icon-tabler icons-tabler-outline icon-tabler-download size-4"
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    class="icon icon-tabler icons-tabler-outline icon-tabler-download size-4"
-                  >
-                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                    <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2"></path>
-                    <path d="M7 11l5 5l5 -5"></path>
-                    <path d="M12 4l0 12"></path>
-                  </svg>
-                  {t('wallpapers.download')}
-                </Button>
-              </a>
-            )}
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                  <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2"></path>
+                  <path d="M7 11l5 5l5 -5"></path>
+                  <path d="M12 4l0 12"></path>
+                </svg>
+                {t('wallpapers.download')} BMP
+              </Button>
+            </a>
+            {/* Bouton télécharger format optimisé (JPG pour BMP, WebP pour autres) */}
+            <a
+              href={imageUrl}
+              download={`${wallpaper.title || 'wallpaper'}.${isBmp ? 'jpg' : 'webp'}`}
+              class="block"
+            >
+              <Button
+                variant="outline"
+                size="xs"
+                class="justify-center flex items-center gap-1 w-auto"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="icon icon-tabler icons-tabler-outline icon-tabler-download size-4"
+                >
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                  <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2"></path>
+                  <path d="M7 11l5 5l5 -5"></path>
+                  <path d="M12 4l0 12"></path>
+                </svg>
+                {t('wallpapers.download')} {isBmp ? 'JPG' : 'WebP'}
+              </Button>
+            </a>
           </div>
 
           <!-- Copyright Notice -->
