@@ -381,9 +381,16 @@ async function exportWallpaper(
           console.log(`✅ BMP lisible par Sharp depuis disque`);
         }
       } catch (sharpError: any) {
-        // Sharp ne peut pas le lire depuis le disque, on télécharge depuis Supabase
-        console.log(`⚠️  Format non lisible par Sharp depuis disque (${sharpError.message}), téléchargement depuis Supabase...`);
-        needsDownload = true;
+        // Sharp ne peut pas le lire depuis le disque
+        if (isBMP) {
+          // Pour les BMP, pas besoin de retélécharger - on utilisera bmp-js/pngjs pour convertir
+          console.log(`⚠️  BMP non lisible par Sharp depuis disque (${sharpError.message}), utilisation du fichier local pour conversion BMP->PNG`);
+          // On garde originalBuffer tel quel, pas de téléchargement
+        } else {
+          // Pour les autres formats, télécharger depuis Supabase (cas rare)
+          console.log(`⚠️  Format non lisible par Sharp depuis disque (${sharpError.message}), téléchargement depuis Supabase...`);
+          needsDownload = true;
+        }
       }
     } catch {
       // Fichier n'existe pas localement, télécharger depuis Supabase
