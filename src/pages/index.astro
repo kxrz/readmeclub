@@ -14,6 +14,7 @@ import SmallResourceCard from "@/components/resources/SmallResourceCard.astro";
 import SmallMoreCard from "@/components/resources/SmallMoreCard.astro";
 import LatestResourceCard from "@/components/resources/LatestResourceCard.astro";
 import LatestMoreCard from "@/components/resources/LatestMoreCard.astro";
+import GuideCard from "@/components/resources/GuideCard.astro";
 import MoreCard from "@/components/common/MoreCard.astro";
 import BuyMeACoffee from "@/components/common/BuyMeACoffee.astro";
 import Seo from "@/components/fundations/head/Seo.astro";
@@ -119,6 +120,9 @@ const latestWallpapers = allWallpapers
                 <LatestResourceCard resource={resource} />
               </div>
             ))}
+            <div class="flex-shrink-0 w-[280px] snap-start flex">
+              <GuideCard />
+            </div>
             <div class="flex-shrink-0 w-[280px] snap-start flex">
               <LatestMoreCard href={`${lang === 'en' ? '' : `/${lang}`}/resources`} />
             </div>

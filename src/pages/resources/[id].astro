@@ -72,10 +72,6 @@ const starredResources = allResources
     return dateB - dateA;
   })
   .slice(0, 3);
-  console.error('Exception fetching starred resources:', err);
-  // En cas d'erreur (champ inexistant), on continue sans ressources star
-  starredResources = null;
-}
 ---
 
 <BaseLayout>

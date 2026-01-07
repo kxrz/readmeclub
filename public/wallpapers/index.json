@@ -1,8 +1,40 @@
 {
   "version": "1.0",
-  "generated_at": "2026-01-07T16:02:07.834Z",
-  "total": 360,
+  "generated_at": "2026-01-07T17:07:47.945Z",
+  "total": 362,
   "wallpapers": [
+    {
+      "id": "0abd21e3-3583-475b-97d1-d90b1c0bb2a9",
+      "title": "Books",
+      "category": null,
+      "author_name": "Mrak27",
+      "reddit_username": null,
+      "instagram_username": null,
+      "width": 480,
+      "height": 800,
+      "file_size": 1536138,
+      "download_count": 0,
+      "created_at": "2026-01-07T16:18:36.083672+00:00",
+      "webp_path": "/wallpapers/0abd21e3-3583-475b-97d1-d90b1c0bb2a9/image.jpg",
+      "thumbnail_path": "/wallpapers/0abd21e3-3583-475b-97d1-d90b1c0bb2a9/thumbnail.jpg",
+      "original_path": "/wallpapers/0abd21e3-3583-475b-97d1-d90b1c0bb2a9/original.bmp"
+    },
+    {
+      "id": "c52c09c1-5f2b-43da-927f-61cd88281395",
+      "title": "Houston! We have a problem))",
+      "category": null,
+      "author_name": "Mrak27",
+      "reddit_username": null,
+      "instagram_username": null,
+      "width": 480,
+      "height": 800,
+      "file_size": 385162,
+      "download_count": 0,
+      "created_at": "2026-01-07T16:18:00.068385+00:00",
+      "webp_path": "/wallpapers/c52c09c1-5f2b-43da-927f-61cd88281395/image.jpg",
+      "thumbnail_path": "/wallpapers/c52c09c1-5f2b-43da-927f-61cd88281395/thumbnail.jpg",
+      "original_path": "/wallpapers/c52c09c1-5f2b-43da-927f-61cd88281395/original.bmp"
+    },
     {
       "id": "3052e04b-3ea5-4775-9458-1232743126f2",
       "title": "Circles",
