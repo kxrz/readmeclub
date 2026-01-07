@@ -367,27 +367,21 @@ const tableOfContents = [
                   <Text tag="h3" variant="textBase" class="font-semibold text-base-900 mb-3">
                     {t('firmware.installation.step1.title')}
                   </Text>
-                  <Text tag="p" variant="textSM" class="text-base-700 leading-relaxed">
-                    {t('firmware.installation.step1.content')}
-                  </Text>
+                  <Text tag="p" variant="textSM" class="text-base-700 leading-relaxed" set:html={t('firmware.installation.step1.content').replace(/https?:\/\/[^\s\)]+/g, (url) => `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-accent-600 hover:text-accent-700 underline font-medium">${url}</a>`)} />
                 </div>
 
                 <div class="bg-base-50 border-l-4 border-accent-500 p-6 rounded-r-lg">
                   <Text tag="h3" variant="textBase" class="font-semibold text-base-900 mb-3">
                     {t('firmware.installation.step2.title')}
                   </Text>
-                  <Text tag="p" variant="textSM" class="text-base-700 leading-relaxed">
-                    {t('firmware.installation.step2.content')}
-                  </Text>
+                  <Text tag="p" variant="textSM" class="text-base-700 leading-relaxed" set:html={t('firmware.installation.step2.content').replace(/https?:\/\/[^\s\)]+/g, (url) => `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-accent-600 hover:text-accent-700 underline font-medium">${url}</a>`)} />
                 </div>
 
                 <div class="bg-base-50 border-l-4 border-base-900 p-6 rounded-r-lg">
                   <Text tag="h3" variant="textBase" class="font-semibold text-base-900 mb-3">
                     {t('firmware.installation.step3.title')}
                   </Text>
-                  <Text tag="p" variant="textSM" class="text-base-700 leading-relaxed">
-                    {t('firmware.installation.step3.content')}
-                  </Text>
+                  <Text tag="p" variant="textSM" class="text-base-700 leading-relaxed" set:html={t('firmware.installation.step3.content').replace(/https?:\/\/[^\s]+/g, (url) => `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-accent-600 hover:text-accent-700 underline font-medium">${url}</a>`)} />
                 </div>
               </div>
             </section>
@@ -451,9 +445,7 @@ const tableOfContents = [
                   <Text tag="h3" variant="textBase" class="font-semibold text-base-900 mb-2">
                     {t('firmware.faq.1.question')}
                   </Text>
-                  <Text tag="p" variant="textSM" class="text-base-700">
-                    {t('firmware.faq.1.answer')}
-                  </Text>
+                  <Text tag="p" variant="textSM" class="text-base-700" set:html={t('firmware.faq.1.answer').replace(/https?:\/\/[^\s\)]+/g, (url) => `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-accent-600 hover:text-accent-700 underline font-medium">${url}</a>`)} />
                 </div>
                 <div class="bg-base-50 border-l-4 border-base-900 p-5 rounded-r-lg">
                   <Text tag="h3" variant="textBase" class="font-semibold text-base-900 mb-2">
@@ -467,9 +459,7 @@ const tableOfContents = [
                   <Text tag="h3" variant="textBase" class="font-semibold text-base-900 mb-2">
                     {t('firmware.faq.3.question')}
                   </Text>
-                  <Text tag="p" variant="textSM" class="text-base-700">
-                    {t('firmware.faq.3.answer')}
-                  </Text>
+                  <Text tag="p" variant="textSM" class="text-base-700" set:html={t('firmware.faq.3.answer').replace(/https?:\/\/[^\s\)]+/g, (url) => `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-accent-600 hover:text-accent-700 underline font-medium">${url}</a>`)} />
                 </div>
               </div>
             </section>
