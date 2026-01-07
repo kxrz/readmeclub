@@ -2,6 +2,12 @@
 dist/
 .vercel/
 
+# Generated content (regenerated at build time via prebuild scripts)
+public/wallpapers/
+public/wallpapers/index.json
+public/resources/index.json
+public/data/locations.json
+
 # Dependencies
 node_modules/
 

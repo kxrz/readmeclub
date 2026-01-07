@@ -780,6 +780,9 @@ async function exportWallpaper(
 async function createWallpapersIndex(wallpapers: WallpaperMetadata[]): Promise<void> {
   const indexPath = path.join(projectRoot, 'public', 'wallpapers', 'index.json');
   
+  // S'assurer que le dossier existe
+  await fs.mkdir(path.dirname(indexPath), { recursive: true });
+  
   // Trier par date de création (plus récent en premier)
   const sorted = wallpapers.sort((a, b) => {
     const dateA = new Date(a.created_at).getTime();

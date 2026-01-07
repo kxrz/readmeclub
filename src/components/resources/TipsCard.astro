@@ -1,0 +1,63 @@
+---
+import Text from "@/components/fundations/elements/Text.astro";
+import { useTranslations, getLangFromUrl, getLangPrefix } from '@/i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const langPrefix = getLangPrefix(lang);
+const tipsUrl = langPrefix ? `${langPrefix}/tips` : `/tips`;
+---
+
+<a
+  href={tipsUrl}
+  class="group relative flex flex-col h-full rounded-xl border border-base-200 bg-white overflow-hidden hover:border-accent-300 hover:shadow-xl transition-all"
+>
+  <div class="aspect-video w-full overflow-hidden bg-gradient-to-br from-base-700 to-base-900 relative flex items-center justify-center">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="48"
+      height="48"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      class="text-white"
+    >
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+      <path d="M12 2l3.09 6.26l6.91 1.01l-5 4.87l1.18 6.88l-6.18 -3.25l-6.18 3.25l1.18 -6.88l-5 -4.87l6.91 -1.01z"></path>
+    </svg>
+  </div>
+  
+  <div class="p-4 flex-1 flex flex-col min-h-[140px]">
+    <Text tag="h3" variant="textBase" class="font-semibold text-base-900 line-clamp-2 group-hover:text-accent-500 mb-2">
+      {t('tips.title')}
+    </Text>
+    
+    <Text tag="p" variant="textSM" class="text-base-600 line-clamp-2 mb-3 flex-1">
+      {t('tips.subtitle')}
+    </Text>
+    
+    <div class="flex items-center justify-between pt-3 border-t border-base-200 mt-auto">
+      <span class="text-xs text-base-500">{t('common.view')}</span>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        class="text-base-400 group-hover:text-accent-500 transition-colors"
+      >
+        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+        <path d="M5 12l14 0"></path>
+        <path d="M15 16l4 -4"></path>
+        <path d="M15 8l4 4"></path>
+      </svg>
+    </div>
+  </div>
+</a>

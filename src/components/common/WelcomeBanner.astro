@@ -1,8 +1,9 @@
 ---
 import Text from "@/components/fundations/elements/Text.astro";
-import { useTranslations, getLangFromUrl } from '@/i18n/utils';
+import { useTranslations, getLangFromUrl, getLangPrefix } from '@/i18n/utils';
 
 const lang = getLangFromUrl(Astro.url);
+const langPrefix = getLangPrefix(lang);
 const t = useTranslations(lang);
 ---
 
@@ -10,8 +11,8 @@ const t = useTranslations(lang);
   x-data="{ 
     show: false,
     init() {
-      // Vérifier si l'utilisateur a déjà fermé la bannière
-      const dismissed = localStorage.getItem('welcomeBannerDismissed');
+      // Nouvelle clé pour permettre la réaffichage avec le nouveau message
+      const dismissed = localStorage.getItem('welcomeBannerDismissed_v2');
       if (!dismissed) {
         // Afficher après un court délai pour une meilleure UX
         setTimeout(() => {
@@ -21,52 +22,63 @@ const t = useTranslations(lang);
     },
     close() {
       this.show = false;
-      localStorage.setItem('welcomeBannerDismissed', 'true');
+      localStorage.setItem('welcomeBannerDismissed_v2', 'true');
     }
   }"
   x-show="show"
   x-transition:enter="transition ease-out duration-300"
-  x-transition:enter-start="transform translate-y-full opacity-0"
-  x-transition:enter-end="transform translate-y-0 opacity-100"
+  x-transition:enter-start="transform translate-x-full opacity-0"
+  x-transition:enter-end="transform translate-x-0 opacity-100"
   x-transition:leave="transition ease-in duration-200"
-  x-transition:leave-start="transform translate-y-0 opacity-100"
-  x-transition:leave-end="transform translate-y-full opacity-0"
+  x-transition:leave-start="transform translate-x-0 opacity-100"
+  x-transition:leave-end="transform translate-x-full opacity-0"
   style="display: none;"
-  class="fixed bottom-0 left-0 right-0 z-50 p-4 lg:p-6"
+  class="fixed bottom-4 right-4 z-50 max-w-sm"
 >
-  <div class="max-w-4xl mx-auto bg-base-900 text-white rounded-lg shadow-xl border border-base-200 p-4 lg:p-6 flex items-center justify-between gap-4">
-    <div class="flex items-center gap-3 lg:gap-4 flex-1">
-      <span class="text-2xl lg:text-3xl" aria-hidden="true">🎉</span>
-      <div class="flex-1">
-        <Text tag="p" variant="textSM" class="font-semibold text-white mb-1">
-          {t('welcome.title')}
-        </Text>
-        <Text tag="p" variant="textXS" class="text-base-300">
-          {t('welcome.message')}
-        </Text>
+  <div class="bg-base-900 text-white rounded-lg shadow-xl border border-base-200 p-4 lg:p-5 flex flex-col gap-3">
+    <div class="flex items-start justify-between gap-3">
+      <div class="flex items-start gap-2 flex-1">
+        <span class="text-xl shrink-0" aria-hidden="true">🎉</span>
+        <div class="flex-1 min-w-0">
+          <Text tag="p" variant="textSM" class="font-semibold text-white mb-1">
+            {t('welcome.title')}
+          </Text>
+          <Text tag="p" variant="textXS" class="text-base-300 mb-2">
+            {t('welcome.message')}
+          </Text>
+          <Text tag="p" variant="textXS" class="text-base-400 mb-2">
+            {t('welcome.privacy')}
+          </Text>
+          <a
+            href={`${langPrefix}/about#funding`}
+            class="text-xs text-accent-400 hover:text-accent-300 underline transition-colors"
+          >
+            {t('welcome.funding_link')}
+          </a>
+        </div>
       </div>
-    </div>
-    <button
-      @click="close()"
-      class="shrink-0 text-white hover:text-base-300 focus:outline-none transition-colors p-2 -mr-2"
-      aria-label="Close welcome banner"
-    >
-      <svg
-        class="size-5"
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        aria-hidden="true"
+      <button
+        @click="close()"
+        class="shrink-0 text-white hover:text-base-300 focus:outline-none transition-colors p-1"
+        aria-label="Close welcome banner"
       >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M6 18L18 6M6 6l12 12"
-        ></path>
-      </svg>
-    </button>
+        <svg
+          class="size-4"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          aria-hidden="true"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M6 18L18 6M6 6l12 12"
+          ></path>
+        </svg>
+      </button>
+    </div>
   </div>
 </div>
 

@@ -55,6 +55,9 @@ interface ResourceData {
   downloads_count: number;
   created_at: string;
   updated_at: string;
+  status: string;
+  hidden: boolean;
+  starred?: boolean;
 }
 
 /**
@@ -112,6 +115,9 @@ async function exportResources(): Promise<void> {
     downloads_count: resource.downloads_count || 0,
     created_at: resource.created_at,
     updated_at: resource.updated_at,
+    status: resource.status || 'approved',
+    hidden: resource.hidden || false,
+    starred: resource.starred || false,
   }));
   
   // Créer le dossier si nécessaire
