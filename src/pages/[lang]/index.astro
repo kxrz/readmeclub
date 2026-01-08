@@ -76,7 +76,7 @@ const latestWallpapers = allWallpapers
     <Seo
       title={`${t('site.name')} - ${t('site.tagline')}`}
       description={t('site.description')}
-      canonical={`${siteUrl}/${lang === 'en' ? '' : lang}`}
+      canonical={`${siteUrl}${langPrefix || '/'}`}
       lang={lang}
     />
   </Fragment>

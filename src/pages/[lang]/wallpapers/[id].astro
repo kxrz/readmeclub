@@ -13,7 +13,7 @@ import Wrapper from "@/components/fundations/containers/Wrapper.astro";
 import Seo from "@/components/fundations/head/Seo.astro";
 import WallpaperThumbnail from "@/components/wallpapers/WallpaperThumbnail.astro";
 import { loadWallpaperById, loadAllWallpapers } from '@/lib/utils/wallpaper-loader';
-import { useTranslations } from '@/i18n/utils';
+import { useTranslations, getLangPrefix } from '@/i18n/utils';
 import { getGradientForId } from '@/lib/utils/gradients';
 import { normalizeSiteUrl, buildUrl } from '@/lib/utils/url';
 import { getWallpaperAuthorName } from '@/lib/utils/author';
@@ -76,7 +76,8 @@ const imageUrl = isBmp
   ? (wallpaper.webp_path || `/wallpapers/${wallpaper.id}/image.jpg`)
   : (wallpaper.webp_path || `/wallpapers/${wallpaper.id}/image.webp`);
 const originalBmpUrl = `/wallpapers/${wallpaper.id}/original.bmp`;
-const ogImage = wallpaper.webp_path || wallpaper.thumbnail_path || buildUrl(`/api/wallpapers/${wallpaper.id}/og-image.png`, siteUrl);
+// Utiliser l'API OG qui va cropper l'image réelle du wallpaper au format 1200x630
+const ogImage = buildUrl(`/api/wallpapers/${wallpaper.id}/og-image.png`, siteUrl);
 
 // Préparer les textes pour éviter les template strings imbriqués
 const wallpaperTitle = wallpaper.title || 'Wallpaper';
@@ -92,7 +93,7 @@ const seoDescription = wallpaper.title ? `${wallpapersSubtitleText} - ${wallpape
     <Seo
       title={seoTitle}
       description={seoDescription}
-      canonical={`${siteUrl}/${lang}/wallpapers/${wallpaper.id}`}
+      canonical={`${siteUrl}${langPrefix}/wallpapers/${wallpaper.id}`}
       ogImage={ogImage}
       ogType="article"
       lang={lang}

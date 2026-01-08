@@ -7,12 +7,14 @@ import Text from "@/components/fundations/elements/Text.astro";
 import Button from "@/components/fundations/components/Button.astro";
 import Wrapper from "@/components/fundations/containers/Wrapper.astro";
 import Seo from "@/components/fundations/head/Seo.astro";
-import { useTranslations, getLangFromUrl } from '@/i18n/utils';
+import { useTranslations, getLangFromUrl, getLangPrefix } from '@/i18n/utils';
 import { loadGuideContent, addIdsToRenderedHtml } from '@/lib/utils/guide-loader';
 import { renderMarkdown } from '@/lib/utils/markdown';
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
+const langPrefix = getLangPrefix(lang);
+const siteUrl = Astro.site || 'https://readme.club';
 
 // Charger le contenu markdown du guide avec table des matières
 const { content: guideMarkdown, tableOfContents } = await loadGuideContent();
@@ -31,7 +33,7 @@ if (guideMarkdown) {
     <Seo
       title={t('guide.title')}
       description={t('guide.subtitle')}
-      canonical={`${Astro.site}/guide`}
+      canonical={`${siteUrl}${langPrefix}/guide`}
       lang={lang}
     />
   </Fragment>

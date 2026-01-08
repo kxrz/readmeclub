@@ -68,7 +68,8 @@ const imageUrl = isBmp
   : (wallpaper.webp_path || `/wallpapers/${wallpaper.id}/image.webp`);
 const originalBmpUrl = `/wallpapers/${wallpaper.id}/original.bmp`;
 const siteUrl = normalizeSiteUrl(Astro.site);
-const ogImage = wallpaper.webp_path || wallpaper.thumbnail_path || buildUrl(`/api/wallpapers/${wallpaper.id}/og-image.png`, siteUrl);
+// Utiliser l'API OG qui va cropper l'image réelle du wallpaper au format 1200x630
+const ogImage = buildUrl(`/api/wallpapers/${wallpaper.id}/og-image.png`, siteUrl);
 
 // Préparer les textes pour éviter les template strings imbriqués
 const wallpaperTitle = wallpaper.title || 'Wallpaper';

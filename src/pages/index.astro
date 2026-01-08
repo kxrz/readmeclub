@@ -26,6 +26,7 @@ import { loadAllResources, filterAndSortResources } from '@/lib/utils/resource-l
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 const langPrefix = getLangPrefix(lang);
+const siteUrl = Astro.site || 'https://readme.club';
 
 // Charger les resources depuis JSON statique
 const allResources = await loadAllResources();
@@ -71,6 +72,7 @@ const latestWallpapers = allWallpapers
     <Seo
       title={`${t('site.name')} - ${t('site.tagline')}`}
       description={t('site.description')}
+      canonical={`${siteUrl}${langPrefix || '/'}`}
       lang={lang}
     />
   </Fragment>

@@ -5,11 +5,12 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 import Text from "@/components/fundations/elements/Text.astro";
 import Wrapper from "@/components/fundations/containers/Wrapper.astro";
 import Seo from "@/components/fundations/head/Seo.astro";
-import { useTranslations, getLangFromUrl } from '@/i18n/utils';
+import { useTranslations, getLangPrefix } from '@/i18n/utils';
 import type { Lang } from '@/i18n/utils';
 
 const lang = (Astro.params.lang || 'en') as Lang;
 const t = useTranslations(lang);
+const langPrefix = getLangPrefix(lang);
 const siteUrl = Astro.site || 'https://readme.club';
 ---
 
@@ -17,7 +18,7 @@ const siteUrl = Astro.site || 'https://readme.club';
   <Seo
     title="LLM Information - Xteink Community Hub"
     description="Official information about Xteink Community Hub for AI assistants and large language models"
-    canonical={`${siteUrl}/${lang}/llm-info`}
+    canonical={`${siteUrl}${langPrefix}/llm-info`}
     lang={lang}
     noindex={true}
   />

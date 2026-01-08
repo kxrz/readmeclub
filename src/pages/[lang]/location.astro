@@ -11,7 +11,7 @@ export async function getStaticPaths() {
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import Text from "@/components/fundations/elements/Text.astro";
 import Wrapper from "@/components/fundations/containers/Wrapper.astro";
-import { useTranslations } from '@/i18n/utils';
+import { useTranslations, getLangPrefix } from '@/i18n/utils';
 import type { Lang } from '@/i18n/utils';
 import Seo from '@/components/fundations/head/Seo.astro';
 import { loadLocationStats, generateLocationMarkers } from '@/lib/utils/location-loader';
@@ -19,6 +19,8 @@ import { countries } from '@/lib/utils/countries';
 
 const lang = (Astro.params.lang || 'en') as Lang;
 const t = useTranslations(lang);
+const langPrefix = getLangPrefix(lang);
+const siteUrl = Astro.site || 'https://readme.club';
 
 // Charger les statistiques depuis JSON statique
 const { stats, total, countries: countriesCount, period } = await loadLocationStats();
@@ -31,7 +33,7 @@ const markers = generateLocationMarkers(stats);
   <Seo
     title={t('location.title')}
     description={t('location.subtitle')}
-    canonical={`${Astro.site}/${lang}/location`}
+    canonical={`${siteUrl}${langPrefix}/location`}
     lang={lang}
   />
 

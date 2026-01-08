@@ -1,31 +1,15 @@
 export const prerender = false;
 
 import type { APIRoute } from 'astro';
-import satori from 'satori';
-import { Resvg } from '@resvg/resvg-js';
+import sharp from 'sharp';
 import { supabase } from '@/lib/supabase/client';
 import { readFileSync } from 'fs';
-import { join } from 'path';
+import { join, dirname } from 'path';
+import { fileURLToPath } from 'url';
 
-async function loadFonts() {
-  const fontRegular = readFileSync(join(process.cwd(), 'public', 'fonts', 'inter-400.woff'));
-  const fontBold = readFileSync(join(process.cwd(), 'public', 'fonts', 'inter-700.woff'));
-
-  return [
-    {
-      name: 'Inter',
-      data: fontRegular,
-      weight: 400,
-      style: 'normal',
-    },
-    {
-      name: 'Inter',
-      data: fontBold,
-      weight: 700,
-      style: 'normal',
-    },
-  ];
-}
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const projectRoot = join(__dirname, '../../../../');
 
 export const GET: APIRoute = async ({ params }) => {
   try {
@@ -35,111 +19,89 @@ export const GET: APIRoute = async ({ params }) => {
       return new Response('ID required', { status: 400 });
     }
     
-    const { data: wallpaper } = await supabase
-      .from('wallpapers')
-      .select('*')
-      .eq('id', id)
-      .single();
-    
-    if (!wallpaper) {
-      return new Response('Wallpaper not found', { status: 404 });
+    // Charger depuis le JSON statique d'abord (plus rapide)
+    let wallpaper: any = null;
+    try {
+      const wallpaperIndexPath = join(projectRoot, 'public', 'wallpapers', 'index.json');
+      const indexData = JSON.parse(readFileSync(wallpaperIndexPath, 'utf-8'));
+      wallpaper = indexData.wallpapers?.find((w: any) => w.id === id);
+    } catch (e) {
+      // Fallback vers Supabase si le JSON n'existe pas
     }
     
-    // Charger les polices
-    const fonts = await loadFonts();
-    
-    // Generate OG image with Satori - style minimaliste
-    const svg = await satori(
-      {
-        type: 'div',
-        props: {
-          style: {
-            display: 'flex',
-            flexDirection: 'column',
-            width: '1200px',
-            height: '630px',
-            background: '#ffffff',
-            padding: '60px',
-            fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
-          },
-          children: [
-            // Logo en haut à gauche
-            {
-              type: 'div',
-              props: {
-                style: {
-                  fontSize: '18px',
-                  fontWeight: '400',
-                  color: '#000000',
-                  marginBottom: 'auto',
-                },
-                children: 'readme.club',
-              },
-            },
-            // Contenu centré verticalement
-            {
-              type: 'div',
-              props: {
-                style: {
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'flex-start',
-                  justifyContent: 'center',
-                  flex: 1,
-                  maxWidth: '900px',
-                  margin: '0 auto',
-                },
-                children: [
-                  // Titre
-                  {
-                    type: 'div',
-                    props: {
-                      style: {
-                        fontSize: '64px',
-                        fontWeight: 'bold',
-                        color: '#000000',
-                        lineHeight: '1.2',
-                        marginBottom: wallpaper.category ? '24px' : '0',
-                      },
-                      children: wallpaper.title || 'Wallpaper',
-                    },
-                  },
-                  // Catégorie si disponible
-                  ...(wallpaper.category ? [{
-                    type: 'div',
-                    props: {
-                      style: {
-                        fontSize: '24px',
-                        fontWeight: '400',
-                        color: '#666666',
-                        lineHeight: '1.5',
-                      },
-                      children: wallpaper.category.replace('_', ' '),
-                    },
-                  }] : []),
-                ],
-              },
-            },
-          ],
-        },
-      },
-      {
-        width: 1200,
-        height: 630,
-        fonts,
+    // Fallback vers Supabase si pas trouvé dans le JSON
+    if (!wallpaper) {
+      const { data } = await supabase
+        .from('wallpapers')
+        .select('*')
+        .eq('id', id)
+        .single();
+      
+      if (!data) {
+        return new Response('Wallpaper not found', { status: 404 });
       }
-    );
+      
+      // Convertir au format metadata
+      const originalPath = data.static_original_path || data.file_url || '';
+      const isBmpWallpaper = originalPath.endsWith('.bmp') || data.file_name?.toLowerCase().endsWith('.bmp');
+      
+      wallpaper = {
+        id: data.id,
+        webp_path: data.static_webp_path || (isBmpWallpaper 
+          ? `/wallpapers/${data.id}/image.jpg`
+          : `/wallpapers/${data.id}/image.webp`),
+        thumbnail_path: data.static_thumbnail_path || (isBmpWallpaper
+          ? `/wallpapers/${data.id}/thumbnail.jpg`
+          : `/wallpapers/${data.id}/thumbnail.webp`),
+        original_path: data.static_original_path || `/wallpapers/${data.id}/original.${data.file_name?.split('.').pop() || 'png'}`,
+      };
+    }
     
-    // Convert SVG to PNG
-    const resvg = new Resvg(svg, {
-      fitTo: {
-        mode: 'width',
-        value: 1200,
-      },
-    });
-    const pngBuffer = resvg.render().asPng();
+    // Vérifier d'abord si une image OG pré-générée existe
+    const preGeneratedOGPath = join(projectRoot, 'public', 'og-images', 'wallpapers', `${id}.png`);
+    try {
+      const fs = await import('fs/promises');
+      await fs.access(preGeneratedOGPath);
+      // Utiliser l'image pré-générée si elle existe
+      const ogImageBuffer = readFileSync(preGeneratedOGPath);
+      return new Response(ogImageBuffer, {
+        headers: {
+          'Content-Type': 'image/png',
+          'Cache-Control': 'public, max-age=3600',
+        },
+      });
+    } catch {
+      // Fallback: générer à la volée si pas pré-générée
+    }
     
-    return new Response(pngBuffer, {
+    // Déterminer le chemin de l'image à utiliser (priorité: webp_path > thumbnail_path)
+    const imagePath = wallpaper.webp_path || wallpaper.thumbnail_path;
+    if (!imagePath) {
+      return new Response('Wallpaper image not found', { status: 404 });
+    }
+    
+    // Chemin complet vers l'image dans public/
+    const fullImagePath = join(projectRoot, 'public', imagePath);
+    
+    // Vérifier si le fichier existe
+    try {
+      const fs = await import('fs/promises');
+      await fs.access(fullImagePath);
+    } catch {
+      return new Response('Wallpaper image file not found', { status: 404 });
+    }
+    
+    // Charger et cropper l'image au format OG (1200x630)
+    const imageBuffer = readFileSync(fullImagePath);
+    const ogImageBuffer = await sharp(imageBuffer)
+      .resize(1200, 630, {
+        fit: 'cover', // Crop pour remplir exactement le format OG
+        position: 'center', // Centrer le crop
+      })
+      .png()
+      .toBuffer();
+    
+    return new Response(ogImageBuffer, {
       headers: {
         'Content-Type': 'image/png',
         'Cache-Control': 'public, max-age=3600',

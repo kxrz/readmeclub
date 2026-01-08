@@ -16,11 +16,12 @@ import Wrapper from "@/components/fundations/containers/Wrapper.astro";
 import ResourceCard from "@/components/resources/ResourceCard.astro";
 import Seo from "@/components/fundations/head/Seo.astro";
 import { loadAllResources, filterAndSortResources, paginateResources } from '@/lib/utils/resource-loader';
-import { useTranslations } from '@/i18n/utils';
+import { useTranslations, getLangPrefix } from '@/i18n/utils';
 import type { Lang } from '@/i18n/utils';
 
 const lang = (Astro.params.lang || 'en') as Lang;
 const t = useTranslations(lang);
+const langPrefix = getLangPrefix(lang);
 const siteUrl = Astro.site || 'https://readme.club';
 
 // Pagination
@@ -92,7 +93,7 @@ const resourceTypes = [
     <Seo
       title={`${t('resources.title')} - ${t('site.name')}`}
       description={t('resources.subtitle')}
-      canonical={`${siteUrl}/${lang}/resources`}
+      canonical={`${siteUrl}${langPrefix}/resources`}
       lang={lang}
     />
   </Fragment>

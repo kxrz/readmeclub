@@ -4,13 +4,15 @@ export const prerender = true; // Page statique
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import Text from "@/components/fundations/elements/Text.astro";
 import Wrapper from "@/components/fundations/containers/Wrapper.astro";
-import { useTranslations, getLangFromUrl } from '@/i18n/utils';
+import { useTranslations, getLangFromUrl, getLangPrefix } from '@/i18n/utils';
 import Seo from '@/components/fundations/head/Seo.astro';
 import { loadLocationStats, generateLocationMarkers } from '@/lib/utils/location-loader';
 import { countries } from '@/lib/utils/countries';
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
+const langPrefix = getLangPrefix(lang);
+const siteUrl = Astro.site || 'https://readme.club';
 
 // Charger les statistiques depuis JSON statique
 const { stats, total, countries: countriesCount, period } = await loadLocationStats();
@@ -23,7 +25,7 @@ const markers = generateLocationMarkers(stats);
   <Seo
     title={t('location.title')}
     description={t('location.subtitle')}
-    canonical={`${Astro.site}/location`}
+    canonical={`${siteUrl}${langPrefix}/location`}
     lang={lang}
   />
 

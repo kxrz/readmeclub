@@ -31,7 +31,8 @@
     "export-resources": "tsx scripts/export-resources-to-json.ts",
     "export-locations": "tsx scripts/export-locations-to-json.ts",
     "convert-guide": "tsx scripts/convert-guide-to-markdown.ts",
-    "prebuild": "npm run export-news && npm run export-wallpapers && npm run export-resources && npm run export-locations && npm run convert-guide"
+    "generate-og-images": "tsx scripts/generate-og-images.ts",
+    "prebuild": "npm run export-news && npm run export-wallpapers && npm run export-resources && npm run export-locations && npm run convert-guide && npm run generate-og-images"
   },
   "dependencies": {
     "@astrojs/mdx": "^4.3.5",

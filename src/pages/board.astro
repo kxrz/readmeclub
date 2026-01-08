@@ -5,11 +5,12 @@ import Button from "@/components/fundations/components/Button.astro";
 import Wrapper from "@/components/fundations/containers/Wrapper.astro";
 import Seo from "@/components/fundations/head/Seo.astro";
 import FeatureRequestCard from "@/components/features/FeatureRequestCard.astro";
-import { useTranslations, getLangFromUrl } from '@/i18n/utils';
+import { useTranslations, getLangFromUrl, getLangPrefix } from '@/i18n/utils';
 import { supabase } from '@/lib/supabase/client';
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
+const langPrefix = getLangPrefix(lang);
 const siteUrl = Astro.site || 'https://readme.club';
 
 const url = Astro.url;
@@ -38,7 +39,7 @@ const { data: features } = await query;
   <Seo
     title={`${t('board.title')} - ${t('site.name')}`}
     description={t('board.subtitle')}
-    canonical={`${siteUrl}/board`}
+    canonical={`${siteUrl}${langPrefix}/board`}
     lang={lang}
   />
 

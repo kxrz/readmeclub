@@ -24,7 +24,7 @@ import Wrapper from "@/components/fundations/containers/Wrapper.astro";
 import Seo from "@/components/fundations/head/Seo.astro";
 import SmallResourceCard from "@/components/resources/SmallResourceCard.astro";
 import SmallMoreCard from "@/components/resources/SmallMoreCard.astro";
-import { useTranslations } from '@/i18n/utils';
+import { useTranslations, getLangPrefix } from '@/i18n/utils';
 import { getGradientForId } from '@/lib/utils/gradients';
 import { normalizeSiteUrl, buildUrl } from '@/lib/utils/url';
 import { renderMarkdown } from '@/lib/utils/markdown';
@@ -35,6 +35,7 @@ import type { Resource } from '@/lib/supabase/schema';
 
 const lang = (Astro.params.lang || 'en') as Lang;
 const t = useTranslations(lang);
+const langPrefix = getLangPrefix(lang);
 const siteUrl = normalizeSiteUrl(Astro.site);
 
 const id = Astro.params.id || Astro.props.resource?.id;
@@ -59,10 +60,13 @@ const thumbnailUrl = resource.thumbnail_url || `/api/resources/${resource.id}/og
 const hasFile = !!resource.file_url;
 const hasExternalLink = !!resource.external_link;
 const contributorName = getResourceContributorName(resource);
-const ogImage = resource.thumbnail_url || buildUrl(`/api/resources/${resource.id}/og-image.png`, siteUrl);
 
 // Vérifier si c'est une image à télécharger
 const isImageFile = hasFile && resource.file_name ? /\.(jpg|jpeg|png|gif|webp|svg|bmp|ico)$/i.test(resource.file_name) : false;
+
+// Utiliser le thumbnail_url si disponible, sinon l'image générée par l'API
+// Si la ressource est une image, utiliser directement le file_url
+const ogImage = resource.thumbnail_url || (isImageFile && resource.file_url ? buildUrl(resource.file_url, siteUrl) : buildUrl(`/api/resources/${resource.id}/og-image.png`, siteUrl));
 
 // Récupérer les ressources star (max 3, excluant la ressource actuelle)
 const allResources = await loadAllResources();
@@ -81,7 +85,7 @@ const starredResources = allResources
     <Seo
       title={`${resource.title} - ${t('site.name')}`}
       description={resource.description}
-      canonical={`${siteUrl}/${lang}/resources/${resource.id}`}
+      canonical={`${siteUrl}${langPrefix}/resources/${resource.id}`}
       ogImage={ogImage}
       ogType="article"
       lang={lang}

@@ -8,12 +8,13 @@ import Text from "@/components/fundations/elements/Text.astro";
 import Button from "@/components/fundations/components/Button.astro";
 import Wrapper from "@/components/fundations/containers/Wrapper.astro";
 import Seo from "@/components/fundations/head/Seo.astro";
-import { useTranslations } from '@/i18n/utils';
+import { useTranslations, getLangPrefix } from '@/i18n/utils';
 import type { Lang } from '@/i18n/utils';
 import tipsData from '../../data/tips.json';
 
 const lang = (Astro.params.lang || 'en') as Lang;
 const t = useTranslations(lang);
+const langPrefix = getLangPrefix(lang);
 const siteUrl = Astro.site || 'https://readme.club';
 
 // Filter tips related to fonts
@@ -28,7 +29,7 @@ const fontTips = tipsData.tips.filter(tip =>
     <Seo
       title={`${t('fonts.title')} - ${t('site.name')}`}
       description={t('fonts.subtitle')}
-      canonical={`${siteUrl}/${lang}/fonts`}
+      canonical={`${siteUrl}${langPrefix}/fonts`}
       lang={lang}
     />
   </Fragment>

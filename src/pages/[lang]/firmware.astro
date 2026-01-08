@@ -19,7 +19,7 @@ import Wrapper from "@/components/fundations/containers/Wrapper.astro";
 import Seo from "@/components/fundations/head/Seo.astro";
 import { useTranslations, getLangFromUrl, getLangPrefix } from '@/i18n/utils';
 
-const lang = getLangFromUrl(Astro.url);
+const lang = (Astro.params.lang || 'en') as Lang;
 const t = useTranslations(lang);
 const langPrefix = getLangPrefix(lang);
 const siteUrl = Astro.site || 'https://readme.club';
@@ -41,7 +41,7 @@ const tableOfContents = [
     <Seo
       title={`${t('firmware.title')} - ${t('site.name')}`}
       description={t('firmware.subtitle')}
-      canonical={`${siteUrl}/${lang}/firmware`}
+      canonical={`${siteUrl}${langPrefix}/firmware`}
       lang={lang}
     />
   </Fragment>
