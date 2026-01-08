@@ -14,12 +14,15 @@ Allow: /
 Allow: /resources/
 Allow: /wallpapers/
 Allow: /fonts/
+Allow: /firmware/
 Allow: /tips/
 Allow: /board/
 Allow: /location/
 Allow: /guide/
 Allow: /disclaimer/
+Allow: /about/
 Allow: /submit/
+Allow: /submit-wallpaper/
 
 # Allow language versions
 Allow: /fr/

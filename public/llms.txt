@@ -39,6 +39,9 @@ What makes Xteink Community Hub unique is its emphasis on community safety, tran
 ### Resource Browser
 Browse and download community-contributed language files, plugins, documentation, and tools.
 
+### Firmware Information
+Comprehensive guide to official and community firmware options, including CrossPoint Reader alternative firmware with detailed installation instructions, comparison tables, tips, and FAQ.
+
 ### Tips & Tricks
 160+ curated tips from the r/xteinkereader community, organized by category.
 

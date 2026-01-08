@@ -11,12 +11,15 @@ const staticPages = [
   'resources',
   'wallpapers',
   'fonts',
+  'firmware',
   'tips',
   'board',
   'location',
   'guide',
   'disclaimer',
+  'about',
   'submit',
+  'submit-wallpaper',
   'news',
 ];
 
