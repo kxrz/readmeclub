@@ -117,3 +117,4 @@ DRAFT*.md
 .DS_Store?
 ehthumbs.db
 Icon?
+/temp
