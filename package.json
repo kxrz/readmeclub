@@ -31,6 +31,9 @@
     "export-resources": "tsx scripts/export-resources-to-json.ts",
     "export-locations": "tsx scripts/export-locations-to-json.ts",
     "convert-guide": "tsx scripts/convert-guide-to-markdown.ts",
+    "copy-ebook-fonts": "tsx scripts/copy-ebook-fonts.ts",
+    "convert-fonts-to-bin": "tsx scripts/convert-fonts-to-bin.ts",
+    "generate-font-previews": "tsx scripts/generate-font-previews.ts",
     "prebuild": "npm run export-news && npm run export-wallpapers && npm run export-resources && npm run export-locations && npm run convert-guide"
   },
   "dependencies": {
@@ -49,6 +52,8 @@
     "astro": "^5.13.8",
     "dotenv": "^16.6.1",
     "bmp-js": "^0.1.0",
+    "epubjs": "^0.3.88",
+    "opentype.js": "^1.3.4",
     "pngjs": "^7.0.0",
     "leaflet": "^1.9.4",
     "lightningcss": "^1.30.2",
@@ -64,6 +69,7 @@
     "@types/leaflet": "^1.9.8",
     "@types/marked": "^5.0.2",
     "@types/node": "^20.19.25",
+    "canvas": "^2.11.2",
     "glob": "^13.0.0",
     "tailwindcss": "^4.1.13",
     "tsx": "^4.7.0",

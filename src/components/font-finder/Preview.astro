@@ -1,0 +1,414 @@
+---
+// X4 Preview Component
+// Canvas-based viewport (480×800) showing EPUB text rendered with selected font
+// Includes e-ink dithering simulation
+
+import Text from "@/components/fundations/elements/Text.astro";
+
+interface Props {
+  font?: any; // Font object from Alpine.js
+  epubText?: string; // Text to render
+}
+
+const { font, epubText = 'The quick brown fox jumps over the lazy dog. A-Z a-z 0-9 ÀàÉéÈèÊêÔôÇç.' } = Astro.props;
+
+// Pass epubText to client script
+const initialText = epubText;
+---
+
+<div class="bg-base-50 rounded-lg border border-base-200 p-4">
+  <div class="flex items-center justify-between mb-4">
+    <Text tag="h3" variant="textBase" class="font-semibold text-base-900">
+      X4 Preview (480×800, 220 ppi)
+    </Text>
+    <div class="flex items-center gap-2 text-xs text-base-500">
+      <span>E-ink simulation</span>
+    </div>
+  </div>
+  
+  <!-- Disclaimer -->
+  <div class="mb-4 p-3 bg-base-100 border border-base-300 rounded text-xs text-base-600">
+    <p class="font-medium mb-1">⚠️ Simulation Disclaimer</p>
+    <p>This preview is designed to resemble the XTEink X4 tablet display, but it is only a simulation. While we strive for accuracy, the actual rendering on the device may differ slightly. This tool provides a close approximation for preview purposes only.</p>
+  </div>
+
+  <!-- Canvas Container -->
+  <div class="relative bg-white rounded border-2 border-base-300 overflow-hidden" style="max-width: 320px; margin: 0 auto; aspect-ratio: 3/5;">
+    <canvas
+      id="preview-canvas"
+      width="480"
+      height="800"
+      class="w-full h-full block"
+      style="image-rendering: -webkit-optimize-contrast; image-rendering: crisp-edges; object-fit: contain;"
+    ></canvas>
+    
+    <!-- Loading overlay -->
+    <div 
+      id="preview-loading"
+      class="absolute inset-0 bg-base-50/80 flex items-center justify-center"
+      style="display: none;"
+    >
+      <Text tag="span" variant="textSM" class="text-base-500">
+        Loading font...
+      </Text>
+    </div>
+  </div>
+
+  <!-- Mobile/Tablet Navigation -->
+  <div 
+    x-data="previewNavigation()"
+    class="mt-4 lg:hidden flex items-center justify-center gap-4"
+  >
+    <button
+      @click="navigatePage(-1)"
+      :disabled="!canGoPrev()"
+      class="flex items-center justify-center w-12 h-12 rounded-full bg-accent-500 text-white hover:bg-accent-600 disabled:bg-base-200 disabled:text-base-400 disabled:cursor-not-allowed transition-colors shadow-md"
+      aria-label="Previous page"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <polyline points="15 18 9 12 15 6"></polyline>
+      </svg>
+    </button>
+    
+    <div class="text-sm text-base-600 font-medium min-w-[80px] text-center">
+      <span x-text="getPageInfo()"></span>
+    </div>
+    
+    <button
+      @click="navigatePage(1)"
+      :disabled="!canGoNext()"
+      class="flex items-center justify-center w-12 h-12 rounded-full bg-accent-500 text-white hover:bg-accent-600 disabled:bg-base-200 disabled:text-base-400 disabled:cursor-not-allowed transition-colors shadow-md"
+      aria-label="Next page"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <polyline points="9 18 15 12 9 6"></polyline>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Character Showcase -->
+  <div class="mt-4 p-3 bg-base-100 rounded border border-base-200">
+    <Text tag="p" variant="textXS" class="text-base-600 mb-2 font-medium">
+      Character Coverage:
+    </Text>
+    <div class="text-sm font-mono text-base-700">
+      <div>A-Z a-z 0-9</div>
+      <div>Àà Éé Èè Êê Ôô Çç</div>
+      <div>中文 日本語 한국어</div>
+    </div>
+  </div>
+</div>
+
+<script define:vars={{ initialText }}>
+  (function() {
+    const canvas = document.getElementById('preview-canvas');
+    if (!canvas) return;
+    
+    // Use high DPI for better rendering (2x for retina displays)
+    const dpr = window.devicePixelRatio || 2;
+    const displayWidth = 480;
+    const displayHeight = 800;
+    
+    // Set actual canvas size (high resolution)
+    canvas.width = displayWidth * dpr;
+    canvas.height = displayHeight * dpr;
+    
+    // Scale context to match device pixel ratio
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
+    if (!ctx) return;
+    
+    ctx.scale(dpr, dpr);
+    
+    // Set CSS size to maintain 3:5 aspect ratio
+    // The container already has aspect-ratio: 3/5, so canvas fills it
+    canvas.style.width = '100%';
+    canvas.style.height = '100%';
+    
+    const loadingEl = document.getElementById('preview-loading');
+    
+    // Default text
+    let currentText = initialText || 'The quick brown fox jumps over the lazy dog. A-Z a-z 0-9 ÀàÉéÈèÊêÔôÇç.';
+    let currentFont = null;
+    let fontLoaded = false;
+    
+    // Render function
+    let isRendering = false;
+    async function renderPreview(font, text) {
+      if (!font || !text) return;
+      
+      // Prevent multiple simultaneous renders
+      if (isRendering) {
+        console.log('⏸️ Render already in progress, skipping...');
+        return;
+      }
+      
+      isRendering = true;
+      if (loadingEl) loadingEl.style.display = 'flex';
+      
+      try {
+        // Clear canvas completely first
+        ctx.save();
+        ctx.setTransform(1, 0, 0, 1, 0, 0); // Reset transform
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.restore();
+        
+        // Also clear at display size
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, displayWidth, displayHeight);
+        
+        // Set font size and line height first
+        // X4 screen: 480×800 pixels at 220 ppi
+        // Font sizes in presets are in points (pt) for physical size
+        // At 220 ppi: 1 point = 220/72 ≈ 3.06 pixels
+        // Convert points to pixels for canvas rendering, with slight reduction
+        const baseSizePt = font.x4Preset?.size || 12;
+        const ppi = 220;
+        const pointsToPixels = ppi / 72; // ≈ 3.06
+        const fontSize = Math.round(baseSizePt * pointsToPixels * 0.9); // 10% reduction
+        const lineHeight = font.x4Preset?.lineHeight || 1.6;
+        
+        // Load font
+        const fontUrl = `/fonts/${font.file}`;
+        const fontFamilyName = font.name || font.id;
+        let fontFamily = 'serif'; // fallback
+        
+        try {
+          // Check if font is already loaded
+          const existingFont = Array.from(document.fonts).find(f => f.family === fontFamilyName);
+          
+          if (!existingFont) {
+            const fontFace = new FontFace(fontFamilyName, `url(${fontUrl})`);
+            const loadedFont = await fontFace.load();
+            document.fonts.add(loadedFont);
+            console.log(`✅ Font loaded: "${fontFamilyName}" from ${fontUrl}`);
+            fontFamily = fontFamilyName;
+          } else {
+            console.log(`✅ Font already loaded: "${fontFamilyName}"`);
+            fontFamily = fontFamilyName;
+          }
+        } catch (error) {
+          console.error(`❌ Font ${font.file} failed to load:`, error);
+          console.error(`   URL: ${fontUrl}`);
+          console.error(`   Font name: ${fontFamilyName}`);
+          // Show error message on canvas
+          ctx.fillStyle = '#ff0000';
+          ctx.font = '10px sans-serif';
+          ctx.fillText(`⚠️ Font ${font.file} not found`, 20, 20);
+          ctx.fillStyle = '#000000';
+          fontFamily = 'serif';
+        }
+        
+        // Set font - wait for font to be fully loaded
+        await document.fonts.ready;
+        
+        // Wait a bit more to ensure font is actually loaded
+        const fontFace = Array.from(document.fonts).find(f => f.family === fontFamily);
+        if (fontFace) {
+          try {
+            await fontFace.loaded;
+          } catch (e) {
+            console.warn('Font load check failed, continuing anyway:', e);
+          }
+        }
+        
+        // Small delay to ensure font is ready
+        await new Promise(resolve => setTimeout(resolve, 50));
+        
+        // Disable image smoothing for crisp pixel rendering (like Lakafior)
+        ctx.imageSmoothingEnabled = false;
+        ctx.textRenderingOptimization = 'optimizeSpeed';
+        
+        ctx.font = `${fontSize}px "${fontFamily}"`;
+        ctx.fillStyle = '#000000';
+        ctx.textBaseline = 'top';
+        
+        // Render text with word wrapping - inspired by Lakafior's approach
+        const padding = 20;
+        const maxWidth = displayWidth - (padding * 2);
+        const lineHeightPx = fontSize * lineHeight;
+        
+        // Better space utilization - fill page as much as possible
+        const lines = [];
+        const words = text.split(/\s+/);
+        let currentLine = '';
+        
+        for (let i = 0; i < words.length; i++) {
+          const testLine = currentLine ? currentLine + ' ' + words[i] : words[i];
+          const metrics = ctx.measureText(testLine);
+          
+          if (metrics.width > maxWidth && currentLine) {
+            // Current line is full, save it
+            lines.push(currentLine);
+            currentLine = words[i];
+          } else {
+            currentLine = testLine;
+          }
+        }
+        
+        // Add last line
+        if (currentLine) {
+          lines.push(currentLine);
+        }
+        
+        // Render lines, filling as much space as possible
+        // Use integer coordinates for crisp rendering
+        let renderY = Math.round(padding);
+        for (let i = 0; i < lines.length; i++) {
+          // Check if we can fit this line
+          const nextY = renderY + lineHeightPx;
+          if (nextY <= displayHeight - padding) {
+            // Render at integer coordinates for crisp pixels
+            ctx.fillText(lines[i], Math.round(padding), Math.round(renderY));
+            renderY = nextY;
+          } else {
+            // No more space, stop rendering
+            break;
+          }
+        }
+        
+        // Apply e-ink dithering (simple ordered dithering) - on high-res canvas
+        applyEinkDithering(ctx, displayWidth, displayHeight, dpr);
+        
+        fontLoaded = true;
+        currentFont = font;
+        currentText = text;
+        
+      } catch (error) {
+        console.error('Error rendering preview:', error);
+        // Clear canvas on error
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, displayWidth, displayHeight);
+        // Show error message
+        ctx.fillStyle = '#ff0000';
+        ctx.font = '12px sans-serif';
+        ctx.fillText('Error loading font', 20, 20);
+      } finally {
+        isRendering = false;
+        if (loadingEl) loadingEl.style.display = 'none';
+      }
+    }
+    
+    // Simple ordered dithering for e-ink simulation
+    function applyEinkDithering(ctx, displayWidth, displayHeight, dpr) {
+      // Get image data from the scaled context (actual canvas size)
+      const imageData = ctx.getImageData(0, 0, displayWidth * dpr, displayHeight * dpr);
+      const data = imageData.data;
+      const width = displayWidth * dpr;
+      const height = displayHeight * dpr;
+      
+      // 4x4 Bayer matrix for ordered dithering
+      const bayerMatrix = [
+        [0, 8, 2, 10],
+        [12, 4, 14, 6],
+        [3, 11, 1, 9],
+        [15, 7, 13, 5]
+      ];
+      
+      for (let y = 0; y < height; y++) {
+        for (let x = 0; x < width; x++) {
+          const idx = (y * width + x) * 4;
+          const gray = (data[idx] + data[idx + 1] + data[idx + 2]) / 3;
+          const threshold = bayerMatrix[y % 4][x % 4] * 16;
+          
+          const value = gray > threshold ? 255 : 0;
+          data[idx] = value;     // R
+          data[idx + 1] = value; // G
+          data[idx + 2] = value; // B
+          // Alpha stays the same
+        }
+      }
+      
+      ctx.putImageData(imageData, 0, 0);
+    }
+    
+    // Listen for font changes (Alpine.js integration)
+    function updatePreview() {
+      // Get current values from Alpine.js if available
+      const container = canvas.closest('[x-data*="fontFinder"]');
+      if (container && window.Alpine) {
+        const alpineData = window.Alpine.$data(container);
+        if (alpineData) {
+          const font = alpineData.selectedFont;
+          const text = alpineData.epubText || currentText;
+          
+          if (font && (font !== currentFont || text !== currentText)) {
+            renderPreview(font, text);
+          }
+        }
+      }
+    }
+    
+    // Listen for custom events from Alpine.js
+    document.addEventListener('font-changed', (e) => {
+      const font = e.detail?.font;
+      const text = e.detail?.text; // May be passed directly
+      if (font) {
+        const container = canvas.closest('[x-data*="fontFinder"]');
+        if (container && window.Alpine) {
+          const alpineData = window.Alpine.$data(container);
+          const finalText = text || alpineData?.epubText || currentText;
+          renderPreview(font, finalText);
+        }
+      }
+    });
+    
+    document.addEventListener('text-changed', (e) => {
+      const text = e.detail?.text;
+      const font = e.detail?.font; // May be passed directly
+      if (text) {
+        const container = canvas.closest('[x-data*="fontFinder"]');
+        if (container && window.Alpine) {
+          const alpineData = window.Alpine.$data(container);
+          const finalFont = font || alpineData?.selectedFont;
+          if (finalFont) {
+            renderPreview(finalFont, text);
+          } else {
+            // Store text for when font is selected
+            currentText = text;
+          }
+        }
+      }
+    });
+    
+    // Initial render with default
+    setTimeout(() => {
+      updatePreview();
+    }, 100);
+  })();
+</script>
+
+<script>
+  // Alpine.js integration for navigation buttons
+  document.addEventListener('alpine:init', () => {
+    if (window.Alpine) {
+      // Add navigation methods to preview component
+      const previewContainer = document.getElementById('preview-canvas')?.closest('[x-data*="fontFinder"]');
+      if (previewContainer) {
+        // The navigation buttons will use these functions
+        // They're defined in the script above
+      }
+    }
+  });
+</script>
+

@@ -1,0 +1,138 @@
+---
+// Font Search Component
+// Tabs: Curated (20) | Google Fonts | Upload TTF
+
+import Text from "@/components/fundations/elements/Text.astro";
+
+interface Props {
+  fonts?: string; // JSON string of fonts from parent
+  onSelect?: string; // Alpine.js callback
+}
+
+const { fonts = '[]', onSelect = 'selectedFont = $event' } = Astro.props;
+---
+
+<div 
+  class="bg-white rounded-lg border border-base-200 p-4"
+  x-data="fontSearch()"
+  x-init="init()"
+>
+  <Text tag="h3" variant="textBase" class="font-semibold text-base-900 mb-4">
+    Fonts
+  </Text>
+
+  <!-- Tabs -->
+  <div class="flex gap-2 mb-4 border-b border-base-200">
+    <button
+      @click="activeTab = 'curated'"
+      :class="activeTab === 'curated' ? 'border-b-2 border-accent-500 text-accent-500' : 'text-base-500'"
+      class="px-4 py-2 text-sm font-medium transition-colors"
+    >
+      Curated
+    </button>
+    <button
+      @click="activeTab = 'convert'"
+      :class="activeTab === 'convert' ? 'border-b-2 border-accent-500 text-accent-500' : 'text-base-500'"
+      class="px-4 py-2 text-sm font-medium transition-colors"
+    >
+      Convert TTF
+    </button>
+  </div>
+
+  <!-- Curated Fonts Tab -->
+  <div 
+    x-show="activeTab === 'curated'" 
+    class="space-y-2 max-h-[600px] overflow-y-auto"
+  >
+    <template x-for="font in curatedFonts" :key="font.id">
+      <button
+        @click="selectFont(font)"
+        :class="getSelectedFont()?.id === font.id ? 'bg-accent-50 border-accent-300' : 'bg-base-50 border-base-200'"
+        class="w-full text-left p-3 rounded border hover:border-accent-300 transition-colors relative"
+      >
+        <div class="flex items-start justify-between">
+          <div class="flex-1">
+            <div class="font-semibold text-base-900" x-text="font.name"></div>
+            <div class="text-xs text-base-500 mt-1" x-text="font.einkReason || ''"></div>
+            <div class="text-xs text-base-400 mt-1" x-text="font.source === 'ebook-fonts' ? 'ebook-fonts' : 'Google Fonts'"></div>
+          </div>
+          <div x-show="!fontAvailable(font)" class="ml-2 text-xs text-base-400 italic">
+            (not available)
+          </div>
+        </div>
+      </button>
+    </template>
+    <div x-show="curatedFonts.length === 0" class="text-sm text-base-500 text-center py-4">
+      No fonts available
+    </div>
+  </div>
+
+  <!-- Convert TTF Tab -->
+  <div x-show="activeTab === 'convert'" class="space-y-4">
+    <div class="bg-accent-50 border border-accent-200 rounded-lg p-4">
+      <div class="flex items-start gap-3">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="text-accent-600 flex-shrink-0 mt-0.5"
+        >
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+          <path d="M9 12l2 2 4-4"></path>
+        </svg>
+        <div class="flex-1">
+          <h4 class="font-semibold text-base-900 mb-2">Recommended Tool: Lakafior's Converter</h4>
+          <p class="text-sm text-base-700 mb-3">
+            The best tool for converting TTF fonts to BIN format for XTEink is Lakafior's web-based converter. 
+            It offers live preview, font gallery, and precise control over font settings.
+          </p>
+          <a
+            href="https://xteink.lakafior.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center gap-2 px-4 py-2 text-sm bg-accent-500 text-white rounded hover:bg-accent-600 transition-colors"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+              <polyline points="15 3 21 3 21 9"></polyline>
+              <line x1="10" y1="14" x2="21" y2="3"></line>
+            </svg>
+            Open Lakafior Converter
+          </a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="text-xs text-base-500 space-y-2">
+      <p><strong>Features:</strong></p>
+      <ul class="list-disc list-inside space-y-1 ml-2">
+        <li>Web-based, no installation needed</li>
+        <li>Live preview with real-time adjustments</li>
+        <li>Font gallery to browse and download pre-made fonts</li>
+        <li>Precise control over size, spacing, weight, and optical alignment</li>
+      </ul>
+    </div>
+  </div>
+
+
+</div>
+
+  <!-- FontSearch functions are registered in the page head -->
+  </script>
+

@@ -11,7 +11,6 @@ export async function getStaticPaths() {
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import { Fragment } from "astro/jsx-runtime";
 import Text from "@/components/fundations/elements/Text.astro";
-import Link from "@/components/fundations/components/Link.astro";
 import Wrapper from "@/components/fundations/containers/Wrapper.astro";
 import ResourceCard from "@/components/resources/ResourceCard.astro";
 import Seo from "@/components/fundations/head/Seo.astro";
@@ -113,10 +112,10 @@ const resourceTypes = [
       >
         {t('resources.subtitle')}
       </Text>
-      <div class="mt-4">
+      <div class="mt-6">
         <a
           href={`/${lang}/submit`}
-          class="inline-flex items-center gap-1.5 text-sm text-base-500 hover:text-accent-500 transition-colors"
+          class="inline-flex items-center gap-2 px-4 py-2 bg-accent-500 text-white rounded-full hover:bg-accent-600 transition-colors font-medium text-sm shadow-md hover:shadow-lg focus:ring-2 focus:ring-accent-600 focus:ring-offset-2 focus:outline-none"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -145,27 +144,23 @@ const resourceTypes = [
       <div
         class="scrollable-content relative flex snap-x snap-proximity gap-2 py-2 px-2 overflow-x-scroll scrollbar-hide"
       >
-        <Link
-          size="xs"
-          variant="ghost"
+        <a
           title={t('common.filter') + ': All'}
           aria-label={t('common.filter') + ': All'}
           href={`/${lang}/resources`}
-          class={!type ? 'bg-base-900 text-white hover:bg-base-800 ring-base-900 font-semibold' : 'text-base-900 bg-white ring-2 ring-base-400 hover:ring-accent-400 hover:bg-accent-50 font-medium'}
+          class={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${!type ? 'bg-base-900 text-white hover:bg-base-800 font-semibold' : 'text-base-900 bg-white ring-2 ring-base-400 hover:ring-accent-400 hover:bg-accent-50 font-medium'}`}
         >
           {t('common.filter')}: All
-        </Link>
+        </a>
         {resourceTypes.map((rt) => (
-          <Link
-            size="xs"
-            variant="ghost"
+          <a
             title={rt.label}
             aria-label={rt.label}
             href={`/${lang}/resources?type=${rt.value}`}
-            class={type === rt.value ? 'bg-base-900 text-white hover:bg-base-800 ring-base-900 font-semibold' : 'text-base-900 bg-white ring-2 ring-base-400 hover:ring-accent-400 hover:bg-accent-50 font-medium'}
+            class={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${type === rt.value ? 'bg-base-900 text-white hover:bg-base-800 font-semibold' : 'text-base-900 bg-white ring-2 ring-base-400 hover:ring-accent-400 hover:bg-accent-50 font-medium'}`}
           >
             {rt.label}
-          </Link>
+          </a>
         ))}
       </div>
       

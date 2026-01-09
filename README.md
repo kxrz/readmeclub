@@ -124,6 +124,25 @@ The project uses the `@astrojs/vercel/serverless` adapter for SSR.
 - `npm run preview` : Preview local build
 - `./scripts/check-secrets.sh` : Verify no secrets are in code before commit
 
+### Font Management Scripts
+
+- `npm run copy-ebook-fonts` : Copy ebook-fonts TTF files to `public/fonts/`
+- `npm run convert-fonts-to-bin` : Convert all TTF fonts to BIN format for X4 device
+- `npm run generate-font-previews` : Generate WebP previews for fonts
+
+**Quick start for fonts:**
+```bash
+# 1. Copy fonts from ebook-fonts repository
+npm run copy-ebook-fonts
+
+# 2. Convert TTF to BIN format
+npm run convert-fonts-to-bin
+
+# 3. Fonts are now available in public/fonts-bin/ for download
+```
+
+See `docs/FONT_INSTALLATION_GUIDE.md` for detailed installation instructions on the X4 device.
+
 ## 🛠️ Technologies Used
 
 - **Astro 5** : SSR framework

@@ -1,0 +1,173 @@
+---
+// Preset Saver Component
+// Save/Load/Delete presets in LocalStorage
+
+import Text from "@/components/fundations/elements/Text.astro";
+---
+
+<div class="bg-white rounded-lg border border-base-200 p-4">
+  <Text tag="h3" variant="textBase" class="font-semibold text-base-900 mb-4">
+    Presets
+  </Text>
+
+  <div
+    x-data="presetSaver()"
+    x-init="loadPresets()"
+    class="space-y-3"
+  >
+    <!-- Save Current -->
+    <div class="flex gap-2">
+      <input
+        type="text"
+        x-model="presetName"
+        placeholder="Preset name..."
+        class="flex-1 px-3 py-2 text-sm border border-base-300 rounded"
+      />
+      <button
+        @click="savePreset()"
+        class="px-4 py-2 text-sm bg-accent-500 text-white rounded hover:bg-accent-600 transition-colors"
+      >
+        Save
+      </button>
+    </div>
+
+    <!-- Load Preset -->
+    <select
+      x-model="selectedPresetId"
+      @change="loadPreset()"
+      class="w-full px-3 py-2 text-sm border border-base-300 rounded"
+    >
+      <option value="">Load preset...</option>
+      <template x-for="preset in presets" :key="preset.id">
+        <option :value="preset.id" x-text="preset.name"></option>
+      </template>
+    </select>
+
+    <!-- Delete Preset -->
+    <button
+      x-show="selectedPresetId"
+      @click="deletePreset()"
+      class="w-full px-4 py-2 text-sm border border-red-300 text-red-600 rounded hover:bg-red-50 transition-colors"
+    >
+      Delete Preset
+    </button>
+
+    <!-- Success/Error Messages -->
+    <div x-show="message" class="text-xs" :class="messageType === 'error' ? 'text-red-600' : 'text-green-600'">
+      <span x-text="message"></span>
+    </div>
+  </div>
+</div>
+
+<script>
+  function presetSaver() {
+    return {
+      presetName: '',
+      presets: [],
+      selectedPresetId: '',
+      message: '',
+      messageType: 'success',
+      
+      loadPresets() {
+        try {
+          const data = localStorage.getItem('xteink_font_finder_presets');
+          this.presets = data ? JSON.parse(data) : [];
+        } catch (error) {
+          this.presets = [];
+        }
+      },
+      
+      savePreset() {
+        if (!this.presetName.trim()) {
+          this.showMessage('Please enter a preset name', 'error');
+          return;
+        }
+        
+        const container = document.querySelector('[x-data*="fontFinder"]');
+        if (!container || !(window as any).Alpine) {
+          this.showMessage('Cannot access font finder state', 'error');
+          return;
+        }
+        
+        const alpineData = (window as any).Alpine.$data(container);
+        const font = alpineData?.selectedFont;
+        const epubText = alpineData?.epubText || '';
+        
+        if (!font) {
+          this.showMessage('Please select a font first', 'error');
+          return;
+        }
+        
+        const preset = {
+          id: `preset-${Date.now()}`,
+          name: this.presetName.trim(),
+          fontId: font.id,
+          epubName: 'current',
+          settings: font.x4Preset || { size: 12, lineHeight: 1.5 },
+          timestamp: Date.now()
+        };
+        
+        this.presets.push(preset);
+        localStorage.setItem('xteink_font_finder_presets', JSON.stringify(this.presets));
+        
+        this.presetName = '';
+        this.showMessage('Preset saved!', 'success');
+      },
+      
+      loadPreset() {
+        if (!this.selectedPresetId) return;
+        
+        const preset = this.presets.find((p: any) => p.id === this.selectedPresetId);
+        if (!preset) return;
+        
+        const container = document.querySelector('[x-data*="fontFinder"]');
+        if (!container || !(window as any).Alpine) return;
+        
+        const alpineData = (window as any).Alpine.$data(container);
+        
+        // Try to get fonts from FontSearch component
+        const fontSearchEl = document.querySelector('[x-data*="fontSearch"]');
+        let fonts: any[] = [];
+        if (fontSearchEl && (window as any).Alpine) {
+          const fontSearchData = (window as any).Alpine.$data(fontSearchEl);
+          fonts = fontSearchData?.curatedFonts || [];
+        }
+        
+        const font = fonts.find((f: any) => f.id === preset.fontId);
+        if (font) {
+          alpineData.selectedFont = font;
+        }
+        
+        // Load settings
+        if (preset.settings) {
+          // Apply settings if needed
+        }
+        
+        this.showMessage('Preset loaded!', 'success');
+      },
+      
+      deletePreset() {
+        if (!this.selectedPresetId) return;
+        
+        this.presets = this.presets.filter((p: any) => p.id !== this.selectedPresetId);
+        localStorage.setItem('xteink_font_finder_presets', JSON.stringify(this.presets));
+        
+        this.selectedPresetId = '';
+        this.showMessage('Preset deleted', 'success');
+      },
+      
+      showMessage(text: string, type: 'success' | 'error' = 'success') {
+        this.message = text;
+        this.messageType = type;
+        setTimeout(() => {
+          this.message = '';
+        }, 3000);
+      }
+    }
+  }
+  
+  if (typeof window !== 'undefined') {
+    (window as any).presetSaver = presetSaver;
+  }
+</script>
+

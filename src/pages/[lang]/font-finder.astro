@@ -1,0 +1,821 @@
+---
+export const prerender = false; // Client-side interactivity needed
+
+// Layout
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { Fragment } from "astro/jsx-runtime";
+// Fundation
+import Text from "@/components/fundations/elements/Text.astro";
+import Wrapper from "@/components/fundations/containers/Wrapper.astro";
+import Seo from "@/components/fundations/head/Seo.astro";
+// Font Finder Components
+import FontSearch from "@/components/font-finder/FontSearch.astro";
+import Preview from "@/components/font-finder/Preview.astro";
+import EPUBUpload from "@/components/font-finder/EPUBUpload.astro";
+import ExportPanel from "@/components/font-finder/ExportPanel.astro";
+import { useTranslations, getLangPrefix } from '@/i18n/utils';
+import type { Lang } from '@/i18n/utils';
+import { CURATED_FONTS } from '@/lib/font-finder/fonts';
+import type { Font } from '@/lib/font-finder/types';
+
+const lang = (Astro.params.lang || 'en') as Lang;
+const t = useTranslations(lang);
+const langPrefix = getLangPrefix(lang);
+const siteUrl = Astro.site || 'https://readme.club';
+
+// Pass fonts data to client
+const fontsData = JSON.stringify(CURATED_FONTS);
+---
+
+<BaseLayout>
+  <Fragment slot="head">
+    <Seo
+      title={`Font Finder - ${t('site.name')}`}
+      description="Discover and preview fonts optimized for e-ink devices. Upload your EPUB and see how it looks with different fonts on XTEink X4."
+      canonical={`${siteUrl}${langPrefix}/font-finder`}
+      lang={lang}
+    />
+    <!-- Load JSZip (required by epubjs) - must be loaded first -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" 
+            crossorigin="anonymous" 
+            referrerpolicy="no-referrer"
+            onload="console.log('✅ JSZip loaded, available as:', typeof window.JSZip);"></script>
+    <!-- Load epubjs from CDN - must be loaded after JSZip -->
+    <script src="https://cdn.jsdelivr.net/npm/epubjs@0.3.88/dist/epub.min.js" 
+            onload="console.log('✅ epubjs loaded, available as:', typeof window.ePub);"></script>
+    <!-- Pre-register Alpine.js data functions before Alpine loads -->
+    <script define:vars={{ fontsData }}>
+      // Register all Alpine.js functions before Alpine initializes
+      (function() {
+        const fontsDataJson = fontsData;
+        
+        // Font Finder
+        function fontFinder() {
+          return {
+            selectedFont: null,
+            epubText: 'The quick brown fox jumps over the lazy dog. A-Z a-z 0-9 ÀàÉéÈèÊêÔôÇç.',
+            
+            init() {
+              try {
+                const fonts = JSON.parse(fontsDataJson);
+                if (fonts && fonts.length > 0) {
+                  this.selectedFont = fonts[0];
+                  // Trigger initial render
+                  setTimeout(() => {
+                    this.$dispatch('font-changed', { font: this.selectedFont });
+                  }, 200);
+                }
+              } catch (e) {
+                console.error('Error parsing fonts:', e);
+              }
+              
+              this.$watch('selectedFont', (font) => {
+                if (font) {
+                  // When font changes, render with current epubText
+                  this.$dispatch('font-changed', { font, text: this.epubText });
+                }
+              });
+              
+              this.$watch('epubText', (text) => {
+                // When text changes, render with current font
+                if (this.selectedFont) {
+                  this.$dispatch('text-changed', { text, font: this.selectedFont });
+                } else {
+                  this.$dispatch('text-changed', { text });
+                }
+              });
+            }
+          };
+        }
+        
+        // Export Panel
+        function exportPanel() {
+          return {
+            selectedFont: null,
+            
+            init() {
+              setTimeout(() => {
+                const container = document.querySelector('[x-data*="fontFinder"]');
+                if (container && window.Alpine) {
+                  const alpineData = window.Alpine.$data(container);
+                  if (alpineData) {
+                    this.selectedFont = alpineData.selectedFont;
+                    alpineData.$watch('selectedFont', (font) => {
+                      this.selectedFont = font;
+                    });
+                  }
+                }
+              }, 100);
+            },
+            
+            downloadTTF() {
+              const font = this.selectedFont;
+              if (!font || !font.file) {
+                alert('No font selected or font file not available');
+                return;
+              }
+              
+              fetch(`/fonts/${font.file}`, { method: 'HEAD' })
+                .then(response => {
+                  if (response.ok) {
+                    const link = document.createElement('a');
+                    link.href = `/fonts/${font.file}`;
+                    link.download = font.file;
+                    link.click();
+                  } else {
+                    alert(`Font file ${font.file} not found.`);
+                  }
+                })
+                .catch(error => {
+                  console.error('Error downloading font:', error);
+                  alert('Error downloading font. Please try again.');
+                });
+            },
+            
+            downloadBIN() {
+              const font = this.selectedFont;
+              if (!font || !font.bin) {
+                alert('BIN file not available. Run "npm run convert-fonts-to-bin" to generate BIN files.');
+                return;
+              }
+              
+              fetch(`/fonts-bin/${font.bin}`, { method: 'HEAD' })
+                .then(response => {
+                  if (response.ok) {
+                    const link = document.createElement('a');
+                    link.href = `/fonts-bin/${font.bin}`;
+                    link.download = font.bin;
+                    link.click();
+                  } else {
+                    alert(`BIN file ${font.bin} not found.`);
+                  }
+                })
+                .catch(error => {
+                  console.error('Error downloading BIN:', error);
+                  alert('Error downloading BIN file. Please try again.');
+                });
+            }
+          };
+        }
+        
+        // Font Search
+        function fontSearch() {
+          return {
+            activeTab: 'curated',
+            curatedFonts: [],
+            googleSearchQuery: '',
+            googleFonts: [],
+            
+            async init() {
+              try {
+                const allFonts = JSON.parse(fontsDataJson);
+                // List of actually available font files
+                const availableFonts = [
+                  'nv-garamond.ttf',
+                  'nv-literata.ttf',
+                  'nv-charter.ttf',
+                  'nv-bitter.ttf',
+                  'nv-georsio.ttf',
+                  'nv-jost.ttf',
+                  'nv-legible-next.ttf',
+                  'nv-membo.ttf',
+                  'nv-palatium.ttf'
+                ];
+                
+                // Filter to only show fonts that are actually available
+                this.curatedFonts = allFonts.filter(font => {
+                  if (!font.file) return false;
+                  return availableFonts.includes(font.file);
+                });
+                
+                console.log(`✅ Loaded ${this.curatedFonts.length} available fonts:`, this.curatedFonts.map(f => f.name));
+              } catch (e) {
+                console.error('Error parsing fonts:', e);
+                this.curatedFonts = [];
+              }
+            },
+            
+            selectFont(font) {
+              const container = document.querySelector('[x-data*="fontFinder"]');
+              if (container && window.Alpine) {
+                const alpineData = window.Alpine.$data(container);
+                if (alpineData) {
+                  alpineData.selectedFont = font;
+                  alpineData.$dispatch('font-changed', { font });
+                }
+              }
+            },
+            
+            async searchGoogleFonts() {
+              console.log('Searching Google Fonts:', this.googleSearchQuery);
+            },
+            
+            getSelectedFont() {
+              const container = document.querySelector('[x-data*="fontFinder"]');
+              if (container && window.Alpine) {
+                return window.Alpine.$data(container)?.selectedFont;
+              }
+              return null;
+            },
+            
+            fontAvailable(font) {
+              return font && font.file;
+            }
+          };
+        }
+        
+        // EPUB Upload (needs to stay in component due to async init)
+        // But we'll register it here too for availability
+        function epubUpload() {
+          return {
+            isDragging: false,
+            epubName: '',
+            isLoading: false,
+            error: null,
+            book: null,
+            currentChapterIndex: 0,
+            chapters: [],
+            tableOfContents: [],
+            showTOC: false,
+            fullText: '',
+            currentPage: 0,
+            totalPages: 0,
+            pages: [],
+            
+            async init() {
+              await new Promise(resolve => setTimeout(resolve, 500));
+              console.log('🔄 Auto-loading demo EPUB...');
+              await this.loadDemoEPUB();
+            },
+            
+            async handleFileSelect(event) {
+              const input = event.target;
+              const file = input.files?.[0];
+              if (file) {
+                await this.parseEPUB(file);
+              }
+            },
+            
+            async handleDrop(event) {
+              this.isDragging = false;
+              const file = event.dataTransfer?.files[0];
+              if (file && file.name.endsWith('.epub')) {
+                await this.parseEPUB(file);
+              } else {
+                this.error = 'Please drop an EPUB file';
+              }
+            },
+            
+            async parseEPUB(file) {
+              this.isLoading = true;
+              this.error = null;
+              this.epubName = file.name;
+              
+              try {
+                // Wait for JSZip to be available from CDN
+                if (!window.JSZip) {
+                  await new Promise((resolve) => {
+                    const checkJSZip = setInterval(() => {
+                      if (window.JSZip) {
+                        clearInterval(checkJSZip);
+                        resolve();
+                      }
+                    }, 50);
+                    // Timeout after 5 seconds
+                    setTimeout(() => {
+                      clearInterval(checkJSZip);
+                      if (!window.JSZip) {
+                        throw new Error('Failed to load JSZip library');
+                      }
+                      resolve();
+                    }, 5000);
+                  });
+                }
+                
+                // Wait for epubjs to be available from CDN
+                if (!window.ePub) {
+                  await new Promise((resolve) => {
+                    const checkEPub = setInterval(() => {
+                      if (window.ePub) {
+                        clearInterval(checkEPub);
+                        resolve();
+                      }
+                    }, 50);
+                    // Timeout after 5 seconds
+                    setTimeout(() => {
+                      clearInterval(checkEPub);
+                      if (!window.ePub) {
+                        throw new Error('Failed to load epubjs library');
+                      }
+                      resolve();
+                    }, 5000);
+                  });
+                }
+                
+                // Ensure JSZip is available globally for epubjs
+                // epubjs looks for JSZip in window.JSZip
+                if (!window.JSZip) {
+                  throw new Error('JSZip is not available. Please check that JSZip script is loaded.');
+                }
+                
+                // Log for debugging
+                console.log('📦 JSZip available:', !!window.JSZip, typeof window.JSZip);
+                console.log('📚 epubjs available:', !!window.ePub, typeof window.ePub);
+                
+                // epubjs checks for JSZip in multiple ways
+                // Make sure it's accessible in all the ways epubjs might look for it
+                if (window.JSZip) {
+                  // epubjs might look for JSZip directly (not just window.JSZip)
+                  // Try to expose it globally if needed
+                  if (typeof JSZip === 'undefined') {
+                    window.JSZip = window.JSZip;
+                  }
+                }
+                
+                // Create epub instance
+                if (!window.ePub) {
+                  throw new Error('epubjs is not loaded');
+                }
+                
+                // epubjs should automatically detect window.JSZip
+                this.book = window.ePub(file);
+                
+                await this.book.ready;
+                const spine = this.book.spine;
+                this.chapters = [];
+                
+                for (let i = 0; i < spine.length; i++) {
+                  this.chapters.push(spine.get(i));
+                }
+                
+                if (this.chapters.length === 0) {
+                  throw new Error('No content found in EPUB');
+                }
+                
+                // Load table of contents
+                try {
+                  const nav = await this.book.loaded.navigation;
+                  if (nav && nav.toc) {
+                    this.tableOfContents = nav.toc;
+                  }
+                } catch (e) {
+                  console.log('No table of contents available');
+                  this.tableOfContents = [];
+                }
+                
+                // Start at chapter 2 (index 1) as requested
+                this.currentChapterIndex = Math.min(1, this.chapters.length - 1);
+                await this.loadChapter(this.currentChapterIndex);
+                
+                // Listen for font changes to recalculate pages
+                const container = document.querySelector('[x-data*="fontFinder"]');
+                if (container && window.Alpine) {
+                  const alpineData = window.Alpine.$data(container);
+                  if (alpineData) {
+                    alpineData.$watch('selectedFont', () => {
+                      if (this.fullText) {
+                        this.calculatePages();
+                        this.loadPage(Math.min(this.currentPage, this.totalPages - 1));
+                      }
+                    });
+                  }
+                }
+                
+              } catch (error) {
+                console.error('Error parsing EPUB:', error);
+                this.error = error.message || 'Failed to parse EPUB';
+              } finally {
+                this.isLoading = false;
+              }
+            },
+            
+            async loadChapter(index) {
+              if (index < 0 || index >= this.chapters.length) return;
+              
+              this.currentChapterIndex = index;
+              this.isLoading = true;
+              
+              try {
+                const chapter = this.chapters[index];
+                const section = await this.book.load(chapter.href);
+                const text = section.querySelector('body')?.textContent || '';
+                // Store full text for pagination
+                this.fullText = text;
+                
+                // If no font selected yet, just show full text
+                const container = document.querySelector('[x-data*="fontFinder"]');
+                if (container && window.Alpine) {
+                  const alpineData = window.Alpine.$data(container);
+                  if (alpineData && alpineData.selectedFont) {
+                    // Calculate pages based on current font
+                    this.calculatePages();
+                    // Load first page
+                    this.currentPage = 0;
+                    this.loadPage(0);
+                  } else {
+                    // No font selected, show full text for now
+                    alpineData.epubText = text;
+                    alpineData.$dispatch('text-changed', { text });
+                  }
+                }
+              } catch (error) {
+                console.error('Error loading chapter:', error);
+                this.error = 'Failed to load chapter';
+              } finally {
+                this.isLoading = false;
+              }
+            },
+            
+            async calculatePages() {
+              // Get current font to calculate page size
+              const container = document.querySelector('[x-data*="fontFinder"]');
+              if (!container || !window.Alpine) {
+                // No font selected, show full text
+                if (this.fullText) {
+                  const alpineData = window.Alpine?.$data(container);
+                  if (alpineData) {
+                    alpineData.epubText = this.fullText;
+                    alpineData.$dispatch('text-changed', { text: this.fullText });
+                  }
+                }
+                return;
+              }
+              
+              const alpineData = window.Alpine.$data(container);
+              if (!alpineData || !alpineData.selectedFont) {
+                // No font selected, show full text
+                if (this.fullText) {
+                  alpineData.epubText = this.fullText;
+                  alpineData.$dispatch('text-changed', { text: this.fullText });
+                }
+                return;
+              }
+              
+              const font = alpineData.selectedFont;
+              const fontSize = Math.round((font.x4Preset?.size || 12) * (220 / 72) * 0.9);
+              const lineHeight = font.x4Preset?.lineHeight || 1.6;
+              
+              // Wait for font to be fully loaded
+              await document.fonts.ready;
+              const fontFamilyName = font.name || font.id;
+              const fontFace = Array.from(document.fonts).find(f => f.family === fontFamilyName);
+              if (fontFace) {
+                try {
+                  await fontFace.loaded;
+                } catch (e) {
+                  console.warn('Font load check failed:', e);
+                }
+              }
+              // Small delay to ensure font is ready
+              await new Promise(resolve => setTimeout(resolve, 100));
+              
+              // Create temporary canvas to measure text
+              const tempCanvas = document.createElement('canvas');
+              const tempCtx = tempCanvas.getContext('2d');
+              if (!tempCtx) return;
+              
+              tempCtx.font = `${fontSize}px "${fontFamilyName}"`;
+              const padding = 20;
+              const maxWidth = 480 - (padding * 2);
+              const maxHeight = 800 - (padding * 2);
+              const lineHeightPx = fontSize * lineHeight;
+              
+              // Split text into pages - better space utilization
+              this.pages = [];
+              const words = this.fullText.split(' ');
+              let currentPageLines = [];
+              let currentY = padding;
+              
+              for (let i = 0; i < words.length; i++) {
+                // Try to add word to current line
+                const testLine = currentPageLines.length > 0 
+                  ? currentPageLines[currentPageLines.length - 1] + ' ' + words[i]
+                  : words[i];
+                const metrics = tempCtx.measureText(testLine);
+                
+                if (metrics.width > maxWidth && currentPageLines.length > 0) {
+                  // Current line is full, check if we can add a new line
+                  if (currentY + lineHeightPx * 2 <= maxHeight) {
+                    // Can add new line to current page
+                    currentPageLines.push(words[i]);
+                    currentY += lineHeightPx;
+                  } else {
+                    // Page is full, save it and start new page
+                    this.pages.push(currentPageLines.join(' '));
+                    currentPageLines = [words[i]];
+                    currentY = padding + lineHeightPx;
+                  }
+                } else {
+                  // Word fits on current line
+                  if (currentPageLines.length === 0) {
+                    currentPageLines.push(words[i]);
+                    currentY = padding + lineHeightPx;
+                  } else {
+                    // Update last line
+                    currentPageLines[currentPageLines.length - 1] = testLine;
+                  }
+                }
+              }
+              
+              // Add last page
+              if (currentPageLines.length > 0) {
+                this.pages.push(currentPageLines.join(' '));
+              }
+              
+              this.totalPages = Math.max(this.pages.length, 1);
+            },
+            
+            loadPage(pageIndex) {
+              if (pageIndex < 0 || pageIndex >= this.pages.length) return;
+              
+              this.currentPage = pageIndex;
+              const pageText = this.pages[pageIndex] || '';
+              
+              const container = document.querySelector('[x-data*="fontFinder"]');
+              if (container && window.Alpine) {
+                const alpineData = window.Alpine.$data(container);
+                if (alpineData) {
+                  alpineData.epubText = pageText;
+                  // Dispatch with current font if available
+                  const currentFont = alpineData.selectedFont;
+                  if (currentFont) {
+                    alpineData.$dispatch('text-changed', { text: pageText, font: currentFont });
+                  } else {
+                    alpineData.$dispatch('text-changed', { text: pageText });
+                  }
+                }
+              }
+            },
+            
+            nextPage() {
+              if (this.currentPage < this.totalPages - 1) {
+                this.loadPage(this.currentPage + 1);
+              } else if (this.currentChapterIndex < this.chapters.length - 1) {
+                // Go to next chapter, first page
+                this.loadChapter(this.currentChapterIndex + 1);
+              }
+            },
+            
+            prevPage() {
+              if (this.currentPage > 0) {
+                this.loadPage(this.currentPage - 1);
+              } else if (this.currentChapterIndex > 0) {
+                // Go to previous chapter, last page
+                this.loadChapter(this.currentChapterIndex - 1);
+                // Wait for pages to be calculated, then go to last page
+                setTimeout(() => {
+                  this.loadPage(this.totalPages - 1);
+                }, 100);
+              }
+            },
+            
+            async loadChapterFromTOC(tocItem) {
+              if (!tocItem || !tocItem.href) return;
+              try {
+                // Find chapter index from TOC href
+                const href = tocItem.href.split('#')[0]; // Remove anchor
+                const chapterIndex = this.chapters.findIndex(ch => {
+                  const chHref = ch.href || '';
+                  return chHref === href || chHref.includes(href) || href.includes(chHref);
+                });
+                if (chapterIndex >= 0) {
+                  await this.loadChapter(chapterIndex);
+                  this.showTOC = false;
+                } else {
+                  // Try to load by href directly
+                  try {
+                    const section = await this.book.load(href);
+                    const text = section.querySelector('body')?.textContent || '';
+                    this.fullText = text;
+                    this.calculatePages();
+                    this.currentPage = 0;
+                    this.loadPage(0);
+                    this.showTOC = false;
+                  } catch (e) {
+                    console.error('Error loading chapter from TOC:', e);
+                  }
+                }
+              } catch (error) {
+                console.error('Error loading chapter from TOC:', error);
+              }
+            },
+            
+            toggleTOC() {
+              this.showTOC = !this.showTOC;
+            },
+            
+            
+            async loadDemoEPUB() {
+              try {
+                console.log('📖 Fetching /TheKingInYellow.epub...');
+                const response = await fetch('/TheKingInYellow.epub');
+                if (response.ok) {
+                  console.log('✅ EPUB file found, creating blob...');
+                  const blob = await response.blob();
+                  const file = new File([blob], 'TheKingInYellow.epub', { type: 'application/epub+zip' });
+                  console.log('📚 Parsing EPUB...');
+                  await this.parseEPUB(file);
+                } else {
+                  console.error('❌ EPUB file not found:', response.status, response.statusText);
+                  this.error = 'Demo EPUB not found. Please upload your own EPUB file.';
+                }
+              } catch (error) {
+                console.error('❌ Failed to load demo EPUB:', error);
+                this.error = 'Failed to load demo EPUB: ' + (error.message || error);
+              }
+            }
+          };
+        }
+        
+        // Make available globally
+        window.fontFinder = fontFinder;
+        window.exportPanel = exportPanel;
+        window.fontSearch = fontSearch;
+        window.epubUpload = epubUpload;
+        
+        // Register with Alpine when ready
+        function registerFunctions() {
+          if (window.Alpine && window.Alpine.data) {
+            try {
+              window.Alpine.data('fontFinder', fontFinder);
+              window.Alpine.data('exportPanel', exportPanel);
+              window.Alpine.data('fontSearch', fontSearch);
+              window.Alpine.data('epubUpload', epubUpload);
+              console.log('✅ Alpine.js functions registered');
+            } catch (e) {
+              console.error('Error registering Alpine functions:', e);
+            }
+          }
+        }
+        
+        // Wait for DOM to be ready
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', () => {
+            // Try multiple times to ensure Alpine is loaded
+            let attempts = 0;
+            const tryRegister = setInterval(() => {
+              attempts++;
+              if (window.Alpine && window.Alpine.data) {
+                registerFunctions();
+                clearInterval(tryRegister);
+              } else if (attempts > 50) {
+                clearInterval(tryRegister);
+                console.warn('Alpine.js not found after 5 seconds');
+              }
+            }, 100);
+          });
+        } else {
+          // DOM already ready
+          let attempts = 0;
+          const tryRegister = setInterval(() => {
+            attempts++;
+            if (window.Alpine && window.Alpine.data) {
+              registerFunctions();
+              clearInterval(tryRegister);
+            } else if (attempts > 50) {
+              clearInterval(tryRegister);
+              console.warn('Alpine.js not found after 5 seconds');
+            }
+          }, 100);
+        }
+        
+        // Preview Navigation (for mobile/tablet buttons)
+        function previewNavigation() {
+          return {
+            navigatePage(direction) {
+              const container = this.$el.closest('[x-data*="fontFinder"]');
+              if (container && window.Alpine) {
+                const epubUploadEl = container.querySelector('[x-data*="epubUpload"]');
+                if (epubUploadEl && window.Alpine) {
+                  const epubUploadData = window.Alpine.$data(epubUploadEl);
+                  if (epubUploadData) {
+                    if (direction === -1) {
+                      epubUploadData.prevPage();
+                    } else if (direction === 1) {
+                      epubUploadData.nextPage();
+                    }
+                  }
+                }
+              }
+            },
+            getPageInfo() {
+              const container = this.$el.closest('[x-data*="fontFinder"]');
+              if (container && window.Alpine) {
+                const epubUploadEl = container.querySelector('[x-data*="epubUpload"]');
+                if (epubUploadEl && window.Alpine) {
+                  const epubUploadData = window.Alpine.$data(epubUploadEl);
+                  if (epubUploadData && epubUploadData.totalPages > 0) {
+                    return `${epubUploadData.currentPage + 1} / ${epubUploadData.totalPages}`;
+                  }
+                }
+              }
+              return '';
+            },
+            canGoPrev() {
+              const container = this.$el.closest('[x-data*="fontFinder"]');
+              if (container && window.Alpine) {
+                const epubUploadEl = container.querySelector('[x-data*="epubUpload"]');
+                if (epubUploadEl && window.Alpine) {
+                  const epubUploadData = window.Alpine.$data(epubUploadEl);
+                  if (epubUploadData) {
+                    return !(epubUploadData.currentPage === 0 && epubUploadData.currentChapterIndex === 0) && !epubUploadData.isLoading;
+                  }
+                }
+              }
+              return false;
+            },
+            canGoNext() {
+              const container = this.$el.closest('[x-data*="fontFinder"]');
+              if (container && window.Alpine) {
+                const epubUploadEl = container.querySelector('[x-data*="epubUpload"]');
+                if (epubUploadEl && window.Alpine) {
+                  const epubUploadData = window.Alpine.$data(epubUploadEl);
+                  if (epubUploadData) {
+                    return !(epubUploadData.currentPage >= epubUploadData.totalPages - 1 && epubUploadData.currentChapterIndex >= epubUploadData.chapters.length - 1) && !epubUploadData.isLoading;
+                  }
+                }
+              }
+              return false;
+            }
+          };
+        }
+        
+        // Register previewNavigation
+        function registerPreviewNavigation() {
+          if (window.Alpine && window.Alpine.data) {
+            window.Alpine.data('previewNavigation', previewNavigation);
+          }
+        }
+        
+        // Also try on Alpine init
+        document.addEventListener('alpine:init', () => {
+          registerFunctions();
+          registerPreviewNavigation();
+        });
+        
+        // Fallback
+        setTimeout(() => {
+          registerFunctions();
+          registerPreviewNavigation();
+        }, 500);
+      })();
+    </script>
+  </Fragment>
+
+  <section>
+    <Wrapper variant="hero">
+      <Text
+        tag="h1"
+        variant="displaySM"
+        class="text-base-900 font-medium 2xl:text-5xl tracking-tight"
+      >
+        Font Finder
+      </Text>
+      <Text
+        tag="p"
+        variant="textBase"
+        class="mt-4 text-base-600 text-balance 2xl:text-xl"
+      >
+        Discover and preview fonts optimized for e-ink devices. Upload your EPUB and see how it looks with different fonts on XTEink X4 (480×800).
+      </Text>
+      <Text tag="p" variant="textXS" class="text-base-500 mt-4">
+        Disclaimer: This preview is a simulation designed to closely resemble the XTEink X4 display. While it aims for high accuracy, it is not 100% identical to the physical device.
+      </Text>
+      <div class="mt-6">
+        <a
+          href={`${langPrefix}/guide#7-fonts-and-languages`}
+          class="inline-flex items-center gap-2 text-accent-600 hover:text-accent-700 text-sm font-medium"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          How to install fonts on your X4 device
+        </a>
+      </div>
+    </Wrapper>
+  </section>
+
+  <section>
+    <Wrapper variant="standard" class="py-6">
+      <div 
+        class="grid grid-cols-1 lg:grid-cols-3 gap-6"
+        x-data="fontFinder()"
+        x-init="init()"
+      >
+        <!-- Left: EPUB Upload + Font Search -->
+        <div class="lg:col-span-1 space-y-4">
+          <EPUBUpload />
+          <FontSearch fonts={fontsData} />
+        </div>
+
+        <!-- Right: Preview + Export -->
+        <div class="lg:col-span-2 space-y-4">
+          <Preview />
+          <ExportPanel />
+        </div>
+      </div>
+    </Wrapper>
+  </section>
+
+</BaseLayout>
+

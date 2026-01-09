@@ -1,0 +1,142 @@
+---
+// EPUB Upload Component
+// Drag-drop EPUB file, parse with epub.js, extract text for preview
+
+import Text from "@/components/fundations/elements/Text.astro";
+---
+
+<div class="bg-white rounded-lg border border-base-200 p-4">
+  <Text tag="h3" variant="textBase" class="font-semibold text-base-900 mb-4">
+    EPUB Preview
+  </Text>
+
+  <div
+    x-data="epubUpload()"
+    x-init="init()"
+    class="space-y-4"
+  >
+    <!-- Upload Area -->
+    <div
+      @dragover.prevent="isDragging = true"
+      @dragleave.prevent="isDragging = false"
+      @drop.prevent="handleDrop($event)"
+      :class="isDragging ? 'border-accent-400 bg-accent-50' : 'border-base-300'"
+      class="border-2 border-dashed rounded-lg p-6 text-center transition-colors"
+    >
+      <input
+        type="file"
+        accept=".epub"
+        @change="handleFileSelect($event)"
+        class="hidden"
+        id="epub-upload-input"
+      />
+      <label
+        for="epub-upload-input"
+        class="cursor-pointer"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="32"
+          height="32"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="mx-auto mb-2 text-base-400"
+        >
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="17 8 12 3 7 8"></polyline>
+          <line x1="12" y1="3" x2="12" y2="15"></line>
+        </svg>
+        <div class="text-sm font-medium text-base-700">
+          Drop EPUB file here
+        </div>
+        <div class="text-xs text-base-500 mt-1">
+          or click to browse
+        </div>
+      </label>
+    </div>
+
+    <!-- Demo EPUB Button -->
+    <button
+      @click="loadDemoEPUB()"
+      class="w-full px-4 py-2 text-sm border border-base-300 rounded hover:border-accent-300 hover:bg-accent-50 transition-colors"
+    >
+      Load Demo EPUB
+    </button>
+
+    <!-- Status -->
+    <div x-show="epubName" class="text-sm text-base-600">
+      <span class="font-medium">Loaded:</span>
+      <span x-text="epubName"></span>
+      <span x-show="isLoading" class="ml-2 text-base-400">(parsing...)</span>
+    </div>
+
+    <!-- Navigation -->
+    <div x-show="chapters.length > 0" class="space-y-2 pt-2 border-t border-base-200">
+      <!-- TOC Button -->
+      <button
+        @click="toggleTOC()"
+        class="w-full px-3 py-2 text-sm border border-base-300 rounded hover:border-accent-300 hover:bg-accent-50 transition-colors flex items-center justify-center gap-2"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="8" y1="6" x2="21" y2="6"></line>
+          <line x1="8" y1="12" x2="21" y2="12"></line>
+          <line x1="8" y1="18" x2="21" y2="18"></line>
+          <line x1="3" y1="6" x2="3.01" y2="6"></line>
+          <line x1="3" y1="12" x2="3.01" y2="12"></line>
+          <line x1="3" y1="18" x2="3.01" y2="18"></line>
+        </svg>
+        Table of Contents
+      </button>
+      
+      <!-- TOC Dropdown -->
+      <div x-show="showTOC && tableOfContents.length > 0" class="max-h-64 overflow-y-auto border border-base-300 rounded p-2 bg-base-50">
+        <template x-for="(item, index) in tableOfContents" :key="index">
+          <button
+            @click="loadChapterFromTOC(item)"
+            class="w-full text-left px-2 py-1 text-sm text-base-700 hover:bg-accent-50 rounded"
+            x-text="item.label"
+          ></button>
+        </template>
+      </div>
+      
+      <!-- Page Navigation -->
+      <div class="flex items-center justify-between gap-2">
+        <button
+          @click="prevPage()"
+          :disabled="(currentPage === 0 && currentChapterIndex === 0) || isLoading"
+          class="flex-1 px-3 py-2 text-sm border border-base-300 rounded hover:border-accent-300 hover:bg-accent-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-1"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+          Previous
+        </button>
+        <div class="text-xs text-base-500 px-2">
+          <span x-text="currentPage + 1"></span> / <span x-text="totalPages"></span>
+        </div>
+        <button
+          @click="nextPage()"
+          :disabled="(currentPage >= totalPages - 1 && currentChapterIndex >= chapters.length - 1) || isLoading"
+          class="flex-1 px-3 py-2 text-sm border border-base-300 rounded hover:border-accent-300 hover:bg-accent-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-1"
+        >
+          Next
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Error -->
+    <div x-show="error" class="text-sm text-red-600 bg-red-50 p-2 rounded">
+      <span x-text="error"></span>
+    </div>
+  </div>
+</div>
+
+<!-- EPUBUpload functions are registered in the page head -->
+
