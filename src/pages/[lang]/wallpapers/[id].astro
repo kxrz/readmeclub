@@ -39,6 +39,7 @@ export async function getStaticPaths() {
 
 const lang = (Astro.params.lang || 'en') as Lang;
 const t = useTranslations(lang);
+const langPrefix = getLangPrefix(lang);
 const siteUrl = normalizeSiteUrl(Astro.site);
 
 const id = Astro.params.id || Astro.props.wallpaper?.id;
@@ -141,7 +142,7 @@ const seoDescription = wallpaper.title ? `${wallpapersSubtitleText} - ${wallpape
                 </a>
               </div>
             ) : (
-              <div class="aspect-[3/4] w-full flex items-center justify-center" style={gradientStyle}>
+              <div class="aspect-[3/5] w-full flex items-center justify-center" style={gradientStyle}>
                 <Text tag="span" variant="displaySM" class="font-semibold px-8 text-center" style={textColorStyle}>
                   {wallpaper.title || 'Wallpaper'}
                 </Text>

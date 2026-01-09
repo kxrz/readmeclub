@@ -11,6 +11,7 @@ export async function getStaticPaths() {
 }
 
 import BaseLayout from "@/layouts/BaseLayout.astro";
+import { Fragment } from "astro/jsx-runtime";
 import Hero from "@/components/landing/Hero.astro";
 import Text from "@/components/fundations/elements/Text.astro";
 import Wrapper from "@/components/fundations/containers/Wrapper.astro";
@@ -23,13 +24,14 @@ import LatestMoreCard from "@/components/resources/LatestMoreCard.astro";
 import GuideCard from "@/components/resources/GuideCard.astro";
 import MoreCard from "@/components/common/MoreCard.astro";
 import Seo from "@/components/fundations/head/Seo.astro";
-import { useTranslations } from '@/i18n/utils';
+import { useTranslations, getLangPrefix } from '@/i18n/utils';
 import type { Lang } from '@/i18n/utils';
 import { loadAllWallpapers } from '@/lib/utils/wallpaper-loader';
 import { loadAllResources, filterAndSortResources } from '@/lib/utils/resource-loader';
 
 const lang = (Astro.params.lang || 'en') as Lang;
 const t = useTranslations(lang);
+const langPrefix = getLangPrefix(lang);
 const siteUrl = Astro.site || 'https://readme.club';
 
 // Charger les resources depuis JSON statique

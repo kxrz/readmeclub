@@ -701,8 +701,10 @@ async function exportWallpaper(
       console.log(`✅ WebP créé: image.webp (${(finalImageStats.size / 1024 / 1024).toFixed(2)} MB, ${imageMetadata.width}x${imageMetadata.height}, qualité: ${quality})`);
     }
     
-    // Créer la vignette (thumbnail)
+    // Créer la vignette (thumbnail) en ratio 3:5 (300x500)
     const thumbnailPath = path.join(wallpaperDir, isBMP ? 'thumbnail.jpg' : 'thumbnail.webp');
+    const thumbnailWidth = 300;
+    const thumbnailHeight = 500; // Ratio 3:5
     
     if (isBMP) {
       // Pour les BMP, créer un thumbnail JPG en niveaux de gris avec qualité maximale
@@ -711,9 +713,9 @@ async function exportWallpaper(
       
       await sharp(thumbnailSource)
         .greyscale() // S'assurer que c'est en niveaux de gris
-        .resize(400, null, {
-          withoutEnlargement: true,
-          fit: 'inside',
+        .resize(thumbnailWidth, thumbnailHeight, {
+          fit: 'cover', // Couper pour remplir exactement le ratio 3:5
+          position: 'center', // Centrer le crop
         })
         .jpeg({ 
           quality: 100, // Qualité maximale pour thumbnails aussi
@@ -721,17 +723,21 @@ async function exportWallpaper(
         })
         .toFile(thumbnailPath);
     } else {
-      // Pour les autres formats, créer un thumbnail WebP
+      // Pour les autres formats, créer un thumbnail WebP en ratio 3:5
       const thumbnailQuality = 100; // Qualité maximale
-      const thumbnailConverted = await convertToWebP(bufferForConversion, thumbnailPath, thumbnailQuality, 400, {
-        effort: 2,
-        smartSubsample: false,
-      }, wallpaper.id, wallpaper.title);
+      const thumbnailBuffer = await sharp(bufferForConversion)
+        .resize(thumbnailWidth, thumbnailHeight, {
+          fit: 'cover', // Couper pour remplir exactement le ratio 3:5
+          position: 'center', // Centrer le crop
+        })
+        .webp({
+          quality: thumbnailQuality,
+          effort: 2,
+          smartSubsample: false,
+        })
+        .toBuffer();
       
-      if (!thumbnailConverted) {
-        console.error(`❌ Échec de la conversion thumbnail pour ${wallpaper.id}`);
-        return false;
-      }
+      await fs.writeFile(thumbnailPath, thumbnailBuffer);
     }
     
     const thumbStats = await fs.stat(thumbnailPath);

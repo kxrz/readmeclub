@@ -35,30 +35,6 @@ export const GET: APIRoute = async ({ params }) => {
       return new Response('ID required', { status: 400 });
     }
     
-    // Vérifier d'abord si une image OG pré-générée existe
-    const { readFileSync } = await import('fs');
-    const { join, dirname } = await import('path');
-    const { fileURLToPath } = await import('url');
-    const __filename = fileURLToPath(import.meta.url);
-    const __dirname = dirname(__filename);
-    const projectRoot = join(__dirname, '../../../../');
-    const preGeneratedOGPath = join(projectRoot, 'public', 'og-images', 'resources', `${id}.png`);
-    
-    try {
-      const fs = await import('fs/promises');
-      await fs.access(preGeneratedOGPath);
-      // Utiliser l'image pré-générée si elle existe
-      const ogImageBuffer = readFileSync(preGeneratedOGPath);
-      return new Response(ogImageBuffer, {
-        headers: {
-          'Content-Type': 'image/png',
-          'Cache-Control': 'public, max-age=3600',
-        },
-      });
-    } catch {
-      // Fallback: générer avec Satori si pas pré-générée
-    }
-    
     const { data: resource } = await supabase
       .from('resources')
       .select('*')

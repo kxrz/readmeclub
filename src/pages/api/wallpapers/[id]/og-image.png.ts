@@ -57,23 +57,6 @@ export const GET: APIRoute = async ({ params }) => {
       };
     }
     
-    // Vérifier d'abord si une image OG pré-générée existe
-    const preGeneratedOGPath = join(projectRoot, 'public', 'og-images', 'wallpapers', `${id}.png`);
-    try {
-      const fs = await import('fs/promises');
-      await fs.access(preGeneratedOGPath);
-      // Utiliser l'image pré-générée si elle existe
-      const ogImageBuffer = readFileSync(preGeneratedOGPath);
-      return new Response(ogImageBuffer, {
-        headers: {
-          'Content-Type': 'image/png',
-          'Cache-Control': 'public, max-age=3600',
-        },
-      });
-    } catch {
-      // Fallback: générer à la volée si pas pré-générée
-    }
-    
     // Déterminer le chemin de l'image à utiliser (priorité: webp_path > thumbnail_path)
     const imagePath = wallpaper.webp_path || wallpaper.thumbnail_path;
     if (!imagePath) {
