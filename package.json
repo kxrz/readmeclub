@@ -35,6 +35,7 @@
     "convert-guide": "tsx scripts/convert-guide-to-markdown.ts",
     "copy-ebook-fonts": "tsx scripts/copy-ebook-fonts.ts",
     "convert-fonts-to-bin": "tsx scripts/convert-fonts-to-bin.ts",
+    "create-bin-zips": "tsx scripts/create-bin-zips.ts",
     "generate-font-previews": "tsx scripts/generate-font-previews.ts",
     "prebuild": "npm run export-news && npm run export-wallpapers && npm run export-resources && npm run export-locations && npm run convert-guide"
   },

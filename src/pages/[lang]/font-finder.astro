@@ -139,19 +139,23 @@ const fontsData = JSON.stringify(CURATED_FONTS);
                 return;
               }
               
-              fetch(`/fonts-bin/${font.bin}`, { method: 'HEAD' })
+              // Use pre-generated ZIP file (created by npm run create-bin-zips)
+              const zipFileName = font.bin.replace(/\.bin$/i, '.zip');
+              const zipUrl = `/fonts-bin/${zipFileName}`;
+              
+              fetch(zipUrl, { method: 'HEAD' })
                 .then(response => {
                   if (response.ok) {
                     const link = document.createElement('a');
-                    link.href = `/fonts-bin/${font.bin}`;
-                    link.download = font.bin;
+                    link.href = zipUrl;
+                    link.download = zipFileName;
                     link.click();
                   } else {
-                    alert(`BIN file ${font.bin} not found.`);
+                    alert(`ZIP file ${zipFileName} not found. Run "npm run create-bin-zips" to generate ZIP files.`);
                   }
                 })
                 .catch(error => {
-                  console.error('Error downloading BIN:', error);
+                  console.error('Error downloading BIN ZIP:', error);
                   alert('Error downloading BIN file. Please try again.');
                 });
             }

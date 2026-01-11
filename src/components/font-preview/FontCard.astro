@@ -9,7 +9,8 @@ interface Props {
 
 const { font, langPrefix } = Astro.props;
 const fontUrl = `/fonts/${font.file}`;
-const binUrl = font.bin ? `/fonts/${font.bin}` : null;
+// Use ZIP API route for BIN files to avoid browser blocking
+const binUrl = font.bin ? `/api/fonts/${font.bin}/zip` : null;
 const previewUrl = font.preview ? `/previews/${font.preview}` : null;
 ---
 
@@ -87,7 +88,7 @@ const previewUrl = font.preview ? `/previews/${font.preview}` : null;
       {binUrl && (
         <a
           href={binUrl}
-          download={font.bin}
+          download={font.bin ? font.bin.replace(/\.bin$/i, '.zip') : 'font.zip'}
           class="block w-full px-3 py-2 text-sm bg-base-900 text-white rounded-lg hover:bg-base-800 transition-colors text-center font-medium"
         >
           Download BIN

@@ -128,6 +128,7 @@ The project uses the `@astrojs/vercel/serverless` adapter for SSR.
 
 - `npm run copy-ebook-fonts` : Copy ebook-fonts TTF files to `public/fonts/`
 - `npm run convert-fonts-to-bin` : Convert all TTF fonts to BIN format for X4 device
+- `npm run create-bin-zips` : Create ZIP files for all .bin fonts (contains .bin file inside ZIP)
 - `npm run generate-font-previews` : Generate WebP previews for fonts
 
 **Quick start for fonts:**
@@ -138,7 +139,10 @@ npm run copy-ebook-fonts
 # 2. Convert TTF to BIN format
 npm run convert-fonts-to-bin
 
-# 3. Fonts are now available in public/fonts-bin/ for download
+# 3. Create ZIP files for .bin fonts (required for browser downloads)
+npm run create-bin-zips
+
+# 4. Fonts are now available in public/fonts-bin/ for download
 ```
 
 See `docs/FONT_INSTALLATION_GUIDE.md` for detailed installation instructions on the X4 device.
