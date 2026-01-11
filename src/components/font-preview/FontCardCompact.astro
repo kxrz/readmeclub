@@ -8,8 +8,8 @@ interface Props {
 
 const { font, langPrefix } = Astro.props;
 const fontUrl = `/fonts/${font.file}`;
-// Use ZIP API route for BIN files to avoid browser blocking
-const binUrl = font.bin ? `/api/fonts/${font.bin}/zip` : null;
+// Use pre-generated ZIP files (created by npm run create-bin-zips)
+const binUrl = font.bin ? `/fonts-bin/${font.bin.replace(/\.bin$/i, '.zip')}` : null;
 const fontId = `font-preview-${font.id}`;
 ---
 
