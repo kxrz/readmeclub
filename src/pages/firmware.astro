@@ -1,47 +1,603 @@
 ---
-export const prerender = false;
+export const prerender = true;
 
-import { getLangFromUrl, getLangPrefix, type Lang } from '@/i18n/utils';
+// Layout
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { Fragment } from "astro/jsx-runtime";
+// Fundation
+import Text from "@/components/fundations/elements/Text.astro";
+import Button from "@/components/fundations/components/Button.astro";
+import Wrapper from "@/components/fundations/containers/Wrapper.astro";
+import Seo from "@/components/fundations/head/Seo.astro";
+import { useTranslations, getLangFromUrl, getLangPrefix } from '@/i18n/utils';
 
-// Detect user language from Accept-Language header or URL
-const url = Astro.url;
-const currentLang = getLangFromUrl(url);
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const langPrefix = getLangPrefix(lang);
+const siteUrl = Astro.site || 'https://readme.club';
 
-// Try to detect language from Accept-Language header
-let detectedLang: Lang = 'en';
-const acceptLanguage = Astro.request.headers.get('accept-language');
-
-if (acceptLanguage) {
-  // Parse Accept-Language header (e.g., "fr-FR,fr;q=0.9,en;q=0.8")
-  const languages = acceptLanguage
-    .split(',')
-    .map(lang => {
-      const [code, q = 'q=1'] = lang.trim().split(';');
-      const quality = parseFloat(q.replace('q=', ''));
-      return { code: code.split('-')[0].toLowerCase(), quality };
-    })
-    .sort((a, b) => b.quality - a.quality);
-
-  // Check if any supported language is in the list
-  const supportedLangs: Lang[] = ['fr', 'es', 'ru', 'cn'];
-  for (const lang of languages) {
-    if (supportedLangs.includes(lang.code as Lang)) {
-      detectedLang = lang.code as Lang;
-      break;
-    }
-  }
-}
-
-// If user is already on a language-prefixed page, use that language
-if (currentLang !== 'en') {
-  detectedLang = currentLang;
-}
-
-// Redirect to the appropriate language version
-const langPrefix = getLangPrefix(detectedLang);
-const redirectPath = langPrefix ? `${langPrefix}/firmware` : '/firmware';
-
-if (url.pathname === '/firmware') {
-  return Astro.redirect(redirectPath, 302);
-}
+// Table of contents structure
+const tableOfContents = [
+  { id: 'introduction', title: t('firmware.toc.introduction') },
+  { id: 'official', title: t('firmware.toc.official') },
+  { id: 'crosspoint', title: t('firmware.toc.crosspoint') },
+  { id: 'macroreader', title: t('firmware.toc.macroreader') },
+  { id: 'share-firmware', title: t('firmware.toc.share_firmware') },
+  { id: 'comparison', title: t('firmware.toc.comparison') },
+  { id: 'installation', title: t('firmware.toc.installation') },
+  { id: 'tips', title: t('firmware.toc.tips') },
+  { id: 'faq', title: t('firmware.toc.faq') },
+];
 ---
+
+<BaseLayout>
+  <Fragment slot="head">
+    <Seo
+      title={`${t('firmware.title')} - ${t('site.name')}`}
+      description={t('firmware.subtitle')}
+      canonical={`${siteUrl}${langPrefix}/firmware`}
+      lang={lang}
+    />
+  </Fragment>
+
+  <section>
+    <Wrapper variant="hero">
+      <Text
+        tag="h1"
+        variant="displaySM"
+        class="text-base-900 font-medium 2xl:text-5xl tracking-tight"
+      >
+        {t('firmware.title')}
+      </Text>
+      <Text
+        tag="p"
+        variant="textBase"
+        class="mt-4 text-base-600 text-balance 2xl:text-xl"
+      >
+        {t('firmware.subtitle')}
+      </Text>
+    </Wrapper>
+  </section>
+
+  <section>
+    <Wrapper variant="standard" class="py-6 pb-24">
+      <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+        {/* Table of Contents - Sidebar */}
+        <aside class="lg:col-span-1 hidden lg:block">
+          <div class="sticky top-24">
+            <div class="bg-base-50 rounded-lg p-6 border border-base-200 shadow-sm">
+              <Text
+                tag="h2"
+                variant="textSM"
+                class="font-semibold text-base-900 mb-4 uppercase tracking-wide"
+              >
+                {t('firmware.toc.title')}
+              </Text>
+              <nav class="space-y-2 max-h-[calc(100vh-200px)] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-base-300 scrollbar-track-transparent">
+                {tableOfContents.map((item) => (
+                  <a
+                    href={`#${item.id}`}
+                    class="block text-sm text-base-700 hover:text-accent-500 transition-colors py-1.5 px-2 rounded hover:bg-base-100 font-medium"
+                  >
+                    {item.title}
+                  </a>
+                ))}
+              </nav>
+            </div>
+          </div>
+        </aside>
+
+        {/* Main Content */}
+        <div class="lg:col-span-3">
+          <div class="prose prose-lg max-w-none prose-headings:text-base-900 prose-headings:font-semibold prose-headings:scroll-mt-24 prose-h2:text-2xl prose-h2:mt-12 prose-h2:mb-6 prose-h2:pb-2 prose-h2:border-b prose-h2:border-base-200 prose-h3:text-xl prose-h3:mt-8 prose-h3:mb-4 prose-p:text-base-700 prose-p:leading-relaxed prose-a:text-accent-500 prose-a:no-underline hover:prose-a:underline prose-strong:text-base-900 prose-ul:text-base-700 prose-ol:text-base-700 prose-li:text-base-700 prose-li:my-2">
+            
+            {/* Introduction */}
+            <section id="introduction" class="scroll-mt-24">
+              <Text tag="h2" variant="textXL" class="text-base-900 font-bold mb-4 pb-2 border-b border-base-200">
+                {t('firmware.toc.introduction')}
+              </Text>
+              <Text tag="p" variant="textBase" class="text-base-700 mb-6 leading-relaxed">
+                {t('firmware.intro')}
+              </Text>
+              <div class="bg-base-50 border-l-4 border-accent-500 p-4 rounded-r-lg mb-8">
+                <Text tag="p" variant="textSM" class="text-base-700">
+                  <strong>{t('firmware.intro.note')}</strong> {t('firmware.intro.note_content')}
+                </Text>
+              </div>
+            </section>
+
+            {/* Official Firmware */}
+            <section id="official" class="scroll-mt-24 mt-12">
+              <Text tag="h2" variant="textXL" class="text-base-900 font-bold mb-4 pb-2 border-b border-base-200">
+                {t('firmware.toc.official')}
+              </Text>
+              
+              <div class="bg-gradient-to-br from-accent-50 to-base-50 border-2 border-accent-200 rounded-xl p-6 mb-6 shadow-sm">
+                <Text tag="p" variant="textBase" class="text-base-700 leading-relaxed mb-4">
+                  {t('firmware.recommended.description')}
+                </Text>
+                <div class="flex flex-wrap gap-3">
+                  <a
+                    href="https://www.xteink.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="inline-block"
+                  >
+                    <Button variant="accent" size="sm" class="gap-2">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                        <path d="M18 13v6a2 2 0 0 1 -2 2H5a2 2 0 0 1 -2 -2V8a2 2 0 0 1 2 -2h6"></path>
+                        <polyline points="15 3 21 3 21 9"></polyline>
+                        <line x1="10" y1="14" x2="21" y2="3"></line>
+                      </svg>
+                      {t('firmware.visit_official')}
+                    </Button>
+                  </a>
+                </div>
+              </div>
+            </section>
+
+            {/* CrossPoint Alternative */}
+            <section id="crosspoint" class="scroll-mt-24 mt-12">
+              <Text tag="h2" variant="textXL" class="text-base-900 font-bold mb-4 pb-2 border-b border-base-200">
+                {t('firmware.toc.crosspoint')}
+              </Text>
+              
+              <div class="bg-gradient-to-br from-base-50 to-accent-50 border-2 border-base-300 rounded-xl p-8 mb-6 shadow-sm">
+                <div class="mb-6">
+                  <Text tag="h3" variant="textLG" class="text-base-900 font-bold mb-3">
+                    {t('firmware.crosspoint.title')}
+                  </Text>
+                  <Text tag="p" variant="textBase" class="text-base-700 leading-relaxed mb-4">
+                    {t('firmware.crosspoint.description')}
+                  </Text>
+                  
+                  <div class="bg-base-100 rounded-lg p-4 border border-base-300 mb-4">
+                    <Text tag="p" variant="textSM" class="text-base-700 font-semibold mb-2">
+                      {t('firmware.crosspoint.why_interesting.title')}
+                    </Text>
+                    <Text tag="p" variant="textSM" class="text-base-700 mb-2">
+                      {t('firmware.crosspoint.why_interesting.description')}
+                    </Text>
+                    <ul class="list-disc list-inside space-y-1 text-sm text-base-600 ml-2">
+                      <li>{t('firmware.crosspoint.why_interesting.1')}</li>
+                      <li>{t('firmware.crosspoint.why_interesting.2')}</li>
+                      <li>{t('firmware.crosspoint.why_interesting.3')}</li>
+                      <li>{t('firmware.crosspoint.why_interesting.4')}</li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div class="flex flex-col md:flex-row gap-6 mb-6 md:items-stretch">
+                  {/* Cover Image */}
+                  <div class="flex-shrink-0 w-full md:w-80 rounded-lg overflow-hidden border-2 border-base-300 shadow-sm flex items-stretch">
+                    <img
+                      src="/images/crosspoint-cover.jpg"
+                      alt="CrossPoint Reader"
+                      class="w-full h-full object-cover object-center"
+                    />
+                  </div>
+                  
+                  <div class="flex-1 flex">
+                    <div class="bg-white rounded-lg p-4 border border-base-300 w-full">
+                      <Text tag="p" variant="textSM" class="text-base-700 font-semibold mb-2">
+                        {t('firmware.crosspoint.features.title')}
+                      </Text>
+                      <ul class="list-disc list-inside space-y-1 text-sm text-base-600 ml-2">
+                        <li>{t('firmware.crosspoint.features.1')}</li>
+                        <li>{t('firmware.crosspoint.features.2')}</li>
+                        <li>{t('firmware.crosspoint.features.3')}</li>
+                        <li>{t('firmware.crosspoint.features.4')}</li>
+                        <li>{t('firmware.crosspoint.features.5')}</li>
+                        <li>{t('firmware.crosspoint.features.6')}</li>
+                        <li>{t('firmware.crosspoint.features.7')}</li>
+                        <li>{t('firmware.crosspoint.features.8')}</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+
+                {/* How to Section */}
+                <div class="bg-accent-50 border-l-4 border-accent-500 p-5 rounded-r-lg mb-6">
+                  <Text tag="h4" variant="textBase" class="text-base-900 font-semibold mb-3">
+                    {t('firmware.crosspoint.how_to.title')}
+                  </Text>
+                  <ul class="list-disc list-inside space-y-2 text-sm text-base-700 ml-2">
+                    <li>{t('firmware.crosspoint.how_to.1')}</li>
+                    <li>{t('firmware.crosspoint.how_to.2')}</li>
+                    <li>{t('firmware.crosspoint.how_to.3')}</li>
+                    <li>{t('firmware.crosspoint.how_to.4')}</li>
+                    <li>{t('firmware.crosspoint.how_to.5')}</li>
+                  </ul>
+                </div>
+
+                <div class="bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded-r-lg mb-4">
+                  <Text tag="p" variant="textSM" class="text-base-700 mb-2">
+                    <strong>{t('firmware.crosspoint.important')}</strong> {t('firmware.crosspoint.github_note')}
+                  </Text>
+                </div>
+
+                <Text tag="p" variant="textSM" class="text-base-600">
+                      {t('firmware.crosspoint.created_by')}{' '}
+                      <a
+                        href="https://github.com/daveallie"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="text-accent-600 hover:text-accent-700 underline font-medium"
+                      >
+                        daveallie
+                      </a>
+                      {' '}(<a
+                        href="https://github.com/daveallie/crosspoint-reader"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="text-accent-600 hover:text-accent-700 underline font-medium"
+                      >
+                        GitHub
+                      </a>)
+                </Text>
+                <div class="flex flex-wrap gap-3 mt-4">
+                  <a
+                    href="https://github.com/daveallie/crosspoint-reader"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="inline-block"
+                  >
+                    <Button variant="accent" size="sm" class="gap-2">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                        <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5"></path>
+                      </svg>
+                      {t('firmware.view_on_github')}
+                    </Button>
+                  </a>
+                  <a
+                    href="https://xteink.dve.al/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="inline-block"
+                  >
+                    <Button variant="muted" size="sm" class="gap-2">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                        <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0"></path>
+                        <path d="M21 21l-6 -6"></path>
+                      </svg>
+                      {t('firmware.flash_web')}
+                    </Button>
+                  </a>
+                </div>
+              </div>
+            </section>
+
+            {/* Macroreader Alternative */}
+            <section id="macroreader" class="scroll-mt-24 mt-12">
+              <Text tag="h2" variant="textXL" class="text-base-900 font-bold mb-4 pb-2 border-b border-base-200">
+                {t('firmware.toc.macroreader')}
+              </Text>
+              
+              <div class="bg-gradient-to-br from-base-50 to-base-100 border-2 border-base-300 rounded-xl p-6 mb-6 shadow-sm">
+                <div class="mb-4">
+                  <Text tag="h3" variant="textLG" class="text-base-900 font-bold mb-3">
+                    {t('firmware.macroreader.title')}
+                  </Text>
+                  <Text tag="p" variant="textBase" class="text-base-700 leading-relaxed mb-4">
+                    {t('firmware.macroreader.description')}
+                  </Text>
+                </div>
+
+                <div class="bg-white rounded-lg p-4 border border-base-300 mb-4">
+                  <Text tag="p" variant="textSM" class="text-base-700 font-semibold mb-2">
+                    {t('firmware.macroreader.features.title')}
+                  </Text>
+                  <ul class="list-disc list-inside space-y-1 text-sm text-base-600 ml-2">
+                    <li>{t('firmware.macroreader.features.1')}</li>
+                    <li>{t('firmware.macroreader.features.2')}</li>
+                    <li>{t('firmware.macroreader.features.3')}</li>
+                    <li>{t('firmware.macroreader.features.4')}</li>
+                    <li>{t('firmware.macroreader.features.5')}</li>
+                  </ul>
+                </div>
+
+                <div class="bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded-r-lg mb-4">
+                  <Text tag="p" variant="textSM" class="text-base-700 mb-2">
+                    <strong>{t('firmware.macroreader.important')}</strong> {t('firmware.macroreader.github_note')}
+                  </Text>
+                </div>
+
+                <Text tag="p" variant="textSM" class="text-base-600 mb-4">
+                  {t('firmware.macroreader.created_by')}{' '}
+                  <a
+                    href={t('firmware.macroreader.github_url')}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="text-accent-600 hover:text-accent-700 underline font-medium"
+                  >
+                    {t('firmware.macroreader.author')}
+                  </a>
+                  {' '}({t('firmware.macroreader.original_author')})
+                </Text>
+                <div class="flex flex-wrap gap-3">
+                  <a
+                    href={t('firmware.macroreader.github_url')}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="inline-block"
+                  >
+                    <Button variant="accent" size="sm" class="gap-2">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                        <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5"></path>
+                      </svg>
+                      {t('firmware.view_on_github')}
+                    </Button>
+                  </a>
+                </div>
+              </div>
+            </section>
+
+            {/* Share Other Firmware */}
+            <section id="share-firmware" class="scroll-mt-24 mt-12">
+              <Text tag="h2" variant="textXL" class="text-base-900 font-bold mb-4 pb-2 border-b border-base-200">
+                {t('firmware.toc.share_firmware')}
+              </Text>
+              
+              <div class="bg-base-50 border-2 border-base-300 rounded-xl p-6 mb-6 shadow-sm">
+                <Text tag="p" variant="textBase" class="text-base-700 leading-relaxed mb-4">
+                  {t('firmware.share_firmware.description')}
+                </Text>
+                <a
+                  href="https://www.reddit.com/message/compose/?to=iamkxrz"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="inline-block"
+                >
+                  <Button variant="accent" size="sm" class="gap-2">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                      <path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm5.01 4.744c.688 0 1.25.561 1.25 1.249a1.25 1.25 0 0 1-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968 0 1.754.786 1.754 1.754 0 .716-.435 1.333-1.01 1.614a3.111 3.111 0 0 1 .042.52c0 2.694-3.13 4.87-7.004 4.87-3.874 0-7.004-2.176-7.004-4.87 0-.183.015-.366.043-.534A1.748 1.748 0 0 1 4.028 12c0-.968.786-1.754 1.754-1.754.463 0 .898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342 0 0 1 .14-.197.35.35 0 0 1 .238-.042l2.906.617a1.214 1.214 0 0 1 1.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687 0 1.248-.561 1.248-1.249 0-.688-.561-1.249-1.249-1.249zm5.5 0c-.687 0-1.248.561-1.248 1.25 0 .687.561 1.248 1.249 1.248.688 0 1.249-.561 1.249-1.249 0-.687-.562-1.249-1.25-1.249zm-5.466 3.99a.327.327 0 0 0-.231.094.33.33 0 0 0 0 .463c.842.842 2.484.913 3.007.913.522 0 2.165-.07 3.007-.913a.361.361 0 0 0 .029-.463.33.33 0 0 0-.464 0c-.547.547-1.684.73-2.572.73-.888 0-2.025-.183-2.572-.73a.326.326 0 0 0-.094-.231z"/>
+                    </svg>
+                    {t('firmware.share_firmware.button')}
+                  </Button>
+                </a>
+              </div>
+            </section>
+
+            {/* Comparison */}
+            <section id="comparison" class="scroll-mt-24 mt-12">
+              <Text tag="h2" variant="textXL" class="text-base-900 font-bold mb-4 pb-2 border-b border-base-200">
+                {t('firmware.toc.comparison')}
+              </Text>
+              <div class="overflow-x-auto">
+                <table class="w-full border-collapse border border-base-300 rounded-lg mb-6">
+                  <thead>
+                    <tr class="bg-base-100">
+                      <th class="border border-base-300 px-4 py-3 text-left text-sm font-semibold text-base-900">{t('firmware.comparison.feature')}</th>
+                      <th class="border border-base-300 px-4 py-3 text-center text-sm font-semibold text-base-900">{t('firmware.comparison.official')}</th>
+                      <th class="border border-base-300 px-4 py-3 text-center text-sm font-semibold text-base-900">{t('firmware.comparison.crosspoint')}</th>
+                      <th class="border border-base-300 px-4 py-3 text-center text-sm font-semibold text-base-900">{t('firmware.comparison.macroreader')}</th>
+                    </tr>
+                  </thead>
+                  <tbody class="text-sm text-base-700">
+                    <tr class="bg-base-50">
+                      <td class="border border-base-300 px-4 py-3">{t('firmware.comparison.epub')}</td>
+                      <td class="border border-base-300 px-4 py-3 text-center">✓</td>
+                      <td class="border border-base-300 px-4 py-3 text-center">✓</td>
+                      <td class="border border-base-300 px-4 py-3 text-center">✓</td>
+                    </tr>
+                    <tr>
+                      <td class="border border-base-300 px-4 py-3">{t('firmware.comparison.updates')}</td>
+                      <td class="border border-base-300 px-4 py-3 text-center">✓</td>
+                      <td class="border border-base-300 px-4 py-3 text-center">✓</td>
+                      <td class="border border-base-300 px-4 py-3 text-center">✓</td>
+                    </tr>
+                    <tr class="bg-base-50">
+                      <td class="border border-base-300 px-4 py-3">{t('firmware.comparison.custom_fonts')}</td>
+                      <td class="border border-base-300 px-4 py-3 text-center">✓</td>
+                      <td class="border border-base-300 px-4 py-3 text-center">✓</td>
+                      <td class="border border-base-300 px-4 py-3 text-center">✓</td>
+                    </tr>
+                    <tr>
+                      <td class="border border-base-300 px-4 py-3">{t('firmware.comparison.wifi_upload')}</td>
+                      <td class="border border-base-300 px-4 py-3 text-center">-</td>
+                      <td class="border border-base-300 px-4 py-3 text-center">✓</td>
+                      <td class="border border-base-300 px-4 py-3 text-center">-</td>
+                    </tr>
+                    <tr class="bg-base-50">
+                      <td class="border border-base-300 px-4 py-3">{t('firmware.comparison.open_source')}</td>
+                      <td class="border border-base-300 px-4 py-3 text-center">-</td>
+                      <td class="border border-base-300 px-4 py-3 text-center">✓</td>
+                      <td class="border border-base-300 px-4 py-3 text-center">✓</td>
+                    </tr>
+                    <tr>
+                      <td class="border border-base-300 px-4 py-3">{t('firmware.comparison.official_support')}</td>
+                      <td class="border border-base-300 px-4 py-3 text-center">✓</td>
+                      <td class="border border-base-300 px-4 py-3 text-center">-</td>
+                      <td class="border border-base-300 px-4 py-3 text-center">-</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+
+            {/* Installation */}
+            <section id="installation" class="scroll-mt-24 mt-12">
+              <Text tag="h2" variant="textXL" class="text-base-900 font-bold mb-4 pb-2 border-b border-base-200">
+                {t('firmware.toc.installation')}
+              </Text>
+              
+              <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-lg mb-6">
+                <Text tag="p" variant="textSM" class="text-base-700">
+                  {t('firmware.installation.note')}
+                </Text>
+              </div>
+              
+              <div class="space-y-6">
+                <div class="bg-base-50 border-l-4 border-accent-500 p-6 rounded-r-lg">
+                  <Text tag="h3" variant="textBase" class="font-semibold text-base-900 mb-3">
+                    {t('firmware.installation.step1.title')}
+                  </Text>
+                  <Text tag="p" variant="textSM" class="text-base-700 leading-relaxed" set:html={t('firmware.installation.step1.content').replace(/https?:\/\/[^\s\)]+/g, (url) => `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-accent-600 hover:text-accent-700 underline font-medium">${url}</a>`)} />
+                </div>
+
+                <div class="bg-base-50 border-l-4 border-accent-500 p-6 rounded-r-lg">
+                  <Text tag="h3" variant="textBase" class="font-semibold text-base-900 mb-3">
+                    {t('firmware.installation.step2.title')}
+                  </Text>
+                  <Text tag="p" variant="textSM" class="text-base-700 leading-relaxed" set:html={t('firmware.installation.step2.content').replace(/https?:\/\/[^\s\)]+/g, (url) => `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-accent-600 hover:text-accent-700 underline font-medium">${url}</a>`)} />
+                </div>
+
+                <div class="bg-base-50 border-l-4 border-base-900 p-6 rounded-r-lg">
+                  <Text tag="h3" variant="textBase" class="font-semibold text-base-900 mb-3">
+                    {t('firmware.installation.step3.title')}
+                  </Text>
+                  <Text tag="p" variant="textSM" class="text-base-700 leading-relaxed" set:html={t('firmware.installation.step3.content').replace(/https?:\/\/[^\s]+/g, (url) => `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-accent-600 hover:text-accent-700 underline font-medium">${url}</a>`)} />
+                </div>
+              </div>
+            </section>
+
+            {/* Tips */}
+            <section id="tips" class="scroll-mt-24 mt-12">
+              <Text tag="h2" variant="textXL" class="text-base-900 font-bold mb-4 pb-2 border-b border-base-200">
+                {t('firmware.toc.tips')}
+              </Text>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-base-50 border border-base-200 rounded-lg p-5">
+                  <Text tag="p" variant="textSM" class="text-base-700 leading-relaxed">
+                    <strong>{t('firmware.tips.1.title')}</strong> {t('firmware.tips.1.content')}
+                  </Text>
+                </div>
+                <div class="bg-base-50 border border-base-200 rounded-lg p-5">
+                  <Text tag="p" variant="textSM" class="text-base-700 leading-relaxed">
+                    <strong>{t('firmware.tips.2.title')}</strong> {t('firmware.tips.2.content')}
+                  </Text>
+                </div>
+                <div class="bg-base-50 border border-base-200 rounded-lg p-5">
+                  <Text tag="p" variant="textSM" class="text-base-700 leading-relaxed">
+                    <strong>{t('firmware.tips.3.title')}</strong> {t('firmware.tips.3.content')}
+                  </Text>
+                </div>
+                <div class="bg-base-50 border border-base-200 rounded-lg p-5">
+                  <Text tag="p" variant="textSM" class="text-base-700 leading-relaxed">
+                    <strong>{t('firmware.tips.4.title')}</strong> {t('firmware.tips.4.content')}
+                  </Text>
+                </div>
+                <div class="bg-base-50 border border-base-200 rounded-lg p-5">
+                  <Text tag="p" variant="textSM" class="text-base-700 leading-relaxed">
+                    <strong>{t('firmware.tips.5.title')}</strong> {t('firmware.tips.5.content')}
+                  </Text>
+                </div>
+                <div class="bg-base-50 border border-base-200 rounded-lg p-5">
+                  <Text tag="p" variant="textSM" class="text-base-700 leading-relaxed">
+                    <strong>{t('firmware.tips.6.title')}</strong> {t('firmware.tips.6.content')}
+                  </Text>
+                </div>
+                <div class="bg-base-50 border border-base-200 rounded-lg p-5">
+                  <Text tag="p" variant="textSM" class="text-base-700 leading-relaxed">
+                    <strong>{t('firmware.tips.7.title')}</strong> {t('firmware.tips.7.content')}
+                  </Text>
+                </div>
+                <div class="bg-base-50 border border-base-200 rounded-lg p-5">
+                  <Text tag="p" variant="textSM" class="text-base-700 leading-relaxed">
+                    <strong>{t('firmware.tips.8.title')}</strong> {t('firmware.tips.8.content')}
+                  </Text>
+                </div>
+              </div>
+            </section>
+
+            {/* FAQ */}
+            <section id="faq" class="scroll-mt-24 mt-12">
+              <Text tag="h2" variant="textXL" class="text-base-900 font-bold mb-4 pb-2 border-b border-base-200">
+                {t('firmware.toc.faq')}
+              </Text>
+              <div class="space-y-4">
+                <div class="bg-base-50 border-l-4 border-base-900 p-5 rounded-r-lg">
+                  <Text tag="h3" variant="textBase" class="font-semibold text-base-900 mb-2">
+                    {t('firmware.faq.1.question')}
+                  </Text>
+                  <Text tag="p" variant="textSM" class="text-base-700" set:html={t('firmware.faq.1.answer').replace(/https?:\/\/[^\s\)]+/g, (url) => `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-accent-600 hover:text-accent-700 underline font-medium">${url}</a>`)} />
+                </div>
+                <div class="bg-base-50 border-l-4 border-base-900 p-5 rounded-r-lg">
+                  <Text tag="h3" variant="textBase" class="font-semibold text-base-900 mb-2">
+                    {t('firmware.faq.2.question')}
+                  </Text>
+                  <Text tag="p" variant="textSM" class="text-base-700">
+                    {t('firmware.faq.2.answer')}
+                  </Text>
+                </div>
+                <div class="bg-base-50 border-l-4 border-base-900 p-5 rounded-r-lg">
+                  <Text tag="h3" variant="textBase" class="font-semibold text-base-900 mb-2">
+                    {t('firmware.faq.3.question')}
+                  </Text>
+                  <Text tag="p" variant="textSM" class="text-base-700" set:html={t('firmware.faq.3.answer').replace(/https?:\/\/[^\s\)]+/g, (url) => `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-accent-600 hover:text-accent-700 underline font-medium">${url}</a>`)} />
+                </div>
+              </div>
+            </section>
+
+            {/* Disclaimer */}
+            <section class="scroll-mt-24 mt-12">
+              <div class="bg-red-50 border-l-4 border-red-500 p-6 rounded-r-lg">
+                <Text tag="h3" variant="textBase" class="font-semibold text-base-900 mb-3">
+                  {t('firmware.disclaimer.title')}
+                </Text>
+                <Text tag="p" variant="textSM" class="text-base-700 leading-relaxed">
+                  {t('firmware.disclaimer')}
+                </Text>
+              </div>
+            </section>
+          </div>
+        </div>
+      </div>
+    </Wrapper>
+  </section>
+</BaseLayout>
