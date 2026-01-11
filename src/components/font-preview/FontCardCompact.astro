@@ -1,0 +1,88 @@
+---
+import type { Font } from '@/lib/font-finder/types';
+
+interface Props {
+  font: Font;
+  langPrefix: string;
+}
+
+const { font, langPrefix } = Astro.props;
+const fontUrl = `/fonts/${font.file}`;
+// Use API route for BIN files to ensure proper headers
+const binUrl = font.bin ? `/api/fonts/${font.bin}` : null;
+const fontId = `font-preview-${font.id}`;
+---
+
+<div class="bg-white rounded-lg border border-base-200 overflow-hidden hover:border-accent-300 hover:shadow-md transition-all cursor-pointer font-card-item">
+  <!-- Font Name Preview (rendered in the font itself) -->
+  <div class="p-1.5 bg-base-50 min-h-[40px] flex items-center justify-center">
+    <span 
+      class="text-base-900 font-medium text-xs font-preview-name"
+      data-font-url={fontUrl}
+      data-font-name={font.name}
+    >
+      {font.name}
+    </span>
+  </div>
+  
+  <!-- Font Details (compact) -->
+  <div class="p-1.5 space-y-0.5 text-[10px] text-base-600 border-t border-base-200">
+    {font.x4Preset && (
+      <div class="flex items-center justify-between">
+        <span class="text-base-500">Size:</span>
+        <span class="font-medium">{font.x4Preset.size}pt</span>
+      </div>
+    )}
+    {font.x4Preset && (
+      <div class="flex items-center justify-between">
+        <span class="text-base-500">Line:</span>
+        <span class="font-medium">{font.x4Preset.lineHeight}</span>
+      </div>
+    )}
+    {font.source && (
+      <div class="flex items-center justify-between">
+        <span class="text-base-500">Source:</span>
+        <span class="font-medium capitalize text-[9px]">{font.source.replace('-', ' ')}</span>
+      </div>
+    )}
+  </div>
+  
+  <!-- Download Buttons (compact) -->
+  <div class="p-1 space-y-0.5 border-t border-base-200">
+    <a
+      href={fontUrl}
+      download={font.file}
+      class="block w-full px-1 py-0.5 text-[10px] bg-accent-500 text-white rounded hover:bg-accent-600 transition-colors text-center font-medium"
+      @click.stop
+    >
+      TTF
+    </a>
+    {binUrl && (
+      <a
+        href={binUrl}
+        download={font.bin}
+        class="block w-full px-1 py-0.5 text-[10px] bg-base-900 text-white rounded hover:bg-base-800 transition-colors text-center font-medium"
+        @click.stop
+      >
+        BIN
+      </a>
+    )}
+  </div>
+</div>
+
+<script define:vars={{ fontUrl, fontName: font.name }}>
+  // Load font and apply it to the preview
+  (function() {
+    const fontPreview = document.currentScript.previousElementSibling.querySelector('.font-preview-name');
+    if (!fontPreview) return;
+    
+    const fontFace = new FontFace(fontName, `url(${fontUrl})`);
+    fontFace.load().then(loadedFont => {
+      document.fonts.add(loadedFont);
+      fontPreview.style.fontFamily = `'${fontName}', serif`;
+    }).catch(err => {
+      console.warn('Failed to load font for preview:', fontName, err);
+    });
+  })();
+</script>
+

@@ -163,6 +163,194 @@ export const CURATED_FONTS: Font[] = [
     x4Preset: { size: 14, lineHeight: 1.6 },
     author: 'nicoverbruggen',
     license: 'OFL'
+  },
+  // === Extra fonts from ebook-fonts ===
+  {
+    id: 'nv-adelph',
+    name: 'Adelph',
+    file: 'nv-adelph.ttf',
+    bin: 'nv-adelph.bin',
+    source: 'ebook-fonts',
+    einkReason: 'Optimized for e-readers, clear and readable',
+    x4Preset: { size: 14, lineHeight: 1.6 },
+    author: 'nicoverbruggen',
+    license: 'OFL'
+  },
+  {
+    id: 'nv-basker',
+    name: 'Basker',
+    file: 'nv-basker.ttf',
+    bin: 'nv-basker.bin',
+    source: 'ebook-fonts',
+    einkReason: 'Classic serif optimized for e-ink displays',
+    x4Preset: { size: 14, lineHeight: 1.6 },
+    author: 'nicoverbruggen',
+    license: 'OFL'
+  },
+  {
+    id: 'nv-cardo',
+    name: 'Cardo',
+    file: 'nv-cardo.ttf',
+    bin: 'nv-cardo.bin',
+    source: 'ebook-fonts',
+    einkReason: 'Designed for scholarly texts, excellent on e-ink',
+    x4Preset: { size: 14, lineHeight: 1.6 },
+    author: 'nicoverbruggen',
+    license: 'OFL'
+  },
+  {
+    id: 'nv-charis',
+    name: 'Charis',
+    file: 'nv-charis.ttf',
+    bin: 'nv-charis.bin',
+    source: 'ebook-fonts',
+    einkReason: 'Optimized for readability on e-ink displays',
+    x4Preset: { size: 14, lineHeight: 1.6 },
+    author: 'nicoverbruggen',
+    license: 'OFL'
+  },
+  {
+    id: 'nv-charter-basic',
+    name: 'Charter Basic',
+    file: 'nv-charter-basic.ttf',
+    bin: 'nv-charter-basic.bin',
+    source: 'ebook-fonts',
+    einkReason: 'High contrast, sharp on e-ink displays',
+    x4Preset: { size: 14, lineHeight: 1.6 },
+    author: 'nicoverbruggen',
+    license: 'OFL'
+  },
+  {
+    id: 'nv-cooper',
+    name: 'Cooper',
+    file: 'nv-cooper.ttf',
+    bin: 'nv-cooper.bin',
+    source: 'ebook-fonts',
+    einkReason: 'Optimized for e-readers',
+    x4Preset: { size: 14, lineHeight: 1.6 },
+    author: 'nicoverbruggen',
+    license: 'OFL'
+  },
+  {
+    id: 'nv-elstob',
+    name: 'Elstob',
+    file: 'nv-elstob.ttf',
+    bin: 'nv-elstob.bin',
+    source: 'ebook-fonts',
+    einkReason: 'Designed for e-reading, optimized for e-ink',
+    x4Preset: { size: 14, lineHeight: 1.6 },
+    author: 'nicoverbruggen',
+    license: 'OFL'
+  },
+  {
+    id: 'nv-gentium',
+    name: 'Gentium',
+    file: 'nv-gentium.ttf',
+    bin: 'nv-gentium.bin',
+    source: 'ebook-fonts',
+    einkReason: 'Excellent readability on e-ink displays',
+    x4Preset: { size: 14, lineHeight: 1.6 },
+    author: 'nicoverbruggen',
+    license: 'OFL'
+  },
+  {
+    id: 'nv-junius',
+    name: 'Junius',
+    file: 'nv-junius.ttf',
+    bin: 'nv-junius.bin',
+    source: 'ebook-fonts',
+    einkReason: 'Optimized for e-readers',
+    x4Preset: { size: 14, lineHeight: 1.6 },
+    author: 'nicoverbruggen',
+    license: 'OFL'
+  },
+  {
+    id: 'nv-libertinus',
+    name: 'Libertinus',
+    file: 'nv-libertinus.ttf',
+    bin: 'nv-libertinus.bin',
+    source: 'ebook-fonts',
+    einkReason: 'Designed for scholarly texts, excellent on e-ink',
+    x4Preset: { size: 14, lineHeight: 1.6 },
+    author: 'nicoverbruggen',
+    license: 'OFL'
+  },
+  {
+    id: 'nv-lore',
+    name: 'Lore',
+    file: 'nv-lore.ttf',
+    bin: 'nv-lore.bin',
+    source: 'ebook-fonts',
+    einkReason: 'Optimized for e-readers',
+    x4Preset: { size: 14, lineHeight: 1.6 },
+    author: 'nicoverbruggen',
+    license: 'OFL'
+  },
+  {
+    id: 'nv-newsreader',
+    name: 'Newsreader',
+    file: 'nv-newsreader.ttf',
+    bin: 'nv-newsreader.bin',
+    source: 'ebook-fonts',
+    einkReason: 'Designed for reading, optimized for e-ink',
+    x4Preset: { size: 14, lineHeight: 1.6 },
+    author: 'nicoverbruggen',
+    license: 'OFL'
+  },
+  {
+    id: 'nv-oldstyle',
+    name: 'Old Style',
+    file: 'nv-oldstyle.ttf',
+    bin: 'nv-oldstyle.bin',
+    source: 'ebook-fonts',
+    einkReason: 'Classic serif optimized for e-ink displays',
+    x4Preset: { size: 14, lineHeight: 1.6 },
+    author: 'nicoverbruggen',
+    license: 'OFL'
+  },
+  {
+    id: 'nv-scarlet',
+    name: 'Scarlet',
+    file: 'nv-scarlet.ttf',
+    bin: 'nv-scarlet.bin',
+    source: 'ebook-fonts',
+    einkReason: 'Optimized for e-readers',
+    x4Preset: { size: 14, lineHeight: 1.6 },
+    author: 'nicoverbruggen',
+    license: 'OFL'
+  },
+  {
+    id: 'nv-sourceserif',
+    name: 'Source Serif',
+    file: 'nv-sourceserif.ttf',
+    bin: 'nv-sourceserif.bin',
+    source: 'ebook-fonts',
+    einkReason: 'Designed for reading, optimized for e-ink',
+    x4Preset: { size: 14, lineHeight: 1.6 },
+    author: 'nicoverbruggen',
+    license: 'OFL'
+  },
+  {
+    id: 'nv-technical',
+    name: 'Technical',
+    file: 'nv-technical.ttf',
+    bin: 'nv-technical.bin',
+    source: 'ebook-fonts',
+    einkReason: 'Optimized for technical documents on e-ink',
+    x4Preset: { size: 14, lineHeight: 1.6 },
+    author: 'nicoverbruggen',
+    license: 'OFL'
+  },
+  {
+    id: 'nv-zillaslab',
+    name: 'Zilla Slab',
+    file: 'nv-zillaslab.ttf',
+    bin: 'nv-zillaslab.bin',
+    source: 'ebook-fonts',
+    einkReason: 'Modern slab serif optimized for e-ink',
+    x4Preset: { size: 14, lineHeight: 1.6 },
+    author: 'nicoverbruggen',
+    license: 'OFL'
   }
 ];
 

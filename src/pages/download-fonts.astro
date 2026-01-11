@@ -1,0 +1,8 @@
+---
+// Redirect to /en/download-fonts (English is default, no lang prefix)
+const url = Astro.url;
+if (url.pathname === '/download-fonts') {
+  return Astro.redirect('/en/download-fonts', 302);
+}
+---
+

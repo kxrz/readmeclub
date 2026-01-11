@@ -1,0 +1,1027 @@
+---
+export const prerender = false;
+
+export async function getStaticPaths() {
+  const langs = ['en', 'fr', 'es', 'ru', 'cn'];
+  return langs.map((lang) => ({
+    params: { lang },
+  }));
+}
+
+// Layout
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { Fragment } from "astro/jsx-runtime";
+// Fundation
+import Text from "@/components/fundations/elements/Text.astro";
+import Wrapper from "@/components/fundations/containers/Wrapper.astro";
+import Seo from "@/components/fundations/head/Seo.astro";
+// Font Preview Components
+import FontCardCompact from "@/components/font-preview/FontCardCompact.astro";
+import { useTranslations, getLangPrefix } from '@/i18n/utils';
+import type { Lang } from '@/i18n/utils';
+import { CURATED_FONTS } from '@/lib/font-finder/fonts';
+import type { Font } from '@/lib/font-finder/types';
+
+const lang = (Astro.params.lang || 'en') as Lang;
+const t = useTranslations(lang);
+const langPrefix = getLangPrefix(lang);
+const siteUrl = Astro.site || 'https://readme.club';
+
+// List of fonts that actually exist in public/fonts/
+const AVAILABLE_FONT_FILES = [
+  'nv-adelph.ttf',
+  'nv-basker.ttf',
+  'nv-bitter.ttf',
+  'nv-cardo.ttf',
+  'nv-charis.ttf',
+  'nv-charter-basic.ttf',
+  'nv-charter.ttf',
+  'nv-cooper.ttf',
+  'nv-elstob.ttf',
+  'nv-garamond.ttf',
+  'nv-gentium.ttf',
+  'nv-georsio.ttf',
+  'nv-jost.ttf',
+  'nv-junius.ttf',
+  'nv-legible-next.ttf',
+  'nv-libertinus.ttf',
+  'nv-literata.ttf',
+  'nv-lore.ttf',
+  'nv-membo.ttf',
+  'nv-newsreader.ttf',
+  'nv-oldstyle.ttf',
+  'nv-palatium.ttf',
+  'nv-scarlet.ttf',
+  'nv-sourceserif.ttf',
+  'nv-technical.ttf',
+  'nv-zillaslab.ttf',
+];
+
+// Filter fonts to only include those with actual TTF files
+const availableFonts = CURATED_FONTS.filter(font => 
+  AVAILABLE_FONT_FILES.includes(font.file)
+).sort((a, b) => a.name.localeCompare(b.name));
+
+// Pass fonts data to client (stringified like font-finder.astro)
+const fontsData = JSON.stringify(availableFonts);
+---
+
+<BaseLayout>
+  <Fragment slot="head">
+    <Seo
+      title={`${t('download_fonts.title')} - ${t('site.name')}`}
+      description={t('download_fonts.subtitle')}
+      canonical={`${siteUrl}${langPrefix}/download-fonts`}
+      lang={lang}
+    />
+    
+    <!-- Load JSZip (required by epubjs) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" 
+            crossorigin="anonymous" 
+            referrerpolicy="no-referrer"></script>
+    <!-- Load epubjs from CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/epubjs@0.3.88/dist/epub.min.js"></script>
+    
+  </Fragment>
+  
+  <!-- Fonts data JSON -->
+  <script id="fonts-data-json" type="application/json" is:inline set:html={fontsData}></script>
+  
+  <section>
+    <Wrapper variant="hero">
+      <Text
+        tag="h1"
+        variant="displaySM"
+        class="text-base-900 font-medium 2xl:text-5xl tracking-tight"
+      >
+        Download Fonts
+      </Text>
+      <Text
+        tag="p"
+        variant="textBase"
+        class="mt-4 text-base-600 text-balance 2xl:text-xl"
+      >
+        Preview and download fonts optimized for e-ink devices. Upload your EPUB to see how it looks with different fonts.
+      </Text>
+      <div class="mt-3">
+        <a
+          href={`${langPrefix}/fonts`}
+          class="inline-flex items-center gap-1.5 text-sm text-accent-600 hover:text-accent-700 hover:underline font-medium"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          Tools to create your custom fonts
+        </a>
+      </div>
+    </Wrapper>
+  </section>
+  
+  <section>
+    <Wrapper variant="standard" class="py-6">
+      <div class="grid grid-cols-1 lg:grid-cols-[70%_30%] gap-6">
+        <!-- Left Column: EPUB Upload + Fonts Grid -->
+        <div class="space-y-6">
+          <!-- EPUB Section (3 columns) -->
+          <div class="bg-white rounded-lg border border-base-200 p-4">
+            <Text tag="h2" variant="textLG" class="font-semibold text-base-900 mb-4">
+              {t('download_fonts.epub_reader')}
+            </Text>
+            
+            <div
+              x-data="epubUpload()"
+              x-init="init()"
+              class="space-y-4"
+            >
+              <!-- 3 Columns: Info | EPUB Selection | Navigation -->
+              <div class="grid grid-cols-3 gap-4">
+                <!-- Column 1: Fonts Count & How-to -->
+                <div class="space-y-3">
+                  <div class="text-xs font-medium text-base-700 mb-2">{t('download_fonts.fonts_available')}</div>
+                  <div class="border border-base-200 rounded-lg p-3 text-center bg-base-50">
+                    <div class="text-2xl font-bold text-base-900 mb-1">
+                      {availableFonts.length}
+                    </div>
+                    <div class="text-xs text-base-600">
+                      {t('download_fonts.available')}
+                    </div>
+                  </div>
+                  
+                  <a
+                    href={`${langPrefix}/guide#7-fonts-and-languages`}
+                    class="block border border-base-200 rounded-lg p-3 text-center hover:border-accent-300 hover:bg-accent-50 transition-colors bg-base-50"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="mx-auto mb-1.5 text-base-400"
+                    >
+                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                      <polyline points="14 2 14 8 20 8"></polyline>
+                      <line x1="16" y1="13" x2="8" y2="13"></line>
+                      <line x1="16" y1="17" x2="8" y2="17"></line>
+                      <polyline points="10 9 9 9 8 9"></polyline>
+                    </svg>
+                    <div class="text-xs font-medium text-base-700">
+                      {t('download_fonts.how_to_install')}
+                    </div>
+                  </a>
+                </div>
+                
+                <!-- Column 2: EPUB Selection -->
+                <div class="space-y-2 flex flex-col">
+                  <div class="text-xs font-medium text-base-700 mb-2">{t('download_fonts.upload_epub')}</div>
+                  
+                  <div
+                    @dragover.prevent="isDragging = true"
+                    @dragleave.prevent="isDragging = false"
+                    @drop.prevent="handleDrop($event)"
+                    :class="isDragging ? 'border-accent-400 bg-accent-50' : 'border-base-300'"
+                    class="border-2 border-dashed rounded-lg p-3 text-center transition-colors cursor-pointer flex-1 flex flex-col items-center justify-center min-h-[80px]"
+                  >
+                    <input
+                      type="file"
+                      accept=".epub"
+                      @change="handleFileSelect($event)"
+                      class="hidden"
+                      id="epub-upload-input"
+                    />
+                    <label
+                      for="epub-upload-input"
+                      class="cursor-pointer block w-full"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="mx-auto mb-1.5 text-base-400"
+                      >
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="17 8 12 3 7 8"></polyline>
+                        <line x1="12" y1="3" x2="12" y2="15"></line>
+                      </svg>
+                      <div class="text-xs font-medium text-base-700">
+                        {t('download_fonts.upload_epub_button')}
+                      </div>
+                    </label>
+                  </div>
+                  
+                  <div class="flex gap-2">
+                    <button
+                      @click="loadDemoEPUB()"
+                      :disabled="isLoading"
+                      class="flex-1 border-2 border-base-300 rounded-lg p-3 text-center transition-colors hover:border-accent-300 hover:bg-accent-50 disabled:opacity-50 disabled:cursor-not-allowed bg-white flex items-center justify-center min-h-[80px]"
+                      title="Reload Demo EPUB"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="text-base-400"
+                      >
+                        <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"></path>
+                        <path d="M21 3v5h-5"></path>
+                        <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"></path>
+                        <path d="M3 21v-5h5"></path>
+                      </svg>
+                    </button>
+                    <a
+                      href="/readme-club.epub"
+                      download="readme-club.epub"
+                      class="flex-1 border-2 border-base-300 rounded-lg p-3 text-center transition-colors hover:border-accent-300 hover:bg-accent-50 bg-white flex items-center justify-center min-h-[80px]"
+                      title={t('download_fonts.upload_epub_button')}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="text-base-400"
+                      >
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                      </svg>
+                    </a>
+                  </div>
+                  
+                  <div x-show="epubName" class="text-xs text-base-600 text-center pt-2 border-t border-base-200">
+                    <div class="font-medium text-base-700 mb-1" x-text="epubName"></div>
+                    <span x-show="isLoading" class="text-base-400 block">(parsing...)</span>
+                  </div>
+                </div>
+                
+                <!-- Column 3: Navigation -->
+                <div class="space-y-2">
+                  <div class="text-xs font-medium text-base-700 mb-2">Navigation</div>
+                  
+                  <div x-show="totalPages > 0" class="space-y-2">
+                    <div class="text-xs text-base-500 text-center py-2 border border-base-200 rounded bg-base-50">
+                      Page <span x-text="currentPage + 1"></span> / <span x-text="totalPages"></span>
+                    </div>
+                    
+                    <div class="flex items-center justify-between gap-2">
+                      <button 
+                        @click="prevPage()" 
+                        :disabled="currentPage === 0" 
+                        class="flex-1 px-3 py-2 text-xs border border-base-300 rounded hover:border-accent-300 hover:bg-accent-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors bg-white"
+                      >
+                        ← Prev
+                      </button>
+                      <button 
+                        @click="nextPage()" 
+                        :disabled="currentPage >= totalPages - 1" 
+                        class="flex-1 px-3 py-2 text-xs border border-base-300 rounded hover:border-accent-300 hover:bg-accent-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors bg-white"
+                      >
+                        Next →
+                      </button>
+                    </div>
+                    <p class="text-xs text-base-500 text-center">
+                      Click on the arrows to navigate through pages.
+                    </p>
+                  </div>
+                  
+                  <div x-show="totalPages === 0" class="text-xs text-base-400 text-center py-4 border border-base-200 rounded bg-base-50">
+                    Load an EPUB to navigate
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Error -->
+              <div x-show="error" class="text-xs text-red-600 bg-red-50 p-2 rounded border border-red-200">
+                <span x-text="error"></span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Fonts Grid -->
+          <div>
+            <Text tag="h2" variant="textLG" class="font-semibold text-base-900 mb-4">
+              {t('download_fonts.available_fonts')}
+            </Text>
+            
+            <div 
+              x-data="{ selectedFontId: null }"
+              x-init="
+                document.addEventListener('font-selected', (e) => {
+                  selectedFontId = e.detail.font.id;
+                });
+                setTimeout(() => {
+                  const adelphCard = document.querySelector('[data-font-id=' + 'nv-adelph' + ']');
+                  if (adelphCard) {
+                    selectedFontId = 'nv-adelph';
+                    const fontsDataElement = document.getElementById('fonts-data-json');
+                    const fontsDataJson = fontsDataElement ? fontsDataElement.textContent.trim() : '[]';
+                    const fonts = JSON.parse(fontsDataJson);
+                    const adelphFont = fonts.find(f => f.id === 'nv-adelph');
+                    if (adelphFont) {
+                      document.dispatchEvent(new CustomEvent('font-selected', { detail: { font: adelphFont }, bubbles: true }));
+                    }
+                  }
+                }, 200);
+              "
+              class="grid grid-cols-3 gap-2" 
+            >
+              {availableFonts.map((font) => {
+                const fontId = font.id;
+                const classBinding = `selectedFontId === '${fontId}' ? 'cursor-pointer font-card border-2 border-accent-500 shadow-md' : 'cursor-pointer font-card'`;
+                return (
+                  <div
+                    data-font-id={fontId}
+                    data-font-name={font.name}
+                    data-font-file={font.file}
+                    data-font-preset={JSON.stringify(font.x4Preset || {})}
+                    x-bind:class={classBinding}
+                  >
+                    <FontCardCompact font={font} langPrefix={langPrefix} />
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+        
+        <!-- Right Column: Live Preview -->
+        <div class="lg:sticky lg:top-6 lg:self-start">
+          <div x-data="livePreview()" x-init="init()" class="bg-base-50 rounded-lg border border-base-200 p-4">
+            <Text tag="h2" variant="textLG" class="font-semibold text-base-900 mb-2">
+              Live Preview
+            </Text>
+            <div class="mb-3 p-2 bg-base-100 border border-base-300 rounded text-xs text-base-600">
+              <p class="font-medium mb-1">ℹ️ This preview is intentionally not to scale. It's designed to show the character shapes and visual typography rendering, not the exact screen dimensions.</p>
+            </div>
+            <div class="relative bg-white rounded border-2 border-base-300 overflow-hidden" style="width: 360px; height: 600px; margin: 0 auto;">
+              <canvas
+                id="live-preview-canvas"
+                width="480"
+                height="800"
+                class="block"
+                style="width: 360px; height: 600px; image-rendering: pixelated; image-rendering: -moz-crisp-edges; image-rendering: crisp-edges;"
+                x-ref="livePreviewCanvas"
+              ></canvas>
+            </div>
+            <div class="mt-4 text-xs text-base-500 text-center">
+              <p>{t('download_fonts.select_font')}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <script>
+        document.addEventListener('DOMContentLoaded', () => {
+          const fontCards = document.querySelectorAll('.font-card');
+          fontCards.forEach(card => {
+            card.addEventListener('click', (e) => {
+              if (e.target.closest('a')) return;
+              
+              const font = {
+                id: card.dataset.fontId,
+                name: card.dataset.fontName,
+                file: card.dataset.fontFile,
+                x4Preset: JSON.parse(card.dataset.fontPreset || '{}')
+              };
+              
+              document.dispatchEvent(new CustomEvent('font-selected', { 
+                detail: { font: font },
+                bubbles: true 
+              }));
+            });
+          });
+        });
+      </script>
+      
+      <div class="mt-6 pt-6 border-t border-base-200">
+        <Text tag="p" variant="textXS" class="text-base-500">
+          💡 <strong>{t('download_fonts.how_to_install')}:</strong> {t('download_fonts.how_to_install')}{' '}
+          <a href="https://github.com/nicoverbruggen/ebook-fonts" target="_blank" rel="noopener noreferrer" class="text-accent-600 hover:underline">
+            nicoverbruggen/ebook-fonts
+          </a>
+        </Text>
+        <div class="mt-4">
+          <a
+            href={`${langPrefix}/guide#7-fonts-and-languages`}
+            class="inline-flex items-center gap-2 text-accent-600 hover:text-accent-700 text-sm font-medium"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            {t('download_fonts.how_to_install')}
+          </a>
+        </div>
+      </div>
+    </Wrapper>
+  </section>
+  
+  <!-- Load Alpine.js modules (at end of body) - Inlined to avoid import issues -->
+  <script is:inline>
+    // EPUB Upload Alpine.js data function
+    function epubUpload() {
+      return {
+        epubName: null,
+        isLoading: false,
+        error: null,
+        isDragging: false,
+        fullText: '',
+        fullHTML: '', // Store full HTML
+        pages: [], // Store paginated text for navigation
+        htmlPages: [], // Store paginated HTML fragments
+        currentPage: 0,
+        totalPages: 0,
+        
+        async init() {
+          setTimeout(() => {
+            this.loadDemoEPUB();
+          }, 500);
+        },
+        
+        async loadDemoEPUB() {
+          try {
+            this.isLoading = true;
+            this.error = null;
+            const response = await fetch('/readme-club.epub');
+            if (!response.ok) {
+              throw new Error(`Failed to load demo EPUB: ${response.status}`);
+            }
+            const blob = await response.blob();
+            await this.parseEPUB(blob, 'readme.club (Demo)');
+          } catch (e) {
+            console.error('Error loading demo EPUB:', e);
+            this.error = 'Failed to load demo EPUB: ' + (e.message || e);
+          } finally {
+            this.isLoading = false;
+          }
+        },
+        
+        async parseEPUB(fileOrBlob, name) {
+          try {
+            let attempts = 0;
+            const maxAttempts = 20;
+            while ((!window.ePub || !window.JSZip) && attempts < maxAttempts) {
+              await new Promise(resolve => setTimeout(resolve, 100));
+              attempts++;
+            }
+            
+            if (!window.ePub || !window.JSZip) {
+              throw new Error('EPUB libraries not loaded. Please refresh the page.');
+            }
+            
+            const book = window.ePub(fileOrBlob);
+            await book.ready;
+            
+            let epubTitle = name;
+            try {
+              const metadata = book.packaging?.metadata;
+              if (metadata && metadata.title) {
+                epubTitle = metadata.title;
+              } else if (book.metadata && book.metadata.title) {
+                epubTitle = book.metadata.title;
+              }
+            } catch (e) {
+              console.warn('Could not extract EPUB title:', e);
+            }
+            
+            this.epubName = epubTitle;
+            this.fullText = '';
+            
+            const spine = book.spine;
+            const items = spine.items;
+            const seenHrefs = new Set();
+            const allTexts = [];
+            
+            for (let i = 0; i < items.length; i++) {
+              const item = items[i];
+              try {
+                const href = item.href;
+                if (seenHrefs.has(href)) continue;
+                seenHrefs.add(href);
+                
+                const section = await book.load(href);
+                const body = section.querySelector('body');
+                if (body) {
+                  // Extract HTML content to preserve formatting
+                  const htmlContent = body.innerHTML || '';
+                  if (htmlContent.trim()) {
+                    allTexts.push(htmlContent);
+                  }
+                }
+              } catch (e) {
+                console.warn('Error loading section', i, ':', e);
+              }
+            }
+            
+            this.fullHTML = allTexts.join('\n\n'); // Store HTML
+            this.fullText = allTexts.join('\n\n'); // Keep for backward compatibility
+            console.log('EPUB loaded, fullHTML length:', this.fullHTML.length);
+            this.calculatePages();
+            console.log('Pages calculated:', this.totalPages, 'pages');
+            this.currentPage = 0;
+            this.loadPage(0);
+            
+            document.dispatchEvent(new CustomEvent('epub-loaded', { 
+              detail: { text: this.fullHTML || this.fullText },
+              bubbles: true 
+            }));
+          } catch (e) {
+            console.error('EPUB parsing error:', e);
+            this.error = 'Failed to parse EPUB: ' + (e.message || e);
+          }
+        },
+        
+        calculatePages() {
+          if (!this.fullText) {
+            this.pages = [];
+            this.totalPages = 0;
+            return;
+          }
+          
+          // Use the same rendering logic as renderPreview to paginate HTML
+          // This ensures pagination matches what's displayed
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d');
+          if (!ctx) {
+            const charsPerPage = 2500;
+            for (let i = 0; i < this.fullText.length; i += charsPerPage) {
+              this.pages.push(this.fullText.substring(i, i + charsPerPage));
+            }
+            this.totalPages = this.pages.length || 1;
+            return;
+          }
+          
+          // Parse HTML
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(this.fullText, 'text/html');
+          const body = htmlDoc.body || htmlDoc.documentElement;
+          
+          // Use same settings as renderPreview
+          const fontSize = 16; // Base font size for calculation
+          const lineHeight = 1.6;
+          const displayWidth = 480;
+          const displayHeight = 800;
+          const leftPadding = 15;
+          const rightPadding = 15;
+          const topPadding = 15;
+          const bottomPadding = 15;
+          const maxWidth = displayWidth - leftPadding - rightPadding;
+          const maxHeight = displayHeight - topPadding - bottomPadding;
+          const lineHeightPx = Math.round(fontSize * lineHeight);
+          const maxY = displayHeight - bottomPadding;
+          
+          ctx.font = `${fontSize}px serif`;
+          
+          if (maxWidth <= 0) {
+            this.pages.push(this.fullText);
+            this.totalPages = 1;
+            return;
+          }
+          
+          this.pages = [];
+          let currentPageHTML = '';
+          let currentPageText = '';
+          let currentHeight = topPadding;
+          let currentPageNodes = [];
+          
+          // Helper to extract text from node for measurement
+          const getNodeText = (node) => {
+            if (node.nodeType === Node.TEXT_NODE) {
+              return node.textContent || '';
+            } else if (node.nodeType === Node.ELEMENT_NODE) {
+              let text = '';
+              for (let child of node.childNodes) {
+                text += getNodeText(child);
+              }
+              return text;
+            }
+            return '';
+          };
+          
+          // Process nodes and paginate
+          const processNodeForPagination = (node) => {
+            if (currentHeight + lineHeightPx > maxY) {
+              // Save current page
+              if (currentPageText.trim()) {
+                this.pages.push(currentPageText.trim());
+              }
+              currentPageText = '';
+              currentHeight = topPadding;
+            }
+            
+            if (node.nodeType === Node.TEXT_NODE) {
+              const text = node.textContent || '';
+              if (!text.trim()) return;
+              
+              const words = text.split(/\s+/).filter(w => w.length > 0);
+              let currentLine = '';
+              
+              for (let i = 0; i < words.length; i++) {
+                if (currentHeight + lineHeightPx > maxY) {
+                  if (currentPageText.trim()) {
+                    this.pages.push(currentPageText.trim());
+                  }
+                  currentPageText = '';
+                  currentHeight = topPadding;
+                }
+                
+                const word = words[i];
+                const testLine = currentLine ? `${currentLine} ${word}` : word;
+                const metrics = ctx.measureText(testLine);
+                
+                if (metrics.width > maxWidth && currentLine.trim()) {
+                  currentPageText += currentLine.trim() + '\n';
+                  currentHeight += lineHeightPx;
+                  currentLine = word;
+                } else {
+                  currentLine = testLine;
+                }
+              }
+              
+              if (currentLine.trim() && currentHeight + lineHeightPx <= maxY) {
+                currentPageText += currentLine.trim() + '\n';
+                currentHeight += lineHeightPx;
+              }
+            } else if (node.nodeType === Node.ELEMENT_NODE) {
+              const tagName = node.tagName?.toLowerCase();
+              
+              // Process children
+              for (let child of node.childNodes) {
+                processNodeForPagination(child);
+              }
+              
+              // Add spacing for block elements
+              if (tagName === 'p' || tagName === 'div' || (tagName && /^h[1-6]$/.test(tagName))) {
+                if (currentHeight + lineHeightPx <= maxY) {
+                  currentPageText += '\n';
+                  currentHeight += lineHeightPx;
+                }
+              }
+            }
+          };
+          
+          // Process all nodes
+          for (let child of body.childNodes) {
+            processNodeForPagination(child);
+          }
+          
+          // Add last page
+          if (currentPageText.trim()) {
+            this.pages.push(currentPageText.trim());
+          }
+          
+          this.totalPages = this.pages.length || 1;
+          console.log('calculatePages finished:', this.totalPages, 'pages');
+          if (this.currentPage >= this.totalPages) {
+            this.currentPage = this.totalPages - 1;
+          }
+        },
+        
+        loadPage(pageIndex) {
+          console.log('loadPage called', pageIndex, this.totalPages, this.pages.length);
+          if (pageIndex < 0 || pageIndex >= this.totalPages) {
+            console.warn('Invalid page index', pageIndex);
+            return;
+          }
+          this.currentPage = pageIndex;
+          const pageText = this.pages[pageIndex] || '';
+          console.log('Loading page', pageIndex, 'text length:', pageText.length);
+          
+          // Send the paginated text for this page (will be converted to HTML in renderPreview)
+          document.dispatchEvent(new CustomEvent('text-changed', { 
+            detail: { text: pageText, pageIndex: pageIndex, totalPages: this.totalPages },
+            bubbles: true 
+          }));
+        },
+        
+        nextPage() {
+          console.log('nextPage called', this.currentPage, this.totalPages);
+          if (this.currentPage < this.totalPages - 1) {
+            this.loadPage(this.currentPage + 1);
+          }
+        },
+        
+        prevPage() {
+          console.log('prevPage called', this.currentPage, this.totalPages);
+          if (this.currentPage > 0) {
+            this.loadPage(this.currentPage - 1);
+          }
+        },
+        
+        handleFileSelect(event) {
+          const file = event.target.files[0];
+          if (file && file.type === 'application/epub+zip') {
+            this.parseEPUB(file, file.name);
+          }
+        },
+        
+        handleDrop(event) {
+          event.preventDefault();
+          const file = event.dataTransfer.files[0];
+          if (file && file.type === 'application/epub+zip') {
+            this.parseEPUB(file, file.name);
+          }
+        }
+      };
+    }
+    
+    // Live Preview Alpine.js data function
+    function livePreview() {
+      return {
+        selectedFont: null,
+        epubText: '',
+        fullHTML: '', // Store full HTML for pagination
+        isRendering: false,
+        currentPageIndex: 0,
+        totalPages: 1,
+        
+        init() {
+          const fontsDataElement = document.getElementById('fonts-data-json');
+          const fontsDataJson = fontsDataElement && fontsDataElement.textContent ? fontsDataElement.textContent.trim() : '[]';
+          
+          const fonts = JSON.parse(fontsDataJson);
+          const adelphFont = fonts.find(f => f.id === 'nv-adelph');
+          if (adelphFont) {
+            this.selectedFont = adelphFont;
+            setTimeout(() => {
+              this.renderPreview();
+              document.dispatchEvent(new CustomEvent('font-selected', { 
+                detail: { font: adelphFont },
+                bubbles: true 
+              }));
+            }, 100);
+          }
+          
+          document.addEventListener('font-selected', (event) => {
+            this.selectedFont = event.detail.font;
+            this.renderPreview();
+          });
+          
+          document.addEventListener('text-changed', (event) => {
+            this.fullHTML = event.detail.text; // Store full HTML
+            this.currentPageIndex = event.detail.pageIndex || 0;
+            this.totalPages = event.detail.totalPages || 1;
+            this.renderPreview();
+          });
+          
+          document.addEventListener('epub-loaded', (event) => {
+            this.fullHTML = event.detail.text; // Store full HTML
+            this.currentPageIndex = 0;
+            this.totalPages = 1;
+            this.renderPreview();
+          });
+        },
+        
+        async renderPreview() {
+          if (this.isRendering || !this.selectedFont) return;
+          
+          this.isRendering = true;
+          const canvas = this.$refs.livePreviewCanvas;
+          if (!canvas) {
+            this.isRendering = false;
+            return;
+          }
+          
+          const ctx = canvas.getContext('2d', { willReadFrequently: true });
+          if (!ctx) {
+            this.isRendering = false;
+            return;
+          }
+          
+          const displayWidth = 480;
+          const displayHeight = 800;
+          canvas.width = displayWidth;
+          canvas.height = displayHeight;
+          
+          ctx.imageSmoothingEnabled = false;
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(0, 0, displayWidth, displayHeight);
+          
+          const fontUrl = `/fonts/${this.selectedFont.file}`;
+          const fontName = `preview-${this.selectedFont.id}`;
+          const fontFace = new FontFace(fontName, `url(${fontUrl})`);
+          
+          try {
+            await fontFace.load();
+            document.fonts.add(fontFace);
+            await new Promise(resolve => setTimeout(resolve, 100));
+            
+            const baseSizePt = this.selectedFont.x4Preset?.size || 12;
+            const ppi = 220;
+            const pointsToPixels = ppi / 72;
+            const fontSize = Math.round(baseSizePt * pointsToPixels * 0.75);
+            
+            ctx.font = `${fontSize}px "${fontName}", serif`;
+            ctx.fillStyle = '#000000';
+            ctx.textBaseline = 'top';
+            ctx.textAlign = 'left';
+            ctx.imageSmoothingEnabled = false;
+            
+            if (!this.fullHTML) {
+              const fontNameText = this.selectedFont.name;
+              const centerX = displayWidth / 2;
+              const centerY = displayHeight / 2;
+              const metrics = ctx.measureText(fontNameText);
+              const textX = Math.round(centerX - metrics.width / 2);
+              const textY = Math.round(centerY);
+              ctx.fillText(fontNameText, textX, textY);
+            } else {
+              // Use fullHTML for rendering
+              const htmlContent = this.fullHTML;
+              
+              const lineHeight = this.selectedFont.x4Preset?.lineHeight || 1.6;
+              const leftPadding = 15;
+              const rightPadding = 15;
+              const topPadding = 15;
+              const bottomPadding = 15;
+              const maxWidth = displayWidth - leftPadding - rightPadding;
+              const maxHeight = displayHeight - topPadding - bottomPadding;
+              const lineHeightPx = Math.round(fontSize * lineHeight);
+              const maxY = displayHeight - bottomPadding;
+              
+              if (maxWidth <= 0) return;
+              
+              // For now, use plain text rendering to avoid recursion issues
+              // TODO: Implement proper HTML pagination later
+              const isHTML = htmlContent.trim().startsWith('<') && htmlContent.includes('</');
+              
+              let textToRender = htmlContent;
+              if (isHTML) {
+                // Extract plain text from HTML for rendering
+                const parser = new DOMParser();
+                const htmlDoc = parser.parseFromString(htmlContent, 'text/html');
+                const body = htmlDoc.body || htmlDoc.documentElement;
+                textToRender = body.textContent || htmlContent;
+              }
+              
+              let y = topPadding;
+              
+              // Simple text rendering (formatting will be added later)
+              const cleanText = textToRender
+                .replace(/[\x00-\x09\x0B-\x1F\x7F]/g, ' ')
+                .replace(/\r\n/g, '\n')
+                .replace(/\r/g, '\n')
+                .trim();
+              
+              const paragraphs = cleanText.split(/\n\n+/);
+              
+              ctx.font = `${fontSize}px "${fontName}", serif`;
+              ctx.fillStyle = '#000000';
+              ctx.textBaseline = 'top';
+              ctx.textAlign = 'left';
+              
+              for (let paraIdx = 0; paraIdx < paragraphs.length; paraIdx++) {
+                if (y + lineHeightPx > maxY) break;
+                
+                const paragraph = paragraphs[paraIdx];
+                const lines = paragraph.split('\n');
+                
+                for (let lineIdx = 0; lineIdx < lines.length; lineIdx++) {
+                  if (y + lineHeightPx > maxY) break;
+                  
+                  let line = lines[lineIdx].trim();
+                  if (!line) {
+                    y += lineHeightPx;
+                    continue;
+                  }
+                  
+                  // Handle list items
+                  const listPattern = /^[\s]*[•\-\*\+]\s+(.+)$/;
+                  const listMatch = line.match(listPattern);
+                  let listPrefix = '';
+                  let listText = line;
+                  
+                  if (listMatch) {
+                    listPrefix = '• ';
+                    listText = listMatch[1];
+                  }
+                  
+                  const words = listText.split(/\s+/).filter(w => w.length > 0);
+                  let currentLine = listPrefix;
+                  
+                  for (let i = 0; i < words.length; i++) {
+                    if (y + lineHeightPx > maxY) break;
+                    
+                    const word = words[i];
+                    const testLine = currentLine ? `${currentLine} ${word}` : word;
+                    const metrics = ctx.measureText(testLine);
+                    
+                    if (metrics.width > maxWidth && currentLine.trim()) {
+                      ctx.fillText(currentLine.trim(), Math.round(leftPadding), Math.round(y));
+                      y += lineHeightPx;
+                      if (y + lineHeightPx > maxY) break;
+                      currentLine = listPrefix ? listPrefix + word : word;
+                      
+                      // Handle very long words
+                      const wordMetrics = ctx.measureText(word);
+                      if (wordMetrics.width > maxWidth) {
+                        let charLine = '';
+                        for (let j = 0; j < word.length; j++) {
+                          const testCharLine = charLine + word[j];
+                          const charMetrics = ctx.measureText(testCharLine);
+                          if (charMetrics.width > maxWidth && charLine) {
+                            if (y + lineHeightPx > maxY) break;
+                            ctx.fillText(charLine, Math.round(leftPadding), Math.round(y));
+                            y += lineHeightPx;
+                            charLine = word[j];
+                          } else {
+                            charLine = testCharLine;
+                          }
+                        }
+                        currentLine = charLine;
+                      }
+                    } else {
+                      currentLine = testLine;
+                    }
+                  }
+                  
+                  if (currentLine.trim() && y + lineHeightPx <= maxY) {
+                    ctx.fillText(currentLine.trim(), Math.round(leftPadding), Math.round(y));
+                    y += lineHeightPx;
+                  }
+                }
+                
+                // Add spacing between paragraphs
+                if (paraIdx < paragraphs.length - 1 && y + lineHeightPx <= maxY) {
+                  y += lineHeightPx * 0.5;
+                }
+              }
+            }
+          } catch (e) {
+            console.error('Font loading error:', e);
+            ctx.fillStyle = '#ff0000';
+            ctx.fillText('Font loading failed', 20, 40);
+          }
+          
+          this.isRendering = false;
+        }
+      };
+    }
+    
+    // Register Alpine.js functions
+    function registerFunctions() {
+      if (window.Alpine && window.Alpine.data) {
+        try {
+          window.Alpine.data('epubUpload', epubUpload);
+          window.Alpine.data('livePreview', livePreview);
+          console.log('✅ Alpine.js functions registered');
+          return true;
+        } catch (e) {
+          console.error('Error registering Alpine functions:', e);
+          return false;
+        }
+      }
+      return false;
+    }
+    
+    // Try to register immediately if Alpine is already loaded
+    if (window.Alpine) {
+      registerFunctions();
+    }
+    
+    // Register on alpine:init event (fires before Alpine initializes components)
+    document.addEventListener('alpine:init', () => {
+      registerFunctions();
+    });
+    
+    // Fallback: try multiple times in case Alpine loads later
+    let attempts = 0;
+    const maxAttempts = 10;
+    const interval = setInterval(() => {
+      attempts++;
+      if (registerFunctions() || attempts >= maxAttempts) {
+        clearInterval(interval);
+      }
+    }, 100);
+  </script>
+</BaseLayout>

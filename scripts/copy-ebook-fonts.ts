@@ -62,12 +62,33 @@ async function copyFonts() {
     console.error('Error reading core fonts:', error.message);
   }
 
-  // Check extra fonts
+  // Check extra fonts - copy all Regular fonts
   const extraDir = path.join(sourceDir, 'extra');
   try {
     const extraFiles = await fs.readdir(extraDir);
     for (const file of extraFiles) {
-      if (fontMapping[file]) {
+      // Copy all Regular fonts from extra directory
+      if (file.includes('Regular') && file.endsWith('.ttf')) {
+        // Convert NV_FontName-Regular.ttf to nv-fontname.ttf
+        const fontName = file
+          .replace('NV_', '')
+          .replace('-Regular.ttf', '')
+          .toLowerCase()
+          .replace(/_/g, '-');
+        const targetName = `nv-${fontName}.ttf`;
+        
+        const source = path.join(extraDir, file);
+        const target = path.join(targetDir, targetName);
+        
+        try {
+          await fs.copyFile(source, target);
+          console.log(`  ✅ ${file} → ${targetName}`);
+          copied++;
+        } catch (error: any) {
+          console.error(`  ❌ Error copying ${file}:`, error.message);
+        }
+      } else if (fontMapping[file]) {
+        // Also check mapping for any specific fonts
         const source = path.join(extraDir, file);
         const target = path.join(targetDir, fontMapping[file]);
         
