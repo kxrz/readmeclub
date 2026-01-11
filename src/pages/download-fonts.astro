@@ -1,8 +1,48 @@
 ---
-// Redirect to /en/download-fonts (English is default, no lang prefix)
+export const prerender = false;
+
+import { getLangFromUrl, getLangPrefix, type Lang } from '@/i18n/utils';
+
+// Detect user language from Accept-Language header or URL
 const url = Astro.url;
+const currentLang = getLangFromUrl(url);
+
+// Try to detect language from Accept-Language header
+let detectedLang: Lang = 'en';
+const acceptLanguage = Astro.request.headers.get('accept-language');
+
+if (acceptLanguage) {
+  // Parse Accept-Language header (e.g., "fr-FR,fr;q=0.9,en;q=0.8")
+  const languages = acceptLanguage
+    .split(',')
+    .map(lang => {
+      const [code, q = 'q=1'] = lang.trim().split(';');
+      const quality = parseFloat(q.replace('q=', ''));
+      return { code: code.split('-')[0].toLowerCase(), quality };
+    })
+    .sort((a, b) => b.quality - a.quality);
+
+  // Check if any supported language is in the list
+  const supportedLangs: Lang[] = ['fr', 'es', 'ru', 'cn'];
+  for (const lang of languages) {
+    if (supportedLangs.includes(lang.code as Lang)) {
+      detectedLang = lang.code as Lang;
+      break;
+    }
+  }
+}
+
+// If user is already on a language-prefixed page, use that language
+if (currentLang !== 'en') {
+  detectedLang = currentLang;
+}
+
+// Redirect to the appropriate language version
+const langPrefix = getLangPrefix(detectedLang);
+const redirectPath = langPrefix ? `${langPrefix}/download-fonts` : '/download-fonts';
+
 if (url.pathname === '/download-fonts') {
-  return Astro.redirect('/en/download-fonts', 302);
+  return Astro.redirect(redirectPath, 302);
 }
 ---
 
