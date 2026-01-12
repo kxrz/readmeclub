@@ -1,0 +1,243 @@
+---
+export const prerender = true;
+
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { Fragment } from "astro/jsx-runtime";
+import Text from "@/components/fundations/elements/Text.astro";
+import Wrapper from "@/components/fundations/containers/Wrapper.astro";
+import Seo from "@/components/fundations/head/Seo.astro";
+import Link from "@/components/fundations/components/Link.astro";
+import NewsCard from "@/components/news/NewsCard.astro";
+import ShareButtons from "@/components/news/ShareButtons.astro";
+import NewsletterCTA from "@/components/newsletter/NewsletterCTA.astro";
+import { normalizeSiteUrl } from '@/lib/utils/url';
+import { loadNewsArticle, loadAllNewsArticles } from '@/lib/utils/news-loader';
+import { renderMarkdown } from '@/lib/utils/markdown';
+
+const siteUrl = normalizeSiteUrl(Astro.site);
+
+// Générer toutes les pages statiques pour les articles de news
+export async function getStaticPaths() {
+  const articles = await loadAllNewsArticles();
+  
+  return articles.map((article) => ({
+    params: { slug: article.slug },
+  }));
+}
+
+const slug = Astro.params.slug!;
+
+// Charger l'article
+const article = await loadNewsArticle(slug);
+
+if (!article) {
+  return Astro.redirect('/news', 404);
+}
+
+// Générer le HTML du contenu
+const htmlContent = renderMarkdown(article.content);
+
+// Charger les autres articles pour "Articles similaires"
+const allNews = await loadAllNewsArticles();
+const relatedNews = allNews
+  .filter(a => a.slug !== slug)
+  .slice(0, 3);
+
+// Formatage de la date
+const publishedDate = article.published_at ? new Date(article.published_at) : new Date();
+const formattedDate = publishedDate.toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric'
+});
+
+// URL canonique
+const canonicalUrl = `${siteUrl}/news/${slug}`;
+
+// OpenGraph image
+const ogImage = article.featured_image 
+  ? `${siteUrl}${article.featured_image}`
+  : `${siteUrl}/api/news/${slug}/og-image.png`;
+---
+
+<BaseLayout>
+  <Fragment slot="head">
+    <Seo
+      title={`${article.title} - News - readme.club`}
+      description={article.excerpt || article.title}
+      canonical={canonicalUrl}
+      lang="en"
+      ogImage={ogImage}
+      ogType="article"
+    />
+    {/* Twitter Card */}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={article.title} />
+    <meta name="twitter:description" content={article.excerpt || article.title} />
+    <meta name="twitter:image" content={ogImage} />
+    {/* Article metadata */}
+    <meta property="article:published_time" content={publishedDate.toISOString()} />
+    {article.author_name && (
+      <meta property="article:author" content={article.author_name} />
+    )}
+    <link rel="alternate" type="application/rss+xml" href={`${siteUrl}/news/rss.xml`} />
+  </Fragment>
+
+  <section>
+    <Wrapper variant="standard" class="py-6 pb-24">
+      {/* Breadcrumb */}
+      <nav class="mb-6 text-sm text-base-600">
+        <Link href="/news" class="hover:text-accent-500 transition-colors">
+          News
+        </Link>
+        <span class="mx-2">/</span>
+        <span class="text-base-900">{article.title}</span>
+      </nav>
+
+      {/* Article */}
+      <article class="max-w-4xl mx-auto">
+        {/* En-tête */}
+        <header class="mb-8">
+          {article.featured && (
+            <span class="inline-block mb-4 text-xs uppercase text-accent-600 font-semibold">
+              Featured
+            </span>
+          )}
+          
+          <Text
+            tag="h1"
+            variant="displaySM"
+            class="text-base-900 font-medium 2xl:text-5xl tracking-tight mb-4"
+          >
+            {article.title}
+          </Text>
+
+          {article.excerpt && (
+            <Text
+              tag="p"
+              variant="textBase"
+              class="text-base-600 text-xl mb-6"
+            >
+              {article.excerpt}
+            </Text>
+          )}
+
+          <div class="flex items-center gap-4 text-sm text-base-500 mb-6">
+            {article.author_name && (
+              <>
+                <span>By {article.author_name}</span>
+                <span>•</span>
+              </>
+            )}
+            <time datetime={publishedDate.toISOString()}>{formattedDate}</time>
+          </div>
+
+          {article.featured_image && (
+            <div class="rounded-lg overflow-hidden mb-8">
+              <img
+                src={article.featured_image}
+                alt={article.title}
+                class="w-full h-auto"
+                loading="eager"
+              />
+            </div>
+          )}
+        </header>
+
+        {/* Contenu */}
+        <div class="prose prose-lg max-w-none text-base-600 mb-12">
+          <div set:html={htmlContent} />
+        </div>
+
+        {/* Boutons de partage */}
+        <div class="mb-12">
+          <ShareButtons title={article.title} slug={article.slug} excerpt={article.excerpt} />
+        </div>
+
+        {/* Navigation */}
+        <nav class="flex items-center justify-between pt-8 border-t border-base-200">
+          <Link
+            href="/news"
+            class="text-base-600 hover:text-accent-500 transition-colors flex items-center gap-2"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M19 12H5M12 19l-7-7 7-7" />
+            </svg>
+            Back to News
+          </Link>
+        </nav>
+
+        {/* Newsletter CTA */}
+        <div class="mt-12">
+          <NewsletterCTA source="news" />
+        </div>
+      </article>
+
+      {/* Articles similaires */}
+      {relatedNews.length > 0 && (
+        <div class="mt-16 pt-12 border-t border-base-200">
+          <Text
+            tag="h2"
+            variant="textBase"
+            class="font-semibold text-base-900 mb-6"
+          >
+            Related Articles
+          </Text>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {relatedNews.map((related) => (
+              <NewsCard news={related} />
+            ))}
+          </div>
+        </div>
+      )}
+    </Wrapper>
+  </section>
+</BaseLayout>
+
+<script>
+  // Tracking des vues
+  (function() {
+    // Éviter les doublons avec sessionStorage
+    const viewKey = `news-view-${slug}`;
+    if (sessionStorage.getItem(viewKey)) {
+      return; // Déjà compté dans cette session
+    }
+    
+    // Utiliser IntersectionObserver pour tracker seulement si visible
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          // Marquer comme vu dans cette session
+          sessionStorage.setItem(viewKey, 'true');
+          
+          // Envoyer le tracking
+          fetch(`/api/news/${slug}/track-view`, { 
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+          }).catch(err => {
+            console.error('Failed to track view:', err);
+          });
+          
+          // Arrêter d'observer après le premier hit
+          observer.disconnect();
+        }
+      });
+    }, { threshold: 0.5 });
+    
+    // Observer le contenu principal de l'article
+    const articleContent = document.querySelector('article');
+    if (articleContent) {
+      observer.observe(articleContent);
+    }
+  })();
+</script>

@@ -1,0 +1,380 @@
+---
+export const prerender = true;
+
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { Fragment } from "astro/jsx-runtime";
+import Text from "@/components/fundations/elements/Text.astro";
+import Wrapper from "@/components/fundations/containers/Wrapper.astro";
+import Seo from "@/components/fundations/head/Seo.astro";
+import Link from "@/components/fundations/components/Link.astro";
+import Button from "@/components/fundations/components/Button.astro";
+import { normalizeSiteUrl } from '@/lib/utils/url';
+
+const siteUrl = normalizeSiteUrl(Astro.site);
+---
+
+<BaseLayout>
+  <Fragment slot="head">
+    <Seo
+      title="How to Contribute - readme.club"
+      description="Learn how to contribute resources, wallpapers, and help improve readme.club"
+      canonical={`${siteUrl}/contribute`}
+      lang="en"
+    />
+  </Fragment>
+
+  <section>
+    <Wrapper variant="hero">
+      <Text
+        tag="h1"
+        variant="displaySM"
+        class="text-base-900 font-medium 2xl:text-5xl tracking-tight"
+      >
+        How to Contribute
+      </Text>
+      <Text
+        tag="p"
+        variant="textBase"
+        class="mt-4 text-base-600 text-balance 2xl:text-xl"
+      >
+        Help make readme.club better for everyone in the Xteink community
+      </Text>
+    </Wrapper>
+  </section>
+
+  <section>
+    <Wrapper variant="standard" class="py-6 pb-24">
+      <div class="max-w-4xl mx-auto space-y-12">
+        
+        {/* Introduction */}
+        <div>
+          <Text tag="h2" variant="textLG" class="font-semibold text-base-900 mb-4">
+            Welcome to the Community!
+          </Text>
+          <Text tag="p" variant="textBase" class="text-base-600 mb-4">
+            readme.club thrives thanks to contributions from the Xteink community. Whether you're sharing resources, 
+            wallpapers, tips, or feedback, every contribution helps make this platform more valuable for everyone.
+          </Text>
+        </div>
+
+        {/* Submit Resources */}
+        <div class="bg-base-50 border border-base-200 rounded-lg p-8">
+          <div class="flex items-start gap-4 mb-6">
+            <div class="flex-shrink-0 w-12 h-12 bg-accent-500 rounded-lg flex items-center justify-center">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="white"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <polyline points="14 2 14 8 20 8"/>
+                <line x1="16" y1="13" x2="8" y2="13"/>
+                <line x1="16" y1="17" x2="8" y2="17"/>
+                <polyline points="10 9 9 9 8 9"/>
+              </svg>
+            </div>
+            <div class="flex-1">
+              <Text tag="h2" variant="textLG" class="font-semibold text-base-900 mb-2">
+                Submit Resources
+              </Text>
+              <Text tag="p" variant="textBase" class="text-base-600 mb-4">
+                Share tools, fonts, language files, plugins, documentation, and other resources that help Xteink users.
+              </Text>
+              
+              <div class="mb-6">
+                <Text tag="h3" variant="textBase" class="font-semibold text-base-900 mb-3">
+                  Accepted Resource Types:
+                </Text>
+                <ul class="space-y-2 text-base-600">
+                  <li class="flex items-start gap-2">
+                    <span class="text-accent-500 mt-1">•</span>
+                    <span><strong>Tools</strong> - Utilities, converters, and applications for Xteink devices</span>
+                  </li>
+                  <li class="flex items-start gap-2">
+                    <span class="text-accent-500 mt-1">•</span>
+                    <span><strong>Fonts</strong> - Custom fonts optimized for e-ink displays</span>
+                  </li>
+                  <li class="flex items-start gap-2">
+                    <span class="text-accent-500 mt-1">•</span>
+                    <span><strong>Language Files</strong> - Translation files for different languages</span>
+                  </li>
+                  <li class="flex items-start gap-2">
+                    <span class="text-accent-500 mt-1">•</span>
+                    <span><strong>Plugins</strong> - Extensions and plugins to enhance functionality</span>
+                  </li>
+                  <li class="flex items-start gap-2">
+                    <span class="text-accent-500 mt-1">•</span>
+                    <span><strong>Documentation</strong> - Guides, tutorials, and helpful documentation</span>
+                  </li>
+                  <li class="flex items-start gap-2">
+                    <span class="text-accent-500 mt-1">•</span>
+                    <span><strong>External Links</strong> - Useful links to external resources</span>
+                  </li>
+                  <li class="flex items-start gap-2">
+                    <span class="text-accent-500 mt-1">•</span>
+                    <span><strong>Other</strong> - Any other resource that might be useful to the community</span>
+                  </li>
+                </ul>
+              </div>
+
+              <Link
+                href="/submit"
+                class="inline-flex items-center gap-2 px-6 py-3 bg-accent-500 text-white rounded-lg hover:bg-accent-600 transition-colors font-medium"
+              >
+                Submit a Resource
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M5 12h14M12 5l7 7-7 7"/>
+                </svg>
+              </Link>
+            </div>
+          </div>
+        </div>
+
+        {/* Submit Wallpapers */}
+        <div class="bg-base-50 border border-base-200 rounded-lg p-8">
+          <div class="flex items-start gap-4 mb-6">
+            <div class="flex-shrink-0 w-12 h-12 bg-accent-500 rounded-lg flex items-center justify-center">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="white"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <rect width="18" height="18" x="3" y="3" rx="2" ry="2"/>
+                <circle cx="9" cy="9" r="2"/>
+                <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>
+              </svg>
+            </div>
+            <div class="flex-1">
+              <Text tag="h2" variant="textLG" class="font-semibold text-base-900 mb-2">
+                Submit Wallpapers
+              </Text>
+              <Text tag="p" variant="textBase" class="text-base-600 mb-4">
+                Share beautiful wallpapers for Xteink devices. Help others personalize their reading experience.
+              </Text>
+              
+              <div class="mb-6">
+                <Text tag="h3" variant="textBase" class="font-semibold text-base-900 mb-3">
+                  Best Practices:
+                </Text>
+                <ul class="space-y-2 text-base-600">
+                  <li class="flex items-start gap-2">
+                    <span class="text-accent-500 mt-1">•</span>
+                    <span><strong>Format:</strong> BMP, JPG, or PNG files (maximum 10MB)</span>
+                  </li>
+                  <li class="flex items-start gap-2">
+                    <span class="text-accent-500 mt-1">•</span>
+                    <span><strong>Resolution:</strong> Optimize for e-ink displays (typically 1872x1404 for X4, 1872x1404 for X3)</span>
+                  </li>
+                  <li class="flex items-start gap-2">
+                    <span class="text-accent-500 mt-1">•</span>
+                    <span><strong>Content:</strong> Ensure you have the right to share the image. No copyrighted material without permission.</span>
+                  </li>
+                  <li class="flex items-start gap-2">
+                    <span class="text-accent-500 mt-1">•</span>
+                    <span><strong>Categories:</strong> Choose appropriate categories (Minimalist, Dark, Light, Pop Culture, Custom, Other)</span>
+                  </li>
+                  <li class="flex items-start gap-2">
+                    <span class="text-accent-500 mt-1">•</span>
+                    <span><strong>Quality:</strong> High-quality images work best on e-ink displays. Avoid overly complex designs.</span>
+                  </li>
+                </ul>
+              </div>
+
+              <Link
+                href="/submit-wallpaper"
+                class="inline-flex items-center gap-2 px-6 py-3 bg-accent-500 text-white rounded-lg hover:bg-accent-600 transition-colors font-medium"
+              >
+                Submit a Wallpaper
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M5 12h14M12 5l7 7-7 7"/>
+                </svg>
+              </Link>
+            </div>
+          </div>
+        </div>
+
+        {/* Learn More */}
+        <div class="bg-gradient-to-br from-accent-50 to-base-50 border-2 border-accent-200 rounded-xl p-8">
+          <Text tag="h2" variant="textLG" class="font-semibold text-base-900 mb-4">
+            Before Contributing
+          </Text>
+          <Text tag="p" variant="textBase" class="text-base-600 mb-6">
+            Make sure you're familiar with the platform and your device. These resources will help you contribute more effectively:
+          </Text>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Link
+              href="/guide"
+              class="flex items-start gap-3 p-4 bg-white rounded-lg border border-base-200 hover:border-accent-300 hover:shadow-md transition-all"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="text-accent-500 flex-shrink-0"
+              >
+                <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/>
+              </svg>
+              <div>
+                <Text tag="h3" variant="textSM" class="font-semibold text-base-900 mb-1">
+                  Community Guide
+                </Text>
+                <Text tag="p" variant="textXS" class="text-base-600">
+                  Read the complete guide to understand your Xteink device better
+                </Text>
+              </div>
+            </Link>
+
+            <Link
+              href="/tips"
+              class="flex items-start gap-3 p-4 bg-white rounded-lg border border-base-200 hover:border-accent-300 hover:shadow-md transition-all"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="text-accent-500 flex-shrink-0"
+              >
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+              </svg>
+              <div>
+                <Text tag="h3" variant="textSM" class="font-semibold text-base-900 mb-1">
+                  Tips & Tricks
+                </Text>
+                <Text tag="p" variant="textXS" class="text-base-600">
+                  Discover tips and tricks shared by experienced users
+                </Text>
+              </div>
+            </Link>
+          </div>
+        </div>
+
+        {/* Other Ways to Contribute */}
+        <div>
+          <Text tag="h2" variant="textLG" class="font-semibold text-base-900 mb-4">
+            Other Ways to Contribute
+          </Text>
+          <div class="space-y-4">
+            <div class="flex items-start gap-3">
+              <span class="text-accent-500 mt-1">•</span>
+              <div>
+                <Text tag="p" variant="textBase" class="text-base-600">
+                  <strong>Share Feedback:</strong> Have ideas for improving readme.club or your Xteink device? 
+                  Join the discussion on <a href="https://www.reddit.com/r/xteinkereader" target="_blank" rel="noopener noreferrer" class="text-accent-500 hover:underline">Reddit</a>.
+                </Text>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-accent-500 mt-1">•</span>
+              <div>
+                <Text tag="p" variant="textBase" class="text-base-600">
+                  <strong>Feature Requests:</strong> Suggest new features for the site on our 
+                  <Link href="/board" class="text-accent-500 hover:underline">Feature Board</Link>.
+                </Text>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-accent-500 mt-1">•</span>
+              <div>
+                <Text tag="p" variant="textBase" class="text-base-600">
+                  <strong>Report Issues:</strong> Found a bug or have a suggestion? Let us know through the community channels.
+                </Text>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-accent-500 mt-1">•</span>
+              <div>
+                <Text tag="p" variant="textBase" class="text-base-600">
+                  <strong>Spread the Word:</strong> Share readme.club with other Xteink users who might find it useful.
+                </Text>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Quick Links */}
+        <div class="border-t border-base-200 pt-8">
+          <Text tag="h2" variant="textLG" class="font-semibold text-base-900 mb-4">
+            Quick Links
+          </Text>
+          <div class="flex flex-wrap gap-3">
+            <Link
+              href="/submit"
+              class="inline-flex items-center gap-2 px-4 py-2 bg-white border border-base-200 rounded-lg hover:border-accent-300 hover:text-accent-500 transition-colors"
+            >
+              Submit Resource
+            </Link>
+            <Link
+              href="/submit-wallpaper"
+              class="inline-flex items-center gap-2 px-4 py-2 bg-white border border-base-200 rounded-lg hover:border-accent-300 hover:text-accent-500 transition-colors"
+            >
+              Submit Wallpaper
+            </Link>
+            <Link
+              href="/board"
+              class="inline-flex items-center gap-2 px-4 py-2 bg-white border border-base-200 rounded-lg hover:border-accent-300 hover:text-accent-500 transition-colors"
+            >
+              Feature Board
+            </Link>
+            <Link
+              href="/guide"
+              class="inline-flex items-center gap-2 px-4 py-2 bg-white border border-base-200 rounded-lg hover:border-accent-300 hover:text-accent-500 transition-colors"
+            >
+              Community Guide
+            </Link>
+            <Link
+              href="/tips"
+              class="inline-flex items-center gap-2 px-4 py-2 bg-white border border-base-200 rounded-lg hover:border-accent-300 hover:text-accent-500 transition-colors"
+            >
+              Tips & Tricks
+            </Link>
+          </div>
+        </div>
+      </div>
+    </Wrapper>
+  </section>
+</BaseLayout>

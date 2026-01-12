@@ -1,0 +1,18 @@
+---
+// Redirection vers la version anglaise (sans [lang])
+export const prerender = true;
+
+export async function getStaticPaths() {
+  const langs = ['en', 'fr', 'es', 'ru', 'cn'];
+  // On ne peut pas connaître tous les slugs à l'avance, donc on redirige dynamiquement
+  return langs.map((lang) => ({
+    params: { lang, slug: '*' },
+  }));
+}
+
+const lang = Astro.params.lang;
+const slug = Astro.params.slug;
+
+// Rediriger toutes les langues vers la version anglaise (sans préfixe)
+return Astro.redirect(`/news/${slug}`, 301);
+---

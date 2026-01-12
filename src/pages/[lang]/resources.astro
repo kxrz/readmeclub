@@ -29,6 +29,9 @@ const type = url.searchParams.get('type') || null;
 const page = parseInt(url.searchParams.get('page') || '1');
 const limit = 50;
 
+// Détecter si la page a des paramètres de filtres (à exclure du SEO)
+const hasFilters = type !== null || page > 1;
+
 // Charger toutes les resources depuis JSON statique
 const allResources = await loadAllResources();
 
@@ -94,6 +97,7 @@ const resourceTypes = [
       description={t('resources.subtitle')}
       canonical={`${siteUrl}${langPrefix}/resources`}
       lang={lang}
+      noindex={hasFilters}
     />
   </Fragment>
   <section>

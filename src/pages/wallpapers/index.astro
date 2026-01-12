@@ -4,16 +4,21 @@ export const prerender = true;
 
 // Layout
 import BaseLayout from "@/layouts/BaseLayout.astro";
+import { Fragment } from "astro/jsx-runtime";
 // Fundation
 import Text from "@/components/fundations/elements/Text.astro";
 import Wrapper from "@/components/fundations/containers/Wrapper.astro";
+import Seo from "@/components/fundations/head/Seo.astro";
 import WallpaperCard from "@/components/wallpapers/WallpaperCard.astro";
+import NewsletterLink from "@/components/newsletter/NewsletterLink.astro";
 import { loadAllWallpapers, filterAndSortWallpapers, paginateWallpapers } from '@/lib/utils/wallpaper-loader';
 import { useTranslations, getLangFromUrl, getLangPrefix } from '@/i18n/utils';
+import { normalizeSiteUrl } from '@/lib/utils/url';
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 const langPrefix = getLangPrefix(lang);
+const siteUrl = normalizeSiteUrl(Astro.site);
 
 const url = Astro.url;
 const category = url.searchParams.get('category') || null;
@@ -21,6 +26,9 @@ const sort = (url.searchParams.get('sort') || 'latest') as 'latest' | 'popular' 
 const pageParam = url.searchParams.get('page');
 const page = Math.max(1, parseInt(pageParam || '1', 10));
 const pageSize = 24;
+
+// Détecter si la page a des paramètres de filtres (à exclure du SEO)
+const hasFilters = category !== null || sort !== 'latest' || page > 1;
 
 // Charger tous les wallpapers depuis JSON
 const allWallpapers = await loadAllWallpapers();
@@ -73,6 +81,16 @@ function buildWallpapersUrl(category: string | null, sort: string, pageNum: numb
 ---
 
 <BaseLayout>
+  <Fragment slot="head">
+    <Seo
+      title={`${t('wallpapers.title')} - ${t('site.name')}`}
+      description={wallpapersSubtitle}
+      canonical={`${siteUrl}${langPrefix}/wallpapers`}
+      lang={lang}
+      noindex={hasFilters}
+    />
+    <link rel="alternate" type="application/rss+xml" href={`${siteUrl}/wallpapers/rss.xml`} />
+  </Fragment>
   <section>
     <Wrapper variant="hero">
       <Text
@@ -89,7 +107,7 @@ function buildWallpapersUrl(category: string | null, sort: string, pageNum: numb
       >
         {wallpapersSubtitle}
       </Text>
-      <div class="mt-6">
+      <div class="mt-6 flex flex-wrap gap-3">
         <a
           href={`${langPrefix}/submit-wallpaper`}
           class="inline-flex items-center gap-2 px-4 py-2 bg-accent-500 text-white rounded-full hover:bg-accent-600 transition-colors font-medium text-sm shadow-md hover:shadow-lg focus:ring-2 focus:ring-accent-600 focus:ring-offset-2 focus:outline-none"
@@ -111,6 +129,29 @@ function buildWallpapersUrl(category: string | null, sort: string, pageNum: numb
             <path d="M5 12h14"></path>
           </svg>
           {t('wallpapers.add_new')}
+        </a>
+        <NewsletterLink />
+        <a
+          href={`${siteUrl}/wallpapers/rss.xml`}
+          class="inline-flex items-center gap-2 px-4 py-2 text-sm text-base-700 bg-white border border-base-200 rounded-lg hover:border-accent-300 hover:text-accent-500 transition-colors"
+          aria-label="RSS Feed"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M4 11a9 9 0 0 1 9 9"/>
+            <path d="M4 4a16 16 0 0 1 16 16"/>
+            <circle cx="5" cy="19" r="1"/>
+          </svg>
+          RSS Feed
         </a>
       </div>
     </Wrapper>

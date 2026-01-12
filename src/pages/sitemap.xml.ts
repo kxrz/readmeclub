@@ -1,6 +1,7 @@
 import type { APIRoute } from 'astro';
 import { loadAllResources } from '@/lib/utils/resource-loader';
 import { loadAllWallpapers } from '@/lib/utils/wallpaper-loader';
+import { loadAllNewsArticles } from '@/lib/utils/news-loader';
 
 const siteUrl = 'https://readme.club';
 const locales = ['en', 'fr', 'es', 'ru', 'cn'];
@@ -21,6 +22,8 @@ const staticPages = [
   'submit',
   'submit-wallpaper',
   'news',
+  'newsletter',
+  'contribute',
 ];
 
 export const GET: APIRoute = async () => {
@@ -65,6 +68,22 @@ export const GET: APIRoute = async () => {
     }
   } catch (error) {
     console.error('Error loading wallpapers for sitemap:', error);
+  }
+
+  // News articles depuis Markdown statique
+  try {
+    const newsArticles = await loadAllNewsArticles();
+
+    if (newsArticles && newsArticles.length > 0) {
+      for (const locale of locales) {
+        const prefix = locale === 'en' ? '' : `/${locale}`;
+        for (const article of newsArticles) {
+          urls.push(`${siteUrl}${prefix}/news/${article.slug}`);
+        }
+      }
+    }
+  } catch (error) {
+    console.error('Error loading news articles for sitemap:', error);
   }
 
   // Générer le XML du sitemap

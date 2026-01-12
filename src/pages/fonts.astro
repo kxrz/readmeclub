@@ -6,6 +6,7 @@ import Text from "@/components/fundations/elements/Text.astro";
 import Button from "@/components/fundations/components/Button.astro";
 import Wrapper from "@/components/fundations/containers/Wrapper.astro";
 import Seo from "@/components/fundations/head/Seo.astro";
+import NewsletterLink from "@/components/newsletter/NewsletterLink.astro";
 import { useTranslations, getLangFromUrl, getLangPrefix } from '@/i18n/utils';
 import tipsData from '../data/tips.json';
 
@@ -47,6 +48,9 @@ const fontTips = tipsData.tips.filter(tip =>
       >
         {t('fonts.subtitle')}
       </Text>
+      <div class="mt-6">
+        <NewsletterLink />
+      </div>
     </Wrapper>
   </section>
 

@@ -29,6 +29,9 @@ const pageParam = url.searchParams.get('page');
 const page = Math.max(1, parseInt(pageParam || '1', 10));
 const pageSize = 24;
 
+// Détecter si la page a des paramètres de filtres (à exclure du SEO)
+const hasFilters = category !== null || sort !== 'latest' || page > 1;
+
 // Charger tous les wallpapers depuis JSON
 const allWallpapers = await loadAllWallpapers();
 

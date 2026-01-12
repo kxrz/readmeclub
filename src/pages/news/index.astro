@@ -7,21 +7,57 @@ import Text from "@/components/fundations/elements/Text.astro";
 import Wrapper from "@/components/fundations/containers/Wrapper.astro";
 import Seo from "@/components/fundations/head/Seo.astro";
 import Link from "@/components/fundations/components/Link.astro";
+import NewsCard from "@/components/news/NewsCard.astro";
+import NewsletterCTA from "@/components/newsletter/NewsletterCTA.astro";
 import { normalizeSiteUrl } from '@/lib/utils/url';
-import { loadAllNewsArticles } from '@/lib/utils/news-loader';
-import { renderMarkdown } from '@/lib/utils/markdown';
+import { loadAllNewsArticles, paginateNews } from '@/lib/utils/news-loader';
 
 const siteUrl = normalizeSiteUrl(Astro.site);
 
-// Charger les 4 news existantes pour le SEO
-const allNews = await loadAllNewsArticles();
-const news = allNews.slice(0, 4);
+// Pagination
+const url = Astro.url;
+const page = parseInt(url.searchParams.get('page') || '1');
+const limit = 20;
 
-// Pré-rendre le HTML markdown pour chaque article
-const newsWithHtml = news.map((article) => ({
-  ...article,
-  htmlContent: renderMarkdown(article.content),
-}));
+// Charger tous les articles
+const allNews = await loadAllNewsArticles();
+
+// Paginer
+const pagination = paginateNews(allNews, page, limit);
+const news = pagination.data;
+const totalPages = pagination.totalPages;
+const currentPage = pagination.currentPage;
+
+// Générer les pages de pagination
+function generatePaginationPages(current: number, total: number): (number | string)[] {
+  const pages: (number | string)[] = [];
+  
+  if (total <= 7) {
+    for (let i = 1; i <= total; i++) {
+      pages.push(i);
+    }
+  } else {
+    if (current <= 3) {
+      for (let i = 1; i <= 4; i++) pages.push(i);
+      pages.push('ellipsis');
+      pages.push(total);
+    } else if (current >= total - 2) {
+      pages.push(1);
+      pages.push('ellipsis');
+      for (let i = total - 3; i <= total; i++) pages.push(i);
+    } else {
+      pages.push(1);
+      pages.push('ellipsis');
+      for (let i = current - 1; i <= current + 1; i++) pages.push(i);
+      pages.push('ellipsis');
+      pages.push(total);
+    }
+  }
+  
+  return pages;
+}
+
+const paginationPages = totalPages > 1 ? generatePaginationPages(currentPage, totalPages) : [];
 ---
 
 <BaseLayout>
@@ -32,6 +68,7 @@ const newsWithHtml = news.map((article) => ({
       canonical={`${siteUrl}/news`}
       lang="en"
     />
+    <link rel="alternate" type="application/rss+xml" href={`${siteUrl}/news/rss.xml`} />
   </Fragment>
 
   <section>
@@ -48,113 +85,103 @@ const newsWithHtml = news.map((article) => ({
         variant="textBase"
         class="mt-4 text-base-600 text-balance 2xl:text-xl"
       >
-        For the latest updates and discussions, join us on Reddit or Discord
+        Latest updates and articles from the Xteink community
       </Text>
+
+      {/* Newsletter CTA and RSS Button */}
+      <div class="mt-6 flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+        <div class="flex-1 max-w-md">
+          <NewsletterCTA source="news" compact={true} horizontal={true} />
+        </div>
+        <a
+          href={`${siteUrl}/news/rss.xml`}
+          class="inline-flex items-center gap-2 px-4 py-2 text-sm text-base-700 bg-white border border-base-200 rounded-lg hover:border-accent-300 hover:text-accent-500 transition-colors whitespace-nowrap"
+          aria-label="RSS Feed"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M4 11a9 9 0 0 1 9 9"/>
+            <path d="M4 4a16 16 0 0 1 16 16"/>
+            <circle cx="5" cy="19" r="1"/>
+          </svg>
+          RSS Feed
+        </a>
+      </div>
     </Wrapper>
   </section>
 
   <section>
     <Wrapper variant="standard" class="py-6 pb-24">
-      <div class="max-w-2xl mx-auto space-y-8">
-        {/* Message principal */}
-        <div class="bg-base-50 border border-base-200 rounded-lg p-6 text-center">
-          <Text tag="h2" variant="textBase" class="font-semibold text-base-900 mb-3">
-            Join the Community
-          </Text>
-          <Text tag="p" variant="textSM" class="text-base-600 mb-4">
-            For real-time updates, discussions, and community support, visit us on:
-          </Text>
-          <div class="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link
-              href="https://www.reddit.com/r/xteinkereader"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="inline-flex items-center justify-center px-6 py-3 bg-accent-500 text-white rounded-lg hover:bg-accent-600 transition-colors"
-            >
-              Reddit Community
-            </Link>
-            <Link
-              href="https://discord.gg/xteink"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="inline-flex items-center justify-center px-6 py-3 bg-base-900 text-white rounded-lg hover:bg-base-800 transition-colors"
-            >
-              Discord Server
-            </Link>
+      {news.length > 0 ? (
+        <>
+          {/* Grille d'articles */}
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+            {news.map((article) => (
+              <NewsCard news={article} />
+            ))}
           </div>
-        </div>
 
-        {/* Liste des 4 news existantes avec accordéons pour le SEO */}
-        {newsWithHtml.length > 0 && (
-          <div>
-            <Text tag="h2" variant="textBase" class="font-semibold text-base-900 mb-4">
-              Archived News Articles
-            </Text>
-            <div class="space-y-4">
-              {newsWithHtml.map((article) => (
-                <article class="border border-base-200 rounded-lg overflow-hidden">
-                  <details class="group cursor-pointer">
-                    <summary class="p-4 text-base-900 font-semibold flex items-center justify-between w-full text-left select-none hover:text-accent-500 focus:text-accent-500">
-                      <div class="flex-1">
-                        <Text tag="h3" variant="textSM" class="font-semibold text-base-900 mb-2">
-                          {article.title}
-                        </Text>
-                        {article.excerpt && (
-                          <Text tag="p" variant="textXS" class="text-base-600 line-clamp-2 mb-2">
-                            {article.excerpt}
-                          </Text>
-                        )}
-                        {article.published_at && (
-                          <Text tag="p" variant="textXS" class="text-base-500">
-                            {article.published_at}
-                          </Text>
-                        )}
-                      </div>
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        class="icon icon-tabler icons-tabler-outline icon-tabler-plus size-5 ml-4 flex-shrink-0 duration-300 ease-out transform group-open:-rotate-45"
-                      >
-                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                        <path d="M12 5l0 14" />
-                        <path d="M5 12l14 0" />
-                      </svg>
-                    </summary>
-                    <div class="px-4 pb-4 pt-0 border-t border-base-200">
-                      {article.featured_image && (
-                        <div class="mb-6 rounded-lg overflow-hidden">
-                          <img
-                            src={article.featured_image}
-                            alt={article.title}
-                            class="w-full h-auto"
-                            loading="lazy"
-                          />
-                        </div>
-                      )}
-                      <div class="flex items-center gap-4 mb-4 text-sm text-base-600">
-                        {article.author_name && (
-                          <span>By {article.author_name}</span>
-                        )}
-                        {article.published_at && (
-                          <time datetime={article.published_at}>{article.published_at}</time>
-                        )}
-                      </div>
-                      <div class="prose prose-sm max-w-none text-base-600">
-                        <div set:html={article.htmlContent} />
-                      </div>
-                    </div>
-                  </details>
-                </article>
-              ))}
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div class="flex items-center justify-center gap-2 flex-wrap">
+              {currentPage > 1 && (
+                <Link
+                  href={`/news${currentPage > 2 ? `?page=${currentPage - 1}` : ''}`}
+                  class="px-4 py-2 text-sm text-base-700 bg-white border border-base-200 rounded-lg hover:border-accent-300 hover:text-accent-500 transition-colors"
+                >
+                  Previous
+                </Link>
+              )}
+              
+              <div class="flex items-center gap-1">
+                {paginationPages.map((p) => {
+                  if (p === 'ellipsis') {
+                    return <span class="px-2 text-base-500">...</span>;
+                  }
+                  const pageNum = p as number;
+                  const isActive = pageNum === currentPage;
+                  return (
+                    <Link
+                      href={`/news${pageNum > 1 ? `?page=${pageNum}` : ''}`}
+                      class={`px-4 py-2 text-sm rounded-lg transition-colors ${
+                        isActive
+                          ? 'bg-base-900 text-white'
+                          : 'text-base-700 bg-white border border-base-200 hover:border-accent-300 hover:text-accent-500'
+                      }`}
+                    >
+                      {pageNum}
+                    </Link>
+                  );
+                })}
+              </div>
+
+              {currentPage < totalPages && (
+                <Link
+                  href={`/news?page=${currentPage + 1}`}
+                  class="px-4 py-2 text-sm text-base-700 bg-white border border-base-200 rounded-lg hover:border-accent-300 hover:text-accent-500 transition-colors"
+                >
+                  Next
+                </Link>
+              )}
             </div>
-          </div>
-        )}
-      </div>
+          )}
+        </>
+      ) : (
+        <div class="text-center py-12">
+          <Text tag="p" variant="textBase" class="text-base-600">
+            No news articles found.
+          </Text>
+        </div>
+      )}
     </Wrapper>
   </section>
 </BaseLayout>

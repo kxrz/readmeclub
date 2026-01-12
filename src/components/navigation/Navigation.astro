@@ -24,21 +24,51 @@ const navItems = [
   { href: `${langPrefix}/firmware`, text: t('nav.firmware') },
 ];
 
-// Navigation items (burger menu - all)
+// Navigation items (burger menu - organized by sections)
 const burgerItems = [
-  { href: `${langPrefix}/resources`, text: t('nav.resources') },
-  { href: `${langPrefix}/wallpapers`, text: t('nav.wallpapers') },
-  { href: `${langPrefix}/fonts`, text: t('nav.fonts') },
-  { href: `${langPrefix}/download-fonts`, text: t('nav.download_fonts') },
-  { href: `${langPrefix}/firmware`, text: t('nav.firmware') },
-  { href: `${langPrefix}/news`, text: t('nav.news') },
-  { href: `${langPrefix}/board`, text: t('nav.board') },
-  { href: `${langPrefix}/tips`, text: t('nav.tips') },
-  { href: `${langPrefix}/location`, text: t('nav.location') },
-  { href: `${langPrefix}/guide`, text: t('nav.guide') },
+  // Section 1: Contenu principal / Ressources
+  { href: `${langPrefix}/resources`, text: t('nav.resources'), section: 'content' },
+  { href: `${langPrefix}/wallpapers`, text: t('nav.wallpapers'), section: 'content' },
+  { href: `${langPrefix}/fonts`, text: t('nav.fonts'), section: 'content' },
+  { href: `${langPrefix}/download-fonts`, text: t('nav.download_fonts'), section: 'content' },
+  { href: `${langPrefix}/firmware`, text: t('nav.firmware'), section: 'content' },
+  // Section 2: Actualités / Informations
+  { href: `${langPrefix}/news`, text: t('nav.news'), section: 'news' },
+  { href: `${langPrefix}/newsletter`, text: t('nav.newsletter'), section: 'news' },
+  // Section 3: Aide / Documentation
+  { href: `${langPrefix}/guide`, text: t('nav.guide'), section: 'help' },
+  { href: `${langPrefix}/tips`, text: t('nav.tips'), section: 'help' },
+  { href: `${langPrefix}/board`, text: t('nav.board'), section: 'help' },
+  { href: `${langPrefix}/contribute`, text: t('nav.i_want_to_contribute'), section: 'help' },
+  // Section 4: Utilitaires
+  { href: `${langPrefix}/location`, text: t('nav.location'), section: 'utils' },
+];
+
+// Items à afficher après Buy Me a Coffee (même style)
+const footerItems = [
   { href: `${langPrefix}/about`, text: t('nav.about') },
   { href: `${langPrefix}/disclaimer`, text: t('nav.disclaimer') },
 ];
+
+// Grouper les items par section pour l'affichage
+const burgerSections = [
+  {
+    key: 'content',
+    items: burgerItems.filter(item => item.section === 'content'),
+  },
+  {
+    key: 'news',
+    items: burgerItems.filter(item => item.section === 'news'),
+  },
+  {
+    key: 'help',
+    items: burgerItems.filter(item => item.section === 'help'),
+  },
+  {
+    key: 'utils',
+    items: burgerItems.filter(item => item.section === 'utils'),
+  },
+].filter(section => section.items.length > 0);
 ---
 
 <section>
@@ -186,25 +216,42 @@ const burgerItems = [
       </div>
       <nav role="navigation">
         <div
-          class="flex flex-col gap-6 lg:gap-12 border-t border-base-200 p-2 py-3 px-6"
+          class="flex flex-col gap-6 lg:gap-8 border-t border-base-200 p-2 py-3 px-6"
         >
-          <ul role="navigation" class="flex flex-col gap-1">
-            {burgerItems.map((item) => (
-              <li>
-                <Text
-                  tag="a"
-                  variant="textXL"
-                  href={item.href}
-                  class="text-base-900 font-semibold  hover:text-accent-500"
-                >
-                  {item.text}
-                </Text>
-              </li>
-            ))}
-          </ul>
+          {burgerSections.map((section, sectionIndex) => (
+            <div>
+              {sectionIndex > 0 && (
+                <div class="border-t border-base-200 my-4"></div>
+              )}
+              <ul role="navigation" class="flex flex-col gap-1">
+                {section.items.map((item) => (
+                  <li>
+                    <Text
+                      tag="a"
+                      variant="textXL"
+                      href={item.href}
+                      class="text-base-900 font-semibold hover:text-accent-500"
+                    >
+                      {item.text}
+                    </Text>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
         </div>
-        <div class="border-t border-base-200 p-2 py-3 px-6">
+        <div class="border-t border-base-200 p-2 py-3 px-6 space-y-3">
           <BuyMeACoffee variant="default" class="text-base-600" />
+          <div class="flex flex-col gap-2">
+            {footerItems.map((item) => (
+              <a
+                href={item.href}
+                class="inline-flex items-center gap-1.5 text-sm text-base-500 hover:text-accent-500 transition-colors"
+              >
+                {item.text}
+              </a>
+            ))}
+          </div>
         </div>
       </nav>
     </div>

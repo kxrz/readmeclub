@@ -1,0 +1,170 @@
+---
+interface Props {
+  source?: string; // 'news', 'wallpapers', 'resources', 'homepage'
+  compact?: boolean;
+  inline?: boolean; // Email et bouton sur la même ligne, sans titre/description (déprécié)
+  horizontal?: boolean; // Email et bouton sur la même ligne dans le bloc (avec titre/description)
+}
+
+const { source = 'homepage', compact = false, inline = false, horizontal = false } = Astro.props;
+
+const messages = {
+  news: {
+    title: 'Stay updated',
+    description: 'Get notified when new articles are published. No spam, just occasional updates.',
+  },
+  wallpapers: {
+    title: 'New wallpapers',
+    description: 'Be the first to know when new wallpapers are added to the collection.',
+  },
+  resources: {
+    title: 'New resources',
+    description: 'Receive notifications about new tools, fonts, and community resources.',
+  },
+  homepage: {
+    title: 'Stay informed',
+    description: 'Receive occasional updates about new features, community news, and important announcements.',
+  },
+};
+
+const message = messages[source as keyof typeof messages] || messages.homepage;
+---
+
+{inline ? (
+  <div class="w-full">
+    <form 
+      class="newsletter-cta-form flex gap-2 w-full"
+      data-source={source}
+    >
+      <input
+        type="email"
+        name="email"
+        placeholder="your.email@example.com"
+        required
+        class="flex-1 px-4 py-2 border border-base-200 rounded-lg focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none transition-colors text-sm"
+      />
+      <button
+        type="submit"
+        class="px-6 py-2 bg-accent-500 text-white rounded-lg hover:bg-accent-600 transition-colors font-medium whitespace-nowrap text-sm"
+      >
+        Subscribe
+      </button>
+    </form>
+    <div class="newsletter-cta-message mt-2 text-xs text-base-500 hidden"></div>
+  </div>
+) : (
+  <div class={`bg-base-50 border border-base-200 rounded-lg p-6 ${compact ? 'p-4' : ''}`}>
+    <div class={`flex flex-col gap-4`}>
+      <div>
+        <h3 class={`font-semibold text-base-900 mb-2 ${compact ? 'text-sm' : 'text-base'}`}>
+          {message.title}
+        </h3>
+        <p class={`text-base-600 ${compact ? 'text-xs' : 'text-sm'}`}>
+          {message.description}
+        </p>
+      </div>
+      
+      <form 
+        class="newsletter-cta-form"
+        data-source={source}
+      >
+        <div class={`flex gap-2 ${horizontal ? 'flex-row' : 'flex-col sm:flex-row'}`}>
+          <input
+            type="email"
+            name="email"
+            placeholder="your.email@example.com"
+            required
+            class={`flex-1 px-4 py-2 border border-base-200 rounded-lg focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none transition-colors ${compact ? 'text-sm' : ''}`}
+          />
+          <button
+            type="submit"
+            class={`px-6 py-2 bg-accent-500 text-white rounded-lg hover:bg-accent-600 transition-colors font-medium whitespace-nowrap ${compact ? 'text-sm' : ''}`}
+          >
+            Subscribe
+          </button>
+        </div>
+        <div class="newsletter-cta-message mt-2 text-xs text-base-500 hidden"></div>
+      </form>
+    </div>
+  </div>
+)}
+
+<script>
+  (function() {
+    const forms = document.querySelectorAll('.newsletter-cta-form');
+    
+    forms.forEach((form) => {
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const formEl = e.target as HTMLFormElement;
+        const emailInput = formEl.querySelector('input[type="email"]') as HTMLInputElement;
+        const messageDiv = formEl.querySelector('.newsletter-cta-message') as HTMLDivElement;
+        const submitButton = formEl.querySelector('button[type="submit"]') as HTMLButtonElement;
+        
+        if (!emailInput || !messageDiv || !submitButton) return;
+        
+        const email = emailInput.value.trim();
+        
+        if (!email) {
+          showMessage(messageDiv, 'Please enter your email address', 'error');
+          return;
+        }
+
+        // Désactiver le bouton
+        submitButton.disabled = true;
+        submitButton.textContent = 'Subscribing...';
+
+        try {
+          const response = await fetch('/api/newsletter/subscribe', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email }),
+          });
+
+          const data = await response.json();
+
+          if (response.ok && data.success) {
+            if (data.alreadySubscribed) {
+              showMessage(messageDiv, 'You are already subscribed to our newsletter!', 'info');
+            } else {
+              showMessage(messageDiv, 'Successfully subscribed! Check your inbox for a welcome email.', 'success');
+              emailInput.value = '';
+            }
+          } else {
+            showMessage(messageDiv, data.error || 'Failed to subscribe', 'error');
+          }
+        } catch (error) {
+          console.error('Subscription error:', error);
+          showMessage(messageDiv, 'An error occurred. Please try again.', 'error');
+        } finally {
+          submitButton.disabled = false;
+          submitButton.textContent = 'Subscribe';
+        }
+      });
+    });
+
+    function showMessage(element: HTMLDivElement, message: string, type: 'success' | 'error' | 'info') {
+      element.textContent = message;
+      let colorClass = '';
+      if (type === 'success') {
+        colorClass = 'text-green-600';
+      } else if (type === 'error') {
+        colorClass = 'text-red-600';
+      } else {
+        colorClass = 'text-blue-600';
+      }
+      element.className = `newsletter-cta-message mt-2 text-xs ${colorClass}`;
+      element.classList.remove('hidden');
+      
+      // Masquer après 5 secondes pour les succès et info
+      if (type === 'success' || type === 'info') {
+        setTimeout(() => {
+          element.classList.add('hidden');
+        }, 5000);
+      }
+    }
+  })();
+</script>

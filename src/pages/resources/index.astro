@@ -10,6 +10,8 @@ import Wrapper from "@/components/fundations/containers/Wrapper.astro";
 import ResourceCard from "@/components/resources/ResourceCard.astro";
 import Seo from "@/components/fundations/head/Seo.astro";
 import Link from "@/components/fundations/components/Link.astro";
+import NewsletterLink from "@/components/newsletter/NewsletterLink.astro";
+import { normalizeSiteUrl } from '@/lib/utils/url';
 import { loadAllResources, filterAndSortResources, paginateResources } from '@/lib/utils/resource-loader';
 import { useTranslations, getLangFromUrl, getLangPrefix } from '@/i18n/utils';
 
@@ -24,6 +26,9 @@ const type = url.searchParams.get('type') || null;
 const sort = (url.searchParams.get('sort') || 'latest') as 'latest' | 'popular' | 'name';
 const page = parseInt(url.searchParams.get('page') || '1');
 const limit = 50;
+
+// Détecter si la page a des paramètres de filtres (à exclure du SEO)
+const hasFilters = type !== null || sort !== 'latest' || page > 1;
 
 // Charger toutes les resources depuis JSON statique
 const allResources = await loadAllResources();
@@ -107,7 +112,9 @@ const sortOptions = [
       description={t('resources.subtitle')}
       canonical={`${siteUrl}${langPrefix}/resources`}
       lang={lang}
+      noindex={hasFilters}
     />
+    <link rel="alternate" type="application/rss+xml" href={`${siteUrl}/resources/rss.xml`} />
   </Fragment>
   <section>
     <Wrapper variant="hero">
@@ -125,7 +132,7 @@ const sortOptions = [
       >
         {t('resources.subtitle')}
       </Text>
-      <div class="mt-6">
+      <div class="mt-6 flex flex-wrap gap-3">
         <a
           href={`${langPrefix}/submit`}
           class="inline-flex items-center gap-2 px-4 py-2 bg-accent-500 text-white rounded-full hover:bg-accent-600 transition-colors font-medium text-sm shadow-md hover:shadow-lg focus:ring-2 focus:ring-accent-600 focus:ring-offset-2 focus:outline-none"
@@ -147,6 +154,29 @@ const sortOptions = [
             <path d="M5 12h14"></path>
           </svg>
           {t('resources.add_new')}
+        </a>
+        <NewsletterLink />
+        <a
+          href={`${siteUrl}/resources/rss.xml`}
+          class="inline-flex items-center gap-2 px-4 py-2 text-sm text-base-700 bg-white border border-base-200 rounded-lg hover:border-accent-300 hover:text-accent-500 transition-colors"
+          aria-label="RSS Feed"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M4 11a9 9 0 0 1 9 9"/>
+            <path d="M4 4a16 16 0 0 1 16 16"/>
+            <circle cx="5" cy="19" r="1"/>
+          </svg>
+          RSS Feed
         </a>
       </div>
     </Wrapper>

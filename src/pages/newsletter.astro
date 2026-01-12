@@ -1,0 +1,280 @@
+---
+export const prerender = true;
+
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { Fragment } from "astro/jsx-runtime";
+import Text from "@/components/fundations/elements/Text.astro";
+import Wrapper from "@/components/fundations/containers/Wrapper.astro";
+import Seo from "@/components/fundations/head/Seo.astro";
+import Button from "@/components/fundations/components/Button.astro";
+import { normalizeSiteUrl } from '@/lib/utils/url';
+
+const siteUrl = normalizeSiteUrl(Astro.site);
+---
+
+<BaseLayout>
+  <Fragment slot="head">
+    <Seo
+      title="Newsletter - readme.club"
+      description="Subscribe to receive the latest updates from the Xteink community"
+      canonical={`${siteUrl}/newsletter`}
+      lang="en"
+    />
+  </Fragment>
+
+  <section>
+    <Wrapper variant="hero">
+      <Text
+        tag="h1"
+        variant="displaySM"
+        class="text-base-900 font-medium 2xl:text-5xl tracking-tight"
+      >
+        Newsletter
+      </Text>
+      <Text
+        tag="p"
+        variant="textBase"
+        class="mt-4 text-base-600 text-balance 2xl:text-xl"
+      >
+        Stay informed about the latest updates, news, and community highlights
+      </Text>
+    </Wrapper>
+  </section>
+
+  <section>
+    <Wrapper variant="standard" class="py-6 pb-24">
+      <div class="max-w-3xl mx-auto space-y-8">
+        {/* Description */}
+        <div>
+          <Text tag="h2" variant="textLG" class="font-semibold text-base-900 mb-4">
+            What is our newsletter?
+          </Text>
+          <Text tag="p" variant="textBase" class="text-base-600 mb-4">
+            Our newsletter is a curated digest of the most important updates, news, and highlights from the Xteink community. 
+            We send occasional emails (not spam!) to keep you informed about:
+          </Text>
+          <ul class="list-disc list-inside space-y-2 text-base-600 mb-4 ml-4">
+            <li>New articles and community updates</li>
+            <li>Latest resources, tools, and fonts</li>
+            <li>New wallpapers added to the collection</li>
+            <li>Important announcements and feature releases</li>
+            <li>Community highlights and discussions</li>
+          </ul>
+        </div>
+
+        {/* Frequency */}
+        <div>
+          <Text tag="h2" variant="textLG" class="font-semibold text-base-900 mb-4">
+            How often do you send emails?
+          </Text>
+          <Text tag="p" variant="textBase" class="text-base-600">
+            We don't have a fixed schedule. You'll receive emails only when there's something important to share—typically 
+            when new articles are published or when significant updates happen. We respect your inbox and won't spam you.
+          </Text>
+        </div>
+
+        {/* Privacy */}
+        <div>
+          <Text tag="h2" variant="textLG" class="font-semibold text-base-900 mb-4">
+            Privacy and unsubscription
+          </Text>
+          <Text tag="p" variant="textBase" class="text-base-600 mb-4">
+            Your email address is used solely for sending newsletter updates. We don't share your information with third parties. 
+            You can unsubscribe at any time using the link provided in each email.
+          </Text>
+        </div>
+
+        {/* Subscribe Form */}
+        <div class="pt-8 border-t border-base-200">
+          <div class="bg-gradient-to-br from-accent-50 via-white to-base-50 border-2 border-accent-200 rounded-xl p-8 md:p-10 shadow-lg">
+            <div class="text-center mb-6">
+              <div class="inline-flex items-center justify-center w-16 h-16 bg-accent-500 rounded-full mb-4">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="32"
+                  height="32"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="white"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <rect width="20" height="16" x="2" y="4" rx="2"/>
+                  <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+                </svg>
+              </div>
+              <Text tag="h2" variant="textLG" class="font-bold text-base-900 mb-2">
+                Stay in the loop! 🎯
+              </Text>
+              <Text tag="p" variant="textBase" class="text-base-600 max-w-md mx-auto">
+                Get the latest updates delivered straight to your inbox. No spam, just valuable content when it matters.
+              </Text>
+            </div>
+
+            <form id="newsletter-form" class="space-y-4">
+              <div>
+                <label for="email" class="block text-sm font-semibold text-base-900 mb-2">
+                  Your email address
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  required
+                  class="w-full px-5 py-3 text-base border-2 border-base-200 rounded-xl focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none transition-all shadow-sm hover:shadow-md"
+                  placeholder="you@example.com"
+                />
+              </div>
+
+              <div id="form-message" class="hidden text-sm font-medium text-center py-2 rounded-lg"></div>
+
+              <button
+                type="submit"
+                id="subscribe-button"
+                class="w-full px-6 py-4 bg-gradient-to-r from-accent-500 to-accent-600 text-white font-bold text-lg rounded-xl hover:from-accent-600 hover:to-accent-700 transition-all shadow-lg hover:shadow-xl transform hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M5 12h14M12 5l7 7-7 7"/>
+                </svg>
+                <span>Subscribe Now</span>
+              </button>
+            </form>
+
+            <div class="mt-6 pt-6 border-t border-base-200">
+              <div class="flex items-start gap-2 text-xs text-base-500">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="flex-shrink-0 mt-0.5"
+                >
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                  <path d="M9 12l2 2 4-4"/>
+                </svg>
+                <Text tag="p" variant="textXS" class="text-base-500">
+                  Your email is safe with us. We'll never share it and you can unsubscribe anytime with one click.
+                </Text>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Wrapper>
+  </section>
+</BaseLayout>
+
+<script>
+  (function() {
+    const form = document.getElementById('newsletter-form') as HTMLFormElement;
+    const emailInput = document.getElementById('email') as HTMLInputElement;
+    const messageDiv = document.getElementById('form-message') as HTMLDivElement;
+    const submitButton = form.querySelector('button[type="submit"]') as HTMLButtonElement;
+
+    if (!form || !emailInput || !messageDiv || !submitButton) return;
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const email = emailInput.value.trim();
+      
+      if (!email) {
+        showMessage('Please enter your email address', 'error');
+        return;
+      }
+
+      // Désactiver le bouton pendant la soumission
+      submitButton.disabled = true;
+      submitButton.innerHTML = `
+        <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        <span>Subscribing...</span>
+      `;
+      messageDiv.classList.add('hidden');
+
+      try {
+        const response = await fetch('/api/newsletter/subscribe', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ email }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+          if (data.alreadySubscribed) {
+            showMessage('You are already subscribed to our newsletter!', 'info');
+          } else {
+            showMessage('Successfully subscribed! Check your inbox for a welcome email.', 'success');
+            form.reset();
+          }
+        } else {
+          showMessage(data.error || 'Failed to subscribe. Please try again.', 'error');
+        }
+      } catch (error) {
+        console.error('Subscription error:', error);
+        showMessage('An error occurred. Please try again later.', 'error');
+      } finally {
+        submitButton.disabled = false;
+        submitButton.innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+          <span>Subscribe Now</span>
+        `;
+      }
+    });
+
+    function showMessage(message: string, type: 'success' | 'error' | 'info') {
+      let icon = '';
+      let className = '';
+      
+      if (type === 'success') {
+        icon = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>';
+        className = 'text-green-700 bg-green-50 border border-green-200';
+      } else if (type === 'error') {
+        icon = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>';
+        className = 'text-red-700 bg-red-50 border border-red-200';
+      } else {
+        icon = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>';
+        className = 'text-blue-700 bg-blue-50 border border-blue-200';
+      }
+      
+      messageDiv.innerHTML = `
+        <div class="flex items-center gap-2 justify-center">
+          ${icon}
+          <span>${message}</span>
+        </div>
+      `;
+      messageDiv.className = `text-sm font-medium py-3 px-4 rounded-lg ${className}`;
+      messageDiv.classList.remove('hidden');
+      
+      // Masquer après 5 secondes pour les succès et info
+      if (type === 'success' || type === 'info') {
+        setTimeout(() => {
+          messageDiv.classList.add('hidden');
+        }, 5000);
+      }
+    }
+  })();
+</script>

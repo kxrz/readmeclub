@@ -166,6 +166,34 @@ export function sortNewsByDate(articles: NewsArticle[]): NewsArticle[] {
 }
 
 /**
+ * Pagine les articles de news
+ */
+export function paginateNews(
+  articles: NewsArticle[],
+  page: number,
+  limit: number
+): {
+  data: NewsArticle[];
+  total: number;
+  totalPages: number;
+  currentPage: number;
+} {
+  const total = articles.length;
+  const totalPages = Math.ceil(total / limit);
+  const currentPage = Math.max(1, Math.min(page, totalPages));
+  const offset = (currentPage - 1) * limit;
+  
+  const data = articles.slice(offset, offset + limit);
+  
+  return {
+    data,
+    total,
+    totalPages,
+    currentPage,
+  };
+}
+
+/**
  * Charge un article par slug avec fallback Supabase
  */
 export async function loadNewsArticle(slug: string): Promise<NewsArticle | null> {

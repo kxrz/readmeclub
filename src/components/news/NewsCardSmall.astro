@@ -19,16 +19,16 @@ const featuredImageUrl = ('featured_image_url' in news ? news.featured_image_url
 const publishedDate = ('published_at' in news && news.published_at) ? new Date(news.published_at) : ('created_at' in news ? new Date(news.created_at) : new Date());
 const formattedDate = publishedDate.toLocaleDateString('en-US', {
   year: 'numeric',
-  month: 'long',
+  month: 'short',
   day: 'numeric'
 });
 ---
 
 <a
   href={newsUrl}
-  class="group relative flex flex-col rounded-lg border border-base-200 bg-white overflow-hidden hover:border-accent-300 hover:shadow-lg transition-all"
+  class="group relative flex flex-col rounded-lg border border-base-200 bg-white overflow-hidden hover:border-accent-300 hover:shadow-md transition-all"
 >
-  <div class="aspect-video w-full overflow-hidden bg-base-100">
+  <div class="aspect-video w-full overflow-hidden bg-base-100 max-h-24 sm:max-h-32">
     <img
       src={featuredImageUrl}
       alt={news.title}
@@ -39,37 +39,31 @@ const formattedDate = publishedDate.toLocaleDateString('en-US', {
     />
   </div>
   
-  <div class="p-6 flex-1 flex flex-col">
+  <div class="p-2.5 sm:p-3 flex-1 flex flex-col">
     {news.featured && (
-      <span class="inline-block mb-2 text-xs uppercase text-accent-600 font-semibold">
+      <span class="inline-block mb-1.5 text-xs uppercase text-accent-600 font-semibold">
         {t('news.featured')}
       </span>
     )}
     
-    <Text tag="h3" variant="textBase" class="font-semibold text-base-900 line-clamp-2 group-hover:text-accent-500 mb-2">
+    <Text tag="h3" variant="textXS" class="font-semibold text-base-900 line-clamp-2 group-hover:text-accent-500 mb-1 sm:mb-1.5 text-xs sm:text-sm">
       {news.title}
     </Text>
     
     {news.excerpt && (
-      <Text tag="p" variant="textSM" class="text-base-600 line-clamp-3 mb-4 flex-1">
+      <Text tag="p" variant="textXS" class="text-base-600 line-clamp-2 mb-1.5 sm:mb-2 flex-1 text-xs">
         {news.excerpt}
       </Text>
     )}
     
-    <div class="flex items-center justify-between mt-auto pt-4 border-t border-base-200">
-      <div class="flex items-center gap-3 text-xs text-base-500">
-        {news.author_name && (
+    <div class="flex items-center gap-2 text-xs text-base-500 mt-auto pt-1.5 sm:pt-2 border-t border-base-200">
+      {news.author_name && (
+        <>
           <span>{news.author_name}</span>
-        )}
-        <span>•</span>
-        <time datetime={publishedDate.toISOString()}>{formattedDate}</time>
-      </div>
-      {('views_count' in news && news.views_count > 0) && (
-        <Text tag="span" variant="textXS" class="text-base-500">
-          {news.views_count} {t('news.views')}
-        </Text>
+          <span>•</span>
+        </>
       )}
+      <time datetime={publishedDate.toISOString()}>{formattedDate}</time>
     </div>
   </div>
 </a>
-
