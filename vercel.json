@@ -46,16 +46,6 @@
       "source": "/en/:path*",
       "destination": "/:path*",
       "permanent": true
-    },
-    {
-      "source": "/news/:slug",
-      "destination": "/news",
-      "permanent": true
-    },
-    {
-      "source": "/:lang/news/:slug",
-      "destination": "/news",
-      "permanent": true
     }
   ]
 }
