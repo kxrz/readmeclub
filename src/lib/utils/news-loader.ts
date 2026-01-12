@@ -107,9 +107,48 @@ async function loadArticleFromMarkdown(slug: string): Promise<NewsArticle | null
 }
 
 /**
+ * Charge tous les articles depuis Supabase
+ */
+async function loadAllNewsFromSupabase(): Promise<NewsArticle[]> {
+  try {
+    const supabaseAdmin = getSupabaseAdmin();
+    const { data, error } = await supabaseAdmin
+      .from('news')
+      .select('*')
+      .eq('status', 'published')
+      .eq('hidden', false)
+      .order('published_at', { ascending: false });
+    
+    if (error) {
+      console.error('Erreur lors du chargement des articles depuis Supabase:', error);
+      return [];
+    }
+    
+    if (!data || data.length === 0) {
+      return [];
+    }
+    
+    return data.map((item) => ({
+      title: item.title,
+      slug: item.slug,
+      excerpt: item.excerpt,
+      content: item.content,
+      featured_image: item.featured_image_url,
+      author_name: item.author_name,
+      author_email: item.author_email,
+      published_at: item.published_at || item.created_at,
+      featured: item.featured,
+    }));
+  } catch (error) {
+    console.error('Erreur lors du chargement des articles depuis Supabase:', error);
+    return [];
+  }
+}
+
+/**
  * Charge tous les articles depuis les fichiers Markdown
  */
-export async function loadAllNewsArticles(): Promise<NewsArticle[]> {
+async function loadAllNewsFromMarkdown(): Promise<NewsArticle[]> {
   try {
     const newsDir = path.join(projectRoot, 'public', 'news');
     
@@ -132,9 +171,48 @@ export async function loadAllNewsArticles(): Promise<NewsArticle[]> {
       }
     }
     
+    return articles;
+  } catch (error) {
+    console.error('Erreur lors du chargement des articles depuis Markdown:', error);
+    return [];
+  }
+}
+
+/**
+ * Charge tous les articles depuis Markdown + Supabase
+ * En cas de conflit (même slug), Supabase a priorité
+ */
+export async function loadAllNewsArticles(): Promise<NewsArticle[]> {
+  try {
+    // Charger depuis les deux sources en parallèle
+    const [markdownArticles, supabaseArticles] = await Promise.all([
+      loadAllNewsFromMarkdown(),
+      loadAllNewsFromSupabase(),
+    ]);
+    
+    // Créer une Map pour les articles Supabase (priorité)
+    const supabaseMap = new Map<string, NewsArticle>();
+    supabaseArticles.forEach(article => {
+      supabaseMap.set(article.slug, article);
+    });
+    
+    // Créer une Map pour les articles Markdown (fallback)
+    const markdownMap = new Map<string, NewsArticle>();
+    markdownArticles.forEach(article => {
+      // Ne garder que ceux qui ne sont pas dans Supabase
+      if (!supabaseMap.has(article.slug)) {
+        markdownMap.set(article.slug, article);
+      }
+    });
+    
+    // Fusionner : Supabase d'abord, puis Markdown
+    const mergedArticles = [
+      ...Array.from(supabaseMap.values()),
+      ...Array.from(markdownMap.values()),
+    ];
+    
     // Trier par date de publication (plus récent en premier)
-    // Utiliser comparaison de chaînes ISO pour éviter Date.parse()
-    articles.sort((a, b) => {
+    mergedArticles.sort((a, b) => {
       const dateA = a.published_at || '';
       const dateB = b.published_at || '';
       // Les dates ISO sont comparables directement comme chaînes
@@ -143,7 +221,7 @@ export async function loadAllNewsArticles(): Promise<NewsArticle[]> {
       return 0;
     });
     
-    return articles;
+    return mergedArticles;
   } catch (error) {
     console.error('Erreur lors du chargement des articles:', error);
     return [];
@@ -194,18 +272,11 @@ export function paginateNews(
 }
 
 /**
- * Charge un article par slug avec fallback Supabase
+ * Charge un article par slug
+ * Priorité : Supabase d'abord, puis Markdown
  */
 export async function loadNewsArticle(slug: string): Promise<NewsArticle | null> {
-  // Essayer d'abord depuis Markdown
-  const article = await loadArticleFromMarkdown(slug);
-  if (article) {
-    return article;
-  }
-  
-  // Fallback vers Supabase (mode dégradé)
-  console.warn(`⚠️  Article ${slug} non trouvé dans Markdown, fallback vers Supabase`);
-  
+  // Essayer d'abord depuis Supabase (priorité)
   try {
     const supabaseAdmin = getSupabaseAdmin();
     const { data, error } = await supabaseAdmin
@@ -216,23 +287,28 @@ export async function loadNewsArticle(slug: string): Promise<NewsArticle | null>
       .eq('hidden', false)
       .single();
     
-    if (error || !data) {
-      return null;
+    if (!error && data) {
+      return {
+        title: data.title,
+        slug: data.slug,
+        excerpt: data.excerpt,
+        content: data.content,
+        featured_image: data.featured_image_url,
+        author_name: data.author_name,
+        author_email: data.author_email,
+        published_at: data.published_at || data.created_at,
+        featured: data.featured,
+      };
     }
-    
-    return {
-      title: data.title,
-      slug: data.slug,
-      excerpt: data.excerpt,
-      content: data.content,
-      featured_image: data.featured_image_url,
-      author_name: data.author_name,
-      author_email: data.author_email,
-      published_at: data.published_at || data.created_at,
-      featured: data.featured,
-    };
   } catch (error) {
-    console.error(`Erreur lors du fallback Supabase pour ${slug}:`, error);
-    return null;
+    console.error(`Erreur lors du chargement depuis Supabase pour ${slug}:`, error);
   }
+  
+  // Fallback vers Markdown
+  const article = await loadArticleFromMarkdown(slug);
+  if (article) {
+    return article;
+  }
+  
+  return null;
 }

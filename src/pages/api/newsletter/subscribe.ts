@@ -1,7 +1,7 @@
 export const prerender = false;
 
 import type { APIRoute } from 'astro';
-import { addContactToResend, sendWelcomeEmail } from '@/lib/resend/client';
+import { addContactToResend, sendWelcomeEmail, checkContactExists } from '@/lib/resend/client';
 import { z } from 'zod';
 
 const subscribeSchema = z.object({
@@ -20,7 +20,6 @@ export const POST: APIRoute = async ({ request }) => {
     const validated = subscribeSchema.parse(body);
     
     // Vérifier si le contact existe déjà
-    const { checkContactExists } = await import('@/lib/resend/client');
     const alreadyExists = await checkContactExists(validated.email);
     
     if (alreadyExists) {

@@ -38,9 +38,15 @@ export const PUT: APIRoute = async ({ params, request, cookies }) => {
 
     const supabaseAdmin = getSupabaseAdmin();
 
+    // Remettre exported_to_static à false lors d'une modification pour ré-exporter au prochain build
+    const updateData = {
+      ...validated,
+      exported_to_static: false,
+    };
+
     const { data, error } = await supabaseAdmin
       .from('news')
-      .update(validated)
+      .update(updateData)
       .eq('id', id)
       .select()
       .single();
