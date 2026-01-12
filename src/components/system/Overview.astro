@@ -140,14 +140,16 @@ const pages = [
                     <ul role="list">
                       {category.links.map((link) => {
                         const isExternal = link.href.startsWith('http://') || link.href.startsWith('https://');
+                        const isRss = link.href.includes('rss.xml');
+                        const shouldOpenInNewTab = isExternal || isRss;
                         return (
                           <li>
                             <Text
                               tag="a"
                               variant="textBase"
                               href={link.href}
-                              target={isExternal ? "_blank" : undefined}
-                              rel={isExternal ? "noopener noreferrer" : undefined}
+                              target={shouldOpenInNewTab ? "_blank" : undefined}
+                              rel={shouldOpenInNewTab ? "noopener noreferrer" : undefined}
                               class=" text-base-600 hover:text-accent-500"
                             >
                               {link.text}

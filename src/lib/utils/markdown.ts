@@ -72,17 +72,39 @@ export function parseMarkdown(content: string): string {
 }
 
 /**
- * Renders markdown to HTML (pour resources - sans configuration spéciale)
- * Utilise l'instance globale de marked avec configuration simple
- * Évite marked.parse() qui pourrait causer des problèmes de parsing
+ * Renders markdown to HTML avec tous les liens qui s'ouvrent dans un nouvel onglet
+ * Utilise un renderer personnalisé pour ajouter target="_blank" à tous les liens
  */
 export function renderMarkdown(markdown: string): string {
-  // Réinitialiser les options pour éviter les conflits avec configureMarked
+  const renderer = new marked.Renderer();
+  const defaultLinkRenderer = renderer.link.bind(renderer);
+
+  // Custom link renderer pour ajouter target="_blank" à tous les liens
+  renderer.link = function(href, title, text) {
+    // Utiliser le renderer par défaut d'abord
+    const defaultHtml = defaultLinkRenderer(href, title, text);
+    
+    // Si href est invalide, retourner le HTML par défaut
+    if (!href || typeof href !== 'string' || href.trim() === '' || href === 'undefined') {
+      return defaultHtml;
+    }
+    
+    // Ajouter target="_blank" et rel="noopener noreferrer" à tous les liens
+    // Vérifier si target="_blank" n'est pas déjà présent
+    if (!defaultHtml.includes('target=')) {
+      return defaultHtml.replace(/<a /, '<a target="_blank" rel="noopener noreferrer" ');
+    }
+    
+    return defaultHtml;
+  };
+
   marked.setOptions({
     breaks: true,
     gfm: true,
+    renderer: renderer,
   });
-  // Utiliser marked directement sans .parse() pour éviter les problèmes
+
+  // Utiliser marked directement
   const result = marked(markdown);
   return typeof result === 'string' ? result : String(result);
 }
