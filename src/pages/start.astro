@@ -1,0 +1,769 @@
+---
+export const prerender = true;
+
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { Fragment } from "astro/jsx-runtime";
+import Text from "@/components/fundations/elements/Text.astro";
+import Wrapper from "@/components/fundations/containers/Wrapper.astro";
+import Seo from "@/components/fundations/head/Seo.astro";
+import Link from "@/components/fundations/components/Link.astro";
+import { normalizeSiteUrl } from '@/lib/utils/url';
+
+const siteUrl = normalizeSiteUrl(Astro.site);
+---
+
+<BaseLayout>
+  <Fragment slot="head">
+    <Seo
+      title="Xteink X4 – Complete Beginner FAQ - readme.club"
+      description="Everything you need to know to get started with your Xteink X4 e-reader. Official channel first, community second."
+      canonical={`${siteUrl}/start`}
+      lang="en"
+    />
+  </Fragment>
+
+  <section>
+    <Wrapper variant="hero">
+      <div class="max-w-4xl mx-auto text-center">
+        <Text
+          tag="h1"
+          variant="displaySM"
+          class="text-base-900 font-medium 2xl:text-5xl tracking-tight mb-4"
+        >
+          Xteink X4 – Complete Beginner FAQ
+        </Text>
+        <Text
+          tag="p"
+          variant="textBase"
+          class="text-base-600 text-xl mb-2"
+        >
+          Official Channel First, Community Second
+        </Text>
+        <Text
+          tag="p"
+          variant="textSM"
+          class="text-base-500"
+        >
+          Updated January 12, 2026
+        </Text>
+      </div>
+    </Wrapper>
+  </section>
+
+  <section>
+    <Wrapper variant="standard" class="py-6 pb-24">
+      <div class="max-w-4xl mx-auto space-y-8">
+        
+        <!-- Ordering Section -->
+        <div class="bg-base-50 border border-base-200 rounded-lg p-8">
+          <div class="flex items-start gap-4 mb-6">
+            <div class="flex-shrink-0 w-12 h-12 bg-accent-500 rounded-lg flex items-center justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+                <line x1="3" y1="6" x2="21" y2="6"/>
+                <path d="M16 10a4 4 0 0 1-8 0"/>
+              </svg>
+            </div>
+            <div class="flex-1">
+              <Text tag="h2" variant="textLG" class="font-semibold text-base-900 mb-4">
+                Ordering – Official Channel First
+              </Text>
+              
+              <div class="bg-accent-50 border border-accent-200 rounded-lg p-6 mb-4">
+                <Text tag="p" variant="textBase" class="font-semibold text-base-900 mb-2">
+                  Recommended: Official Xteink Website
+                </Text>
+                <Text tag="p" variant="textBase" class="text-base-700 mb-3">
+                  <a href="https://www.xteink.com/products/xteink-x4" target="_blank" rel="noopener noreferrer" class="text-accent-500 hover:underline font-medium">
+                    Xteink.com
+                  </a> – $69, fastest shipping (5–10 days to US/Europe if in stock).
+                </Text>
+                <ul class="list-disc list-inside space-y-1 text-base-700 ml-4">
+                  <li>Always check <strong>availability date</strong> on product page.</li>
+                  <li>Full warranty support via <a href="mailto:support@xteink.com" class="text-accent-500 hover:underline">support@xteink.com</a>.</li>
+                  <li>Ships with English firmware ready.</li>
+                </ul>
+              </div>
+
+              <div class="bg-base-100 border border-base-300 rounded-lg p-6 mb-4">
+                <Text tag="p" variant="textBase" class="font-semibold text-base-900 mb-2">
+                  Alternative: AliExpress/Cat3c Store
+                </Text>
+                <Text tag="p" variant="textBase" class="text-base-700">
+                  $38–$45 (saves $30), but <strong>20–28 days</strong> delivery. Often Chinese firmware (easily switched to English).
+                </Text>
+              </div>
+
+              <Text tag="p" variant="textSM" class="text-base-600 italic">
+                <strong>Tracking:</strong> Expect updates <strong>24–48 hours after fulfillment</strong>. No tracking during China warehouse processing is normal.
+              </Text>
+            </div>
+          </div>
+        </div>
+
+        <!-- Battery Section -->
+        <div class="bg-base-50 border border-base-200 rounded-lg p-8">
+          <div class="flex items-start gap-4">
+            <div class="flex-shrink-0 w-12 h-12 bg-accent-500 rounded-lg flex items-center justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="1" y="6" width="18" height="10" rx="2" ry="2"/>
+                <line x1="23" y1="13" x2="23" y2="11"/>
+              </svg>
+            </div>
+            <div class="flex-1">
+              <Text tag="h2" variant="textLG" class="font-semibold text-base-900 mb-4">
+                Battery
+              </Text>
+              <div class="space-y-2 text-base-700">
+                <Text tag="p" variant="textBase">
+                  <strong>Official spec:</strong> ~14 days (1–2 hours/day reading, WiFi off).
+                </Text>
+                <Text tag="p" variant="textBase">
+                  <strong>First week:</strong> 5–7 days normal (setup, WiFi transfers).
+                </Text>
+                <Text tag="p" variant="textBase">
+                  <strong>Stable usage:</strong> 10–14 days.
+                </Text>
+                <Text tag="p" variant="textBase">
+                  <strong>Charging:</strong> USB-C only. Use good cable for fastest charging.
+                </Text>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- First Setup Section -->
+        <div class="bg-base-50 border border-base-200 rounded-lg p-8">
+          <div class="flex items-start gap-4 mb-6">
+            <div class="flex-shrink-0 w-12 h-12 bg-accent-500 rounded-lg flex items-center justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
+                <line x1="12" y1="18" x2="12.01" y2="18"/>
+              </svg>
+            </div>
+            <div class="flex-1">
+              <Text tag="h2" variant="textLG" class="font-semibold text-base-900 mb-4">
+                First Setup – Official Guide
+              </Text>
+              
+              <div class="space-y-4">
+                <div>
+                  <Text tag="p" variant="textBase" class="font-semibold text-base-900 mb-2">
+                    Official resources:
+                  </Text>
+                  <ul class="list-disc list-inside space-y-2 text-base-700 ml-4">
+                    <li>
+                      <a href="https://www.xteink.com/pages/support" target="_blank" rel="noopener noreferrer" class="text-accent-500 hover:underline">
+                        Xteink Support Page
+                      </a> – power-on, WiFi, file transfer.
+                    </li>
+                    <li>
+                      <a href="https://manuals.plus/ae/1005009561609468" target="_blank" rel="noopener noreferrer" class="text-accent-500 hover:underline">
+                        Xteink X4 Manual
+                      </a> – button functions, basic navigation.
+                    </li>
+                  </ul>
+                </div>
+
+                <div>
+                  <Text tag="p" variant="textBase" class="font-semibold text-base-900 mb-2">
+                    Recommended video (community):
+                  </Text>
+                  <ul class="list-disc list-inside space-y-2 text-base-700 ml-4">
+                    <li>
+                      <a href="https://www.youtube.com/watch?v=R7RuokaVauo" target="_blank" rel="noopener noreferrer" class="text-accent-500 hover:underline">
+                        8-min beginner guide
+                      </a> – button combos, first steps.
+                    </li>
+                  </ul>
+                </div>
+
+                <div class="bg-accent-50 border border-accent-200 rounded-lg p-4">
+                  <Text tag="p" variant="textBase" class="text-base-700">
+                    <strong>Official hub:</strong> <a href="https://www.readme.club" class="text-accent-500 hover:underline font-medium">ReadMe.club</a> – curated guides, wallpapers, tools.
+                  </Text>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Books & Formats Section -->
+        <div class="bg-base-50 border border-base-200 rounded-lg p-8">
+          <div class="flex items-start gap-4 mb-6">
+            <div class="flex-shrink-0 w-12 h-12 bg-accent-500 rounded-lg flex items-center justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+              </svg>
+            </div>
+            <div class="flex-1">
+              <Text tag="h2" variant="textLG" class="font-semibold text-base-900 mb-4">
+                Books & Formats
+              </Text>
+              
+              <div class="space-y-4">
+                <div>
+                  <Text tag="p" variant="textBase" class="font-semibold text-base-900 mb-2">
+                    Official supported formats:
+                  </Text>
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-base-700">
+                    <div class="flex items-center gap-2">
+                      <span class="text-green-600 font-bold">✅</span>
+                      <span>EPUB, TXT, BMP (wallpapers), BIN (fonts)</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <span class="text-red-600 font-bold">❌</span>
+                      <span>PDF, MOBI, Kindle AZW (DRM-protected)</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+                  <Text tag="p" variant="textBase" class="font-semibold text-base-900 mb-2">
+                    Kindle books?
+                  </Text>
+                  <Text tag="p" variant="textBase" class="text-base-700">
+                    No—most have DRM. Use DRM-free EPUBs.
+                  </Text>
+                </div>
+
+                <div>
+                  <Text tag="p" variant="textBase" class="font-semibold text-base-900 mb-2">
+                    DRM-free sources:
+                  </Text>
+                  <ul class="list-disc list-inside space-y-1 text-base-700 ml-4">
+                    <li>Project Gutenberg (70,000+ free classics)</li>
+                    <li>Standard Ebooks (high-quality free EPUBs)</li>
+                    <li>Author websites/indie authors</li>
+                  </ul>
+                </div>
+
+                <Text tag="p" variant="textSM" class="text-base-600 italic">
+                  <strong>Test your book:</strong> Copy to Xteink. Won't open = DRM.
+                </Text>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pirate Resources Section -->
+        <div class="bg-base-100 border-2 border-dashed border-base-300 rounded-lg p-8">
+          <div class="flex items-start gap-4">
+            <div class="flex-shrink-0 w-12 h-12 bg-base-200 rounded-lg flex items-center justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-base-600">
+                <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                <path d="M2 17l10 5 10-5"/>
+                <path d="M2 12l10 5 10-5"/>
+              </svg>
+            </div>
+            <div class="flex-1">
+              <div class="flex items-center gap-2 mb-2">
+                <Text tag="h2" variant="textLG" class="font-semibold text-base-900 mb-0">
+                  We didn't mention this here, did we
+                </Text>
+                <span class="text-xs text-base-500">😏</span>
+              </div>
+              <Text tag="p" variant="textBase" class="text-base-700 mb-4">
+                For pirates seeking DRM-free books, here are some resources for finding EPUBs. 
+                Many of these index public domain works and DRM-free content.
+              </Text>
+              
+              <div class="space-y-3 mb-4">
+                <div class="bg-base-50 border border-base-200 rounded-lg p-4">
+                  <Text tag="p" variant="textBase" class="font-semibold text-base-900 mb-2">
+                    Anna's Archive
+                  </Text>
+                  <Text tag="p" variant="textSM" class="text-base-600 mb-3">
+                    Search engine that indexes multiple digital libraries. Great for finding DRM-free EPUBs and public domain books.
+                  </Text>
+                  <Text tag="p" variant="textXS" class="text-base-500 italic mb-3">
+                    Note: Check current domain via Wikipedia or search engines as URLs change frequently.
+                  </Text>
+                  <a
+                    href="https://en.wikipedia.org/wiki/Anna%27s_Archive"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="inline-flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-base-700 bg-base-200 border border-base-300 rounded hover:bg-base-300 hover:border-accent-300 transition-colors"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/>
+                      <path d="M12 6v6l4 2"/>
+                    </svg>
+                    Wikipedia
+                  </a>
+                </div>
+
+                <div class="bg-base-50 border border-base-200 rounded-lg p-4">
+                  <Text tag="p" variant="textBase" class="font-semibold text-base-900 mb-2">
+                    Wikipedia: List of digital library projects
+                  </Text>
+                  <Text tag="p" variant="textSM" class="text-base-600 mb-3">
+                    Comprehensive Wikipedia page listing digital library projects, updated regularly. Includes both legal and community resources.
+                  </Text>
+                  <a
+                    href="https://en.wikipedia.org/wiki/List_of_digital_library_projects"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="inline-flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-base-700 bg-base-200 border border-base-300 rounded hover:bg-base-300 hover:border-accent-300 transition-colors"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                      <polyline points="15 3 21 3 21 9"/>
+                      <line x1="10" y1="14" x2="21" y2="3"/>
+                    </svg>
+                    Visit
+                  </a>
+                </div>
+
+                <div class="bg-base-50 border border-base-200 rounded-lg p-4">
+                  <Text tag="p" variant="textBase" class="font-semibold text-base-900 mb-2">
+                    Library Genesis (LibGen)
+                  </Text>
+                  <Text tag="p" variant="textSM" class="text-base-600 mb-3">
+                    Large collection of scientific articles, books, and academic papers. Popular among students and researchers.
+                  </Text>
+                  <a
+                    href="https://libgen.is"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="inline-flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-base-700 bg-base-200 border border-base-300 rounded hover:bg-base-300 hover:border-accent-300 transition-colors"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                      <polyline points="15 3 21 3 21 9"/>
+                      <line x1="10" y1="14" x2="21" y2="3"/>
+                    </svg>
+                    Visit
+                  </a>
+                </div>
+
+                <div class="bg-base-50 border border-base-200 rounded-lg p-4">
+                  <Text tag="p" variant="textBase" class="font-semibold text-base-900 mb-2">
+                    Z-Library
+                  </Text>
+                  <Text tag="p" variant="textSM" class="text-base-600 mb-3">
+                    Massive digital library with millions of books and articles. Frequently changes domains due to legal issues.
+                  </Text>
+                  <Text tag="p" variant="textXS" class="text-base-500 italic mb-3">
+                    Note: Check current domain via Wikipedia or search engines as URLs change frequently.
+                  </Text>
+                  <a
+                    href="https://en.wikipedia.org/wiki/Z-Library"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="inline-flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-base-700 bg-base-200 border border-base-300 rounded hover:bg-base-300 hover:border-accent-300 transition-colors"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/>
+                      <path d="M12 6v6l4 2"/>
+                    </svg>
+                    Wikipedia
+                  </a>
+                </div>
+
+                <div class="bg-base-50 border border-base-200 rounded-lg p-4">
+                  <Text tag="p" variant="textBase" class="font-semibold text-base-900 mb-2">
+                    Internet Archive
+                  </Text>
+                  <Text tag="p" variant="textSM" class="text-base-600 mb-3">
+                    Non-profit digital library offering free access to millions of books, movies, software, music, and more. 
+                    Includes many public domain works and out-of-print books.
+                  </Text>
+                  <a
+                    href="https://archive.org"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="inline-flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-base-700 bg-base-200 border border-base-300 rounded hover:bg-base-300 hover:border-accent-300 transition-colors"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                      <polyline points="15 3 21 3 21 9"/>
+                      <line x1="10" y1="14" x2="21" y2="3"/>
+                    </svg>
+                    Visit
+                  </a>
+                </div>
+              </div>
+
+              <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                <Text tag="p" variant="textSM" class="text-base-700">
+                  <strong>Important note:</strong> Ensure you comply with copyright laws in your country. 
+                  Many of these resources also include public domain works and DRM-free content that you can legally download.
+                </Text>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Book Transfer Section -->
+        <div class="bg-base-50 border border-base-200 rounded-lg p-8">
+          <div class="flex items-start gap-4 mb-6">
+            <div class="flex-shrink-0 w-12 h-12 bg-accent-500 rounded-lg flex items-center justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="7 10 12 15 17 10"/>
+                <line x1="12" y1="15" x2="12" y2="3"/>
+              </svg>
+            </div>
+            <div class="flex-1">
+              <Text tag="h2" variant="textLG" class="font-semibold text-base-900 mb-4">
+                Book Transfer – Official Methods
+              </Text>
+              
+              <div class="space-y-6">
+                <div class="bg-accent-50 border border-accent-200 rounded-lg p-6">
+                  <Text tag="h3" variant="textBase" class="font-semibold text-base-900 mb-3">
+                    Method 1: SD Card (Official, Most Reliable)
+                  </Text>
+                  <ol class="list-decimal list-inside space-y-2 text-base-700 ml-2">
+                    <li>Remove microSD from X4</li>
+                    <li>Insert into computer</li>
+                    <li>Copy DRM-free EPUB/TXT to root or folder</li>
+                    <li>Safely eject, reinsert in X4</li>
+                    <li>Files appear in Files app</li>
+                  </ol>
+                </div>
+
+                <div class="bg-base-100 border border-base-300 rounded-lg p-6">
+                  <Text tag="h3" variant="textBase" class="font-semibold text-base-900 mb-3">
+                    Method 2: WiFi (Official)
+                  </Text>
+                  <ol class="list-decimal list-inside space-y-2 text-base-700 ml-2">
+                    <li>Connect X4 to WiFi</li>
+                    <li>Settings → File Transfer</li>
+                    <li>Browser: <code class="bg-base-200 px-2 py-1 rounded text-sm font-mono">http://[IP-address]</code></li>
+                    <li>Drag & drop files</li>
+                  </ol>
+                </div>
+
+                <Text tag="p" variant="textSM" class="text-base-600 italic">
+                  <strong>WiFi finicky?</strong> Use SD card method.
+                </Text>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Reading Experience Section -->
+        <div class="bg-base-50 border border-base-200 rounded-lg p-8">
+          <div class="flex items-start gap-4">
+            <div class="flex-shrink-0 w-12 h-12 bg-accent-500 rounded-lg flex items-center justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 19.5A2.5 2.5 0 0 0 6.5 17H20"/>
+                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+              </svg>
+            </div>
+            <div class="flex-1">
+              <Text tag="h2" variant="textLG" class="font-semibold text-base-900 mb-4">
+                Reading Experience
+              </Text>
+              <div class="space-y-3 text-base-700">
+                <Text tag="p" variant="textBase">
+                  <strong>Screen:</strong> 220 PPI – comfortable for reading. Sharper than phone, less sharp than premium Kindle/Kobo. Paper-like feel.
+                </Text>
+                <Text tag="p" variant="textBase">
+                  <strong>Text formatting issues?</strong> Stock firmware limitation. <strong>CrossPoint firmware</strong> (community) fixes bold/italics.
+                </Text>
+                <Text tag="p" variant="textBase">
+                  <strong>Images?</strong> Not supported (covers, embedded images). CrossPoint working on this.
+                </Text>
+                <Text tag="p" variant="textBase">
+                  <strong>Font sizes?</strong> Stock: limited. CrossPoint: 4 sizes. Custom fonts via conversion.
+                </Text>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Firmware Section -->
+        <div class="bg-base-50 border border-base-200 rounded-lg p-8">
+          <div class="flex items-start gap-4 mb-6">
+            <div class="flex-shrink-0 w-12 h-12 bg-accent-500 rounded-lg flex items-center justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+                <line x1="8" y1="21" x2="16" y2="21"/>
+                <line x1="12" y1="17" x2="12" y2="21"/>
+              </svg>
+            </div>
+            <div class="flex-1">
+              <Text tag="h2" variant="textLG" class="font-semibold text-base-900 mb-4">
+                Firmware – Official First
+              </Text>
+              
+              <div class="space-y-4">
+                <Text tag="p" variant="textBase" class="text-base-700">
+                  <strong>Stock Firmware:</strong> Official, stable, basic features.
+                </Text>
+
+                <div>
+                  <Text tag="p" variant="textBase" class="font-semibold text-base-900 mb-2">
+                    Official updates:
+                  </Text>
+                  <Text tag="p" variant="textBase" class="text-base-700">
+                    Check <a href="https://www.xteink.com/pages/xteink-x4-system-update" target="_blank" rel="noopener noreferrer" class="text-accent-500 hover:underline">Xteink X4 System Update</a>.
+                  </Text>
+                </div>
+
+                <div class="bg-base-100 border border-base-300 rounded-lg p-6">
+                  <Text tag="p" variant="textBase" class="font-semibold text-base-900 mb-2">
+                    Community firmware (optional):
+                  </Text>
+                  <Text tag="p" variant="textBase" class="text-base-700 mb-3">
+                    <strong>CrossPoint</strong> – popular upgrade for better EPUB rendering, faster response.
+                  </Text>
+                  <ul class="list-disc list-inside space-y-1 text-base-700 ml-4">
+                    <li>Install via <a href="https://xteink.dve.al" target="_blank" rel="noopener noreferrer" class="text-accent-500 hover:underline">browser tool</a></li>
+                    <li>Revert to stock anytime (same tool)</li>
+                  </ul>
+                </div>
+
+                <Text tag="p" variant="textSM" class="text-base-600 italic">
+                  <strong>Official stance:</strong> Stock firmware recommended. Community firmware at your own risk.
+                </Text>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Fonts & Wallpapers Section -->
+        <div class="bg-base-50 border border-base-200 rounded-lg p-8">
+          <div class="flex items-start gap-4 mb-6">
+            <div class="flex-shrink-0 w-12 h-12 bg-accent-500 rounded-lg flex items-center justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                <circle cx="8.5" cy="8.5" r="1.5"/>
+                <polyline points="21 15 16 10 5 21"/>
+              </svg>
+            </div>
+            <div class="flex-1">
+              <Text tag="h2" variant="textLG" class="font-semibold text-base-900 mb-4">
+                Fonts & Wallpapers
+              </Text>
+              
+              <div class="space-y-4">
+                <div>
+                  <Text tag="p" variant="textBase" class="font-semibold text-base-900 mb-2">
+                    Custom fonts:
+                  </Text>
+                  <ol class="list-decimal list-inside space-y-1 text-base-700 ml-4">
+                    <li>Download TTF/OTF (Google Fonts)</li>
+                    <li>Convert at <a href="https://xteink.lakafior.com" target="_blank" rel="noopener noreferrer" class="text-accent-500 hover:underline">online tool</a></li>
+                    <li>Copy <code class="bg-base-200 px-1 py-0.5 rounded text-sm font-mono">.bin</code> to SD card</li>
+                    <li>Select in Settings</li>
+                  </ol>
+                </div>
+
+                <div>
+                  <Text tag="p" variant="textBase" class="font-semibold text-base-900 mb-2">
+                    Wallpapers:
+                  </Text>
+                  <ul class="list-disc list-inside space-y-1 text-base-700 ml-4">
+                    <li>BMP format (1920x1440 monochrome)</li>
+                    <li><a href="/wallpapers" class="text-accent-500 hover:underline">ReadMe.club gallery</a> – ready-to-use community wallpapers</li>
+                    <li>Settings → Wallpaper → Select file</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Accessories Section -->
+        <div class="bg-base-50 border border-base-200 rounded-lg p-8">
+          <div class="flex items-start gap-4">
+            <div class="flex-shrink-0 w-12 h-12 bg-accent-500 rounded-lg flex items-center justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              </svg>
+            </div>
+            <div class="flex-1">
+              <Text tag="h2" variant="textLG" class="font-semibold text-base-900 mb-4">
+                Accessories
+              </Text>
+              
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-accent-50 border border-accent-200 rounded-lg p-4">
+                  <Text tag="p" variant="textBase" class="font-semibold text-base-900 mb-2">
+                    Official recommendation:
+                  </Text>
+                  <ul class="list-disc list-inside space-y-1 text-base-700 ml-4">
+                    <li>Screen protector (included)</li>
+                    <li>Good USB-C cable</li>
+                    <li>microSD card (32GB included, upgrade to 128GB+)</li>
+                  </ul>
+                </div>
+
+                <div class="bg-base-100 border border-base-300 rounded-lg p-4">
+                  <Text tag="p" variant="textBase" class="font-semibold text-base-900 mb-2">
+                    Community favorites:
+                  </Text>
+                  <ul class="list-disc list-inside space-y-1 text-base-700 ml-4">
+                    <li>3D-printed cases (free STL files)</li>
+                    <li>Matte screen protector</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Most Asked Questions Section -->
+        <div class="bg-base-50 border border-base-200 rounded-lg p-8">
+          <div class="flex items-start gap-4 mb-6">
+            <div class="flex-shrink-0 w-12 h-12 bg-accent-500 rounded-lg flex items-center justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+                <path d="M12 17h.01"/>
+              </svg>
+            </div>
+            <div class="flex-1">
+              <Text tag="h2" variant="textLG" class="font-semibold text-base-900 mb-6">
+                Most Asked Beginner Questions
+              </Text>
+              
+              <div class="space-y-4">
+                <div class="border-l-4 border-accent-500 pl-4 py-2">
+                  <Text tag="p" variant="textBase" class="font-semibold text-base-900 mb-1">
+                    "Is the X4 my first e-reader?"
+                  </Text>
+                  <Text tag="p" variant="textBase" class="text-base-700">
+                    Maybe not. Requires sideloading DRM-free EPUBs. Easier if you understand file transfers.
+                  </Text>
+                </div>
+
+                <div class="border-l-4 border-accent-500 pl-4 py-2">
+                  <Text tag="p" variant="textBase" class="font-semibold text-base-900 mb-1">
+                    "X3 or X4?"
+                  </Text>
+                  <Text tag="p" variant="textBase" class="text-base-700">
+                    X4 now if you want it today (ultra-portable). X3 (Feb 5) for better screen (250 PPI).
+                  </Text>
+                </div>
+
+                <div class="border-l-4 border-accent-500 pl-4 py-2">
+                  <Text tag="p" variant="textBase" class="font-semibold text-base-900 mb-1">
+                    "Battery draining fast?"
+                  </Text>
+                  <Text tag="p" variant="textBase" class="text-base-700">
+                    First week: normal (setup/WiFi). Stable: 10–14 days.
+                  </Text>
+                </div>
+
+                <div class="border-l-4 border-accent-500 pl-4 py-2">
+                  <Text tag="p" variant="textBase" class="font-semibold text-base-900 mb-1">
+                    "My Kindle books won't open."
+                  </Text>
+                  <Text tag="p" variant="textBase" class="text-base-700">
+                    DRM. Use DRM-free EPUBs from Gutenberg/Standard Ebooks.
+                  </Text>
+                </div>
+
+                <div class="border-l-4 border-accent-500 pl-4 py-2">
+                  <Text tag="p" variant="textBase" class="font-semibold text-base-900 mb-1">
+                    "Text looks plain (no bold/italics)."
+                  </Text>
+                  <Text tag="p" variant="textBase" class="text-base-700">
+                    Stock firmware limitation. CrossPoint fixes this.
+                  </Text>
+                </div>
+
+                <div class="border-l-4 border-accent-500 pl-4 py-2">
+                  <Text tag="p" variant="textBase" class="font-semibold text-base-900 mb-1">
+                    "WiFi transfer keeps dropping."
+                  </Text>
+                  <Text tag="p" variant="textBase" class="text-base-700">
+                    Use SD card method instead.
+                  </Text>
+                </div>
+
+                <div class="border-l-4 border-accent-500 pl-4 py-2">
+                  <Text tag="p" variant="textBase" class="font-semibold text-base-900 mb-1">
+                    "How to change font/wallpaper?"
+                  </Text>
+                  <Text tag="p" variant="textBase" class="text-base-700">
+                    Convert to BIN/BMP, copy to SD card, select in Settings.
+                  </Text>
+                </div>
+
+                <div class="border-l-4 border-accent-500 pl-4 py-2">
+                  <Text tag="p" variant="textBase" class="font-semibold text-base-900 mb-1">
+                    "PDF support?"
+                  </Text>
+                  <Text tag="p" variant="textBase" class="text-base-700">
+                    No. EPUB/TXT only.
+                  </Text>
+                </div>
+
+                <div class="border-l-4 border-accent-500 pl-4 py-2">
+                  <Text tag="p" variant="textBase" class="font-semibold text-base-900 mb-1">
+                    "CrossPoint safe?"
+                  </Text>
+                  <Text tag="p" variant="textBase" class="text-base-700">
+                    Community standard, browser-flash easy. Revert anytime. Backup first.
+                  </Text>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Official Support Section -->
+        <div class="bg-base-50 border border-base-200 rounded-lg p-8">
+          <div class="flex items-start gap-4">
+            <div class="flex-shrink-0 w-12 h-12 bg-accent-500 rounded-lg flex items-center justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+              </svg>
+            </div>
+            <div class="flex-1">
+              <Text tag="h2" variant="textLG" class="font-semibold text-base-900 mb-4">
+                Official Support
+              </Text>
+              
+              <ul class="list-disc list-inside space-y-2 text-base-700 ml-4">
+                <li>
+                  <a href="https://www.xteink.com/pages/support" target="_blank" rel="noopener noreferrer" class="text-accent-500 hover:underline">
+                    Xteink Support
+                  </a>
+                </li>
+                <li>
+                  <a href="mailto:support@xteink.com" class="text-accent-500 hover:underline">
+                    support@xteink.com
+                  </a>
+                </li>
+                <li>
+                  <a href="https://www.readme.club" class="text-accent-500 hover:underline">
+                    ReadMe.club
+                  </a> – official community hub
+                </li>
+                <li>
+                  <a href="https://www.reddit.com/r/xteinkereader/" target="_blank" rel="noopener noreferrer" class="text-accent-500 hover:underline">
+                    r/xteinkereader
+                  </a> – active discussions
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Footer CTA -->
+        <div class="bg-gradient-to-br from-accent-50 to-base-50 rounded-xl border border-accent-200 p-8 text-center">
+          <Text tag="p" variant="textLG" class="font-semibold text-base-900 mb-2">
+            Official Channel First. Community Second. Get reading faster.
+          </Text>
+          <div class="flex flex-wrap justify-center gap-4 mt-6">
+            <Link href="/guide" variant="accent" size="md">
+              Read Full Guide
+            </Link>
+            <Link href="/resources" variant="muted" size="md">
+              Browse Resources
+            </Link>
+          </div>
+        </div>
+
+      </div>
+    </Wrapper>
+  </section>
+</BaseLayout>

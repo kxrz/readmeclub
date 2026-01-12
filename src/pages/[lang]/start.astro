@@ -1,0 +1,16 @@
+---
+// Redirection vers la version anglaise (sans [lang])
+export const prerender = true;
+
+export async function getStaticPaths() {
+  const langs = ['en', 'fr', 'es', 'ru', 'cn'];
+  return langs.map((lang) => ({
+    params: { lang },
+  }));
+}
+
+const lang = Astro.params.lang;
+
+// Rediriger toutes les langues vers la version anglaise (sans préfixe)
+return Astro.redirect('/start', 301);
+---

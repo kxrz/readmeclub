@@ -24,6 +24,7 @@ const staticPages = [
   'news',
   'newsletter',
   'contribute',
+  'start',
 ];
 
 export const GET: APIRoute = async () => {
