@@ -69,10 +69,28 @@ export const POST: APIRoute = async ({ request }) => {
     }
     
     // Envoyer l'email de bienvenue uniquement pour les nouveaux inscrits (en arrière-plan, ne bloque pas la réponse)
-    sendWelcomeEmail(validated.email).catch((error) => {
-      console.error('Failed to send welcome email:', error);
-      // On ne fait pas échouer l'inscription si l'email échoue
-    });
+    sendWelcomeEmail(validated.email)
+      .then((result) => {
+        if (!result.success) {
+          console.error(`[Newsletter] Failed to send welcome email to ${validated.email}:`, {
+            error: result.error,
+            timestamp: new Date().toISOString(),
+          });
+        } else {
+          console.log(`[Newsletter] Welcome email sent successfully to ${validated.email}`, {
+            timestamp: new Date().toISOString(),
+          });
+        }
+      })
+      .catch((error) => {
+        console.error(`[Newsletter] Exception sending welcome email to ${validated.email}:`, {
+          message: error?.message,
+          name: error?.name,
+          stack: error?.stack,
+          timestamp: new Date().toISOString(),
+        });
+        // On ne fait pas échouer l'inscription si l'email échoue
+      });
     
     return new Response(
       JSON.stringify({ 

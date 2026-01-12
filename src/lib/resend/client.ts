@@ -102,12 +102,66 @@ export async function addContactToResend(
 }
 
 /**
+ * Fonction utilitaire pour retry avec backoff exponentiel
+ */
+async function retryWithBackoff<T>(
+  fn: () => Promise<T>,
+  maxRetries: number = 3,
+  initialDelay: number = 1000
+): Promise<T> {
+  let lastError: any;
+  
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      return await fn();
+    } catch (error: any) {
+      lastError = error;
+      
+      // Si c'est la dernière tentative, on échoue
+      if (attempt === maxRetries) {
+        throw error;
+      }
+      
+      // Calculer le délai avec backoff exponentiel (1000ms, 2000ms, 4000ms)
+      const delay = initialDelay * Math.pow(2, attempt);
+      
+      // Ne retry que pour les erreurs réseau/timeout
+      const isNetworkError = 
+        error?.message?.includes('fetch') ||
+        error?.message?.includes('timeout') ||
+        error?.message?.includes('Unable to fetch') ||
+        error?.message?.includes('could not be resolved') ||
+        error?.name === 'application_error' ||
+        !error?.statusCode;
+      
+      if (isNetworkError) {
+        console.warn(`[Resend] Retry attempt ${attempt + 1}/${maxRetries} after ${delay}ms`);
+        await new Promise(resolve => setTimeout(resolve, delay));
+      } else {
+        // Pour les autres erreurs (validation, auth, etc.), on ne retry pas
+        throw error;
+      }
+    }
+  }
+  
+  throw lastError;
+}
+
+/**
  * Envoie un email de bienvenue après inscription à la newsletter
  * 
  * @param email Email du destinataire
  */
 export async function sendWelcomeEmail(email: string): Promise<{ success: boolean; error?: string }> {
   try {
+    // Vérifier que la clé API est configurée
+    const apiKey = import.meta.env.RESEND_API_KEY || process.env.RESEND_API_KEY;
+    if (!apiKey) {
+      const errorMsg = 'RESEND_API_KEY environment variable is not set';
+      console.error(`[Resend] ${errorMsg}`);
+      return { success: false, error: errorMsg };
+    }
+    
     const resend = getResendClient();
     
     // Template HTML websafe pour l'email de bienvenue
@@ -242,22 +296,86 @@ Manage preferences: https://readme.club/newsletter
 
 readme.club - Xteink Community Hub`;
 
-    const { data, error } = await resend.emails.send({
-      from: 'florent@hey.readme.club',
-      to: email,
-      subject: 'Welcome to readme.club Newsletter! 🎉',
-      html: htmlContent,
-      text: textContent,
-    });
+    // Utiliser retry avec backoff pour les erreurs réseau
+    let data: any;
+    let error: any;
     
-    if (error) {
-      console.error('Resend email error:', error);
-      return { success: false, error: error.message };
+    try {
+      const result = await retryWithBackoff(
+        async () => {
+          const sendResult = await resend.emails.send({
+            from: 'florent@hey.readme.club',
+            to: email,
+            subject: 'Welcome to readme.club Newsletter! 🎉',
+            html: htmlContent,
+            text: textContent,
+          });
+          
+          // Si on a une erreur réseau, on laisse retryWithBackoff la gérer
+          if (sendResult.error) {
+            const errorObj = sendResult.error as any;
+            const isNetworkError = 
+              errorObj?.message?.includes('Unable to fetch') ||
+              errorObj?.message?.includes('could not be resolved') ||
+              errorObj?.message?.includes('fetch') ||
+              errorObj?.message?.includes('timeout') ||
+              errorObj?.name === 'application_error' ||
+              errorObj?.statusCode === null ||
+              !errorObj?.statusCode;
+            
+            if (isNetworkError) {
+              console.warn(`[Resend] Network error detected, will retry:`, {
+                message: errorObj?.message,
+                name: errorObj?.name,
+                statusCode: errorObj?.statusCode,
+              });
+              throw errorObj;
+            }
+          }
+          
+          return sendResult;
+        },
+        3, // 3 retries max
+        1000 // Délai initial de 1 seconde
+      );
+      
+      data = result.data;
+      error = result.error;
+    } catch (retryError: any) {
+      // Si toutes les tentatives ont échoué, on traite comme une erreur réseau
+      error = retryError;
+      console.error(`[Resend] All retry attempts failed for ${email}:`, {
+        message: retryError?.message,
+        name: retryError?.name,
+        statusCode: retryError?.statusCode,
+      });
     }
     
+    if (error) {
+      console.error(`[Resend] Email send error for ${email}:`, {
+        message: error.message,
+        statusCode: (error as any)?.statusCode,
+        name: (error as any)?.name,
+        error: error,
+      });
+      return { success: false, error: error.message || 'Unknown error' };
+    }
+    
+    if (!data || !data.id) {
+      console.warn(`[Resend] Email sent but no data.id returned for ${email}`);
+      return { success: false, error: 'No email ID returned from Resend' };
+    }
+    
+    console.log(`[Resend] Welcome email sent successfully to ${email}, ID: ${data.id}`);
     return { success: true };
   } catch (error: any) {
-    console.error('Failed to send welcome email:', error);
+    console.error(`[Resend] Exception sending welcome email to ${email}:`, {
+      message: error.message,
+      stack: error.stack,
+      error: error,
+      name: error?.name,
+      statusCode: error?.statusCode,
+    });
     return { success: false, error: error.message || 'Unknown error' };
   }
 }
