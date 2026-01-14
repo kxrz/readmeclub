@@ -185,6 +185,132 @@
   }
 }
 
+/* ============================================================
+   iOS Safari: forcer une palette sRGB même si OKLCH “supporté”
+   (piloté par BaseLayout via data-colorspace="srgb")
+   ============================================================ */
+:root[data-colorspace="srgb"].light,
+:root[data-colorspace="srgb"]:not(.dark) {
+  --color-white: #FAFAF7;
+  --color-black: #141412;
+  --color-transparent: transparent;
+
+  --color-base-50: #FAFAF7;
+  --color-base-100: #F4F4F0;
+  --color-base-200: #E6E6E1;
+  --color-base-300: #D2D2CC;
+  --color-base-400: #B3B3AD;
+  --color-base-500: #8A8A84;
+  --color-base-600: #6F6F69;
+  --color-base-700: #555550;
+  --color-base-800: #2F2F2B;
+  --color-base-900: #1A1A18;
+  --color-base-950: #0F0F0E;
+
+  /* Olive (par défaut) */
+  --color-accent-50: #F6F7F1;
+  --color-accent-100: #EEF1E3;
+  --color-accent-200: #D9DFBC;
+  --color-accent-300: #C0CB8D;
+  --color-accent-400: #97A650;
+  --color-accent-500: #606C38;
+  --color-accent-600: #4F5A31;
+  --color-accent-700: #3D4628;
+  --color-accent-800: #2E351F;
+  --color-accent-900: #202513;
+  --color-accent-950: #171B0E;
+}
+
+:root[data-colorspace="srgb"].dark {
+  --color-white: #1A1A18;
+  --color-black: #F5F5F0;
+
+  --color-base-50: #1A1A18;
+  --color-base-100: #20201D;
+  --color-base-200: #2A2A26;
+  --color-base-300: #34342F;
+  --color-base-400: #6F6F69;
+  --color-base-500: #9A9A93;
+  --color-base-600: #B8B8B1;
+  --color-base-700: #D2D2CC;
+  --color-base-800: #E6E6E1;
+  --color-base-900: #F1F1ED;
+  --color-base-950: #F5F5F0;
+
+  /* Olive en dark (lisible) */
+  --color-accent-50: #202513;
+  --color-accent-100: #2E351F;
+  --color-accent-200: #3D4628;
+  --color-accent-300: #4F5A31;
+  --color-accent-400: #606C38;
+  --color-accent-500: #97A650;
+  --color-accent-600: #C0CB8D;
+  --color-accent-700: #D9DFBC;
+  --color-accent-800: #EEF1E3;
+  --color-accent-900: #F6F7F1;
+  --color-accent-950: #FAFAF7;
+}
+
+/* Accent overrides (srgb): on force HEX (pas OKLCH) */
+:root[data-colorspace="srgb"][data-accent="mustard"]:not(.dark),
+:root[data-colorspace="srgb"].light[data-accent="mustard"] {
+  --color-accent-50: #FFFBEB;
+  --color-accent-100: #FEF3C7;
+  --color-accent-200: #FDE68A;
+  --color-accent-300: #FCD34D;
+  --color-accent-400: #FBBF24;
+  --color-accent-500: #D97706;
+  --color-accent-600: #B45309;
+  --color-accent-700: #92400E;
+  --color-accent-800: #78350F;
+  --color-accent-900: #451A03;
+  --color-accent-950: #2B0F02;
+}
+
+:root[data-colorspace="srgb"].dark[data-accent="mustard"] {
+  /* Version plus claire pour dark */
+  --color-accent-50: #2B0F02;
+  --color-accent-100: #451A03;
+  --color-accent-200: #78350F;
+  --color-accent-300: #92400E;
+  --color-accent-400: #B45309;
+  --color-accent-500: #FBBF24;
+  --color-accent-600: #FCD34D;
+  --color-accent-700: #FDE68A;
+  --color-accent-800: #FEF3C7;
+  --color-accent-900: #FFFBEB;
+  --color-accent-950: #FFFEF7;
+}
+
+:root[data-colorspace="srgb"][data-accent="graphite"]:not(.dark),
+:root[data-colorspace="srgb"].light[data-accent="graphite"] {
+  --color-accent-50: #F8FAFC;
+  --color-accent-100: #F1F5F9;
+  --color-accent-200: #E2E8F0;
+  --color-accent-300: #CBD5E1;
+  --color-accent-400: #94A3B8;
+  --color-accent-500: #475569;
+  --color-accent-600: #334155;
+  --color-accent-700: #1F2937;
+  --color-accent-800: #111827;
+  --color-accent-900: #0B1220;
+  --color-accent-950: #070A12;
+}
+
+:root[data-colorspace="srgb"].dark[data-accent="graphite"] {
+  --color-accent-50: #0B1220;
+  --color-accent-100: #111827;
+  --color-accent-200: #1F2937;
+  --color-accent-300: #334155;
+  --color-accent-400: #475569;
+  --color-accent-500: #94A3B8;
+  --color-accent-600: #CBD5E1;
+  --color-accent-700: #E2E8F0;
+  --color-accent-800: #F1F5F9;
+  --color-accent-900: #F8FAFC;
+  --color-accent-950: #FFFFFF;
+}
+
 /* Dark Mode */
 @media (prefers-color-scheme: dark) {
   :root:not(.light) {

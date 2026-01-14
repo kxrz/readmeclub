@@ -47,6 +47,19 @@ const lang = getLangFromUrl(Astro.url);
 
         document.documentElement.dataset.accent = accent;
         try { localStorage.setItem('accent', accent); } catch {}
+
+        // iOS Safari: forcer une palette sRGB (hex) pour éviter les rendus “délavés”
+        // même quand OKLCH est partiellement supporté.
+        try {
+          const ua = navigator.userAgent;
+          const isIOS = /iP(hone|ad|od)/.test(ua);
+          const isWebKit = /WebKit/.test(ua);
+          const isNotCriOS = !/CriOS/.test(ua);
+          const isNotFxiOS = !/FxiOS/.test(ua);
+          if (isIOS && isWebKit && isNotCriOS && isNotFxiOS) {
+            document.documentElement.dataset.colorspace = 'srgb';
+          }
+        } catch {}
       })();
     </script>
   </head>
