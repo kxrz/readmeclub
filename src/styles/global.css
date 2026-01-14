@@ -16,10 +16,14 @@
   // Uncomment this variable if you want to us only the custom colors  
   // --color-*: initial; 
   */
-  --color-white: oklch(99% 0 0);
-  --color-black: oklch(0 0 0);
-  --color-transparent: oklch(99% 0 0 / 0);
+  
+  /* Light Mode Colors */
+  --color-white: oklch(99% 0.005 95); /* Blanc chaud très proche du blanc pur */
+  --color-black: oklch(8% 0 0); /* Gris très foncé au lieu de #000 */
+  --color-transparent: oklch(99% 0.005 95 / 0);
   --color-current: currentColor;
+  
+  /* Accent palette (vert olive) - reste identique */
   --color-accent-50: oklch(96% 0.015 158.25);
   --color-accent-100: oklch(92.17% 0.032 155.36);
   --color-accent-200: oklch(84.4% 0.065 154.46);
@@ -32,18 +36,19 @@
   --color-accent-900: oklch(20.92% 0.029 154.01);
   --color-accent-950: oklch(15.3% 0.017 157.97);
 
-  /* Base palette */
-  --color-base-50: oklch(0.98 0 0); /* Very light gray */
-  --color-base-100: oklch(0.96 0 0); /* Light gray */
-  --color-base-200: oklch(0.91 0 0); /* Lighter gray */
-  --color-base-300: oklch(0.85 0 0); /* Medium light gray */
-  --color-base-400: oklch(0.78 0 0); /* Medium gray */
-  --color-base-500: oklch(0.63 0 0); /* Darker medium gray */
-  --color-base-600: oklch(0.54 0 0); /* Dark gray */
-  --color-base-700: oklch(0.46 0 0); /* Darker gray */
-  --color-base-800: oklch(0.35 0 0); /* Very dark gray */
-  --color-base-900: oklch(0.25 0 0); /* Almost black */
-  --color-base-950: oklch(0.15 0 0); /* Near black */
+  /* Base palette - Light Mode avec teinte chaude très légère */
+  --color-base-50: oklch(99% 0.005 95); /* Fond principal - très blanc */
+  --color-base-100: oklch(97% 0.005 95); /* Légèrement plus foncé */
+  --color-base-200: oklch(92% 0.005 95);
+  --color-base-300: oklch(86% 0.005 95);
+  --color-base-400: oklch(78% 0.005 95);
+  --color-base-500: oklch(63% 0.005 95);
+  --color-base-600: oklch(54% 0.005 95);
+  --color-base-700: oklch(46% 0.005 95);
+  --color-base-800: oklch(35% 0.005 95);
+  --color-base-900: oklch(20% 0.005 95); /* Texte principal - pas noir pur */
+  --color-base-950: oklch(12% 0.005 95); /* Texte très foncé - pas noir pur */
+  
   --shadow-hover: rgba(0, 0, 0, 0.137) 0px 0px 0px 0px,
     rgba(0, 0, 0, 0.14) 0px 0px 0px 0px, rgba(0, 0, 0, 0.165) 0px 0px 0px 0px;
 }
@@ -57,7 +62,146 @@
     /* Open six */ "cv04" 1, /* Open nine */ "cv01" 1,
     /* Alternate one */ "cv09", /* Flat-top three */ "cv02" 1; /* Open 4 */
 
-  /* Variables to style Shiki code snippets */
+  /* Variables to style Shiki code snippets - Light Mode */
+  --astro-code-color-text: theme("colors.base.500");
+  --astro-code-token-link: theme("colors.accent.600");
+  --astro-code-token-comment: theme("colors.base.400");
+  --astro-code-token-string: theme("colors.accent.500");
+  --astro-code-token-constant: theme("colors.accent.500");
+  --astro-code-background: theme("colors.base.50");
+  --astro-code-token-keyword: theme("colors.accent.500");
+  --astro-code-token-function: theme("colors.accent.500");
+  --astro-code-token-parameter: theme("colors.accent.500");
+  --astro-code-token-punctuation: theme("colors.accent.500");
+  --astro-code-token-string-expression: theme("colors.base.950");
+  
+  /* Transitions pour dark mode */
+  color-scheme: light dark;
+}
+
+/* Dark Mode */
+@media (prefers-color-scheme: dark) {
+  :root:not(.light) {
+    /* Inversion intelligente de la palette avec meilleurs contrastes */
+    --color-white: oklch(16% 0.01 95); /* Fond sombre - légèrement plus clair pour meilleur contraste */
+    --color-black: oklch(95% 0.01 95); /* Texte clair - légèrement moins éblouissant */
+    
+    /* Base palette inversée avec teinte chaude - contrastes améliorés */
+    --color-base-50: oklch(16% 0.01 95); /* Fond très sombre - plus clair pour meilleure lisibilité */
+    --color-base-100: oklch(20% 0.01 95); /* Fond sombre pour cartes */
+    --color-base-200: oklch(25% 0.01 95); /* Bordures visibles */
+    --color-base-300: oklch(30% 0.01 95); /* Bordures plus visibles */
+    --color-base-400: oklch(45% 0.01 95); /* Texte secondaire - plus contrasté */
+    --color-base-500: oklch(60% 0.01 95); /* Texte moyen - bien lisible */
+    --color-base-600: oklch(70% 0.01 95); /* Texte - bon contraste */
+    --color-base-700: oklch(80% 0.01 95); /* Texte foncé - très lisible */
+    --color-base-800: oklch(88% 0.01 95); /* Texte très foncé */
+    --color-base-900: oklch(93% 0.01 95); /* Texte principal - moins éblouissant */
+    --color-base-950: oklch(95% 0.01 95); /* Texte très clair - pas blanc pur */
+    
+    /* Accent - ajusté pour dark mode avec meilleurs contrastes */
+    --color-accent-50: oklch(25% 0.015 158.25);
+    --color-accent-100: oklch(30% 0.032 155.36);
+    --color-accent-200: oklch(40% 0.065 154.46);
+    --color-accent-300: oklch(50% 0.1 153.86);
+    --color-accent-400: oklch(60% 0.13 151.92);
+    --color-accent-500: oklch(65% 0.108 151.62); /* Couleur principale - bien visible */
+    --color-accent-600: oklch(70% 0.091 151.89); /* Hover - bon contraste */
+    --color-accent-700: oklch(75% 0.071 152.24);
+    --color-accent-800: oklch(80% 0.052 151.99);
+    --color-accent-900: oklch(88% 0.029 154.01);
+    --color-accent-950: oklch(92% 0.017 157.97);
+    
+    /* Shadows inversées pour dark mode */
+    --shadow-hover: rgba(255, 255, 255, 0.05) 0px 0px 0px 0px,
+      rgba(255, 255, 255, 0.08) 0px 0px 0px 0px, rgba(255, 255, 255, 0.1) 0px 0px 0px 0px;
+    
+    /* Shiki code snippets - Dark Mode avec meilleurs contrastes */
+    --astro-code-color-text: theme("colors.base.500");
+    --astro-code-token-link: theme("colors.accent-500");
+    --astro-code-token-comment: theme("colors.base.400");
+    --astro-code-token-string: theme("colors.accent-500");
+    --astro-code-token-constant: theme("colors.accent-500");
+    --astro-code-background: theme("colors.base-100");
+    --astro-code-token-keyword: theme("colors.accent-500");
+    --astro-code-token-function: theme("colors.accent-500");
+    --astro-code-token-parameter: theme("colors.accent-500");
+    --astro-code-token-punctuation: theme("colors.accent-500");
+    --astro-code-token-string-expression: theme("colors.base-700");
+  }
+}
+
+/* Classe pour forcer dark mode */
+.dark {
+  /* Mêmes valeurs que prefers-color-scheme: dark avec contrastes améliorés */
+  --color-white: oklch(16% 0.01 95);
+  --color-black: oklch(95% 0.01 95);
+  --color-base-50: oklch(16% 0.01 95);
+  --color-base-100: oklch(20% 0.01 95);
+  --color-base-200: oklch(25% 0.01 95);
+  --color-base-300: oklch(30% 0.01 95);
+  --color-base-400: oklch(45% 0.01 95);
+  --color-base-500: oklch(60% 0.01 95);
+  --color-base-600: oklch(70% 0.01 95);
+  --color-base-700: oklch(80% 0.01 95);
+  --color-base-800: oklch(88% 0.01 95);
+  --color-base-900: oklch(93% 0.01 95);
+  --color-base-950: oklch(95% 0.01 95);
+  --color-accent-50: oklch(25% 0.015 158.25);
+  --color-accent-100: oklch(30% 0.032 155.36);
+  --color-accent-200: oklch(40% 0.065 154.46);
+  --color-accent-300: oklch(50% 0.1 153.86);
+  --color-accent-400: oklch(60% 0.13 151.92);
+  --color-accent-500: oklch(65% 0.108 151.62);
+  --color-accent-600: oklch(70% 0.091 151.89);
+  --color-accent-700: oklch(75% 0.071 152.24);
+  --color-accent-800: oklch(80% 0.052 151.99);
+  --color-accent-900: oklch(88% 0.029 154.01);
+  --color-accent-950: oklch(92% 0.017 157.97);
+  --shadow-hover: rgba(255, 255, 255, 0.05) 0px 0px 0px 0px,
+    rgba(255, 255, 255, 0.08) 0px 0px 0px 0px, rgba(255, 255, 255, 0.1) 0px 0px 0px 0px;
+  --astro-code-color-text: theme("colors.base.500");
+  --astro-code-token-link: theme("colors.accent-500");
+  --astro-code-token-comment: theme("colors.base.400");
+  --astro-code-token-string: theme("colors.accent-500");
+  --astro-code-token-constant: theme("colors.accent-500");
+  --astro-code-background: theme("colors.base-100");
+  --astro-code-token-keyword: theme("colors.accent-500");
+  --astro-code-token-function: theme("colors.accent-500");
+  --astro-code-token-parameter: theme("colors.accent-500");
+  --astro-code-token-punctuation: theme("colors.accent-500");
+  --astro-code-token-string-expression: theme("colors.base-700");
+}
+
+/* Classe pour forcer light mode */
+.light {
+  /* Valeurs light mode explicites - très blanc */
+  --color-white: oklch(99% 0.005 95);
+  --color-black: oklch(8% 0 0);
+  --color-base-50: oklch(99% 0.005 95);
+  --color-base-100: oklch(97% 0.005 95);
+  --color-base-200: oklch(92% 0.005 95);
+  --color-base-300: oklch(86% 0.005 95);
+  --color-base-400: oklch(78% 0.005 95);
+  --color-base-500: oklch(63% 0.005 95);
+  --color-base-600: oklch(54% 0.005 95);
+  --color-base-700: oklch(46% 0.005 95);
+  --color-base-800: oklch(35% 0.005 95);
+  --color-base-900: oklch(20% 0.005 95);
+  --color-base-950: oklch(12% 0.005 95);
+  --color-accent-50: oklch(96% 0.015 158.25);
+  --color-accent-100: oklch(92.17% 0.032 155.36);
+  --color-accent-200: oklch(84.4% 0.065 154.46);
+  --color-accent-300: oklch(76.02% 0.1 153.86);
+  --color-accent-400: oklch(68.65% 0.13 151.92);
+  --color-accent-500: oklch(56.56% 0.108 151.62);
+  --color-accent-600: oklch(48.31% 0.091 151.89);
+  --color-accent-700: oklch(39.44% 0.071 152.24);
+  --color-accent-800: oklch(31.05% 0.052 151.99);
+  --color-accent-900: oklch(20.92% 0.029 154.01);
+  --color-accent-950: oklch(15.3% 0.017 157.97);
+  --shadow-hover: rgba(0, 0, 0, 0.137) 0px 0px 0px 0px,
+    rgba(0, 0, 0, 0.14) 0px 0px 0px 0px, rgba(0, 0, 0, 0.165) 0px 0px 0px 0px;
   --astro-code-color-text: theme("colors.base.500");
   --astro-code-token-link: theme("colors.accent.600");
   --astro-code-token-comment: theme("colors.base.400");

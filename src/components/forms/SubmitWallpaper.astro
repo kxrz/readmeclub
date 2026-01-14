@@ -9,7 +9,7 @@ const t = useTranslations(lang);
 
 <form
   id="submit-wallpaper-form"
-  class="relative w-full max-w-2xl mx-auto space-y-8 bg-white ring-1 ring-base-200 rounded-2xl p-8 lg:p-12"
+  class="relative w-full max-w-2xl mx-auto space-y-8 bg-base-50 ring-1 ring-base-200 dark:ring-base-700 rounded-2xl p-8 lg:p-12"
   x-data="{ 
     uploading: false, 
     fileUrl: null,
@@ -22,7 +22,7 @@ const t = useTranslations(lang);
   <!-- Basic Information -->
   <div class="space-y-6">
     <div>
-      <Text tag="h2" variant="textLG" class="font-semibold text-base-900 mb-4">
+      <Text tag="h2" variant="textLG" class="font-semibold text-base-900 dark:text-base-50 mb-4">
         {t('form.basic_info')}
       </Text>
     </div>
@@ -35,7 +35,7 @@ const t = useTranslations(lang);
         name="title"
         maxlength="60"
         placeholder={t('wallpapers.form.title_placeholder')}
-        class="block w-full h-10 px-4 py-2 text-sm text-base-700 duration-300 bg-white border border-transparent rounded-lg appearance-none ring-1 ring-base-200 placeholder-base-400 focus:border-base-300 focus:bg-transparent focus:outline-none focus:ring-base-500 focus:ring-offset-2 focus:ring-2"
+        class="block w-full h-10 px-4 py-2 text-sm text-base-700 dark:text-base-300 duration-300 bg-base-50 border border-transparent rounded-lg appearance-none ring-1 ring-base-200 dark:ring-base-700 placeholder-base-400 dark:placeholder-base-500 focus:border-base-300 dark:border-base-600 focus:bg-transparent focus:outline-none focus:ring-base-500 focus:ring-offset-2 focus:ring-2"
       />
     </div>
 
@@ -44,7 +44,7 @@ const t = useTranslations(lang);
       <select
         id="category"
         name="category"
-        class="block w-full h-10 px-4 py-2 text-sm text-base-700 duration-300 bg-white border border-transparent rounded-lg appearance-none ring-1 ring-base-200 focus:border-base-300 focus:bg-transparent focus:outline-none focus:ring-base-500 focus:ring-offset-2 focus:ring-2"
+        class="block w-full h-10 px-4 py-2 text-sm text-base-700 dark:text-base-300 duration-300 bg-base-50 border border-transparent rounded-lg appearance-none ring-1 ring-base-200 dark:ring-base-700 focus:border-base-300 dark:border-base-600 focus:bg-transparent focus:outline-none focus:ring-base-500 focus:ring-offset-2 focus:ring-2"
       >
         <option value="">{t('common.optional')} - {t('wallpapers.form.category')}</option>
         <option value="minimalist">{t('wallpapers.category.minimalist')}</option>
@@ -60,10 +60,10 @@ const t = useTranslations(lang);
   <!-- Wallpaper Image -->
   <div class="space-y-6">
     <div>
-      <Text tag="h2" variant="textLG" class="font-semibold text-base-900 mb-4">
+      <Text tag="h2" variant="textLG" class="font-semibold text-base-900 dark:text-base-50 mb-4">
         {t('wallpapers.form.image')}
       </Text>
-      <Text tag="p" variant="textSM" class="text-base-600 mb-4">
+      <Text tag="p" variant="textSM" class="text-base-600 dark:text-base-400 mb-4">
         {t('wallpapers.form.image_help')}
       </Text>
     </div>
@@ -83,7 +83,7 @@ const t = useTranslations(lang);
             fileUrl = null;
           }
         "
-        class="block w-full text-sm text-base-700 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-accent-500 file:text-white hover:file:bg-accent-600 file:cursor-pointer"
+        class="block w-full text-sm text-base-700 dark:text-base-300 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-accent-500 file:text-base-50 hover:file:bg-accent-600 file:cursor-pointer"
       />
     </div>
 
@@ -92,7 +92,7 @@ const t = useTranslations(lang);
       <img 
         :src="filePreview" 
         alt="Preview" 
-        class="max-w-full max-h-96 rounded-lg border-2 border-base-200 object-contain"
+        class="max-w-full max-h-96 rounded-lg border-2 border-base-200 dark:border-base-700 object-contain"
       />
     </div>
   </div>
@@ -100,10 +100,10 @@ const t = useTranslations(lang);
   <!-- Contributor Information -->
   <div class="space-y-6">
     <div>
-      <Text tag="h2" variant="textLG" class="font-semibold text-base-900 mb-4">
+      <Text tag="h2" variant="textLG" class="font-semibold text-base-900 dark:text-base-50 mb-4">
         {t('form.contributor_info')}
       </Text>
-      <Text tag="p" variant="textSM" class="text-base-600 mb-4">
+      <Text tag="p" variant="textSM" class="text-base-600 dark:text-base-400 mb-4">
         {t('form.contributor_info_help')}
       </Text>
     </div>
@@ -117,7 +117,7 @@ const t = useTranslations(lang);
           name="author_name"
           maxlength="50"
           placeholder={t('wallpapers.form.author_name_placeholder')}
-          class="block w-full h-10 px-4 py-2 text-sm text-base-700 duration-300 bg-white border border-transparent rounded-lg appearance-none ring-1 ring-base-200 placeholder-base-400 focus:border-base-300 focus:bg-transparent focus:outline-none focus:ring-base-500 focus:ring-offset-2 focus:ring-2"
+          class="block w-full h-10 px-4 py-2 text-sm text-base-700 dark:text-base-300 duration-300 bg-base-50 border border-transparent rounded-lg appearance-none ring-1 ring-base-200 dark:ring-base-700 placeholder-base-400 dark:placeholder-base-500 focus:border-base-300 dark:border-base-600 focus:bg-transparent focus:outline-none focus:ring-base-500 focus:ring-offset-2 focus:ring-2"
         />
       </div>
 
@@ -129,7 +129,7 @@ const t = useTranslations(lang);
           name="reddit_username"
           maxlength="30"
           placeholder={t('wallpapers.form.reddit_username_placeholder')}
-          class="block w-full h-10 px-4 py-2 text-sm text-base-700 duration-300 bg-white border border-transparent rounded-lg appearance-none ring-1 ring-base-200 placeholder-base-400 focus:border-base-300 focus:bg-transparent focus:outline-none focus:ring-base-500 focus:ring-offset-2 focus:ring-2"
+          class="block w-full h-10 px-4 py-2 text-sm text-base-700 dark:text-base-300 duration-300 bg-base-50 border border-transparent rounded-lg appearance-none ring-1 ring-base-200 dark:ring-base-700 placeholder-base-400 dark:placeholder-base-500 focus:border-base-300 dark:border-base-600 focus:bg-transparent focus:outline-none focus:ring-base-500 focus:ring-offset-2 focus:ring-2"
         />
       </div>
 
@@ -141,15 +141,15 @@ const t = useTranslations(lang);
           name="instagram_username"
           maxlength="30"
           placeholder={t('wallpapers.form.instagram_username_placeholder')}
-          class="block w-full h-10 px-4 py-2 text-sm text-base-700 duration-300 bg-white border border-transparent rounded-lg appearance-none ring-1 ring-base-200 placeholder-base-400 focus:border-base-300 focus:bg-transparent focus:outline-none focus:ring-base-500 focus:ring-offset-2 focus:ring-2"
+          class="block w-full h-10 px-4 py-2 text-sm text-base-700 dark:text-base-300 duration-300 bg-base-50 border border-transparent rounded-lg appearance-none ring-1 ring-base-200 dark:ring-base-700 placeholder-base-400 dark:placeholder-base-500 focus:border-base-300 dark:border-base-600 focus:bg-transparent focus:outline-none focus:ring-base-500 focus:ring-offset-2 focus:ring-2"
         />
       </div>
     </div>
   </div>
 
   <!-- Error Message -->
-  <div x-show="error" x-transition class="p-4 bg-red-50 border border-red-200 rounded-lg">
-    <Text tag="p" variant="textSM" class="text-red-700">
+  <div x-show="error" x-transition class="p-4 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-lg">
+    <Text tag="p" variant="textSM" class="text-red-700 dark:text-red-300">
       <span x-text="error"></span>
     </Text>
   </div>
@@ -163,8 +163,8 @@ const t = useTranslations(lang);
   </div>
 
   <!-- Copyright Notice -->
-  <div class="p-4 bg-base-50 border-l-4 border-base-300 rounded-r-lg">
-    <Text tag="p" variant="textXS" class="text-base-600">
+  <div class="p-4 bg-base-50 border-l-4 border-base-300 dark:border-base-600 rounded-r-lg">
+    <Text tag="p" variant="textXS" class="text-base-600 dark:text-base-400">
       {t('wallpapers.form.copyright_notice')}
     </Text>
   </div>

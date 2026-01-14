@@ -38,9 +38,9 @@ const formattedDate = createdDate.toLocaleDateString(
 
 <a
   href={resourceUrl}
-  class="group relative flex flex-col h-full rounded-xl border border-base-200 bg-white overflow-hidden hover:border-accent-300 hover:shadow-xl transition-all"
+  class="group relative flex flex-col h-full rounded-xl border border-base-200 dark:border-base-700 bg-base-50 dark:bg-base-100 dark:bg-base-200 overflow-hidden hover:border-accent-300 dark:hover:border-accent-500 hover:shadow-xl transition-all"
 >
-  <div class="aspect-video w-full overflow-hidden bg-base-100 relative">
+  <div class="aspect-video w-full overflow-hidden bg-base-100 dark:bg-base-200 relative">
     {resource.thumbnail_url ? (
       <>
         <img
@@ -64,33 +64,33 @@ const formattedDate = createdDate.toLocaleDateString(
       </div>
     )}
     <div class="absolute top-3 right-3">
-      <span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-white/90 backdrop-blur-sm text-base-700">
+      <span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-base-50/90 dark:bg-base-800/90 backdrop-blur-sm text-base-700 dark:text-base-300">
         {t(`resources.type.${resource.type}`)}
       </span>
     </div>
     <div class="absolute bottom-3 left-3">
-      <time datetime={createdDate.toISOString()} class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-white/90 backdrop-blur-sm text-base-600">
+      <time datetime={createdDate.toISOString()} class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-base-50/90 dark:bg-base-800/90 backdrop-blur-sm text-base-600 dark:text-base-400">
         {formattedDate}
       </time>
     </div>
   </div>
   
   <div class="p-4 flex-1 flex flex-col min-h-[140px]">
-    <Text tag="h3" variant="textBase" class="font-semibold text-base-900 line-clamp-2 group-hover:text-accent-500 mb-2">
+    <Text tag="h3" variant="textBase" class="font-semibold text-base-900 dark:text-base-50 line-clamp-2 group-hover:text-accent-500 dark:group-hover:text-accent-400 mb-2">
       {resource.title}
     </Text>
     
     {cleanDescription ? (
-      <Text tag="p" variant="textSM" class="text-base-600 line-clamp-2 mb-3 flex-1">
+      <Text tag="p" variant="textSM" class="text-base-600 dark:text-base-400 line-clamp-2 mb-3 flex-1">
         {cleanDescription}
       </Text>
     ) : (
       <div class="flex-1 mb-3"></div>
     )}
     
-    <div class="flex items-center justify-between pt-3 border-t border-base-200 mt-auto">
+    <div class="flex items-center justify-between pt-3 border-t border-base-200 dark:border-base-700 mt-auto">
       {resource.downloads_count > 0 ? (
-        <Text tag="span" variant="textXS" class="text-base-500">
+        <Text tag="span" variant="textXS" class="text-base-500 dark:text-base-400">
           {t('resources.downloads', { count: resource.downloads_count })}
         </Text>
       ) : (
@@ -106,7 +106,7 @@ const formattedDate = createdDate.toLocaleDateString(
         stroke-width="2"
         stroke-linecap="round"
         stroke-linejoin="round"
-        class="text-base-400 group-hover:text-accent-500 transition-colors"
+        class="text-base-400 dark:text-base-500 group-hover:text-accent-500 dark:group-hover:text-accent-400 dark:group-hover:text-accent-400 transition-colors"
       >
         <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
         <path d="M5 12l14 0"></path>

@@ -19,7 +19,7 @@ const displayLabel = label || t('common.view') + ' all';
   class="relative flex items-center gap-x-3 rounded-md bg-base-50 p-4 focus-outline-none"
 >
   <div
-    class="flex-shrink-0 p-1 size-16 bg-white rounded-full items-center flex justify-center"
+    class="flex-shrink-0 p-1 size-16 bg-base-50 rounded-full items-center flex justify-center"
   >
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -31,7 +31,7 @@ const displayLabel = label || t('common.view') + ' all';
       stroke-width="2"
       stroke-linecap="round"
       stroke-linejoin="round"
-      class="icon icon-tabler icons-tabler-outline icon-tabler-plus size-10 text-base-400"
+      class="icon icon-tabler icons-tabler-outline icon-tabler-plus size-10 text-base-400 dark:text-base-500"
     >
       <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
       <path d="M12 5l0 14"></path>
@@ -40,7 +40,7 @@ const displayLabel = label || t('common.view') + ' all';
   </div>
   <div class="min-w-0 flex-1">
     <span class="absolute inset-0" aria-hidden="true"></span>
-    <Text tag="h3" variant="textSM" class="font-medium text-base-600">
+    <Text tag="h3" variant="textSM" class="font-medium text-base-600 dark:text-base-400">
       {displayLabel}
     </Text>
   </div>

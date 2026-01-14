@@ -117,7 +117,7 @@ const { data: resources } = await supabaseAdmin
                   {resource.hidden ? 'Show' : 'Hide'}
                 </button>
                 <button
-                  class="px-4 py-2 text-sm bg-blue-500 text-white hover:bg-blue-600 rounded-lg transition-colors"
+                  class="px-4 py-2 text-sm bg-blue-500 text-base-50 hover:bg-blue-600 rounded-lg transition-colors"
                   onclick={`openEditModal('${resource.id}')`}
                 >
                   {t('common.edit')}
@@ -125,7 +125,7 @@ const { data: resources } = await supabaseAdmin
                 <a
                   href={`/resources/${resource.id}`}
                   target="_blank"
-                  class="px-4 py-2 text-sm bg-accent-500 text-white hover:bg-accent-600 rounded-lg transition-colors"
+                  class="px-4 py-2 text-sm bg-accent-500 text-base-50 hover:bg-accent-600 rounded-lg transition-colors"
                 >
                   {t('common.view')}
                 </a>
@@ -142,8 +142,8 @@ const { data: resources } = await supabaseAdmin
   </section>
   
   <!-- Edit Modal -->
-  <div id="editModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
-    <div class="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+  <div id="editModal" class="fixed inset-0 bg-base-900 bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
+    <div class="bg-base-50 rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
       <div class="p-6">
         <div class="flex items-center justify-between mb-6">
           <Text tag="h2" variant="textXL" class="font-semibold text-base-900">
@@ -349,7 +349,7 @@ const { data: resources } = await supabaseAdmin
             </button>
             <button
               type="submit"
-              class="px-4 py-2 text-sm bg-accent-500 text-white hover:bg-accent-600 rounded-lg transition-colors"
+              class="px-4 py-2 text-sm bg-accent-500 text-base-50 hover:bg-accent-600 rounded-lg transition-colors"
             >
               {t('admin.save_changes')}
             </button>

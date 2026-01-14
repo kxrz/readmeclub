@@ -11,14 +11,14 @@ import Wrapper from "@/components/fundations/containers/Wrapper.astro";
           <Text
             tag="h1"
             variant="displaySM"
-            class="text-base-900 font-medium 2xl:text-5xl tracking-tight"
+            class="text-base-900 dark:text-base-50 font-medium 2xl:text-5xl tracking-tight"
           >
             Settings
           </Text>
           <Text
             tag="p"
             variant="textBase"
-            class="mt-4  text-base-600 2xl:text-xl lg:text-balance"
+            class="mt-4  text-base-600 dark:text-base-400 2xl:text-xl lg:text-balance"
           >
             Edit your settings
           </Text>
@@ -39,7 +39,7 @@ import Wrapper from "@/components/fundations/containers/Wrapper.astro";
                     aria-required="true"
                     aria-describedby="first-name-error"
                     placeholder="First Name"
-                    class="block w-full h-9 px-4 py-2 text-sm text-base-700 duration-300 bg-white border border-transparent rounded-full appearance-none ring-1 ring-base-200 placeholder-base-400 focus:border-base-300 focus:bg-transparent focus:outline-none focus:ring-base-500 focus:ring-offset-2 focus:ring-2 sm:text-sm"
+                    class="block w-full h-9 px-4 py-2 text-sm text-base-700 dark:text-base-300 duration-300 bg-base-50 border border-transparent rounded-full appearance-none ring-1 ring-base-200 dark:ring-base-700 placeholder-base-400 dark:placeholder-base-500 focus:border-base-300 dark:border-base-600 focus:bg-transparent focus:outline-none focus:ring-base-500 focus:ring-offset-2 focus:ring-2 sm:text-sm"
                   />
                   <span
                     id="first-name-error"
@@ -62,7 +62,7 @@ import Wrapper from "@/components/fundations/containers/Wrapper.astro";
                     aria-required="true"
                     aria-describedby="last-name-error"
                     placeholder="Last Name"
-                    class="block w-full h-9 px-4 py-2 text-sm text-base-700 duration-300 bg-white border border-transparent rounded-full appearance-none ring-1 ring-base-200 placeholder-base-400 focus:border-base-300 focus:bg-transparent focus:outline-none focus:ring-base-500 focus:ring-offset-2 focus:ring-2 sm:text-sm"
+                    class="block w-full h-9 px-4 py-2 text-sm text-base-700 dark:text-base-300 duration-300 bg-base-50 border border-transparent rounded-full appearance-none ring-1 ring-base-200 dark:ring-base-700 placeholder-base-400 dark:placeholder-base-500 focus:border-base-300 dark:border-base-600 focus:bg-transparent focus:outline-none focus:ring-base-500 focus:ring-offset-2 focus:ring-2 sm:text-sm"
                   />
                   <span
                     id="last-name-error"
@@ -85,7 +85,7 @@ import Wrapper from "@/components/fundations/containers/Wrapper.astro";
                     aria-required="true"
                     aria-describedby="email-error"
                     placeholder="Your email"
-                    class="block w-full h-9 px-4 py-2 text-sm text-base-700 duration-300 bg-white border border-transparent rounded-full appearance-none ring-1 ring-base-200 placeholder-base-400 focus:border-base-300 focus:bg-transparent focus:outline-none focus:ring-base-500 focus:ring-offset-2 focus:ring-2 sm:text-sm"
+                    class="block w-full h-9 px-4 py-2 text-sm text-base-700 dark:text-base-300 duration-300 bg-base-50 border border-transparent rounded-full appearance-none ring-1 ring-base-200 dark:ring-base-700 placeholder-base-400 dark:placeholder-base-500 focus:border-base-300 dark:border-base-600 focus:bg-transparent focus:outline-none focus:ring-base-500 focus:ring-offset-2 focus:ring-2 sm:text-sm"
                   />
                   <span id="email-error" class="text-red-600 text-sm hidden">
                     Please enter a valid email address.
@@ -98,10 +98,10 @@ import Wrapper from "@/components/fundations/containers/Wrapper.astro";
                     id="remember-me"
                     name="remember-me"
                     type="checkbox"
-                    class="text-accent-500 text-xs size-4 border-base-200 rounded-full focus:ring-accent-500 focus:border-accent-500"
+                    class="text-accent-500 text-xs size-4 border-base-200 dark:border-base-700 rounded-full focus:ring-accent-500 focus:border-accent-500"
                   />
                   <label
-                    class="undefined block text-sm  text-base-600 font-medium"
+                    class="undefined block text-sm  text-base-600 dark:text-base-400 font-medium"
                   >
                     Get email from us?
                   </label>
@@ -112,7 +112,7 @@ import Wrapper from "@/components/fundations/containers/Wrapper.astro";
                   href="/forms/reset"
                   aria-label="Your label"
                   variant="textXS"
-                  class=" text-base-600"
+                  class=" text-base-600 dark:text-base-400"
                 >
                   Receive a weekly digest of new tools on Wenesday, plus other
                   news.
@@ -134,7 +134,7 @@ import Wrapper from "@/components/fundations/containers/Wrapper.astro";
                     aria-required="true"
                     aria-describedby="password-error"
                     placeholder="Your password"
-                    class="block w-full h-9 px-4 py-2 text-sm text-base-700 duration-300 bg-white border border-transparent rounded-full appearance-none ring-1 ring-base-200 placeholder-base-400 focus:border-base-300 focus:bg-transparent focus:outline-none focus:ring-base-500 focus:ring-offset-2 focus:ring-2 sm:text-sm"
+                    class="block w-full h-9 px-4 py-2 text-sm text-base-700 dark:text-base-300 duration-300 bg-base-50 border border-transparent rounded-full appearance-none ring-1 ring-base-200 dark:ring-base-700 placeholder-base-400 dark:placeholder-base-500 focus:border-base-300 dark:border-base-600 focus:bg-transparent focus:outline-none focus:ring-base-500 focus:ring-offset-2 focus:ring-2 sm:text-sm"
                   />
                   <span id="password-error" class="text-red-600 text-sm hidden">
                     Please enter a valid password.
@@ -148,7 +148,7 @@ import Wrapper from "@/components/fundations/containers/Wrapper.astro";
               href="/forms/reset"
               aria-label="Your label"
               variant="textXS"
-              class=" text-base-600 mt-2"
+              class=" text-base-600 dark:text-base-400 mt-2"
             >
               Leave blank if you don't want to change
             </Text>
@@ -164,7 +164,7 @@ import Wrapper from "@/components/fundations/containers/Wrapper.astro";
                   aria-required="true"
                   aria-describedby="confirm-password-error"
                   placeholder="Confirm Password"
-                  class="block w-full h-9 px-4 py-2 text-sm text-base-700 duration-300 bg-white border border-transparent rounded-full appearance-none ring-1 ring-base-200 placeholder-base-400 focus:border-base-300 focus:bg-transparent focus:outline-none focus:ring-base-500 focus:ring-offset-2 focus:ring-2 sm:text-sm"
+                  class="block w-full h-9 px-4 py-2 text-sm text-base-700 dark:text-base-300 duration-300 bg-base-50 border border-transparent rounded-full appearance-none ring-1 ring-base-200 dark:ring-base-700 placeholder-base-400 dark:placeholder-base-500 focus:border-base-300 dark:border-base-600 focus:bg-transparent focus:outline-none focus:ring-base-500 focus:ring-offset-2 focus:ring-2 sm:text-sm"
                 />
                 <span
                   id="confirm-password-error"

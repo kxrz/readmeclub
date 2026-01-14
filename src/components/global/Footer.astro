@@ -30,13 +30,13 @@ const legalLinks = [
     height: 200px;
   }
   .wave-segment {
-    background-color: #ffffff;
+    background-color: var(--color-base-50);
     transition: all 0.1s ease;
   }
 </style>
 <footer
   x-data="{ year: new Date().getFullYear() }"
-  class="bg-black text-white relative lg:h-svh flex flex-col w-full h-full justify-between"
+  class="bg-base-900 text-base-50 relative lg:h-svh flex flex-col w-full h-full justify-between transition-colors duration-200"
 >
   <Wrapper
     class="flex flex-col md:flex-row justify-between w-full gap-4 pb-24 pt-8"
@@ -76,13 +76,13 @@ const legalLinks = [
           {t('footer.crafted_by').split('Florent')[1] || ''}
         </Text>
         <div>
-          <BuyMeACoffee variant="default" class="text-base-400 hover:text-accent-400" />
+          <BuyMeACoffee variant="default" class="text-base-400 dark:text-base-500 hover:text-accent-400" />
         </div>
       </div>
       <Text
         tag="p"
         variant="textXS"
-        class="mt-2 text-base-400">
+        class="mt-2 text-base-400 dark:text-base-500">
         {t('footer.not_affiliated')}
       </Text>
     </div>
@@ -90,7 +90,7 @@ const legalLinks = [
     <div class="space-y-4">
       <!-- Language Selector -->
       <div class="flex items-center gap-2">
-        <Text tag="span" variant="textXS" class="text-base-400 uppercase">
+        <Text tag="span" variant="textXS" class="text-base-400 dark:text-base-500 uppercase">
           Language
         </Text>
         <div class="flex gap-2">
@@ -98,7 +98,7 @@ const legalLinks = [
             <a
               href={languageUrls[targetLang]}
               class={`text-sm hover:text-accent-400 transition-colors ${
-                lang === targetLang ? 'text-accent-400 font-semibold' : 'text-base-400'
+                lang === targetLang ? 'text-accent-400 font-semibold' : 'text-base-400 dark:text-base-500'
               }`}
             >
               {targetLang.toUpperCase()}

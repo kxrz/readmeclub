@@ -62,7 +62,7 @@ const { data: features } = await query;
       <div class="mt-4">
         <a
           href="#submit-feature-form"
-          class="inline-flex items-center gap-1.5 text-sm text-base-500 hover:text-accent-500 transition-colors"
+          class="inline-flex items-center gap-1.5 text-sm text-base-500 dark:text-base-400 hover:text-accent-500 dark:hover:text-accent-400 transition-colors"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -74,7 +74,7 @@ const { data: features } = await query;
             stroke-width="2"
             stroke-linecap="round"
             stroke-linejoin="round"
-            class="shrink-0"
+            class="shrink-0 text-base-500 dark:text-base-400"
           >
             <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
             <path d="M12 5v14"></path>
@@ -94,8 +94,8 @@ const { data: features } = await query;
           href={`/${lang}/board`}
           class={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
             statusFilter === 'all'
-              ? 'bg-base-900 text-white'
-              : 'bg-base-50 text-base-700 hover:bg-base-100 ring-1 ring-base-200'
+              ? 'bg-base-900 dark:bg-base-200 text-base-50 dark:text-base-900'
+              : 'bg-base-50 dark:bg-base-100 text-base-700 dark:text-base-300 hover:bg-base-100 dark:hover:bg-base-200 ring-1 ring-base-200 dark:ring-base-700'
           }`}
         >
           {t('board.filter.all')}
@@ -104,8 +104,8 @@ const { data: features } = await query;
           href={`/${lang}/board?status=pending`}
           class={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
             statusFilter === 'pending'
-              ? 'bg-base-900 text-white'
-              : 'bg-base-50 text-base-700 hover:bg-base-100 ring-1 ring-base-200'
+              ? 'bg-base-900 dark:bg-base-200 text-base-50 dark:text-base-900'
+              : 'bg-base-50 dark:bg-base-100 text-base-700 dark:text-base-300 hover:bg-base-100 dark:hover:bg-base-200 ring-1 ring-base-200 dark:ring-base-700'
           }`}
         >
           {t('board.filter.pending')}
@@ -114,8 +114,8 @@ const { data: features } = await query;
           href={`/${lang}/board?status=planned`}
           class={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
             statusFilter === 'planned'
-              ? 'bg-base-900 text-white'
-              : 'bg-base-50 text-base-700 hover:bg-base-100 ring-1 ring-base-200'
+              ? 'bg-base-900 dark:bg-base-200 text-base-50 dark:text-base-900'
+              : 'bg-base-50 dark:bg-base-100 text-base-700 dark:text-base-300 hover:bg-base-100 dark:hover:bg-base-200 ring-1 ring-base-200 dark:ring-base-700'
           }`}
         >
           {t('board.filter.planned')}
@@ -124,8 +124,8 @@ const { data: features } = await query;
           href={`/${lang}/board?status=completed`}
           class={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
             statusFilter === 'completed'
-              ? 'bg-base-900 text-white'
-              : 'bg-base-50 text-base-700 hover:bg-base-100 ring-1 ring-base-200'
+              ? 'bg-base-900 dark:bg-base-200 text-base-50 dark:text-base-900'
+              : 'bg-base-50 dark:bg-base-100 text-base-700 dark:text-base-300 hover:bg-base-100 dark:hover:bg-base-200 ring-1 ring-base-200 dark:ring-base-700'
           }`}
         >
           {t('board.filter.completed')}
@@ -134,8 +134,8 @@ const { data: features } = await query;
           href={`/${lang}/board?status=rejected`}
           class={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
             statusFilter === 'rejected'
-              ? 'bg-base-900 text-white'
-              : 'bg-base-50 text-base-700 hover:bg-base-100 ring-1 ring-base-200'
+              ? 'bg-base-900 dark:bg-base-200 text-base-50 dark:text-base-900'
+              : 'bg-base-50 dark:bg-base-100 text-base-700 dark:text-base-300 hover:bg-base-100 dark:hover:bg-base-200 ring-1 ring-base-200 dark:ring-base-700'
           }`}
         >
           {t('board.filter.rejected')}
@@ -173,7 +173,7 @@ const { data: features } = await query;
         
         <form
           id="submit-feature-form"
-          class="space-y-6 bg-white ring-1 ring-base-200 rounded-lg p-6 scroll-mt-24"
+          class="space-y-6 bg-base-50 ring-1 ring-base-200 rounded-lg p-6 scroll-mt-24"
           x-data="{ 
             submitting: false,
             success: false,
@@ -222,7 +222,7 @@ const { data: features } = await query;
               required
               maxlength="80"
               placeholder={t('board.form.title')}
-              class="w-full px-4 py-2 text-sm text-base-700 bg-white border border-transparent rounded-lg ring-1 ring-base-200 focus:border-base-300 focus:outline-none focus:ring-base-500 focus:ring-2"
+              class="w-full px-4 py-2 text-sm text-base-700 bg-base-50 border border-transparent rounded-lg ring-1 ring-base-200 focus:border-base-300 focus:outline-none focus:ring-base-500 focus:ring-2"
             />
           </div>
 
@@ -235,7 +235,7 @@ const { data: features } = await query;
               maxlength="500"
               rows="4"
               placeholder={t('board.form.description')}
-              class="w-full px-4 py-2 text-sm text-base-700 bg-white border border-transparent rounded-lg ring-1 ring-base-200 focus:border-base-300 focus:outline-none focus:ring-base-500 focus:ring-2"
+              class="w-full px-4 py-2 text-sm text-base-700 bg-base-50 border border-transparent rounded-lg ring-1 ring-base-200 focus:border-base-300 focus:outline-none focus:ring-base-500 focus:ring-2"
             ></textarea>
           </div>
 
@@ -247,7 +247,7 @@ const { data: features } = await query;
               x-ref="reddit_username"
               maxlength="30"
               placeholder={t('board.form.reddit_username')}
-              class="w-full px-4 py-2 text-sm text-base-700 bg-white border border-transparent rounded-lg ring-1 ring-base-200 focus:border-base-300 focus:outline-none focus:ring-base-500 focus:ring-2"
+              class="w-full px-4 py-2 text-sm text-base-700 bg-base-50 border border-transparent rounded-lg ring-1 ring-base-200 focus:border-base-300 focus:outline-none focus:ring-base-500 focus:ring-2"
             />
           </div>
 
@@ -258,15 +258,15 @@ const { data: features } = await query;
               id="tags"
               x-ref="tags"
               placeholder={t('board.form.tags')}
-              class="w-full px-4 py-2 text-sm text-base-700 bg-white border border-transparent rounded-lg ring-1 ring-base-200 focus:border-base-300 focus:outline-none focus:ring-base-500 focus:ring-2"
+              class="w-full px-4 py-2 text-sm text-base-700 bg-base-50 border border-transparent rounded-lg ring-1 ring-base-200 focus:border-base-300 focus:outline-none focus:ring-base-500 focus:ring-2"
             />
             <Text tag="p" variant="textXS" class="text-base-500 mt-1">
               {t('common.optional')} - {t('board.form.tags')} ({t('board.form.tags_hint')})
             </Text>
           </div>
 
-          <div x-show="error" x-cloak class="p-3 bg-red-50 border border-red-200 rounded-lg">
-            <Text tag="p" variant="textSM" class="text-red-700">
+          <div x-show="error" x-cloak class="p-3 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-lg">
+            <Text tag="p" variant="textSM" class="text-red-700 dark:text-red-300">
               <span x-text="error"></span>
             </Text>
           </div>

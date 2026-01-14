@@ -8,6 +8,7 @@ import Link from "../fundations/components/Link.astro";
 import Wrapper from "@/components/fundations/containers/Wrapper.astro";
 import LogoComponent from "@/components/global/Logo.astro";
 import BuyMeACoffee from "../common/BuyMeACoffee.astro";
+import ThemeToggle from "@/components/global/ThemeToggle.astro";
 // i18n
 import { useTranslations, getLangFromUrl, getLangPrefix } from '@/i18n/utils';
 
@@ -88,7 +89,7 @@ const burgerSections = [
               <Text
                 tag="a"
                 href={link.href}
-                class="text-base-900 text-sm hover:text-accent-500 font-medium"
+                class="text-base-900 dark:text-base-50 text-sm hover:text-accent-500 dark:group-hover:text-accent-400 font-medium"
               >
                 {link.text}
               </Text>
@@ -97,7 +98,7 @@ const burgerSections = [
           <button
             type="button"
             @click="rightDrawerOpen = true"
-            class="text-base-900 text-sm hover:text-accent-500 font-medium"
+            class="text-base-900 dark:text-base-50 text-sm hover:text-accent-500 dark:group-hover:text-accent-400 font-medium"
             aria-label="Open menu"
           >
             {t('nav.more')}
@@ -105,35 +106,38 @@ const burgerSections = [
         </div>
       </div>
 
-      {/* Burger menu button - visible on all sizes */}
-      <button
-        type="button"
-        class="size-9 inline-flex items-center justify-center group"
-        @click="rightDrawerOpen = true"
-        aria-label="Open menu"
-      >
-        <div class="p-1.5 group-focus-visible:bg-base-50">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="fill-base-400 size-6 shrink-0 transition duration-300 ease-in-out"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-            <path
-              :class="{'opacity-0': rightDrawerOpen}"
-              d="M4 8l18 0"
-              class="opacity-0"
-            ></path>
-            <path d="M4 16l18 0"></path>
-          </svg>
-          <span class="sr-only">Open sidebar</span>
-        </div>
-      </button>
+      {/* Theme toggle and burger menu button */}
+      <div class="flex items-center gap-3">
+        <ThemeToggle />
+        <button
+          type="button"
+          class="size-9 inline-flex items-center justify-center group"
+          @click="rightDrawerOpen = true"
+          aria-label="Open menu"
+        >
+          <div class="p-1.5 group-focus-visible:bg-base-50 dark:group-focus-visible:bg-base-800">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="text-base-400 dark:text-base-500 size-6 shrink-0 transition duration-300 ease-in-out"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+              <path
+                :class="{'opacity-0': rightDrawerOpen}"
+                d="M4 8l18 0"
+                class="opacity-0"
+              ></path>
+              <path d="M4 16l18 0"></path>
+            </svg>
+            <span class="sr-only">Open sidebar</span>
+          </div>
+        </button>
+      </div>
     </div>
   </Wrapper>
 </section>
@@ -155,7 +159,7 @@ const burgerSections = [
     x-transition:leave="transition-opacity ease-linear duration-300"
     x-transition:leave-start="opacity-100"
     x-transition:leave-end="opacity-0"
-    class="fixed inset-0 bg-base-600/50"
+    class="fixed inset-0 bg-base-600/50 dark:bg-base-900/70"
     @click="rightDrawerOpen = false"
     aria-hidden="true"
   >
@@ -169,7 +173,7 @@ const burgerSections = [
     x-transition:leave="transition ease-in-out duration-300 transform"
     x-transition:leave-start="translate-x-0"
     x-transition:leave-end="translate-x-full"
-    class="relative flex flex-col w-full lg:max-w-[26rem] bg-white shadow-lg h-full overflow-hidden rounded-xl"
+    class="relative flex flex-col w-full lg:max-w-[26rem] bg-base-50 shadow-lg h-full overflow-hidden rounded-xl"
   >
     <!-- Close Button -->
     <div
@@ -184,7 +188,7 @@ const burgerSections = [
     >
       <button
         type="button"
-        class=" text-base-600 hover:text-base-900 focus:outline-none"
+        class=" text-base-600 dark:text-base-400 hover:text-base-900 dark:text-base-50 focus:outline-none"
         @click="rightDrawerOpen = false"
       >
         <span class="sr-only">Close sidebar</span>
@@ -210,19 +214,19 @@ const burgerSections = [
         <Text
           tag="p"
           variant="textSM"
-          class="uppercase text-base-900 font-semibold"
+          class="uppercase text-base-900 dark:text-base-50 font-semibold"
         >
           {t('nav.home')}
         </Text>
       </div>
       <nav role="navigation">
         <div
-          class="flex flex-col gap-6 lg:gap-8 border-t border-base-200 p-2 py-3 px-6"
+          class="flex flex-col gap-6 lg:gap-8 border-t border-base-200 dark:border-base-700 p-2 py-3 px-6"
         >
           {burgerSections.map((section, sectionIndex) => (
             <div>
               {sectionIndex > 0 && (
-                <div class="border-t border-base-200 my-4"></div>
+                <div class="border-t border-base-200 dark:border-base-700 my-4"></div>
               )}
               <ul role="navigation" class="flex flex-col gap-1">
                 {section.items.map((item) => (
@@ -231,7 +235,7 @@ const burgerSections = [
                       tag="a"
                       variant="textXL"
                       href={item.href}
-                      class="text-base-900 font-semibold hover:text-accent-500"
+                      class="text-base-900 dark:text-base-50 font-semibold hover:text-accent-500 dark:group-hover:text-accent-400"
                     >
                       {item.text}
                     </Text>
@@ -241,13 +245,13 @@ const burgerSections = [
             </div>
           ))}
         </div>
-        <div class="border-t border-base-200 p-2 py-3 px-6 space-y-3">
-          <BuyMeACoffee variant="default" class="text-base-600" />
+        <div class="border-t border-base-200 dark:border-base-700 p-2 py-3 px-6 space-y-3">
+          <BuyMeACoffee variant="default" class="text-base-600 dark:text-base-400" />
           <div class="flex flex-col gap-2">
             {footerItems.map((item) => (
               <a
                 href={item.href}
-                class="inline-flex items-center gap-1.5 text-sm text-base-500 hover:text-accent-500 transition-colors"
+                class="inline-flex items-center gap-1.5 text-sm text-base-500 dark:text-base-400 hover:text-accent-500 dark:group-hover:text-accent-400 transition-colors"
               >
                 {item.text}
               </a>

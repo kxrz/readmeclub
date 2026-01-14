@@ -1,0 +1,133 @@
+---
+// Composant pour basculer entre light/dark mode
+// Stocke la préférence dans localStorage
+// Respecte prefers-color-scheme par défaut
+---
+
+<button
+  id="theme-toggle"
+  type="button"
+  aria-label="Toggle dark mode"
+  class="inline-flex items-center justify-center w-9 h-9 rounded-lg text-base-600 dark:text-base-400 hover:text-base-900 dark:text-base-50 hover:bg-base-100 dark:bg-base-200 dark:hover:bg-base-800 dark:text-base-400 dark:hover:text-base-50 transition-colors duration-200"
+  title="Toggle dark mode"
+>
+  <!-- Icône soleil pour light mode -->
+  <svg
+    id="theme-toggle-light-icon"
+    xmlns="http://www.w3.org/2000/svg"
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    class="hidden"
+  >
+    <circle cx="12" cy="12" r="4"></circle>
+    <path d="M12 2v2"></path>
+    <path d="M12 20v2"></path>
+    <path d="m4.93 4.93 1.41 1.41"></path>
+    <path d="m17.66 17.66 1.41 1.41"></path>
+    <path d="M2 12h2"></path>
+    <path d="M20 12h2"></path>
+    <path d="m6.34 17.66-1.41 1.41"></path>
+    <path d="m19.07 4.93-1.41 1.41"></path>
+  </svg>
+  
+  <!-- Icône lune pour dark mode -->
+  <svg
+    id="theme-toggle-dark-icon"
+    xmlns="http://www.w3.org/2000/svg"
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    class="hidden"
+  >
+    <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+  </svg>
+</button>
+
+<script>
+  (function() {
+    const themeToggle = document.getElementById('theme-toggle');
+    const lightIcon = document.getElementById('theme-toggle-light-icon');
+    const darkIcon = document.getElementById('theme-toggle-dark-icon');
+    
+    if (!themeToggle || !lightIcon || !darkIcon) return;
+    
+    // Fonction pour obtenir le thème actuel
+    function getTheme(): 'light' | 'dark' | 'system' {
+      // Vérifier localStorage d'abord
+      const stored = localStorage.getItem('theme') as 'light' | 'dark' | null;
+      if (stored === 'light' || stored === 'dark') {
+        return stored;
+      }
+      // Sinon, utiliser la préférence système
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+    
+    // Fonction pour appliquer le thème
+    function applyTheme(theme: 'light' | 'dark') {
+      const html = document.documentElement;
+      
+      // Retirer les classes existantes
+      html.classList.remove('light', 'dark');
+      
+      if (theme === 'dark') {
+        html.classList.add('dark');
+        lightIcon.classList.add('hidden');
+        darkIcon.classList.remove('hidden');
+      } else {
+        html.classList.add('light');
+        lightIcon.classList.remove('hidden');
+        darkIcon.classList.add('hidden');
+      }
+    }
+    
+    // Fonction pour basculer le thème
+    function toggleTheme() {
+      const currentTheme = getTheme();
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      
+      localStorage.setItem('theme', newTheme);
+      applyTheme(newTheme);
+    }
+    
+    // Initialiser le thème au chargement
+    const initialTheme = getTheme();
+    applyTheme(initialTheme);
+    
+    // Écouter les changements de préférence système (si pas de préférence stockée)
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    mediaQuery.addEventListener('change', (e) => {
+      // Ne mettre à jour que si l'utilisateur n'a pas de préférence stockée
+      if (!localStorage.getItem('theme')) {
+        applyTheme(e.matches ? 'dark' : 'light');
+      }
+    });
+    
+    // Ajouter l'événement click
+    themeToggle.addEventListener('click', toggleTheme);
+  })();
+</script>
+
+<style>
+  /* Transition fluide pour les changements de thème */
+  html {
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+  
+  /* Transition pour les éléments qui changent de couleur */
+  * {
+    transition-property: background-color, border-color, color, fill, stroke;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 150ms;
+  }
+</style>

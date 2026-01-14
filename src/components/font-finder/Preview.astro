@@ -16,24 +16,24 @@ const { font, epubText = 'The quick brown fox jumps over the lazy dog. A-Z a-z 0
 const initialText = epubText;
 ---
 
-<div class="bg-base-50 rounded-lg border border-base-200 p-4">
+<div class="bg-base-50 rounded-lg border border-base-200 dark:border-base-700 p-4">
   <div class="flex items-center justify-between mb-4">
-    <Text tag="h3" variant="textBase" class="font-semibold text-base-900">
+    <Text tag="h3" variant="textBase" class="font-semibold text-base-900 dark:text-base-50">
       X4 Preview (480×800, 220 ppi)
     </Text>
-    <div class="flex items-center gap-2 text-xs text-base-500">
+    <div class="flex items-center gap-2 text-xs text-base-500 dark:text-base-400">
       <span>E-ink simulation</span>
     </div>
   </div>
   
   <!-- Disclaimer -->
-  <div class="mb-4 p-3 bg-base-100 border border-base-300 rounded text-xs text-base-600">
+  <div class="mb-4 p-3 bg-base-100 dark:bg-base-200 border border-base-300 dark:border-base-600 rounded text-xs text-base-600 dark:text-base-400">
     <p class="font-medium mb-1">⚠️ Simulation Disclaimer</p>
     <p>This preview is designed to resemble the XTEink X4 tablet display, but it is only a simulation. While we strive for accuracy, the actual rendering on the device may differ slightly. This tool provides a close approximation for preview purposes only.</p>
   </div>
 
   <!-- Canvas Container -->
-  <div class="relative bg-white rounded border-2 border-base-300 overflow-hidden" style="max-width: 320px; margin: 0 auto; aspect-ratio: 3/5;">
+  <div class="relative bg-base-50 rounded border-2 border-base-300 dark:border-base-600 overflow-hidden" style="max-width: 320px; margin: 0 auto; aspect-ratio: 3/5;">
     <canvas
       id="preview-canvas"
       width="480"
@@ -45,10 +45,10 @@ const initialText = epubText;
     <!-- Loading overlay -->
     <div 
       id="preview-loading"
-      class="absolute inset-0 bg-base-50/80 flex items-center justify-center"
+      class="absolute inset-0 bg-base-50/80 dark:bg-base-100/80 flex items-center justify-center"
       style="display: none;"
     >
-      <Text tag="span" variant="textSM" class="text-base-500">
+      <Text tag="span" variant="textSM" class="text-base-500 dark:text-base-400">
         Loading font...
       </Text>
     </div>
@@ -62,7 +62,7 @@ const initialText = epubText;
     <button
       @click="navigatePage(-1)"
       :disabled="!canGoPrev()"
-      class="flex items-center justify-center w-12 h-12 rounded-full bg-accent-500 text-white hover:bg-accent-600 disabled:bg-base-200 disabled:text-base-400 disabled:cursor-not-allowed transition-colors shadow-md"
+      class="flex items-center justify-center w-12 h-12 rounded-full bg-accent-500 text-base-50 hover:bg-accent-600 disabled:bg-base-200 dark:disabled:bg-base-800 disabled:text-base-400 dark:disabled:text-base-500 dark:text-base-500 disabled:cursor-not-allowed transition-colors shadow-md"
       aria-label="Previous page"
     >
       <svg
@@ -80,14 +80,14 @@ const initialText = epubText;
       </svg>
     </button>
     
-    <div class="text-sm text-base-600 font-medium min-w-[80px] text-center">
+    <div class="text-sm text-base-600 dark:text-base-400 font-medium min-w-[80px] text-center">
       <span x-text="getPageInfo()"></span>
     </div>
     
     <button
       @click="navigatePage(1)"
       :disabled="!canGoNext()"
-      class="flex items-center justify-center w-12 h-12 rounded-full bg-accent-500 text-white hover:bg-accent-600 disabled:bg-base-200 disabled:text-base-400 disabled:cursor-not-allowed transition-colors shadow-md"
+      class="flex items-center justify-center w-12 h-12 rounded-full bg-accent-500 text-base-50 hover:bg-accent-600 disabled:bg-base-200 dark:disabled:bg-base-800 disabled:text-base-400 dark:disabled:text-base-500 dark:text-base-500 disabled:cursor-not-allowed transition-colors shadow-md"
       aria-label="Next page"
     >
       <svg
@@ -107,8 +107,8 @@ const initialText = epubText;
   </div>
 
   <!-- Character Showcase -->
-  <div class="mt-4 p-3 bg-base-100 rounded border border-base-200">
-    <Text tag="p" variant="textXS" class="text-base-600 mb-2 font-medium">
+  <div class="mt-4 p-3 bg-base-100 dark:bg-base-200 rounded border border-base-200 dark:border-base-700">
+    <Text tag="p" variant="textXS" class="text-base-600 dark:text-base-400 mb-2 font-medium">
       Character Coverage:
     </Text>
     <div class="text-sm font-mono text-base-700">

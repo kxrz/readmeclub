@@ -119,7 +119,7 @@ const resourceTypes = [
       <div class="mt-6">
         <a
           href={`/${lang}/submit`}
-          class="inline-flex items-center gap-2 px-4 py-2 bg-accent-500 text-white rounded-full hover:bg-accent-600 transition-colors font-medium text-sm shadow-md hover:shadow-lg focus:ring-2 focus:ring-accent-600 focus:ring-offset-2 focus:outline-none"
+          class="inline-flex items-center gap-2 px-4 py-2 bg-accent-500 text-base-50 rounded-full hover:bg-accent-600 transition-colors font-medium text-sm shadow-md hover:shadow-lg focus:ring-2 focus:ring-accent-600 focus:ring-offset-2 focus:outline-none"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -152,7 +152,7 @@ const resourceTypes = [
           title={t('common.filter') + ': All'}
           aria-label={t('common.filter') + ': All'}
           href={`/${lang}/resources`}
-          class={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${!type ? 'bg-base-900 text-white hover:bg-base-800 font-semibold' : 'text-base-900 bg-white ring-2 ring-base-400 hover:ring-accent-400 hover:bg-accent-50 font-medium'}`}
+          class={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${!type ? 'bg-base-900 dark:bg-base-200 text-base-50 dark:text-base-900 hover:bg-base-800 dark:hover:bg-base-300 font-semibold' : 'text-base-900 dark:text-base-50 bg-base-50 dark:bg-base-100 ring-2 ring-base-400 dark:ring-base-600 hover:ring-accent-400 dark:hover:ring-accent-500 hover:bg-accent-50 dark:hover:bg-accent-900/30 font-medium'}`}
         >
           {t('common.filter')}: All
         </a>
@@ -161,7 +161,7 @@ const resourceTypes = [
             title={rt.label}
             aria-label={rt.label}
             href={`/${lang}/resources?type=${rt.value}`}
-            class={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${type === rt.value ? 'bg-base-900 text-white hover:bg-base-800 font-semibold' : 'text-base-900 bg-white ring-2 ring-base-400 hover:ring-accent-400 hover:bg-accent-50 font-medium'}`}
+            class={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${type === rt.value ? 'bg-base-900 text-base-50 hover:bg-base-800 font-semibold' : 'text-base-900 bg-base-50 ring-2 ring-base-400 hover:ring-accent-400 hover:bg-accent-50 font-medium'}`}
           >
             {rt.label}
           </a>
@@ -183,7 +183,7 @@ const resourceTypes = [
               {pagination.currentPage > 1 && (
                 <a
                   href={`/${lang}/resources${type ? `?type=${type}${pagination.currentPage > 2 ? `&page=${pagination.currentPage - 1}` : ''}` : pagination.currentPage > 2 ? `?page=${pagination.currentPage - 1}` : ''}`}
-                  class="px-4 py-2 text-sm text-base-700 bg-white border border-base-200 rounded-lg hover:border-accent-300 hover:text-accent-500 transition-colors"
+                  class="px-4 py-2 text-sm text-base-700 bg-base-50 border border-base-200 rounded-lg hover:border-accent-300 hover:text-accent-500 transition-colors"
                 >
                   {t('common.previous')}
                 </a>
@@ -201,8 +201,8 @@ const resourceTypes = [
                       href={pageUrl}
                       class={`px-4 py-2 text-sm rounded-lg transition-colors ${
                         pageNum === pagination.currentPage
-                          ? 'bg-base-900 text-white'
-                          : 'text-base-700 bg-white border border-base-200 hover:border-accent-300 hover:text-accent-500'
+                          ? 'bg-base-900 dark:bg-base-200 text-base-50 dark:text-base-900'
+                          : 'text-base-700 dark:text-base-300 bg-base-50 dark:bg-base-100 border border-base-200 dark:border-base-700 hover:border-accent-300 dark:hover:border-accent-500 hover:text-accent-500 dark:hover:text-accent-400'
                       }`}
                     >
                       {pageNum}
@@ -214,7 +214,7 @@ const resourceTypes = [
               {pagination.currentPage < totalPages && (
                 <a
                   href={`/${lang}/resources${type ? `?type=${type}&page=${pagination.currentPage + 1}` : `?page=${pagination.currentPage + 1}`}`}
-                  class="px-4 py-2 text-sm text-base-700 bg-white border border-base-200 rounded-lg hover:border-accent-300 hover:text-accent-500 transition-colors"
+                  class="px-4 py-2 text-sm text-base-700 bg-base-50 border border-base-200 rounded-lg hover:border-accent-300 hover:text-accent-500 transition-colors"
                 >
                   {t('common.next')}
                 </a>

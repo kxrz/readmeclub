@@ -244,7 +244,7 @@ const publishedAtFormatted = article.published_at
               id="featured_image"
               name="featured_image"
               accept="image/png,image/jpeg,image/jpg,image/webp,image/gif"
-              class="block w-full text-sm text-base-700 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-accent-500 file:text-white hover:file:bg-accent-600 file:cursor-pointer mb-2"
+              class="block w-full text-sm text-base-700 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-accent-500 file:text-base-50 hover:file:bg-accent-600 file:cursor-pointer mb-2"
               onchange="window.handleImageUpload(this)"
             />
             <input
@@ -354,7 +354,7 @@ const publishedAtFormatted = article.published_at
         <div class="flex gap-2">
           <button
             type="submit"
-            class="px-4 py-2 bg-accent-500 text-white rounded-lg hover:bg-accent-600 transition-colors"
+            class="px-4 py-2 bg-accent-500 text-base-50 rounded-lg hover:bg-accent-600 transition-colors"
             x-bind:disabled="submitting"
           >
             <span x-show="!submitting">Update Article</span>

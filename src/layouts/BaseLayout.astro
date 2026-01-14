@@ -21,11 +21,24 @@ const lang = getLangFromUrl(Astro.url);
   <head>
     <BaseHead />
     <slot name="head" />
+    {/* Script pour éviter le flash de contenu incorrect (FOUC) */}
+    <script is:inline>
+      (function() {
+        const stored = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const theme = stored === 'light' || stored === 'dark' ? stored : (prefersDark ? 'dark' : 'light');
+        if (theme === 'dark') {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.add('light');
+        }
+      })();
+    </script>
   </head>
   <body
     x-data="{ rightDrawerOpen: false }"
     @keydown.window.escape="rightDrawerOpen = false"
-    class="bg-white flex flex-col lg:min-h-svh"
+    class="bg-base-50 flex flex-col lg:min-h-svh transition-colors duration-200"
   >
     <Navigation />
     <main class="grow ">

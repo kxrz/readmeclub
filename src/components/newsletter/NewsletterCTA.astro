@@ -41,25 +41,25 @@ const message = messages[source as keyof typeof messages] || messages.homepage;
         name="email"
         placeholder="your.email@example.com"
         required
-        class="flex-1 px-4 py-2 border border-base-200 rounded-lg focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none transition-colors text-sm"
+        class="flex-1 px-4 py-2 border border-base-200 dark:border-base-700 rounded-lg focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none transition-colors text-sm"
       />
       <button
         type="submit"
-        class="px-6 py-2 bg-accent-500 text-white rounded-lg hover:bg-accent-600 transition-colors font-medium whitespace-nowrap text-sm"
+        class="px-6 py-2 bg-accent-500 text-base-50 rounded-lg hover:bg-accent-600 transition-colors font-medium whitespace-nowrap text-sm"
       >
         Subscribe
       </button>
     </form>
-    <div class="newsletter-cta-message mt-2 text-xs text-base-500 hidden"></div>
+    <div class="newsletter-cta-message mt-2 text-xs text-base-500 dark:text-base-400 hidden"></div>
   </div>
 ) : (
-  <div class={`bg-base-50 border border-base-200 rounded-lg p-6 ${compact ? 'p-4' : ''}`}>
+  <div class={`bg-base-50 border border-base-200 dark:border-base-700 rounded-lg p-6 ${compact ? 'p-4' : ''}`}>
     <div class={`flex flex-col gap-4`}>
       <div>
-        <h3 class={`font-semibold text-base-900 mb-2 ${compact ? 'text-sm' : 'text-base'}`}>
+        <h3 class={`font-semibold text-base-900 dark:text-base-50 mb-2 ${compact ? 'text-sm' : 'text-base'}`}>
           {message.title}
         </h3>
-        <p class={`text-base-600 ${compact ? 'text-xs' : 'text-sm'}`}>
+        <p class={`text-base-600 dark:text-base-400 ${compact ? 'text-xs' : 'text-sm'}`}>
           {message.description}
         </p>
       </div>
@@ -74,16 +74,16 @@ const message = messages[source as keyof typeof messages] || messages.homepage;
             name="email"
             placeholder="your.email@example.com"
             required
-            class={`flex-1 px-4 py-2 border border-base-200 rounded-lg focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none transition-colors ${compact ? 'text-sm' : ''}`}
+            class={`flex-1 px-4 py-2 border border-base-200 dark:border-base-700 rounded-lg focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none transition-colors ${compact ? 'text-sm' : ''}`}
           />
           <button
             type="submit"
-            class={`px-6 py-2 bg-accent-500 text-white rounded-lg hover:bg-accent-600 transition-colors font-medium whitespace-nowrap ${compact ? 'text-sm' : ''}`}
+            class={`px-6 py-2 bg-accent-500 text-base-50 rounded-lg hover:bg-accent-600 transition-colors font-medium whitespace-nowrap ${compact ? 'text-sm' : ''}`}
           >
             Subscribe
           </button>
         </div>
-        <div class="newsletter-cta-message mt-2 text-xs text-base-500 hidden"></div>
+        <div class="newsletter-cta-message mt-2 text-xs text-base-500 dark:text-base-400 hidden"></div>
       </form>
     </div>
   </div>

@@ -102,7 +102,7 @@ function buildWallpapersUrl(category: string | null, sort: string, pageNum: numb
       <div class="mt-6">
         <a
           href={`/${lang}/submit-wallpaper`}
-          class="inline-flex items-center gap-2 px-4 py-2 bg-accent-500 text-white rounded-full hover:bg-accent-600 transition-colors font-medium text-sm shadow-md hover:shadow-lg focus:ring-2 focus:ring-accent-600 focus:ring-offset-2 focus:outline-none"
+          class="inline-flex items-center gap-2 px-4 py-2 bg-accent-500 text-base-50 rounded-full hover:bg-accent-600 transition-colors font-medium text-sm shadow-md hover:shadow-lg focus:ring-2 focus:ring-accent-600 focus:ring-offset-2 focus:outline-none"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -138,7 +138,7 @@ function buildWallpapersUrl(category: string | null, sort: string, pageNum: numb
               data-category="all"
               class={`category-filter px-2.5 py-1 md:px-3 md:py-1 rounded-full text-xs font-medium transition-colors ${
                 !category
-                  ? 'bg-accent-500 text-white'
+                  ? 'bg-accent-500 text-base-50'
                   : 'bg-base-100 text-base-700 hover:bg-base-200'
               }`}
             >
@@ -150,7 +150,7 @@ function buildWallpapersUrl(category: string | null, sort: string, pageNum: numb
                 data-category={cat.value}
                 class={`category-filter px-2.5 py-1 md:px-3 md:py-1 rounded-full text-xs font-medium transition-colors ${
                   category === cat.value
-                    ? 'bg-accent-500 text-white'
+                    ? 'bg-accent-500 text-base-50'
                     : 'bg-base-100 text-base-700 hover:bg-base-200'
                 }`}
               >
@@ -184,7 +184,7 @@ function buildWallpapersUrl(category: string | null, sort: string, pageNum: numb
                 data-sort={option.value}
                 class={`sort-option px-2.5 py-1 md:px-3 md:py-1 rounded-full text-xs font-medium transition-colors ${
                   sort === option.value
-                    ? 'bg-accent-500 text-white'
+                    ? 'bg-accent-500 text-base-50'
                     : 'bg-base-100 text-base-700 hover:bg-base-200'
                 }`}
               >
@@ -307,7 +307,7 @@ function buildWallpapersUrl(category: string | null, sort: string, pageNum: numb
                     const categoryBadge = w.category ? `<span class="shrink-0 text-xs uppercase text-base-500 bg-base-100 px-2 py-1 rounded">${w.category}</span>` : '';
                     
                     return `
-                      <a href="${wallpaperUrl}" class="group relative flex flex-col rounded-lg border border-base-200 bg-white overflow-hidden hover:border-accent-300 hover:shadow-lg transition-all">
+                      <a href="${wallpaperUrl}" class="group relative flex flex-col rounded-lg border border-base-200 bg-base-50 overflow-hidden hover:border-accent-300 hover:shadow-lg transition-all">
                         <div class="aspect-[3/5] w-full overflow-hidden bg-base-100">
                           <img src="${imageUrl}" alt="${title}" class="h-full w-full object-cover group-hover:scale-105 transition-transform" loading="lazy" />
                         </div>
@@ -379,18 +379,18 @@ function buildWallpapersUrl(category: string | null, sort: string, pageNum: numb
                 
                 paginationEl.innerHTML = `
                   ${pagination.currentPage > 1 ? `
-                    <a href="#" class="page-link px-4 py-2 text-sm text-base-700 bg-white border border-base-200 rounded-lg hover:border-accent-300 hover:text-accent-500 transition-colors" data-page="${pagination.currentPage - 1}">${prevText}</a>
+                    <a href="#" class="page-link px-4 py-2 text-sm text-base-700 bg-base-50 border border-base-200 rounded-lg hover:border-accent-300 hover:text-accent-500 transition-colors" data-page="${pagination.currentPage - 1}">${prevText}</a>
                   ` : ''}
                   <div class="flex items-center gap-1">
                     ${pages.map(p => {
                       if (p === 'ellipsis') return '<span class="px-2 text-base-500">...</span>';
                       return `
-                        <a href="#" class="page-link px-4 py-2 text-sm rounded-lg transition-colors ${p === pagination.currentPage ? 'bg-base-900 text-white' : 'text-base-700 bg-white border border-base-200 hover:border-accent-300 hover:text-accent-500'}" data-page="${p}">${p}</a>
+                        <a href="#" class="page-link px-4 py-2 text-sm rounded-lg transition-colors ${p === pagination.currentPage ? 'bg-base-900 dark:bg-base-200 text-base-50 dark:text-base-900' : 'text-base-700 dark:text-base-300 bg-base-50 dark:bg-base-100 border border-base-200 dark:border-base-700 hover:border-accent-300 dark:hover:border-accent-500 hover:text-accent-500 dark:hover:text-accent-400'}" data-page="${p}">${p}</a>
                       `;
                     }).join('')}
                   </div>
                   ${pagination.currentPage < pagination.totalPages ? `
-                    <a href="#" class="page-link px-4 py-2 text-sm text-base-700 bg-white border border-base-200 rounded-lg hover:border-accent-300 hover:text-accent-500 transition-colors" data-page="${pagination.currentPage + 1}">${nextText}</a>
+                    <a href="#" class="page-link px-4 py-2 text-sm text-base-700 bg-base-50 border border-base-200 rounded-lg hover:border-accent-300 hover:text-accent-500 transition-colors" data-page="${pagination.currentPage + 1}">${nextText}</a>
                   ` : ''}
                 `;
                 
@@ -414,11 +414,11 @@ function buildWallpapersUrl(category: string | null, sort: string, pageNum: numb
                   
                   // Mettre à jour les styles actifs
                   document.querySelectorAll('.sort-option').forEach(b => {
-                    b.classList.remove('bg-accent-500', 'text-white');
+                    b.classList.remove('bg-accent-500', 'text-base-50');
                     b.classList.add('bg-base-100', 'text-base-700');
                   });
                   btn.classList.remove('bg-base-100', 'text-base-700');
-                  btn.classList.add('bg-accent-500', 'text-white');
+                  btn.classList.add('bg-accent-500', 'text-base-50');
                 });
               });
               
@@ -433,11 +433,11 @@ function buildWallpapersUrl(category: string | null, sort: string, pageNum: numb
                   
                   // Mettre à jour les styles actifs
                   document.querySelectorAll('.category-filter').forEach(b => {
-                    b.classList.remove('bg-accent-500', 'text-white');
+                    b.classList.remove('bg-accent-500', 'text-base-50');
                     b.classList.add('bg-base-100', 'text-base-700');
                   });
                   btn.classList.remove('bg-base-100', 'text-base-700');
-                  btn.classList.add('bg-accent-500', 'text-white');
+                  btn.classList.add('bg-accent-500', 'text-base-50');
                 });
               });
               
@@ -457,7 +457,7 @@ function buildWallpapersUrl(category: string | null, sort: string, pageNum: numb
                 {page > 1 && (
                   <a
                     href={`/${lang}/wallpapers${buildWallpapersUrl(category, sort, page - 1)}`}
-                    class="px-4 py-2 text-sm text-base-700 bg-white border border-base-200 rounded-lg hover:border-accent-300 hover:text-accent-500 transition-colors"
+                    class="px-4 py-2 text-sm text-base-700 bg-base-50 border border-base-200 rounded-lg hover:border-accent-300 hover:text-accent-500 transition-colors"
                   >
                     {t('common.previous')}
                   </a>
@@ -474,8 +474,8 @@ function buildWallpapersUrl(category: string | null, sort: string, pageNum: numb
                         href={pageUrl}
                         class={`px-4 py-2 text-sm rounded-lg transition-colors ${
                           p === page
-                            ? 'bg-base-900 text-white'
-                            : 'text-base-700 bg-white border border-base-200 hover:border-accent-300 hover:text-accent-500'
+                            ? 'bg-base-900 dark:bg-base-200 text-base-50 dark:text-base-900'
+                            : 'text-base-700 dark:text-base-300 bg-base-50 dark:bg-base-100 border border-base-200 dark:border-base-700 hover:border-accent-300 dark:hover:border-accent-500 hover:text-accent-500 dark:hover:text-accent-400'
                         }`}
                       >
                         {p}
@@ -487,7 +487,7 @@ function buildWallpapersUrl(category: string | null, sort: string, pageNum: numb
                 {page < totalPages && (
                   <a
                     href={`/${lang}/wallpapers${buildWallpapersUrl(category, sort, page + 1)}`}
-                    class="px-4 py-2 text-sm text-base-700 bg-white border border-base-200 rounded-lg hover:border-accent-300 hover:text-accent-500 transition-colors"
+                    class="px-4 py-2 text-sm text-base-700 bg-base-50 border border-base-200 rounded-lg hover:border-accent-300 hover:text-accent-500 transition-colors"
                   >
                     {t('common.next')}
                   </a>

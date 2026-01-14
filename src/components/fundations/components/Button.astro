@@ -9,33 +9,43 @@ const {
 } = Astro.props;
 // Default button
 const defaultClass = [
-  "text-white",
-  "bg-black",
+  "text-base-50",
+  "bg-base-900",
   "hover:bg-base-800",
   "focus:ring-black",
 ];
 const accentClass = [
-  "text-white",
+  "text-base-50",
   "bg-accent-500",
   "hover:bg-accent-600",
   "focus:ring-accent-600",
 ];
 const mutedClass = [
   "text-base-700",
-  "bg-white",
+  "bg-base-50",
   "ring",
   "ring-base-200",
-  "hover:text-accent-500",
+  "hover:text-accent-500 dark:group-hover:text-accent-400",
   "focus:ring-base-500",
 ];
 const ghostClass = [
-  "text-base-600",
+  "text-base-600 dark:text-base-400",
   "bg-base-50",
   "ring",
   "ring-base-50",
-  "hover:text-black",
+  "hover:text-base-900 dark:text-base-50",
   "focus:bg-base-200",
   "focus:ring-base-200",
+];
+const outlineClass = [
+  "text-base-900 dark:text-base-900",
+  "bg-base-50 dark:bg-base-100",
+  "border",
+  "border-base-300 dark:border-base-600",
+  "hover:bg-base-100 dark:hover:bg-base-200",
+  "hover:border-accent-300 dark:hover:border-accent-500",
+  "hover:text-accent-500 dark:hover:text-accent-500",
+  "focus:ring-accent-500",
 ];
 
 // Size
@@ -69,6 +79,7 @@ const additionalClasses = className ? className.split(" ") : [];
     variant === "accent" && accentClass,
     variant === "muted" && mutedClass,
     variant === "ghost" && ghostClass,
+    variant === "outline" && outlineClass,
     variant === "none" && [], // No additional classes for "none" variant
     size === "xs" && xs,
     size === "sm" && sm,

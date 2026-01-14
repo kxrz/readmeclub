@@ -109,7 +109,7 @@ const starredResources = allResources
                 {isImageFile && resource.file_url && (
                   <a
                     href={`/api/resources/${resource.id}/download`}
-                    class="absolute top-4 right-4 bg-white/90 hover:bg-white rounded-full p-3 shadow-lg transition-all group"
+                    class="absolute top-4 right-4 bg-base-50/90 dark:bg-base-100/90 hover:bg-base-50 dark:hover:bg-base-200 rounded-full p-3 shadow-lg transition-all group"
                     title={t('resources.download_file')}
                   >
                     <svg
@@ -120,7 +120,7 @@ const starredResources = allResources
                       stroke-width="2"
                       stroke-linecap="round"
                       stroke-linejoin="round"
-                      class="icon icon-tabler icons-tabler-outline icon-tabler-download size-5 text-base-900 group-hover:text-accent-500"
+                      class="icon icon-tabler icons-tabler-outline icon-tabler-download size-5 text-base-900 dark:text-base-50 group-hover:text-accent-500 dark:group-hover:text-accent-400"
                     >
                       <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                       <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2"></path>
@@ -149,7 +149,7 @@ const starredResources = allResources
               {resource.title}
             </Text>
             <div
-              class="mt-4 text-base-600 text-balance prose prose-sm max-w-none prose-headings:text-base-900 prose-p:text-base-600 prose-a:text-accent-500 prose-a:no-underline hover:prose-a:underline prose-strong:text-base-900 prose-code:text-base-900 prose-code:bg-base-100 prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-code:text-sm"
+              class="mt-4 text-base-600 dark:text-base-400 text-balance prose prose-sm max-w-none prose-headings:text-base-900 dark:prose-headings:text-base-50 prose-headings:font-semibold prose-p:text-base-600 dark:prose-p:text-base-400 prose-a:text-accent-500 dark:prose-a:text-accent-400 prose-a:no-underline hover:prose-a:underline prose-strong:text-base-900 dark:prose-strong:text-base-50 prose-ul:text-base-600 dark:prose-ul:text-base-400 prose-ol:text-base-600 dark:prose-ol:text-base-400 prose-li:text-base-600 dark:prose-li:text-base-400 prose-code:text-base-900 dark:prose-code:text-base-50 prose-code:bg-base-100 dark:prose-code:bg-base-800 prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-code:text-sm"
               set:html={renderMarkdown(resource.description)}
             />
             <Text
@@ -338,8 +338,8 @@ const starredResources = allResources
             <Text tag="h2" variant="textLG" class="font-semibold text-base-900 mb-3">
               {t('resources.known_issues')}
             </Text>
-            <div class="bg-yellow-50 rounded-lg p-4">
-              <Text tag="p" variant="textSM" class="text-base-700 whitespace-pre-line">
+            <div class="bg-yellow-50 dark:bg-base-200 border border-yellow-200 dark:border-yellow-700 rounded-lg p-4">
+              <Text tag="p" variant="textSM" class="text-base-700 dark:text-base-900 whitespace-pre-line">
                 {resource.known_issues}
               </Text>
             </div>

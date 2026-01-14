@@ -109,7 +109,7 @@ const seoDescription = wallpaper.title ? `${wallpapersSubtitleText} - ${wallpape
                   href={originalBmpUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  class="absolute top-4 right-4 bg-white/90 hover:bg-white backdrop-blur-sm rounded-full p-2 shadow-sm transition-colors"
+                  class="absolute top-4 right-4 bg-base-50/90 dark:bg-base-100/90 hover:bg-base-50 dark:hover:bg-base-200 backdrop-blur-sm rounded-full p-2 shadow-sm transition-colors"
                   title={t('wallpapers.view_full_size')}
                   aria-label={t('wallpapers.view_full_size')}
                 >
@@ -123,7 +123,7 @@ const seoDescription = wallpaper.title ? `${wallpapersSubtitleText} - ${wallpape
                     stroke-width="2"
                     stroke-linecap="round"
                     stroke-linejoin="round"
-                    class="text-base-900"
+                    class="text-base-900 dark:text-base-50"
                   >
                     <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                     <path d="M7 7h10v10"></path>
@@ -435,7 +435,7 @@ const seoDescription = wallpaper.title ? `${wallpapersSubtitleText} - ${wallpape
           ))}
           <a
             href={`/api/wallpapers/random`}
-            class="group relative flex-shrink-0 w-32 h-48 rounded-lg overflow-hidden border border-base-200 bg-white hover:border-accent-300 hover:shadow-lg transition-all flex items-center justify-center"
+            class="group relative flex-shrink-0 w-32 h-48 rounded-lg overflow-hidden border border-base-200 bg-base-50 hover:border-accent-300 hover:shadow-lg transition-all flex items-center justify-center"
             title={t('wallpapers.random')}
           >
             <div class="flex flex-col items-center justify-center gap-2 text-base-600 group-hover:text-accent-500 transition-colors">

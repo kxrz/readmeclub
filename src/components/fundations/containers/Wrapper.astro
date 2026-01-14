@@ -15,8 +15,8 @@ const variantClasses = {
     "mx-auto px-4 lg:px-8 max-w-screen 2xl:max-w-[120rem] 2xl:lg:px-24   ",
     // Wrapper for narrow sections
   narrow: "mx-auto px-4 lg:px-8 max-w-xl",
-  // Wrappers for prose sections
-  prose: "prose  text-base-600    prose-headings:text-base-900 prose-pre:border-0  prose-blockquote:text-accent-400    prose-a:text-accent-400 hover:prose-a:text-accent-500 prose-a:duration-200  max-w-none prose-pre:text-sm",
+  // Wrappers for prose sections avec support dark mode
+  prose: "prose text-base-600 dark:text-base-400 prose-headings:text-base-900 dark:text-base-50 dark:prose-headings:text-base-50 prose-headings:font-semibold prose-p:text-base-600 dark:text-base-400 dark:prose-p:text-base-400 dark:text-base-500 prose-strong:text-base-900 dark:text-base-50 dark:prose-strong:text-base-50 prose-a:text-accent-400 dark:prose-a:text-accent-400 hover:prose-a:text-accent-500 dark:hover:prose-a:text-accent-500 prose-a:duration-200 prose-a:no-underline hover:prose-a:underline prose-ul:text-base-600 dark:text-base-400 dark:prose-ul:text-base-400 dark:text-base-500 prose-ol:text-base-600 dark:text-base-400 dark:prose-ol:text-base-400 dark:text-base-500 prose-li:text-base-600 dark:text-base-400 dark:prose-li:text-base-400 dark:text-base-500 prose-blockquote:text-accent-400 dark:prose-blockquote:text-accent-400 prose-blockquote:border-l-4 prose-blockquote:border-accent-500 dark:prose-blockquote:border-accent-400 prose-blockquote:pl-4 prose-blockquote:italic prose-code:text-base-900 dark:text-base-50 dark:prose-code:text-base-50 prose-code:bg-base-100 dark:bg-base-200 dark:prose-code:bg-base-800 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm prose-pre:bg-base-100 dark:bg-base-200 dark:prose-pre:bg-base-800 prose-pre:text-base-900 dark:text-base-50 dark:prose-pre:text-base-50 prose-pre:border-0 prose-pre:rounded-lg prose-pre:p-4 prose-pre:text-sm max-w-none",
 };
 // Combine the classes for the specified variant with any extra classes
 const classes = `${variantClasses[variant]} ${extraClass}`.trim();

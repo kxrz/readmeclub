@@ -98,7 +98,7 @@ const paginationPages = totalPages > 1 ? generatePaginationPages(currentPage, to
           type="application/rss+xml"
           target="_blank"
           rel="noopener noreferrer"
-          class="inline-flex items-center gap-2 px-4 py-2 text-sm text-base-700 bg-white border border-base-200 rounded-lg hover:border-accent-300 hover:text-accent-500 transition-colors whitespace-nowrap"
+          class="inline-flex items-center gap-2 px-4 py-2 text-sm text-base-700 bg-base-50 border border-base-200 rounded-lg hover:border-accent-300 hover:text-accent-500 transition-colors whitespace-nowrap"
           aria-label="RSS Feed"
         >
           <svg
@@ -139,7 +139,7 @@ const paginationPages = totalPages > 1 ? generatePaginationPages(currentPage, to
               {currentPage > 1 && (
                 <Link
                   href={`/news${currentPage > 2 ? `?page=${currentPage - 1}` : ''}`}
-                  class="px-4 py-2 text-sm text-base-700 bg-white border border-base-200 rounded-lg hover:border-accent-300 hover:text-accent-500 transition-colors"
+                  class="px-4 py-2 text-sm text-base-700 bg-base-50 border border-base-200 rounded-lg hover:border-accent-300 hover:text-accent-500 transition-colors"
                 >
                   Previous
                 </Link>
@@ -157,8 +157,8 @@ const paginationPages = totalPages > 1 ? generatePaginationPages(currentPage, to
                       href={`/news${pageNum > 1 ? `?page=${pageNum}` : ''}`}
                       class={`px-4 py-2 text-sm rounded-lg transition-colors ${
                         isActive
-                          ? 'bg-base-900 text-white'
-                          : 'text-base-700 bg-white border border-base-200 hover:border-accent-300 hover:text-accent-500'
+                          ? 'bg-base-900 dark:bg-base-200 text-base-50 dark:text-base-900'
+                          : 'text-base-700 dark:text-base-300 bg-base-50 dark:bg-base-100 border border-base-200 dark:border-base-700 hover:border-accent-300 dark:hover:border-accent-500 hover:text-accent-500 dark:hover:text-accent-400'
                       }`}
                     >
                       {pageNum}
@@ -170,7 +170,7 @@ const paginationPages = totalPages > 1 ? generatePaginationPages(currentPage, to
               {currentPage < totalPages && (
                 <Link
                   href={`/news?page=${currentPage + 1}`}
-                  class="px-4 py-2 text-sm text-base-700 bg-white border border-base-200 rounded-lg hover:border-accent-300 hover:text-accent-500 transition-colors"
+                  class="px-4 py-2 text-sm text-base-700 bg-base-50 border border-base-200 rounded-lg hover:border-accent-300 hover:text-accent-500 transition-colors"
                 >
                   Next
                 </Link>

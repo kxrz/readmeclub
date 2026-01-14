@@ -135,7 +135,7 @@ const sortOptions = [
       <div class="mt-6 flex flex-wrap gap-3">
         <a
           href={`${langPrefix}/submit`}
-          class="inline-flex items-center gap-2 px-4 py-2 bg-accent-500 text-white rounded-full hover:bg-accent-600 transition-colors font-medium text-sm shadow-md hover:shadow-lg focus:ring-2 focus:ring-accent-600 focus:ring-offset-2 focus:outline-none"
+          class="inline-flex items-center gap-2 px-4 py-2 bg-accent-500 text-base-50 rounded-full hover:bg-accent-600 transition-colors font-medium text-sm shadow-md hover:shadow-lg focus:ring-2 focus:ring-accent-600 focus:ring-offset-2 focus:outline-none"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -161,7 +161,7 @@ const sortOptions = [
           type="application/rss+xml"
           target="_blank"
           rel="noopener noreferrer"
-          class="inline-flex items-center gap-2 px-4 py-2 text-sm text-base-700 bg-white border border-base-200 rounded-lg hover:border-accent-300 hover:text-accent-500 transition-colors"
+          class="inline-flex items-center gap-2 px-4 py-2 text-sm text-base-700 bg-base-50 border border-base-200 rounded-lg hover:border-accent-300 hover:text-accent-500 transition-colors"
           aria-label="RSS Feed"
         >
           <svg
@@ -197,7 +197,7 @@ const sortOptions = [
               data-type="all"
               class={`resource-type-filter px-2.5 py-1 md:px-3 md:py-1 rounded-full text-xs font-medium transition-colors ${
                 !type
-                  ? 'bg-accent-500 text-white'
+                  ? 'bg-accent-500 text-base-50'
                   : 'bg-base-100 text-base-700 hover:bg-base-200'
               }`}
             >
@@ -209,7 +209,7 @@ const sortOptions = [
                 data-type={rt.value}
                 class={`resource-type-filter px-2.5 py-1 md:px-3 md:py-1 rounded-full text-xs font-medium transition-colors ${
                   type === rt.value
-                    ? 'bg-accent-500 text-white'
+                    ? 'bg-accent-500 text-base-50'
                     : 'bg-base-100 text-base-700 hover:bg-base-200'
                 }`}
               >
@@ -243,7 +243,7 @@ const sortOptions = [
                 data-sort={option.value}
                 class={`resource-sort-option px-2.5 py-1 md:px-3 md:py-1 rounded-full text-xs font-medium transition-colors ${
                   sort === option.value
-                    ? 'bg-accent-500 text-white'
+                    ? 'bg-accent-500 text-base-50'
                     : 'bg-base-100 text-base-700 hover:bg-base-200'
                 }`}
               >
@@ -290,7 +290,7 @@ const sortOptions = [
                 {pagination.currentPage > 1 && (
                   <a
                     href={`${langPrefix}/resources${type ? `?type=${type}${pagination.currentPage > 2 ? `&page=${pagination.currentPage - 1}` : ''}` : pagination.currentPage > 2 ? `?page=${pagination.currentPage - 1}` : ''}`}
-                    class="px-4 py-2 text-sm text-base-700 bg-white border border-base-200 rounded-lg hover:border-accent-300 hover:text-accent-500 transition-colors"
+                    class="px-4 py-2 text-sm text-base-700 bg-base-50 border border-base-200 rounded-lg hover:border-accent-300 hover:text-accent-500 transition-colors"
                   >
                     {t('common.previous')}
                   </a>
@@ -308,8 +308,8 @@ const sortOptions = [
                         href={pageUrl}
                         class={`px-4 py-2 text-sm rounded-lg transition-colors ${
                           pageNum === pagination.currentPage
-                            ? 'bg-base-900 text-white'
-                            : 'text-base-700 bg-white border border-base-200 hover:border-accent-300 hover:text-accent-500'
+                            ? 'bg-base-900 dark:bg-base-200 text-base-50 dark:text-base-900'
+                            : 'text-base-700 dark:text-base-300 bg-base-50 dark:bg-base-100 border border-base-200 dark:border-base-700 hover:border-accent-300 dark:hover:border-accent-500 hover:text-accent-500 dark:hover:text-accent-400'
                         }`}
                       >
                         {pageNum}
@@ -321,7 +321,7 @@ const sortOptions = [
                 {pagination.currentPage < totalPages && (
                   <a
                     href={`${langPrefix}/resources${type ? `?type=${type}&page=${pagination.currentPage + 1}` : `?page=${pagination.currentPage + 1}`}`}
-                    class="px-4 py-2 text-sm text-base-700 bg-white border border-base-200 rounded-lg hover:border-accent-300 hover:text-accent-500 transition-colors"
+                    class="px-4 py-2 text-sm text-base-700 bg-base-50 border border-base-200 rounded-lg hover:border-accent-300 hover:text-accent-500 transition-colors"
                   >
                     {t('common.next')}
                   </a>
@@ -446,14 +446,14 @@ const sortOptions = [
                 const thumbnailHTML = resource.thumbnail_url
                   ? `<img src="${thumbnailUrl}" alt="${title}" class="h-full w-full object-cover group-hover:scale-105 transition-transform" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
                      <div class="h-full w-full flex items-center justify-center absolute inset-0" style="display: none; ${gradientStyle}">
-                       <span class="text-lg font-semibold px-4 text-center text-white">${title}</span>
+                       <span class="text-lg font-semibold px-4 text-center text-base-50">${title}</span>
                      </div>`
                   : `<div class="h-full w-full flex items-center justify-center" style="${gradientStyle}">
-                       <span class="text-lg font-semibold px-4 text-center text-white">${title}</span>
+                       <span class="text-lg font-semibold px-4 text-center text-base-50">${title}</span>
                      </div>`;
                 
                 return `
-                  <a href="${resourceUrl}" class="group relative flex flex-col rounded-lg border border-base-200 bg-white p-4 hover:border-accent-300 hover:shadow-lg transition-all">
+                  <a href="${resourceUrl}" class="group relative flex flex-col rounded-lg border border-base-200 bg-base-50 p-4 hover:border-accent-300 hover:shadow-lg transition-all">
                     <div class="aspect-video w-full overflow-hidden rounded-md bg-base-100 mb-3 relative">
                       ${thumbnailHTML}
                     </div>
@@ -534,18 +534,18 @@ const sortOptions = [
                 
                 paginationEl.innerHTML = `
                   ${pagination.currentPage > 1 ? `
-                    <a href="#" class="page-link px-4 py-2 text-sm text-base-700 bg-white border border-base-200 rounded-lg hover:border-accent-300 hover:text-accent-500 transition-colors" data-page="${pagination.currentPage - 1}">${prevText}</a>
+                    <a href="#" class="page-link px-4 py-2 text-sm text-base-700 bg-base-50 border border-base-200 rounded-lg hover:border-accent-300 hover:text-accent-500 transition-colors" data-page="${pagination.currentPage - 1}">${prevText}</a>
                   ` : ''}
                   <div class="flex items-center gap-1">
                     ${pages.map(p => {
                       if (p === 'ellipsis') return '<span class="px-2 text-base-500">...</span>';
                       return `
-                        <a href="#" class="page-link px-4 py-2 text-sm rounded-lg transition-colors ${p === pagination.currentPage ? 'bg-base-900 text-white' : 'text-base-700 bg-white border border-base-200 hover:border-accent-300 hover:text-accent-500'}" data-page="${p}">${p}</a>
+                        <a href="#" class="page-link px-4 py-2 text-sm rounded-lg transition-colors ${p === pagination.currentPage ? 'bg-base-900 dark:bg-base-200 text-base-50 dark:text-base-900' : 'text-base-700 dark:text-base-300 bg-base-50 dark:bg-base-100 border border-base-200 dark:border-base-700 hover:border-accent-300 dark:hover:border-accent-500 hover:text-accent-500 dark:hover:text-accent-400'}" data-page="${p}">${p}</a>
                       `;
                     }).join('')}
                   </div>
                   ${pagination.currentPage < pagination.totalPages ? `
-                    <a href="#" class="page-link px-4 py-2 text-sm text-base-700 bg-white border border-base-200 rounded-lg hover:border-accent-300 hover:text-accent-500 transition-colors" data-page="${pagination.currentPage + 1}">${nextText}</a>
+                    <a href="#" class="page-link px-4 py-2 text-sm text-base-700 bg-base-50 border border-base-200 rounded-lg hover:border-accent-300 hover:text-accent-500 transition-colors" data-page="${pagination.currentPage + 1}">${nextText}</a>
                   ` : ''}
                 `;
                 
@@ -567,11 +567,11 @@ const sortOptions = [
                   updateDisplay();
                   
                   document.querySelectorAll('.resource-sort-option').forEach(b => {
-                    b.classList.remove('bg-accent-500', 'text-white');
+                    b.classList.remove('bg-accent-500', 'text-base-50');
                     b.classList.add('bg-base-100', 'text-base-700');
                   });
                   btn.classList.remove('bg-base-100', 'text-base-700');
-                  btn.classList.add('bg-accent-500', 'text-white');
+                  btn.classList.add('bg-accent-500', 'text-base-50');
                 });
               });
               
@@ -585,11 +585,11 @@ const sortOptions = [
                   updateDisplay();
                   
                   document.querySelectorAll('.resource-type-filter').forEach(b => {
-                    b.classList.remove('bg-base-900', 'text-white', 'ring-base-900', 'font-semibold');
-                    b.classList.add('text-base-900', 'bg-white', 'ring-2', 'ring-base-400', 'font-medium');
+                    b.classList.remove('bg-base-900', 'text-base-50', 'ring-base-900', 'font-semibold');
+                    b.classList.add('text-base-900', 'bg-base-50', 'ring-2', 'ring-base-400', 'font-medium');
                   });
-                  btn.classList.remove('text-base-900', 'bg-white', 'ring-2', 'ring-base-400', 'font-medium');
-                  btn.classList.add('bg-base-900', 'text-white', 'ring-base-900', 'font-semibold');
+                  btn.classList.remove('text-base-900', 'bg-base-50', 'ring-2', 'ring-base-400', 'font-medium');
+                  btn.classList.add('bg-base-900', 'dark:bg-base-200', 'text-base-50', 'dark:text-base-900', 'ring-base-900', 'font-semibold');
                 });
               });
               
