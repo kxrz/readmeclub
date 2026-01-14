@@ -18,12 +18,30 @@
   */
   
   /* Light Mode Colors */
+  /* Fallbacks (hex) pour compat Safari iOS */
+  --color-white: #FAFAF7;
+  --color-black: #141412;
+  --color-transparent: transparent;
+  /* OKLCH (override si supporté) */
   --color-white: oklch(99% 0.005 95); /* Blanc chaud très proche du blanc pur */
   --color-black: oklch(8% 0 0); /* Gris très foncé au lieu de #000 */
   --color-transparent: oklch(99% 0.005 95 / 0);
   --color-current: currentColor;
   
   /* Accent palette (vert olive) - reste identique */
+  /* Fallbacks (hex) */
+  --color-accent-50: #F6F7F1;
+  --color-accent-100: #EEF1E3;
+  --color-accent-200: #D9DFBC;
+  --color-accent-300: #C0CB8D;
+  --color-accent-400: #97A650;
+  --color-accent-500: #606C38; /* olive-leaf */
+  --color-accent-600: #4F5A31;
+  --color-accent-700: #3D4628;
+  --color-accent-800: #2E351F;
+  --color-accent-900: #202513;
+  --color-accent-950: #171B0E;
+  /* OKLCH (override si supporté) */
   --color-accent-50: oklch(96% 0.015 158.25);
   --color-accent-100: oklch(92.17% 0.032 155.36);
   --color-accent-200: oklch(84.4% 0.065 154.46);
@@ -37,6 +55,19 @@
   --color-accent-950: oklch(15.3% 0.017 157.97);
 
   /* Base palette - Light Mode avec teinte chaude très légère */
+  /* Fallbacks (hex) */
+  --color-base-50: #FAFAF7; /* Fond principal */
+  --color-base-100: #F4F4F0;
+  --color-base-200: #E6E6E1;
+  --color-base-300: #D2D2CC;
+  --color-base-400: #B3B3AD;
+  --color-base-500: #8A8A84;
+  --color-base-600: #6F6F69;
+  --color-base-700: #555550;
+  --color-base-800: #2F2F2B;
+  --color-base-900: #1A1A18;
+  --color-base-950: #0F0F0E;
+  /* OKLCH (override si supporté) */
   --color-base-50: oklch(99% 0.005 95); /* Fond principal - très blanc */
   --color-base-100: oklch(97% 0.005 95); /* Légèrement plus foncé */
   --color-base-200: oklch(92% 0.005 95);
@@ -83,10 +114,27 @@
 @media (prefers-color-scheme: dark) {
   :root:not(.light) {
     /* Inversion intelligente de la palette avec meilleurs contrastes */
+    /* Fallbacks (hex) */
+    --color-white: #1A1A18;
+    --color-black: #F5F5F0;
+    /* OKLCH (override si supporté) */
     --color-white: oklch(16% 0.01 95); /* Fond sombre - légèrement plus clair pour meilleur contraste */
     --color-black: oklch(95% 0.01 95); /* Texte clair - légèrement moins éblouissant */
     
     /* Base palette inversée avec teinte chaude - contrastes améliorés */
+    /* Fallbacks (hex) */
+    --color-base-50: #1A1A18;
+    --color-base-100: #20201D;
+    --color-base-200: #2A2A26;
+    --color-base-300: #34342F;
+    --color-base-400: #6F6F69;
+    --color-base-500: #9A9A93;
+    --color-base-600: #B8B8B1;
+    --color-base-700: #D2D2CC;
+    --color-base-800: #E6E6E1;
+    --color-base-900: #F1F1ED;
+    --color-base-950: #F5F5F0;
+    /* OKLCH (override si supporté) */
     --color-base-50: oklch(16% 0.01 95); /* Fond très sombre - plus clair pour meilleure lisibilité */
     --color-base-100: oklch(20% 0.01 95); /* Fond sombre pour cartes */
     --color-base-200: oklch(25% 0.01 95); /* Bordures visibles */
@@ -100,6 +148,19 @@
     --color-base-950: oklch(95% 0.01 95); /* Texte très clair - pas blanc pur */
     
     /* Accent - ajusté pour dark mode avec meilleurs contrastes */
+    /* Fallbacks (hex) */
+    --color-accent-50: #202513;
+    --color-accent-100: #2E351F;
+    --color-accent-200: #3D4628;
+    --color-accent-300: #4F5A31;
+    --color-accent-400: #606C38;
+    --color-accent-500: #97A650;
+    --color-accent-600: #C0CB8D;
+    --color-accent-700: #D9DFBC;
+    --color-accent-800: #EEF1E3;
+    --color-accent-900: #F6F7F1;
+    --color-accent-950: #FAFAF7;
+    /* OKLCH (override si supporté) */
     --color-accent-50: oklch(25% 0.015 158.25);
     --color-accent-100: oklch(30% 0.032 155.36);
     --color-accent-200: oklch(40% 0.065 154.46);
@@ -225,6 +286,19 @@
 :root[data-accent="mustard"],
 .light[data-accent="mustard"] {
   /* Jaune moutarde “premium”: assez sombre en 500 pour du texte blanc */
+  /* Fallbacks (hex) */
+  --color-accent-50: #FFFBEB;
+  --color-accent-100: #FEF3C7;
+  --color-accent-200: #FDE68A;
+  --color-accent-300: #FCD34D;
+  --color-accent-400: #FBBF24;
+  --color-accent-500: #D97706; /* + foncé */
+  --color-accent-600: #B45309;
+  --color-accent-700: #92400E;
+  --color-accent-800: #78350F;
+  --color-accent-900: #451A03;
+  --color-accent-950: #2B0F02;
+  /* OKLCH (override si supporté) */
   --color-accent-50: oklch(97% 0.02 95);
   --color-accent-100: oklch(92% 0.04 92);
   --color-accent-200: oklch(85% 0.075 90);
@@ -273,6 +347,19 @@
 :root[data-accent="graphite"],
 .light[data-accent="graphite"] {
   /* Graphite légèrement bleuté, mais toujours lisible en tant qu’accent */
+  /* Fallbacks (hex) */
+  --color-accent-50: #F8FAFC;
+  --color-accent-100: #F1F5F9;
+  --color-accent-200: #E2E8F0;
+  --color-accent-300: #CBD5E1;
+  --color-accent-400: #94A3B8;
+  --color-accent-500: #475569;
+  --color-accent-600: #334155;
+  --color-accent-700: #1F2937;
+  --color-accent-800: #111827;
+  --color-accent-900: #0B1220;
+  --color-accent-950: #070A12;
+  /* OKLCH (override si supporté) */
   --color-accent-50: oklch(97% 0.005 260);
   --color-accent-100: oklch(94% 0.01 260);
   --color-accent-200: oklch(88% 0.015 260);
