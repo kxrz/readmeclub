@@ -393,6 +393,11 @@ const seoDescription = wallpaper.title ? `${wallpapersSubtitleText} - ${wallpape
                   // Marquer comme tracké immédiatement pour éviter les doubles clics
                   trackedIds.add(wallpaperId);
                   
+                  // Déclencher l'événement pour le popup newsletter
+                  window.dispatchEvent(new CustomEvent('wallpaper-downloaded', {
+                    detail: { wallpaperId }
+                  }));
+                  
                   // Appeler l'API en arrière-plan (ne bloque pas le téléchargement)
                   fetch(`/api/wallpapers/${wallpaperId}/track-download`, {
                     method: 'POST',

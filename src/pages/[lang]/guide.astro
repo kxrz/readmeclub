@@ -70,7 +70,8 @@ if (guideMarkdown) {
           <div class="flex gap-3">
             <a
               href="/api/guide/pdf-v2-download"
-              class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-base-700 bg-base-100 border border-base-300 rounded-lg hover:bg-base-200 hover:border-accent-300 transition-colors"
+              class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-base-700 bg-base-100 border border-base-300 rounded-lg hover:bg-base-200 hover:border-accent-300 transition-colors guide-download-link"
+              data-format="pdf"
               title={t('guide.download_pdf')}
             >
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -80,7 +81,8 @@ if (guideMarkdown) {
             </a>
             <a
               href="/api/guide/epub-v2-download"
-              class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-base-700 bg-base-100 border border-base-300 rounded-lg hover:bg-base-200 hover:border-accent-300 transition-colors"
+              class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-base-700 bg-base-100 border border-base-300 rounded-lg hover:bg-base-200 hover:border-accent-300 transition-colors guide-download-link"
+              data-format="epub"
               title={t('guide.download_epub')}
             >
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -151,6 +153,30 @@ if (guideMarkdown) {
     </section>
   )}
 
+<script>
+  // Track guide downloads and trigger newsletter popup event
+  (function() {
+    const downloadLinks = document.querySelectorAll('.guide-download-link');
+    const trackedFormats = new Set();
+    
+    downloadLinks.forEach(link => {
+      link.addEventListener('click', function() {
+        const format = this.getAttribute('data-format');
+        
+        if (!format || trackedFormats.has(format)) {
+          return;
+        }
+        
+        trackedFormats.add(format);
+        
+        // Déclencher l'événement pour le popup newsletter
+        window.dispatchEvent(new CustomEvent('guide-downloaded', {
+          detail: { format }
+        }));
+      });
+    });
+  })();
+</script>
 
 </BaseLayout>
 

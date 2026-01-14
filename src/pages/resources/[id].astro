@@ -109,7 +109,8 @@ const starredResources = allResources
                 {isImageFile && resource.file_url && (
                   <a
                     href={`/api/resources/${resource.id}/download`}
-                    class="absolute top-4 right-4 bg-base-50/90 dark:bg-base-100/90 hover:bg-base-50 dark:hover:bg-base-200 rounded-full p-3 shadow-lg transition-all group"
+                    class="absolute top-4 right-4 bg-base-50/90 dark:bg-base-100/90 hover:bg-base-50 dark:hover:bg-base-200 rounded-full p-3 shadow-lg transition-all group resource-download-link"
+                    data-resource-id={resource.id}
                     title={t('resources.download_file')}
                   >
                     <svg
@@ -406,4 +407,29 @@ const starredResources = allResources
     </section>
   ) : null}
 </BaseLayout>
+
+<script>
+  // Track resource downloads and trigger newsletter popup event
+  (function() {
+    const downloadLinks = document.querySelectorAll('.resource-download-link');
+    const trackedIds = new Set();
+    
+    downloadLinks.forEach(link => {
+      link.addEventListener('click', function() {
+        const resourceId = this.getAttribute('data-resource-id');
+        
+        if (!resourceId || trackedIds.has(resourceId)) {
+          return;
+        }
+        
+        trackedIds.add(resourceId);
+        
+        // Déclencher l'événement pour le popup newsletter
+        window.dispatchEvent(new CustomEvent('resource-downloaded', {
+          detail: { resourceId }
+        }));
+      });
+    });
+  })();
+</script>
 
