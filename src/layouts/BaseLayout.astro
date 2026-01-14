@@ -33,6 +33,20 @@ const lang = getLangFromUrl(Astro.url);
         } else {
           document.documentElement.classList.add('light');
         }
+
+        // Accent theme (tests): mustard / graphite / olive
+        const params = new URLSearchParams(window.location.search);
+        const accentParam = params.get('accent');
+        const storedAccent = localStorage.getItem('accent');
+        const accent =
+          accentParam === 'mustard' || accentParam === 'graphite' || accentParam === 'olive'
+            ? accentParam
+            : (storedAccent === 'mustard' || storedAccent === 'graphite' || storedAccent === 'olive')
+              ? storedAccent
+              : 'mustard';
+
+        document.documentElement.dataset.accent = accent;
+        try { localStorage.setItem('accent', accent); } catch {}
       })();
     </script>
   </head>

@@ -82,6 +82,30 @@ export function getGradientForId(id: string): typeof gradientPalettes[number] {
 }
 
 /**
+ * Génère un gradient “pop” (HSL) basé sur un ID (hash simple)
+ * Objectif: reproduire le rendu du listing `/resources` côté client.
+ */
+export function getVibrantGradientForId(id: string): {
+  from: string;
+  to: string;
+  text: string;
+} {
+  // Hash stable
+  let hash = 0;
+  for (let i = 0; i < id.length; i++) {
+    hash = ((hash << 5) - hash) + id.charCodeAt(i);
+    hash = hash & hash;
+  }
+
+  const hue = Math.abs(hash) % 360;
+  return {
+    from: `hsl(${hue}, 70%, 60%)`,
+    to: `hsl(${(hue + 30) % 360}, 70%, 50%)`,
+    text: '#ffffff',
+  };
+}
+
+/**
  * Génère une classe Tailwind CSS pour un gradient
  */
 export function getGradientClasses(id: string): {

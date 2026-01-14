@@ -3,7 +3,7 @@ import Text from "@/components/fundations/elements/Text.astro";
 import type { Resource } from '@/lib/supabase/schema';
 import { useTranslations, getLangFromUrl, getLangPrefix } from '@/i18n/utils';
 import { stripMarkdown } from '@/lib/utils/markdown';
-import { getGradientForId } from '@/lib/utils/gradients';
+import { getVibrantGradientForId } from '@/lib/utils/gradients';
 
 interface Props {
   resource: Resource;
@@ -16,12 +16,13 @@ const langPrefix = getLangPrefix(lang);
 
 const resourceUrl = langPrefix ? `${langPrefix}/resources/${resource.id}` : `/resources/${resource.id}`;
 const thumbnailUrl = resource.thumbnail_url || `/api/resources/${resource.id}/og-image.png`;
+const hasThumbnail = !!resource.thumbnail_url;
 
 // Nettoyer le markdown pour l'affichage dans la carte
 const cleanDescription = stripMarkdown(resource.description);
 
 // Générer un gradient unique pour cette ressource
-const gradient = getGradientForId(resource.id);
+const gradient = getVibrantGradientForId(resource.id);
 const gradientStyle = `background: linear-gradient(135deg, ${gradient.from} 0%, ${gradient.to} 100%);`;
 const textColorStyle = `color: ${gradient.text};`;
 ---
@@ -32,7 +33,10 @@ const textColorStyle = `color: ${gradient.text};`;
   class="relative flex items-center gap-x-3 rounded-md bg-base-50 dark:bg-base-100 dark:bg-base-200 p-4 focus-outline-none"
 >
   <div
-    class="flex-shrink-0 p-1 size-16 bg-base-50 dark:bg-base-200 rounded-full items-center flex justify-center relative"
+    class={`flex-shrink-0 p-1 size-16 rounded-full items-center flex justify-center relative overflow-hidden ${
+      hasThumbnail ? 'bg-base-50 dark:bg-base-200' : 'shadow-sm'
+    }`}
+    style={!hasThumbnail ? gradientStyle : undefined}
   >
     {resource.thumbnail_url ? (
       <>
@@ -50,8 +54,10 @@ const textColorStyle = `color: ${gradient.text};`;
         </div>
       </>
     ) : (
-      <div class="size-10 rounded-full bg-base-200 dark:bg-base-700 flex items-center justify-center">
-        <Text tag="span" variant="textXS" class="font-semibold text-base-600 dark:text-base-400 dark:text-base-300">
+      <div
+        class="size-10 rounded-full flex items-center justify-center bg-base-50/10 backdrop-blur-[2px]"
+      >
+        <Text tag="span" variant="textXS" class="font-semibold" style={textColorStyle}>
           {resource.title.substring(0, 2).toUpperCase()}
         </Text>
       </div>

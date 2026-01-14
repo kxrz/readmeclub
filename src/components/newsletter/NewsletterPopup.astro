@@ -15,7 +15,6 @@ const t = useTranslations(lang);
     error: null,
     init() {
       // Vérifier si on doit afficher le popup
-      const dismissed = localStorage.getItem('newsletter_popup_dismissed');
       const subscribed = localStorage.getItem('newsletter_popup_subscribed');
       
       // Ne pas afficher si déjà inscrit
@@ -25,6 +24,7 @@ const t = useTranslations(lang);
       
       // Fonction pour vérifier si on peut afficher le popup
       const canShow = () => {
+        const dismissed = localStorage.getItem('newsletter_popup_dismissed');
         // Ne pas afficher si fermé récemment (dans les 14 derniers jours - 2 semaines)
         if (dismissed) {
           const dismissedDate = parseInt(dismissed);
@@ -42,24 +42,50 @@ const t = useTranslations(lang);
           this.show = true;
         }
       };
+
+      // Si un téléchargement a déclenché un affichage, on le rejoue même si la page a changé
+      // (ex: download cross-domain -> navigation, donc impossible d'attendre 3s sur la même page)
+      try {
+        const pendingRaw = localStorage.getItem('newsletter_popup_pending');
+        if (pendingRaw) {
+          const pending = JSON.parse(pendingRaw);
+          const at = typeof pending?.at === 'number' ? pending.at : null;
+          const now = Date.now();
+          // Expire après 60s pour éviter de pop “au hasard” plus tard
+          if (at && now - at < 60_000) {
+            const delay = Math.max(0, (at + 3000) - now);
+            setTimeout(() => {
+              showPopup();
+              try { localStorage.removeItem('newsletter_popup_pending'); } catch {}
+            }, delay);
+          } else {
+            localStorage.removeItem('newsletter_popup_pending');
+          }
+        }
+      } catch {
+        // ignore (localStorage bloqué / JSON invalide)
+      }
       
       // Écouter les événements de téléchargement (wallpaper, resource, guide)
       window.addEventListener('wallpaper-downloaded', () => {
         // Afficher après 3 secondes pour laisser le temps au téléchargement de démarrer
         setTimeout(() => {
           showPopup();
+          try { localStorage.removeItem('newsletter_popup_pending'); } catch {}
         }, 3000);
       });
       
       window.addEventListener('resource-downloaded', () => {
         setTimeout(() => {
           showPopup();
+          try { localStorage.removeItem('newsletter_popup_pending'); } catch {}
         }, 3000);
       });
       
       window.addEventListener('guide-downloaded', () => {
         setTimeout(() => {
           showPopup();
+          try { localStorage.removeItem('newsletter_popup_pending'); } catch {}
         }, 3000);
       });
       
@@ -94,6 +120,7 @@ const t = useTranslations(lang);
     close() {
       this.show = false;
       localStorage.setItem('newsletter_popup_dismissed', Date.now().toString());
+      try { localStorage.removeItem('newsletter_popup_pending'); } catch {}
     },
     subscribe: async function(event) {
       event.preventDefault();
@@ -123,6 +150,7 @@ const t = useTranslations(lang);
         if (response.ok && data.success) {
           this.success = true;
           localStorage.setItem('newsletter_popup_subscribed', 'true');
+          try { localStorage.removeItem('newsletter_popup_pending'); } catch {}
           if (emailInput) {
             emailInput.value = '';
           }

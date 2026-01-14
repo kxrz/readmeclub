@@ -214,3 +214,105 @@
   --astro-code-token-punctuation: theme("colors.accent.500");
   --astro-code-token-string-expression: theme("colors.base.950");
 }
+
+/* ============================================================
+   Accent theme tests (data-accent="mustard" | "graphite" | "olive")
+   - Default set in BaseLayout: mustard
+   - Olive uses existing defaults (no override needed)
+   ============================================================ */
+
+/* ---------- MUSTARD (light) ---------- */
+:root[data-accent="mustard"],
+.light[data-accent="mustard"] {
+  /* Jaune moutarde “premium”: assez sombre en 500 pour du texte blanc */
+  --color-accent-50: oklch(97% 0.02 95);
+  --color-accent-100: oklch(92% 0.04 92);
+  --color-accent-200: oklch(85% 0.075 90);
+  --color-accent-300: oklch(75% 0.11 88);
+  --color-accent-400: oklch(65% 0.135 86);
+  --color-accent-500: oklch(52% 0.13 84); /* + foncé */
+  --color-accent-600: oklch(46% 0.12 84);
+  --color-accent-700: oklch(38% 0.10 84);
+  --color-accent-800: oklch(30% 0.075 84);
+  --color-accent-900: oklch(22% 0.045 84);
+  --color-accent-950: oklch(16% 0.03 84);
+}
+
+/* ---------- MUSTARD (dark) ---------- */
+@media (prefers-color-scheme: dark) {
+  :root:not(.light)[data-accent="mustard"] {
+    --color-accent-50: oklch(25% 0.02 95);
+    --color-accent-100: oklch(30% 0.04 92);
+    --color-accent-200: oklch(40% 0.075 90);
+    --color-accent-300: oklch(52% 0.11 88);
+    --color-accent-400: oklch(64% 0.135 86);
+    --color-accent-500: oklch(76% 0.13 84);
+    --color-accent-600: oklch(80% 0.12 84);
+    --color-accent-700: oklch(84% 0.10 84);
+    --color-accent-800: oklch(88% 0.075 84);
+    --color-accent-900: oklch(92% 0.045 84);
+    --color-accent-950: oklch(95% 0.03 84);
+  }
+}
+
+.dark[data-accent="mustard"] {
+  --color-accent-50: oklch(25% 0.02 95);
+  --color-accent-100: oklch(30% 0.04 92);
+  --color-accent-200: oklch(40% 0.075 90);
+  --color-accent-300: oklch(52% 0.11 88);
+  --color-accent-400: oklch(64% 0.135 86);
+  --color-accent-500: oklch(76% 0.13 84);
+  --color-accent-600: oklch(80% 0.12 84);
+  --color-accent-700: oklch(84% 0.10 84);
+  --color-accent-800: oklch(88% 0.075 84);
+  --color-accent-900: oklch(92% 0.045 84);
+  --color-accent-950: oklch(95% 0.03 84);
+}
+
+/* ---------- GRAPHITE (light) ---------- */
+:root[data-accent="graphite"],
+.light[data-accent="graphite"] {
+  /* Graphite légèrement bleuté, mais toujours lisible en tant qu’accent */
+  --color-accent-50: oklch(97% 0.005 260);
+  --color-accent-100: oklch(94% 0.01 260);
+  --color-accent-200: oklch(88% 0.015 260);
+  --color-accent-300: oklch(78% 0.02 260);
+  --color-accent-400: oklch(66% 0.025 260);
+  --color-accent-500: oklch(45% 0.03 260);
+  --color-accent-600: oklch(39% 0.03 260);
+  --color-accent-700: oklch(32% 0.025 260);
+  --color-accent-800: oklch(25% 0.02 260);
+  --color-accent-900: oklch(19% 0.015 260);
+  --color-accent-950: oklch(14% 0.01 260);
+}
+
+/* ---------- GRAPHITE (dark) ---------- */
+@media (prefers-color-scheme: dark) {
+  :root:not(.light)[data-accent="graphite"] {
+    --color-accent-50: oklch(25% 0.01 260);
+    --color-accent-100: oklch(30% 0.012 260);
+    --color-accent-200: oklch(40% 0.015 260);
+    --color-accent-300: oklch(52% 0.02 260);
+    --color-accent-400: oklch(66% 0.025 260);
+    --color-accent-500: oklch(80% 0.02 260);
+    --color-accent-600: oklch(84% 0.018 260);
+    --color-accent-700: oklch(88% 0.015 260);
+    --color-accent-800: oklch(91% 0.012 260);
+    --color-accent-900: oklch(94% 0.01 260);
+    --color-accent-950: oklch(96% 0.008 260);
+  }
+}
+
+.dark[data-accent="graphite"] {
+  --color-accent-50: oklch(25% 0.01 260);
+  --color-accent-100: oklch(30% 0.012 260);
+  --color-accent-200: oklch(40% 0.015 260);
+  --color-accent-300: oklch(52% 0.02 260);
+  --color-accent-400: oklch(66% 0.025 260);
+  --color-accent-500: oklch(80% 0.02 260);
+  --color-accent-600: oklch(84% 0.018 260);
+  --color-accent-700: oklch(88% 0.015 260);
+  --color-accent-800: oklch(91% 0.012 260);
+  --color-accent-900: oklch(94% 0.01 260);
+  --color-accent-950: oklch(96% 0.008 260);
+}

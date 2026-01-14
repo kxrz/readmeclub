@@ -25,7 +25,7 @@ import Seo from "@/components/fundations/head/Seo.astro";
 import SmallResourceCard from "@/components/resources/SmallResourceCard.astro";
 import SmallMoreCard from "@/components/resources/SmallMoreCard.astro";
 import { useTranslations, getLangPrefix } from '@/i18n/utils';
-import { getGradientForId } from '@/lib/utils/gradients';
+import { getVibrantGradientForId } from '@/lib/utils/gradients';
 import { normalizeSiteUrl, buildUrl } from '@/lib/utils/url';
 import { renderMarkdown } from '@/lib/utils/markdown';
 import { getResourceContributorName } from '@/lib/utils/author';
@@ -52,7 +52,7 @@ if (!resource || resource.status !== 'approved' || resource.hidden) {
 }
 
 // Générer un gradient unique pour cette ressource
-const gradient = getGradientForId(resource.id);
+const gradient = getVibrantGradientForId(resource.id);
 const gradientStyle = `background: linear-gradient(135deg, ${gradient.from} 0%, ${gradient.to} 100%);`;
 const textColorStyle = `color: ${gradient.text};`;
 
@@ -410,30 +410,38 @@ const starredResources = allResources
       </Wrapper>
     </section>
   ) : null}
-</BaseLayout>
+  <script>
+    // Track resource downloads and trigger newsletter popup event
+    (function() {
+      const downloadLinks = document.querySelectorAll('.resource-download-link');
+      const trackedIds = new Set();
+      
+      downloadLinks.forEach(link => {
+        link.addEventListener('click', function() {
+          const resourceId = this.getAttribute('data-resource-id');
+          
+          if (!resourceId || trackedIds.has(resourceId)) {
+            return;
+          }
+          
+          trackedIds.add(resourceId);
 
-<script>
-  // Track resource downloads and trigger newsletter popup event
-  (function() {
-    const downloadLinks = document.querySelectorAll('.resource-download-link');
-    const trackedIds = new Set();
-    
-    downloadLinks.forEach(link => {
-      link.addEventListener('click', function() {
-        const resourceId = this.getAttribute('data-resource-id');
-        
-        if (!resourceId || trackedIds.has(resourceId)) {
-          return;
-        }
-        
-        trackedIds.add(resourceId);
-        
-        // Déclencher l'événement pour le popup newsletter
-        window.dispatchEvent(new CustomEvent('resource-downloaded', {
-          detail: { resourceId }
-        }));
+          // Persister le trigger (utile si le download navigue ailleurs)
+          try {
+            localStorage.setItem('newsletter_popup_pending', JSON.stringify({
+              at: Date.now(),
+              trigger: 'resource',
+              id: resourceId,
+            }));
+          } catch {}
+          
+          // Déclencher l'événement pour le popup newsletter
+          window.dispatchEvent(new CustomEvent('resource-downloaded', {
+            detail: { resourceId }
+          }));
+        });
       });
-    });
-  })();
-</script>
+    })();
+  </script>
+</BaseLayout>
 

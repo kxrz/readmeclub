@@ -3,7 +3,7 @@ import Text from "@/components/fundations/elements/Text.astro";
 import type { Resource } from '@/lib/supabase/schema';
 import { useTranslations, getLangFromUrl, getLangPrefix } from '@/i18n/utils';
 import { stripMarkdown } from '@/lib/utils/markdown';
-import { getGradientForId } from '@/lib/utils/gradients';
+import { getVibrantGradientForId } from '@/lib/utils/gradients';
 
 interface Props {
   resource: Resource;
@@ -21,7 +21,7 @@ const thumbnailUrl = resource.thumbnail_url || `/api/resources/${resource.id}/og
 const cleanDescription = stripMarkdown(resource.description);
 
 // Générer un gradient unique pour cette ressource
-const gradient = getGradientForId(resource.id);
+const gradient = getVibrantGradientForId(resource.id);
 const gradientStyle = `background: linear-gradient(135deg, ${gradient.from} 0%, ${gradient.to} 100%);`;
 const textColorStyle = `color: ${gradient.text};`;
 
@@ -58,23 +58,13 @@ const formattedDate = createdDate.toLocaleDateString(
         </div>
       </>
     ) : (
-      <div class="w-16 h-16 rounded-lg bg-base-100 dark:bg-base-200 dark:bg-base-800 flex items-center justify-center">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          class="text-base-400 dark:text-base-500"
-        >
-          <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-          <path d="M14 3v4a1 1 0 0 0 1 1h4"></path>
-          <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z"></path>
-        </svg>
+      <div
+        class="w-16 h-16 rounded-lg flex items-center justify-center"
+        style={gradientStyle}
+      >
+        <Text tag="span" variant="textXS" class="font-semibold px-2 text-center" style={textColorStyle}>
+          {resource.title.substring(0, 2).toUpperCase()}
+        </Text>
       </div>
     )}
   </div>

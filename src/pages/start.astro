@@ -219,13 +219,18 @@ const siteUrl = normalizeSiteUrl(Astro.site);
                   </div>
                 </div>
 
-                <div class="bg-red-50 dark:bg-base-200 border border-red-200 dark:border-red-700 rounded-lg p-4">
-                  <Text tag="p" variant="textBase" class="font-semibold text-base-900 dark:text-base-900 mb-2">
-                    Kindle books?
-                  </Text>
-                  <Text tag="p" variant="textBase" class="text-base-700 dark:text-base-900">
-                    No—most have DRM. Use DRM-free EPUBs.
-                  </Text>
+                <div class="bg-accent-50 dark:bg-base-100 border border-accent-200 dark:border-base-700 rounded-lg p-4">
+                  <div class="flex items-start gap-2">
+                    <span class="shrink-0 text-base-600 dark:text-base-400" aria-hidden="true">ℹ️</span>
+                    <div class="min-w-0">
+                      <Text tag="p" variant="textBase" class="font-semibold text-base-900 dark:text-base-50 mb-1">
+                        Kindle books?
+                      </Text>
+                      <Text tag="p" variant="textBase" class="text-base-700 dark:text-base-300">
+                        No—most have DRM. Use DRM-free EPUBs.
+                      </Text>
+                    </div>
+                  </div>
                 </div>
 
                 <div>
@@ -323,19 +328,33 @@ const siteUrl = normalizeSiteUrl(Astro.site);
                   <Text tag="p" variant="textSM" class="text-base-600 dark:text-base-400 mb-3">
                     Large collection of scientific articles, books, and academic papers. Popular among students and researchers.
                   </Text>
-                  <a
-                    href="https://libgen.is"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="inline-flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-base-700 dark:text-base-300 bg-base-200 dark:bg-base-700 border border-base-300 dark:border-base-600 rounded hover:bg-base-300 dark:hover:bg-base-600 hover:border-accent-300 dark:hover:border-accent-500 transition-colors"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
-                      <polyline points="15 3 21 3 21 9"/>
-                      <line x1="10" y1="14" x2="21" y2="3"/>
-                    </svg>
-                    Visit
-                  </a>
+                  <div class="flex flex-wrap gap-2">
+                    <a
+                      href="https://libgen.is"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="inline-flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-base-700 dark:text-base-300 bg-base-200 dark:bg-base-700 border border-base-300 dark:border-base-600 rounded hover:bg-base-300 dark:hover:bg-base-600 hover:border-accent-300 dark:hover:border-accent-500 transition-colors"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                        <polyline points="15 3 21 3 21 9"/>
+                        <line x1="10" y1="14" x2="21" y2="3"/>
+                      </svg>
+                      Visit
+                    </a>
+                    <a
+                      href="https://en.wikipedia.org/wiki/Library_Genesis"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="inline-flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-base-700 dark:text-base-300 bg-base-200 dark:bg-base-700 border border-base-300 dark:border-base-600 rounded hover:bg-base-300 dark:hover:bg-base-600 hover:border-accent-300 dark:hover:border-accent-500 transition-colors"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/>
+                        <path d="M12 6v6l4 2"/>
+                      </svg>
+                      Wikipedia
+                    </a>
+                  </div>
                 </div>
 
                 <div class="bg-base-50 dark:bg-base-800 border border-base-200 dark:border-base-600 rounded-lg p-4">

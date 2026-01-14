@@ -4,7 +4,7 @@ import Text from "@/components/fundations/elements/Text.astro";
 import Link from "@/components/fundations/components/Link.astro";
 import type { Resource } from '@/lib/supabase/schema';
 import { useTranslations, getLangFromUrl, getLangPrefix } from '@/i18n/utils';
-import { getGradientForId } from '@/lib/utils/gradients';
+import { getVibrantGradientForId } from '@/lib/utils/gradients';
 import { stripMarkdown } from '@/lib/utils/markdown';
 
 interface Props {
@@ -20,7 +20,7 @@ const thumbnailUrl = resource.thumbnail_url || `/api/resources/${resource.id}/og
 const resourceUrl = langPrefix ? `${langPrefix}/resources/${resource.id}` : `/resources/${resource.id}`;
 
 // Générer un gradient unique pour cette ressource
-const gradient = getGradientForId(resource.id);
+const gradient = getVibrantGradientForId(resource.id);
 const gradientStyle = `background: linear-gradient(135deg, ${gradient.from} 0%, ${gradient.to} 100%);`;
 const textColorStyle = `color: ${gradient.text};`;
 

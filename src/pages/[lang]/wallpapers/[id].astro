@@ -402,6 +402,15 @@ const seoDescription = wallpaper.title ? `${wallpapersSubtitleText} - ${wallpape
                   // Marquer comme tracké immédiatement pour éviter les doubles clics
                   trackedIds.add(wallpaperId);
                   
+                  // Persister le trigger (utile si le download navigue ailleurs)
+                  try {
+                    localStorage.setItem('newsletter_popup_pending', JSON.stringify({
+                      at: Date.now(),
+                      trigger: 'wallpaper',
+                      id: wallpaperId,
+                    }));
+                  } catch {}
+
                   // Déclencher l'événement pour le popup newsletter
                   window.dispatchEvent(new CustomEvent('wallpaper-downloaded', {
                     detail: { wallpaperId }
