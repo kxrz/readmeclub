@@ -25,19 +25,35 @@ const lang = getLangFromUrl(Astro.url);
     {/* Script pour éviter le flash de contenu incorrect (FOUC) */}
     <script is:inline>
       (function() {
-        const stored = localStorage.getItem('theme');
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        // 1) iOS: forcer une palette sRGB (hex) le plus tôt possible
+        // (évite les rendus illisibles quand OKLCH est partiellement supporté)
+        try {
+          const ua = navigator.userAgent;
+          const isIOS = /iP(hone|ad|od)/.test(ua);
+          if (isIOS) {
+            document.documentElement.dataset.colorspace = 'srgb';
+          }
+        } catch {}
+
+        // Helpers localStorage (iOS Private / restrictions peuvent throw)
+        const safeGet = (key) => {
+          try { return localStorage.getItem(key); } catch { return null; }
+        };
+        const safeSet = (key, value) => {
+          try { localStorage.setItem(key, value); } catch {}
+        };
+
+        // 2) Theme (light/dark) sans jamais dépendre d’un localStorage non protégé
+        const stored = safeGet('theme');
+        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
         const theme = stored === 'light' || stored === 'dark' ? stored : (prefersDark ? 'dark' : 'light');
-        if (theme === 'dark') {
-          document.documentElement.classList.add('dark');
-        } else {
-          document.documentElement.classList.add('light');
-        }
+        if (theme === 'dark') document.documentElement.classList.add('dark');
+        else document.documentElement.classList.add('light');
 
         // Accent theme (tests): mustard / graphite / olive
         const params = new URLSearchParams(window.location.search);
         const accentParam = params.get('accent');
-        const storedAccent = localStorage.getItem('accent');
+        const storedAccent = safeGet('accent');
         const accent =
           accentParam === 'mustard' || accentParam === 'graphite' || accentParam === 'olive'
             ? accentParam
@@ -46,17 +62,7 @@ const lang = getLangFromUrl(Astro.url);
               : 'mustard';
 
         document.documentElement.dataset.accent = accent;
-        try { localStorage.setItem('accent', accent); } catch {}
-
-        // iOS (tous navigateurs): forcer une palette sRGB (hex) pour éviter les rendus “délavés”
-        // même quand OKLCH est partiellement supporté.
-        try {
-          const ua = navigator.userAgent;
-          const isIOS = /iP(hone|ad|od)/.test(ua);
-          if (isIOS) {
-            document.documentElement.dataset.colorspace = 'srgb';
-          }
-        } catch {}
+        safeSet('accent', accent);
       })();
     </script>
   </head>

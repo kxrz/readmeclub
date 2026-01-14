@@ -49,10 +49,10 @@ const t = useTranslations(lang);
         const pendingRaw = localStorage.getItem('newsletter_popup_pending');
         if (pendingRaw) {
           const pending = JSON.parse(pendingRaw);
-          const at = typeof pending?.at === 'number' ? pending.at : null;
+          const at = (pending && typeof pending.at === 'number') ? pending.at : null;
           const now = Date.now();
           // Expire après 60s pour éviter de pop “au hasard” plus tard
-          if (at && now - at < 60_000) {
+          if (at && now - at < 60000) {
             const delay = Math.max(0, (at + 3000) - now);
             setTimeout(() => {
               showPopup();
