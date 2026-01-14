@@ -407,7 +407,7 @@ const starredResources = allResources
     </section>
   ) : null}
   <script>
-    // Track resource downloads and trigger newsletter popup event
+    // Track resource downloads
     (function() {
       const downloadLinks = document.querySelectorAll('.resource-download-link');
       const trackedIds = new Set();
@@ -421,20 +421,6 @@ const starredResources = allResources
           }
           
           trackedIds.add(resourceId);
-
-          // Persister le trigger (utile si le download navigue ailleurs)
-          try {
-            localStorage.setItem('newsletter_popup_pending', JSON.stringify({
-              at: Date.now(),
-              trigger: 'resource',
-              id: resourceId,
-            }));
-          } catch {}
-          
-          // Déclencher l'événement pour le popup newsletter
-          window.dispatchEvent(new CustomEvent('resource-downloaded', {
-            detail: { resourceId }
-          }));
         });
       });
     })();

@@ -6,7 +6,6 @@ import BaseHead from "@/components/fundations/head/BaseHead.astro";
 import Footer from "@/components/global/Footer.astro";
 import Navigation from "@/components/navigation/Navigation.astro";
 import WelcomeBanner from "@/components/common/WelcomeBanner.astro";
-import NewsletterPopup from "@/components/newsletter/NewsletterPopup.astro";
 import Analytics from '@vercel/analytics/astro';
 import SpeedInsights from '@vercel/speed-insights/astro';
 import Clarity from '@/components/common/Clarity.astro';
@@ -28,38 +27,51 @@ const lang = getLangFromUrl(Astro.url);
         // 1) iOS: forcer une palette sRGB (hex) le plus tôt possible
         // (évite les rendus illisibles quand OKLCH est partiellement supporté)
         try {
-          const ua = navigator.userAgent;
-          const isIOS = /iP(hone|ad|od)/.test(ua);
+          var ua = navigator.userAgent || '';
+          var isIOS = /iP(hone|ad|od)/.test(ua);
           if (isIOS) {
             document.documentElement.dataset.colorspace = 'srgb';
           }
-        } catch {}
+        } catch (e) {}
 
         // Helpers localStorage (iOS Private / restrictions peuvent throw)
-        const safeGet = (key) => {
-          try { return localStorage.getItem(key); } catch { return null; }
+        // Syntaxe ES5 pour compatibilité maximale
+        var safeGet = function(key) {
+          try { return localStorage.getItem(key); } catch (e) { return null; }
         };
-        const safeSet = (key, value) => {
-          try { localStorage.setItem(key, value); } catch {}
+        var safeSet = function(key, value) {
+          try { localStorage.setItem(key, value); } catch (e) {}
         };
 
-        // 2) Theme (light/dark) sans jamais dépendre d’un localStorage non protégé
-        const stored = safeGet('theme');
-        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-        const theme = stored === 'light' || stored === 'dark' ? stored : (prefersDark ? 'dark' : 'light');
-        if (theme === 'dark') document.documentElement.classList.add('dark');
-        else document.documentElement.classList.add('light');
+        // 2) Theme (light/dark) - robuste sur iOS
+        var stored = safeGet('theme');
+        var prefersDark = false;
+        try {
+          if (window.matchMedia) {
+            prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          }
+        } catch (e) {}
+        
+        var theme = (stored === 'light' || stored === 'dark') ? stored : (prefersDark ? 'dark' : 'light');
+        if (theme === 'dark') {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.add('light');
+        }
 
         // Accent theme (tests): mustard / graphite / olive
-        const params = new URLSearchParams(window.location.search);
-        const accentParam = params.get('accent');
-        const storedAccent = safeGet('accent');
-        const accent =
-          accentParam === 'mustard' || accentParam === 'graphite' || accentParam === 'olive'
-            ? accentParam
-            : (storedAccent === 'mustard' || storedAccent === 'graphite' || storedAccent === 'olive')
-              ? storedAccent
-              : 'mustard';
+        var accent = 'mustard'; // default
+        try {
+          var params = new URLSearchParams(window.location.search);
+          var accentParam = params.get('accent');
+          var storedAccent = safeGet('accent');
+          
+          if (accentParam === 'mustard' || accentParam === 'graphite' || accentParam === 'olive') {
+            accent = accentParam;
+          } else if (storedAccent === 'mustard' || storedAccent === 'graphite' || storedAccent === 'olive') {
+            accent = storedAccent;
+          }
+        } catch (e) {}
 
         document.documentElement.dataset.accent = accent;
         safeSet('accent', accent);
@@ -77,7 +89,6 @@ const lang = getLangFromUrl(Astro.url);
     </main>
     <Footer />
     <WelcomeBanner />
-    <NewsletterPopup />
     <Analytics />
     <SpeedInsights />
     <Clarity />

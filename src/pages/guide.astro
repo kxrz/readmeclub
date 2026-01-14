@@ -145,7 +145,7 @@ if (guideMarkdown) {
   )}
 
 <script>
-  // Track guide downloads and trigger newsletter popup event
+  // Track guide downloads
   (function() {
     const downloadLinks = document.querySelectorAll('.guide-download-link');
     const trackedFormats = new Set();
@@ -159,20 +159,6 @@ if (guideMarkdown) {
         }
         
         trackedFormats.add(format);
-        
-        // Persister le trigger (utile si le download navigue ailleurs)
-        try {
-          localStorage.setItem('newsletter_popup_pending', JSON.stringify({
-            at: Date.now(),
-            trigger: 'guide',
-            format,
-          }));
-        } catch {}
-
-        // Déclencher l'événement pour le popup newsletter
-        window.dispatchEvent(new CustomEvent('guide-downloaded', {
-          detail: { format }
-        }));
       });
     });
   })();
