@@ -39,7 +39,7 @@ const formattedDate = createdDate.toLocaleDateString(
 
 <a
   href={resourceUrl}
-  class="group relative flex items-start gap-4 p-4 rounded-lg border border-base-200 dark:border-base-700 bg-base-50 dark:bg-base-100 dark:bg-base-200 hover:border-accent-300 dark:hover:border-accent-500 hover:shadow-md transition-all"
+  class="group relative flex items-start gap-4 p-4 rounded-lg border border-base-200 bg-base-50 hover:border-accent-300 hover:shadow-md transition-all"
 >
   <div class="flex-shrink-0 relative">
     {resource.thumbnail_url ? (
@@ -71,21 +71,21 @@ const formattedDate = createdDate.toLocaleDateString(
   
   <div class="flex-1 min-w-0">
     <div class="flex items-start justify-between gap-2 mb-1">
-      <Text tag="h3" variant="textSM" class="font-semibold text-base-900 dark:text-base-50 group-hover:text-accent-500 dark:group-hover:text-accent-400 dark:group-hover:text-accent-400 line-clamp-1">
+      <Text tag="h3" variant="textSM" class="font-semibold text-base-900 group-hover:text-accent-500 line-clamp-1">
         {resource.title}
       </Text>
-      <span class="shrink-0 text-xs uppercase text-base-500 dark:text-base-400 bg-base-100 dark:bg-base-200 dark:bg-base-800 px-2 py-0.5 rounded">
+      <span class="shrink-0 text-xs uppercase text-base-600 bg-base-100 px-2 py-0.5 rounded">
         {t(`resources.type.${resource.type}`)}
       </span>
     </div>
     
     {cleanDescription && (
-      <Text tag="p" variant="textXS" class="text-base-600 dark:text-base-400 line-clamp-2 mb-2">
+      <Text tag="p" variant="textXS" class="text-base-700 line-clamp-2 mb-2">
         {cleanDescription}
       </Text>
     )}
     
-    <div class="flex items-center gap-2 text-xs text-base-500 dark:text-base-400">
+    <div class="flex items-center gap-2 text-xs text-base-600">
       <time datetime={createdDate.toISOString()}>
         {formattedDate}
       </time>

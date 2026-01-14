@@ -10,7 +10,7 @@ const guideUrl = langPrefix ? `${langPrefix}/guide` : `/guide`;
 
 <a
   href={guideUrl}
-  class="group relative flex flex-col h-full rounded-xl border border-base-200 dark:border-base-700 bg-base-50 dark:bg-base-100 dark:bg-base-200 overflow-hidden hover:border-accent-300 dark:hover:border-accent-500 hover:shadow-xl transition-all"
+  class="group relative flex flex-col h-full rounded-xl border border-base-200 bg-base-50 overflow-hidden hover:border-accent-300 hover:shadow-xl transition-all"
 >
   <div class="aspect-video w-full overflow-hidden bg-gradient-to-br from-accent-500 to-accent-600 relative flex items-center justify-center">
     <svg
@@ -35,16 +35,16 @@ const guideUrl = langPrefix ? `${langPrefix}/guide` : `/guide`;
   </div>
   
   <div class="p-4 flex-1 flex flex-col min-h-[140px]">
-    <Text tag="h3" variant="textBase" class="font-semibold text-base-900 dark:text-base-50 line-clamp-2 group-hover:text-accent-500 dark:group-hover:text-accent-400 mb-2">
+    <Text tag="h3" variant="textBase" class="font-semibold text-base-900 line-clamp-2 group-hover:text-accent-500 mb-2">
       {t('guide.title')}
     </Text>
     
-    <Text tag="p" variant="textSM" class="text-base-600 dark:text-base-400 line-clamp-2 mb-3 flex-1">
+    <Text tag="p" variant="textSM" class="text-base-700 line-clamp-2 mb-3 flex-1">
       {t('guide.subtitle')}
     </Text>
     
-    <div class="flex items-center justify-between pt-3 border-t border-base-200 dark:border-base-700 mt-auto">
-      <span class="text-xs text-base-500 dark:text-base-400">{t('common.view')}</span>
+    <div class="flex items-center justify-between pt-3 border-t border-base-200 mt-auto">
+      <span class="text-xs text-base-600">{t('common.view')}</span>
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="16"
@@ -55,7 +55,7 @@ const guideUrl = langPrefix ? `${langPrefix}/guide` : `/guide`;
         stroke-width="2"
         stroke-linecap="round"
         stroke-linejoin="round"
-        class="text-base-400 dark:text-base-500 group-hover:text-accent-500 dark:group-hover:text-accent-400 dark:group-hover:text-accent-400 transition-colors"
+        class="text-base-500 group-hover:text-accent-500 transition-colors"
       >
         <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
         <path d="M5 12l14 0"></path>

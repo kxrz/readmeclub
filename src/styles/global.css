@@ -43,8 +43,8 @@
   --color-base-300: oklch(86% 0.005 95);
   --color-base-400: oklch(78% 0.005 95);
   --color-base-500: oklch(63% 0.005 95);
-  --color-base-600: oklch(54% 0.005 95);
-  --color-base-700: oklch(46% 0.005 95);
+  --color-base-600: oklch(50% 0.005 95); /* Assombri pour meilleur contraste mobile */
+  --color-base-700: oklch(42% 0.005 95); /* Assombri pour meilleur contraste mobile */
   --color-base-800: oklch(35% 0.005 95);
   --color-base-900: oklch(20% 0.005 95); /* Texte principal - pas noir pur */
   --color-base-950: oklch(12% 0.005 95); /* Texte très foncé - pas noir pur */
