@@ -540,7 +540,7 @@ const sortOptions = [
                     ${pages.map(p => {
                       if (p === 'ellipsis') return '<span class="px-2 text-base-500">...</span>';
                       return `
-                        <a href="#" class="page-link px-4 py-2 text-sm rounded-lg transition-colors ${p === pagination.currentPage ? 'bg-base-900 text-base-50 : 'text-base-700 bg-base-50 border border-base-200 hover:border-accent-300 hover:text-accent-500" data-page="${p}">${p}</a>
+                        <a href="#" class="page-link px-4 py-2 text-sm rounded-lg transition-colors ${p === pagination.currentPage ? 'bg-base-900 text-base-50' : 'text-base-700 bg-base-50 border border-base-200 hover:border-accent-300 hover:text-accent-500'}" data-page="${p}">${p}</a>
                       `;
                     }).join('')}
                   </div>
