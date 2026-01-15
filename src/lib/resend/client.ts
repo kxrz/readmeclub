@@ -58,28 +58,29 @@ export async function checkContactExists(email: string): Promise<boolean> {
   }
 }
 
+// ID de l'audience principale dans Resend (segment "General")
+const RESEND_AUDIENCE_ID = 'c36e8121-6252-465c-acd5-27ad7f1941bc';
+
 /**
- * Ajoute un contact à Resend
+ * Ajoute un contact à Resend dans l'audience "General"
  * 
  * @param email Email du contact
- * @param audienceId ID de l'audience Resend (optionnel, utilise l'audience par défaut du compte si non fourni)
+ * @param audienceId ID de l'audience Resend (utilise l'audience "General" par défaut)
  * @returns { success: boolean; alreadyExists?: boolean; error?: string }
  */
 export async function addContactToResend(
   email: string,
-  audienceId?: string
+  audienceId: string = RESEND_AUDIENCE_ID
 ): Promise<{ success: boolean; alreadyExists?: boolean; error?: string }> {
   try {
     const resend = getResendClient();
     
-    // Si audienceId n'est pas fourni, Resend utilisera automatiquement l'audience par défaut du compte
-    const contactData: { email: string; audienceId?: string } = { email };
-    
-    if (audienceId) {
-      contactData.audienceId = audienceId;
-    }
-    
-    const { data, error } = await resend.contacts.create(contactData);
+    // Créer le contact dans l'audience spécifiée
+    const { data, error } = await resend.contacts.create({
+      email,
+      audienceId,
+      unsubscribed: false,
+    });
     
     if (error) {
       // Si le contact existe déjà, Resend peut retourner une erreur spécifique
@@ -94,6 +95,7 @@ export async function addContactToResend(
       return { success: false, error: error.message };
     }
     
+    console.log(`[Resend] Contact ${email} added to audience ${audienceId}`);
     return { success: true, alreadyExists: false };
   } catch (error: any) {
     console.error('Failed to add contact to Resend:', error);
