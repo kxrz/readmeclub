@@ -179,7 +179,7 @@ const formatDate = (dateString: string) => {
       )}
     </div>
 
-    <!-- Create Modal -->
+    <!-- Create/Edit Modal (Full Screen) -->
     <div
       x-show="showCreateModal"
       x-transition:enter="transition ease-out duration-200"
@@ -188,114 +188,184 @@ const formatDate = (dateString: string) => {
       x-transition:leave="transition ease-in duration-150"
       x-transition:leave-start="opacity-100"
       x-transition:leave-end="opacity-0"
-      class="fixed inset-0 bg-base-900/50 z-50 flex items-center justify-center p-4"
+      class="fixed inset-0 bg-base-900/50 z-40 flex items-center justify-end"
       style="display: none;"
       @click.self="showCreateModal = false"
+      @keydown.escape.window="showCreateModal = false"
     >
       <div
-        class="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+        class="bg-white shadow-xl w-full max-w-4xl h-full flex flex-col ml-64"
         @click.stop
       >
-        <div class="p-6 border-b border-base-200 flex items-center justify-between">
+        <!-- Header -->
+        <div class="p-4 border-b border-base-200 flex items-center justify-between shrink-0">
           <h2 class="text-xl font-semibold text-base-900">Create New Article</h2>
-          <button @click="showCreateModal = false" class="p-2 text-base-400 hover:text-base-600 rounded-lg">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
+          <div class="flex items-center gap-2">
+            <button 
+              type="button"
+              @click="previewMode = !previewMode"
+              :class="previewMode ? 'bg-accent-100 text-accent-600' : 'text-base-600 hover:bg-base-100'"
+              class="px-3 py-1.5 rounded-lg text-sm font-medium transition-colors"
+            >
+              Preview
+            </button>
+            <button @click="showCreateModal = false" class="p-2 text-base-400 hover:text-base-600 rounded-lg">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
         </div>
         
-        <form @submit.prevent="createArticle" class="p-6 space-y-4">
-          <div>
-            <label class="block text-sm font-medium text-base-700 mb-1">Title *</label>
-            <input
-              type="text"
-              x-model="newArticle.title"
-              @input="newArticle.slug = newArticle.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')"
-              required
-              class="w-full px-4 py-2 border border-base-200 rounded-lg focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none"
-            />
-          </div>
-          
-          <div>
-            <label class="block text-sm font-medium text-base-700 mb-1">Slug *</label>
-            <input
-              type="text"
-              x-model="newArticle.slug"
-              required
-              class="w-full px-4 py-2 border border-base-200 rounded-lg focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none font-mono text-sm"
-            />
-          </div>
-          
-          <div>
-            <label class="block text-sm font-medium text-base-700 mb-1">Excerpt</label>
-            <textarea
-              x-model="newArticle.excerpt"
-              rows="2"
-              class="w-full px-4 py-2 border border-base-200 rounded-lg focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none"
-            ></textarea>
-          </div>
-          
-          <div>
-            <label class="block text-sm font-medium text-base-700 mb-1">Content (Markdown) *</label>
-            <textarea
-              x-model="newArticle.content"
-              rows="10"
-              required
-              class="w-full px-4 py-2 border border-base-200 rounded-lg focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none font-mono text-sm"
-            ></textarea>
-          </div>
-          
-          <div>
-            <label class="block text-sm font-medium text-base-700 mb-1">Featured Image URL</label>
-            <input
-              type="url"
-              x-model="newArticle.featured_image_url"
-              class="w-full px-4 py-2 border border-base-200 rounded-lg focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none"
-            />
-          </div>
-          
-          <div class="grid grid-cols-2 gap-4">
-            <div>
-              <label class="block text-sm font-medium text-base-700 mb-1">Author Name</label>
-              <input
-                type="text"
-                x-model="newArticle.author_name"
-                class="w-full px-4 py-2 border border-base-200 rounded-lg focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none"
-              />
+        <form @submit.prevent="createArticle" class="flex-1 flex flex-col overflow-hidden">
+          <div class="flex-1 flex overflow-hidden">
+            <!-- Left: Form -->
+            <div class="flex-1 p-6 overflow-y-auto space-y-4" :class="previewMode ? 'w-1/2 border-r border-base-200' : 'w-full'">
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-sm font-medium text-base-700 mb-1">Title *</label>
+                  <input
+                    type="text"
+                    x-model="newArticle.title"
+                    @input="generateSlug()"
+                    required
+                    class="w-full px-3 py-2 border border-base-200 rounded-lg focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none"
+                  />
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-base-700 mb-1">Slug *</label>
+                  <input
+                    type="text"
+                    x-model="newArticle.slug"
+                    required
+                    class="w-full px-3 py-2 border border-base-200 rounded-lg focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none font-mono text-sm"
+                  />
+                </div>
+              </div>
+              
+              <div>
+                <label class="block text-sm font-medium text-base-700 mb-1">Excerpt</label>
+                <input
+                  type="text"
+                  x-model="newArticle.excerpt"
+                  placeholder="Short description for previews..."
+                  class="w-full px-3 py-2 border border-base-200 rounded-lg focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none"
+                />
+              </div>
+              
+              <!-- Markdown Toolbar -->
+              <div>
+                <div class="flex items-center justify-between mb-1">
+                  <label class="block text-sm font-medium text-base-700">Content (Markdown) *</label>
+                  <div class="flex items-center gap-1">
+                    <button type="button" @click="insertMarkdown('**', '**')" class="p-1.5 text-base-500 hover:bg-base-100 rounded" title="Bold">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 4h8a4 4 0 014 4 4 4 0 01-4 4H6z M6 12h9a4 4 0 014 4 4 4 0 01-4 4H6z"/></svg>
+                    </button>
+                    <button type="button" @click="insertMarkdown('*', '*')" class="p-1.5 text-base-500 hover:bg-base-100 rounded" title="Italic">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 4h4 M14 4l-4 16 M6 20h4"/></svg>
+                    </button>
+                    <button type="button" @click="insertMarkdown('[', '](url)')" class="p-1.5 text-base-500 hover:bg-base-100 rounded" title="Link">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+                    </button>
+                    <button type="button" @click="insertMarkdown('## ', '')" class="p-1.5 text-base-500 hover:bg-base-100 rounded" title="Heading">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"/></svg>
+                    </button>
+                    <button type="button" @click="insertMarkdown('- ', '')" class="p-1.5 text-base-500 hover:bg-base-100 rounded" title="List">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                    </button>
+                    <button type="button" @click="insertMarkdown('> ', '')" class="p-1.5 text-base-500 hover:bg-base-100 rounded" title="Quote">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
+                    </button>
+                  </div>
+                </div>
+                <textarea
+                  id="content-editor"
+                  x-model="newArticle.content"
+                  required
+                  placeholder="Write your article content in Markdown..."
+                  class="w-full h-80 px-3 py-2 border border-base-200 rounded-lg focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none font-mono text-sm resize-none"
+                ></textarea>
+              </div>
+              
+              <div class="grid grid-cols-3 gap-4">
+                <div>
+                  <label class="block text-sm font-medium text-base-700 mb-1">Author</label>
+                  <input
+                    type="text"
+                    x-model="newArticle.author_name"
+                    placeholder="Your name"
+                    class="w-full px-3 py-2 border border-base-200 rounded-lg focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none"
+                  />
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-base-700 mb-1">Featured Image</label>
+                  <div class="flex gap-2">
+                    <input
+                      type="file"
+                      id="create-image-upload"
+                      accept="image/*"
+                      @change="uploadImage($event)"
+                      class="hidden"
+                    />
+                    <input
+                      type="url"
+                      x-model="newArticle.featured_image_url"
+                      placeholder="https://..."
+                      class="flex-1 px-3 py-2 border border-base-200 rounded-lg focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none text-sm"
+                    />
+                    <button
+                      type="button"
+                      @click="document.getElementById('create-image-upload').click()"
+                      :disabled="uploading"
+                      class="px-3 py-2 bg-base-100 text-base-700 rounded-lg hover:bg-base-200 transition-colors text-sm shrink-0"
+                    >
+                      <span x-show="!uploading">Upload</span>
+                      <span x-show="uploading">...</span>
+                    </button>
+                  </div>
+                  <div x-show="newArticle.featured_image_url" class="mt-2">
+                    <img :src="newArticle.featured_image_url" class="h-16 rounded border border-base-200 object-cover" />
+                  </div>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-base-700 mb-1">Status</label>
+                  <select
+                    x-model="newArticle.status"
+                    class="w-full px-3 py-2 border border-base-200 rounded-lg focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none"
+                  >
+                    <option value="draft">Draft</option>
+                    <option value="published">Published</option>
+                  </select>
+                </div>
+              </div>
             </div>
-            <div>
-              <label class="block text-sm font-medium text-base-700 mb-1">Status</label>
-              <select
-                x-model="newArticle.status"
-                class="w-full px-4 py-2 border border-base-200 rounded-lg focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none"
+            
+            <!-- Right: Preview -->
+            <div x-show="previewMode" class="w-1/2 p-6 overflow-y-auto bg-base-50" style="display: none;">
+              <div class="prose prose-sm max-w-none" x-html="renderPreview()"></div>
+            </div>
+          </div>
+          
+          <!-- Footer -->
+          <div class="p-4 border-t border-base-200 flex items-center justify-between shrink-0">
+            <div x-show="error" class="text-red-600 text-sm" x-text="error"></div>
+            <div class="flex items-center gap-3 ml-auto">
+              <button
+                type="button"
+                @click="showCreateModal = false"
+                class="px-4 py-2 text-base-600 hover:text-base-900 transition-colors"
               >
-                <option value="draft">Draft</option>
-                <option value="published">Published</option>
-              </select>
+                Cancel
+              </button>
+              <button
+                type="submit"
+                :disabled="submitting"
+                class="px-6 py-2 bg-accent-500 text-white rounded-lg hover:bg-accent-600 transition-colors font-medium disabled:opacity-50"
+              >
+                <span x-show="!submitting">Create Article</span>
+                <span x-show="submitting">Creating...</span>
+              </button>
             </div>
-          </div>
-          
-          <div x-show="error" class="text-red-600 text-sm bg-red-50 p-3 rounded-lg" style="display: none;">
-            <span x-text="error"></span>
-          </div>
-          
-          <div class="flex items-center justify-end gap-3 pt-4 border-t border-base-200">
-            <button
-              type="button"
-              @click="showCreateModal = false"
-              class="px-4 py-2 text-base-600 hover:text-base-900 transition-colors"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              :disabled="submitting"
-              class="px-6 py-2 bg-accent-500 text-white rounded-lg hover:bg-accent-600 transition-colors font-medium disabled:opacity-50"
-            >
-              <span x-show="!submitting">Create Article</span>
-              <span x-show="submitting">Creating...</span>
-            </button>
           </div>
         </form>
       </div>
@@ -303,12 +373,14 @@ const formatDate = (dateString: string) => {
   </div>
 </AdminLayout>
 
-<script>
+<script is:inline>
   function newsAdmin() {
     return {
       filter: 'all',
       showCreateModal: false,
+      previewMode: false,
       submitting: false,
+      uploading: false,
       error: null,
       newArticle: {
         title: '',
@@ -318,6 +390,95 @@ const formatDate = (dateString: string) => {
         featured_image_url: '',
         author_name: '',
         status: 'draft'
+      },
+      
+      generateSlug() {
+        const date = new Date();
+        const dateStr = date.toISOString().slice(2, 10).replace(/-/g, '');
+        const titleSlug = this.newArticle.title
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, '-')
+          .replace(/^-|-$/g, '');
+        this.newArticle.slug = titleSlug + '-' + dateStr;
+      },
+      
+      insertMarkdown(before, after) {
+        const textarea = document.getElementById('content-editor');
+        const start = textarea.selectionStart;
+        const end = textarea.selectionEnd;
+        const text = this.newArticle.content;
+        const selected = text.substring(start, end);
+        
+        this.newArticle.content = text.substring(0, start) + before + selected + after + text.substring(end);
+        
+        // Restore cursor position
+        this.$nextTick(() => {
+          textarea.focus();
+          const newPos = start + before.length + selected.length;
+          textarea.setSelectionRange(newPos, newPos);
+        });
+      },
+      
+      async uploadImage(event) {
+        const file = event.target.files?.[0];
+        if (!file) return;
+        
+        this.uploading = true;
+        const formData = new FormData();
+        formData.append('file', file);
+        
+        try {
+          const res = await fetch('/api/admin/news/upload-image', {
+            method: 'POST',
+            body: formData
+          });
+          
+          if (!res.ok) throw new Error('Upload failed');
+          
+          const data = await res.json();
+          this.newArticle.featured_image_url = data.url;
+        } catch (err) {
+          alert('Failed to upload image');
+        } finally {
+          this.uploading = false;
+        }
+      },
+      
+      renderPreview() {
+        // Full article preview
+        let html = '';
+        
+        // Header
+        if (this.newArticle.featured_image_url) {
+          html += '<img src="' + this.newArticle.featured_image_url + '" class="w-full h-48 object-cover rounded-lg mb-4" />';
+        }
+        html += '<h1 class="text-2xl font-bold mb-2">' + (this.newArticle.title || 'Untitled') + '</h1>';
+        if (this.newArticle.excerpt) {
+          html += '<p class="text-base-500 mb-4">' + this.newArticle.excerpt + '</p>';
+        }
+        html += '<div class="text-sm text-base-400 mb-6">';
+        if (this.newArticle.author_name) html += 'By ' + this.newArticle.author_name + ' · ';
+        html += this.newArticle.status;
+        html += '</div>';
+        html += '<hr class="my-4" />';
+        
+        // Content
+        let content = this.newArticle.content
+          .replace(/^### (.+)$/gm, '<h3 class="text-lg font-semibold mt-4 mb-2">$1</h3>')
+          .replace(/^## (.+)$/gm, '<h2 class="text-xl font-semibold mt-6 mb-3">$1</h2>')
+          .replace(/^# (.+)$/gm, '<h1 class="text-2xl font-bold mt-6 mb-3">$1</h1>')
+          .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+          .replace(/\*(.+?)\*/g, '<em>$1</em>')
+          .replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2" class="text-accent-500 underline">$1</a>')
+          .replace(/^- (.+)$/gm, '<li class="ml-4">• $1</li>')
+          .replace(/^> (.+)$/gm, '<blockquote class="border-l-4 border-base-300 pl-4 text-base-600 my-2">$1</blockquote>')
+          .replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" class="max-w-full rounded my-4" />')
+          .replace(/\n\n/g, '</p><p class="my-3">')
+          .replace(/\n/g, '<br>');
+        
+        html += '<div class="text-base-700"><p class="my-3">' + content + '</p></div>';
+        
+        return html;
       },
       
       async createArticle() {
@@ -348,7 +509,7 @@ const formatDate = (dateString: string) => {
         if (!confirm('Are you sure you want to delete this article?')) return;
         
         try {
-          const res = await fetch(`/api/admin/news/${id}/delete`, { method: 'POST' });
+          const res = await fetch('/api/admin/news/${id}/delete', { method: 'POST' });
           
           if (res.ok) {
             window.location.reload();

@@ -9,7 +9,8 @@ const updateFeatureSchema = z.object({
   admin_status: z.enum(['pending', 'planned', 'completed', 'rejected']).optional(),
   hidden: z.boolean().optional(),
   title: z.string().min(1).max(80).optional(),
-  description: z.string().min(1).max(500).optional(),
+  description: z.string().max(500).optional().nullable(),
+  admin_notes: z.string().max(1000).optional().nullable(),
   reddit_username: z.string().max(30).optional().nullable(),
   tags: z.array(z.string()).optional(),
 });

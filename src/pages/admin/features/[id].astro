@@ -1,0 +1,174 @@
+---
+export const prerender = false;
+
+import AdminLayout from "@/layouts/AdminLayout.astro";
+import { checkAdminAuth } from '@/lib/utils/admin';
+import { getSupabaseAdmin } from '@/lib/supabase/admin';
+
+// Check admin auth
+if (!checkAdminAuth(Astro.cookies)) {
+  return Astro.redirect('/admin');
+}
+
+const id = Astro.params.id;
+
+if (!id) {
+  return Astro.redirect('/admin/features');
+}
+
+// Fetch feature
+const supabaseAdmin = getSupabaseAdmin();
+const { data: feature, error } = await supabaseAdmin
+  .from('feature_requests')
+  .select('*')
+  .eq('id', id)
+  .single();
+
+if (error || !feature) {
+  return Astro.redirect('/admin/features');
+}
+---
+
+<AdminLayout title="Edit Feature Request" currentPage="features">
+  <script type="application/json" id="feature-data" set:html={JSON.stringify({
+    id: feature.id,
+    title: feature.title || '',
+    description: feature.description || '',
+    admin_status: feature.admin_status || 'pending',
+    admin_notes: feature.admin_notes || '',
+    votes_count: feature.votes_count || 0,
+    hidden: feature.hidden || false
+  })}></script>
+
+  <div x-data="editFeature()" class="max-w-4xl">
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-6">
+      <div class="flex items-center gap-4">
+        <a href="/admin/features" class="text-base-500 hover:text-base-700">
+          ← Back
+        </a>
+        <h2 class="text-lg font-medium text-base-900" x-text="feature.title || 'Edit Feature'"></h2>
+        <span class="inline-flex items-center justify-center px-3 py-1 rounded-full bg-accent-100 text-accent-700 font-bold text-sm">
+          {feature.votes_count || 0} votes
+        </span>
+      </div>
+    </div>
+    
+    <!-- Form -->
+    <form @submit.prevent="updateFeature()" class="bg-white border border-base-200 rounded-xl">
+      <div class="p-6 space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-base-700 mb-1">Title *</label>
+          <input
+            type="text"
+            x-model="feature.title"
+            required
+            class="w-full px-3 py-2 border border-base-200 rounded-lg focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none"
+          />
+        </div>
+        
+        <div>
+          <label class="block text-sm font-medium text-base-700 mb-1">Description</label>
+          <textarea
+            x-model="feature.description"
+            rows="4"
+            placeholder="Feature description..."
+            class="w-full px-3 py-2 border border-base-200 rounded-lg focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none"
+          ></textarea>
+        </div>
+        
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-base-700 mb-1">Status</label>
+            <select
+              x-model="feature.admin_status"
+              class="w-full px-3 py-2 border border-base-200 rounded-lg focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none"
+            >
+              <option value="pending">Pending</option>
+              <option value="planned">Planned</option>
+              <option value="completed">Completed</option>
+              <option value="rejected">Rejected</option>
+            </select>
+          </div>
+          <div class="flex items-center pt-6">
+            <label class="flex items-center gap-2">
+              <input type="checkbox" x-model="feature.hidden" class="w-4 h-4 text-accent-500 rounded" />
+              <span class="text-sm text-base-700">Hidden</span>
+            </label>
+          </div>
+        </div>
+        
+        <div>
+          <label class="block text-sm font-medium text-base-700 mb-1">Admin Notes (internal)</label>
+          <textarea
+            x-model="feature.admin_notes"
+            rows="3"
+            placeholder="Internal notes about this feature request..."
+            class="w-full px-3 py-2 border border-base-200 rounded-lg focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none"
+          ></textarea>
+        </div>
+      </div>
+      
+      <!-- Footer -->
+      <div class="p-4 border-t border-base-200 flex items-center justify-between">
+        <div>
+          <span x-show="error" class="text-red-600 text-sm" x-text="error"></span>
+          <span x-show="success" class="text-green-600 text-sm">Feature updated!</span>
+        </div>
+        <div class="flex items-center gap-3">
+          <a href="/admin/features" class="px-4 py-2 text-base-600 hover:text-base-900 transition-colors">
+            Cancel
+          </a>
+          <button
+            type="submit"
+            :disabled="submitting"
+            class="px-6 py-2 bg-accent-500 text-white rounded-lg hover:bg-accent-600 transition-colors font-medium disabled:opacity-50"
+          >
+            <span x-show="!submitting">Save Changes</span>
+            <span x-show="submitting">Saving...</span>
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</AdminLayout>
+
+<script is:inline>
+  function editFeature() {
+    const dataEl = document.getElementById('feature-data');
+    const _data = dataEl ? JSON.parse(dataEl.textContent) : {};
+    
+    return {
+      submitting: false,
+      error: null,
+      success: false,
+      feature: _data,
+      
+      async updateFeature() {
+        this.submitting = true;
+        this.error = null;
+        this.success = false;
+        
+        try {
+          const res = await fetch('/api/admin/features/' + this.feature.id + '/update', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(this.feature)
+          });
+          
+          if (!res.ok) {
+            const err = await res.json();
+            throw new Error(err.error || 'Failed to update');
+          }
+          
+          this.success = true;
+          setTimeout(() => this.success = false, 3000);
+        } catch (err) {
+          this.error = err.message;
+        } finally {
+          this.submitting = false;
+        }
+      }
+    };
+  }
+</script>

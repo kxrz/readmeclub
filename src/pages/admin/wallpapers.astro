@@ -98,10 +98,11 @@ const totalDownloads = wallpapers?.reduce((sum, w) => sum + (w.download_count ||
             <!-- Thumbnail -->
             <div class="aspect-[3/5] relative overflow-hidden bg-base-100">
               <img
-                src={wallpaper.thumbnail_path || `/wallpapers/${wallpaper.id}/thumbnail.webp`}
+                src={`/wallpapers/${wallpaper.id}/thumbnail.webp`}
                 alt={title}
                 class="w-full h-full object-cover"
                 loading="lazy"
+                onerror={`this.onerror=null; this.src='/wallpapers/${wallpaper.id}/image.jpg';`}
               />
               <!-- Status badge -->
               <div class="absolute top-2 left-2">

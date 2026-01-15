@@ -8,7 +8,7 @@ import { z } from 'zod';
 import { triggerVercelRebuild } from '@/lib/utils/vercel-rebuild';
 
 const updateResourceSchema = z.object({
-  type: z.enum(['language_file', 'plugin', 'link', 'documentation', 'tool', 'info', 'other']).optional(),
+  type: z.enum(['language_file', 'plugin', 'link', 'documentation', 'tool', 'info', 'firmware', 'guide', 'font', 'template', 'other']).optional(),
   title: z.string().min(1).max(255).optional(),
   description: z.string().min(1).optional(),
   version: z.string().max(50).optional().nullable(),
@@ -17,10 +17,14 @@ const updateResourceSchema = z.object({
   known_issues: z.string().optional().nullable(),
   file_url: z.string().url().optional().nullable(),
   file_name: z.string().max(255).optional().nullable(),
-  external_link: z.string().url().optional().nullable(),
+  external_link: z.string().url().optional().nullable().or(z.literal('')),
+  github_url: z.string().url().optional().nullable().or(z.literal('')),
   thumbnail_url: z.string().url().optional().nullable(),
   contributor_name: z.string().max(255).optional().nullable(),
   contact_info: z.string().max(255).optional().nullable(),
+  status: z.enum(['pending', 'approved', 'rejected']).optional(),
+  starred: z.boolean().optional(),
+  hidden: z.boolean().optional(),
 });
 
 export const PUT: APIRoute = async ({ params, request, cookies }) => {
