@@ -1,17 +1,10 @@
 ---
-export const prerender = false; // Page admin dynamique, nécessite SSR
+export const prerender = false;
 
-import BaseLayout from "@/layouts/BaseLayout.astro";
-import Text from "@/components/fundations/elements/Text.astro";
-import Button from "@/components/fundations/components/Button.astro";
-import Wrapper from "@/components/fundations/containers/Wrapper.astro";
+import AdminLayout from "@/layouts/AdminLayout.astro";
 import { checkAdminAuth } from '@/lib/utils/admin';
 import { getSupabaseAdmin } from '@/lib/supabase/admin';
-import { useTranslations, getLangFromUrl } from '@/i18n/utils';
 import { getWallpaperAuthorName } from '@/lib/utils/author';
-
-const lang = getLangFromUrl(Astro.url);
-const t = useTranslations(lang);
 
 // Check admin auth
 if (!checkAdminAuth(Astro.cookies)) {
@@ -24,425 +17,219 @@ const { data: wallpapers } = await supabaseAdmin
   .from('wallpapers')
   .select('*')
   .order('created_at', { ascending: false });
+
+// Stats
+const pendingCount = wallpapers?.filter(w => w.status === 'pending').length || 0;
+const publishedCount = wallpapers?.filter(w => w.status === 'published').length || 0;
+const totalDownloads = wallpapers?.reduce((sum, w) => sum + (w.download_count || 0), 0) || 0;
 ---
 
-<BaseLayout>
-  <section>
-    <Wrapper variant="hero">
-      <div class="flex items-center justify-between">
-        <Text
-          tag="h1"
-          variant="displaySM"
-          class="text-base-900 font-medium 2xl:text-5xl tracking-tight"
+<AdminLayout title="Wallpapers" currentPage="wallpapers">
+  <!-- Stats -->
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+    <div class="bg-white border border-base-200 rounded-xl p-6">
+      <div class="text-3xl font-bold text-base-900">{wallpapers?.length || 0}</div>
+      <div class="text-sm text-base-600 mt-1">Total Wallpapers</div>
+    </div>
+    <div class="bg-white border border-base-200 rounded-xl p-6">
+      <div class="text-3xl font-bold text-yellow-500">{pendingCount}</div>
+      <div class="text-sm text-base-600 mt-1">Pending Review</div>
+    </div>
+    <div class="bg-white border border-base-200 rounded-xl p-6">
+      <div class="text-3xl font-bold text-green-500">{publishedCount}</div>
+      <div class="text-sm text-base-600 mt-1">Published</div>
+    </div>
+    <div class="bg-white border border-base-200 rounded-xl p-6">
+      <div class="text-3xl font-bold text-accent-500">{totalDownloads}</div>
+      <div class="text-sm text-base-600 mt-1">Total Downloads</div>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div 
+    x-data="{ filter: 'all', search: '' }"
+    class="space-y-4"
+  >
+    <div class="flex items-center gap-4 flex-wrap">
+      <div class="flex items-center gap-2 bg-white border border-base-200 rounded-lg p-1">
+        <button
+          @click="filter = 'all'"
+          :class="filter === 'all' ? 'bg-base-900 text-white' : 'text-base-600 hover:bg-base-100'"
+          class="px-4 py-2 rounded-md text-sm font-medium transition-colors"
         >
-          {t('admin.wallpapers')}
-        </Text>
-        <div class="flex items-center gap-4">
-          <a href="/admin/stats">
-            <Button variant="muted" size="sm">
-              Stats
-            </Button>
-          </a>
-          <a href="/admin/resources">
-            <Button variant="muted" size="sm">
-              Resources
-            </Button>
-          </a>
-          <a href="/admin/features">
-            <Button variant="muted" size="sm">
-              Features
-            </Button>
-          </a>
-          <a href="/admin/news">
-            <Button variant="muted" size="sm">
-              News
-            </Button>
-          </a>
-          <a href="/admin/logout">
-            <Button variant="muted" size="sm">
-              {t('admin.logout')}
-            </Button>
-          </a>
-        </div>
+          All ({wallpapers?.length || 0})
+        </button>
+        <button
+          @click="filter = 'pending'"
+          :class="filter === 'pending' ? 'bg-yellow-500 text-white' : 'text-base-600 hover:bg-base-100'"
+          class="px-4 py-2 rounded-md text-sm font-medium transition-colors"
+        >
+          Pending ({pendingCount})
+        </button>
+        <button
+          @click="filter = 'published'"
+          :class="filter === 'published' ? 'bg-green-500 text-white' : 'text-base-600 hover:bg-base-100'"
+          class="px-4 py-2 rounded-md text-sm font-medium transition-colors"
+        >
+          Published ({publishedCount})
+        </button>
       </div>
-    </Wrapper>
-  </section>
-  
-  <section>
-    <Wrapper variant="standard" class="py-6 pb-24">
-      <div class="space-y-4">
-        {wallpapers && wallpapers.length > 0 ? (
-          wallpapers.map((wallpaper) => {
-            const authorName = getWallpaperAuthorName(wallpaper);
-            return (
-            <div
-              class="flex items-center justify-between p-4 border border-base-200 rounded-lg hover:bg-base-50"
-            >
-              <div class="flex-1 flex items-center gap-4">
-                {wallpaper.file_url && (
-                  <img
-                    src={wallpaper.file_url}
-                    alt={wallpaper.title || 'Wallpaper'}
-                    class="w-20 h-20 object-cover rounded-lg border border-base-200"
-                  />
-                )}
-                <div class="flex-1">
-                  <Text tag="h3" variant="textBase" class="font-semibold text-base-900">
-                    {wallpaper.title || 'Untitled'}
-                  </Text>
-                  <div class="flex items-center gap-4 mt-2">
-                    <span class={`text-xs px-2 py-1 rounded ${
-                      wallpaper.status === 'published' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'
-                    }`}>
-                      {wallpaper.status}
-                    </span>
-                    {wallpaper.category && (
-                      <span class="text-xs text-base-500">
-                        {t(`wallpapers.category.${wallpaper.category}`)}
-                      </span>
-                    )}
-                    {wallpaper.hidden && (
-                      <span class="text-xs text-base-500">Hidden</span>
-                    )}
-                    <span class="text-xs text-base-500">
-                      {t('wallpapers.downloads', { count: wallpaper.download_count })}
-                    </span>
-                    {authorName && (
-                      <span class="text-xs text-base-500">
-                        {authorName}
-                      </span>
-                    )}
-                  </div>
-                  {wallpaper.width && wallpaper.height && (
-                    <span class="text-xs text-base-500">
-                      {wallpaper.width} × {wallpaper.height}
-                    </span>
-                  )}
-                </div>
+      
+      <div class="flex-1"></div>
+      
+      <input
+        type="text"
+        x-model="search"
+        placeholder="Search wallpapers..."
+        class="px-4 py-2 border border-base-200 rounded-lg bg-white focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none w-64"
+      />
+    </div>
+
+    <!-- Wallpapers Grid -->
+    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+      {wallpapers && wallpapers.map((wallpaper) => {
+        const authorName = getWallpaperAuthorName(wallpaper);
+        const title = wallpaper.title || 'Untitled';
+        return (
+          <div
+            class="bg-white border border-base-200 rounded-xl overflow-hidden group"
+            x-show={`(filter === 'all' || filter === '${wallpaper.status}') && ('${title}'.toLowerCase().includes(search.toLowerCase()) || search === '')`}
+          >
+            <!-- Thumbnail -->
+            <div class="aspect-[3/5] relative overflow-hidden bg-base-100">
+              <img
+                src={wallpaper.thumbnail_path || `/wallpapers/${wallpaper.id}/thumbnail.webp`}
+                alt={title}
+                class="w-full h-full object-cover"
+                loading="lazy"
+              />
+              <!-- Status badge -->
+              <div class="absolute top-2 left-2">
+                <span class={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
+                  wallpaper.status === 'published' ? 'bg-green-500 text-white' :
+                  wallpaper.status === 'pending' ? 'bg-yellow-500 text-white' :
+                  'bg-red-500 text-white'
+                }`}>
+                  {wallpaper.status}
+                </span>
               </div>
-              <div class="flex items-center gap-2">
-                <select
-                  class="px-3 py-2 text-sm border border-base-200 rounded-lg focus:ring-2 focus:ring-accent-400"
-                  onchange={`updateStatus('${wallpaper.id}', this.value)`}
-                >
-                  <option value="draft" selected={wallpaper.status === 'draft'}>Draft</option>
-                  <option value="published" selected={wallpaper.status === 'published' || !wallpaper.status}>Published</option>
-                </select>
-                <button
-                  class={`px-4 py-2 text-sm rounded-lg transition-colors ${
-                    wallpaper.hidden 
-                      ? 'bg-green-100 text-green-700 hover:bg-green-200' 
-                      : 'bg-base-100 hover:bg-base-200'
-                  }`}
-                  onclick={`toggleHidden('${wallpaper.id}', ${!wallpaper.hidden})`}
-                >
-                  {wallpaper.hidden ? 'Show' : 'Hide'}
-                </button>
-                <button
-                  class="px-4 py-2 text-sm bg-blue-500 text-base-50 hover:bg-blue-600 rounded-lg transition-colors"
-                  onclick={`openEditModal('${wallpaper.id}')`}
-                >
-                  {t('common.edit')}
-                </button>
+              {wallpaper.hidden && (
+                <div class="absolute top-2 right-2">
+                  <span class="bg-base-900/80 text-white text-xs px-2 py-0.5 rounded">Hidden</span>
+                </div>
+              )}
+              <!-- Hover actions -->
+              <div class="absolute inset-0 bg-base-900/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
                 <a
                   href={`/wallpapers/${wallpaper.id}`}
                   target="_blank"
-                  class="px-4 py-2 text-sm bg-accent-500 text-base-50 hover:bg-accent-600 rounded-lg transition-colors"
+                  class="p-2 bg-white rounded-lg text-base-700 hover:bg-base-100 transition-colors"
+                  title="View"
                 >
-                  {t('common.view')}
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                  </svg>
                 </a>
+                <button
+                  data-action="publish"
+                  data-id={wallpaper.id}
+                  class={`p-2 rounded-lg transition-colors ${wallpaper.status === 'published' ? 'bg-green-500 text-white' : 'bg-white text-base-700 hover:bg-green-500 hover:text-white'}`}
+                  title="Publish"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                </button>
+                <button
+                  data-action="hide"
+                  data-id={wallpaper.id}
+                  class={`p-2 rounded-lg transition-colors ${wallpaper.hidden ? 'bg-base-700 text-white' : 'bg-white text-base-700 hover:bg-base-700 hover:text-white'}`}
+                  title={wallpaper.hidden ? 'Show' : 'Hide'}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                  </svg>
+                </button>
+                <button
+                  data-action="delete"
+                  data-id={wallpaper.id}
+                  class="p-2 bg-white rounded-lg text-base-700 hover:bg-red-500 hover:text-white transition-colors"
+                  title="Delete"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                </button>
               </div>
             </div>
-            );
-          })
-        ) : (
-          <Text tag="p" variant="textBase" class="text-base-500 text-center py-12">
-            No wallpapers found
-          </Text>
-        )}
-      </div>
-    </Wrapper>
-  </section>
-  
-  <!-- Edit Modal -->
-  <div id="editModal" class="fixed inset-0 bg-base-900 bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
-    <div class="bg-base-50 rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-      <div class="p-6">
-        <div class="flex items-center justify-between mb-6">
-          <Text tag="h2" variant="textXL" class="font-semibold text-base-900">
-            Edit Wallpaper
-          </Text>
-          <button
-            onclick="closeEditModal()"
-            class="text-base-500 hover:text-base-900 transition-colors"
-          >
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
-        
-        <form id="editForm" onsubmit="handleEditSubmit(event)">
-          <input type="hidden" id="editWallpaperId" />
-          
-          <div class="space-y-4">
-            <!-- Status -->
-            <div>
-              <label for="editStatus" class="block text-sm font-medium text-base-900 mb-2">
-                Status
-              </label>
-              <select
-                id="editStatus"
-                name="status"
-                class="w-full px-4 py-2 border border-base-200 rounded-lg focus:ring-2 focus:ring-accent-400 focus:border-accent-400"
-                required
-              >
-                <option value="draft">Draft</option>
-                <option value="published">Published</option>
-              </select>
-            </div>
-            
-            <!-- Title -->
-            <div>
-              <label for="editTitle" class="block text-sm font-medium text-base-900 mb-2">
-                Title ({t('common.optional')})
-              </label>
-              <input
-                type="text"
-                id="editTitle"
-                name="title"
-                maxlength="60"
-                class="w-full px-4 py-2 border border-base-200 rounded-lg focus:ring-2 focus:ring-accent-400 focus:border-accent-400"
-                placeholder="Wallpaper title"
-              />
-            </div>
-            
-            <!-- Category -->
-            <div>
-              <label for="editCategory" class="block text-sm font-medium text-base-900 mb-2">
-                Category ({t('common.optional')})
-              </label>
-              <select
-                id="editCategory"
-                name="category"
-                class="w-full px-4 py-2 border border-base-200 rounded-lg focus:ring-2 focus:ring-accent-400 focus:border-accent-400"
-              >
-                <option value="">None</option>
-                <option value="minimalist">{t('wallpapers.category.minimalist')}</option>
-                <option value="dark">{t('wallpapers.category.dark')}</option>
-                <option value="light">{t('wallpapers.category.light')}</option>
-                <option value="pop_culture">{t('wallpapers.category.pop_culture')}</option>
-                <option value="custom">{t('wallpapers.category.custom')}</option>
-                <option value="other">{t('wallpapers.category.other')}</option>
-              </select>
-            </div>
-            
-            <!-- Author Name -->
-            <div>
-              <label for="editAuthorName" class="block text-sm font-medium text-base-900 mb-2">
-                Author Name ({t('common.optional')})
-              </label>
-              <input
-                type="text"
-                id="editAuthorName"
-                name="author_name"
-                maxlength="50"
-                class="w-full px-4 py-2 border border-base-200 rounded-lg focus:ring-2 focus:ring-accent-400 focus:border-accent-400"
-                placeholder="Author name"
-              />
-            </div>
-            
-            <!-- Reddit Username -->
-            <div>
-              <label for="editRedditUsername" class="block text-sm font-medium text-base-900 mb-2">
-                Reddit Username ({t('common.optional')})
-              </label>
-              <input
-                type="text"
-                id="editRedditUsername"
-                name="reddit_username"
-                maxlength="30"
-                class="w-full px-4 py-2 border border-base-200 rounded-lg focus:ring-2 focus:ring-accent-400 focus:border-accent-400"
-                placeholder="u/username"
-              />
-            </div>
-            
-            <!-- Instagram Username -->
-            <div>
-              <label for="editInstagramUsername" class="block text-sm font-medium text-base-900 mb-2">
-                Instagram Username ({t('common.optional')})
-              </label>
-              <input
-                type="text"
-                id="editInstagramUsername"
-                name="instagram_username"
-                maxlength="30"
-                class="w-full px-4 py-2 border border-base-200 rounded-lg focus:ring-2 focus:ring-accent-400 focus:border-accent-400"
-                placeholder="@username"
-              />
+            <!-- Info -->
+            <div class="p-3">
+              <h3 class="font-medium text-sm text-base-900 truncate">{title}</h3>
+              <div class="flex items-center justify-between mt-1">
+                <span class="text-xs text-base-500">{authorName || 'Unknown'}</span>
+                <span class="text-xs text-base-500">{wallpaper.download_count || 0} ↓</span>
+              </div>
+              {wallpaper.category && (
+                <span class="inline-block mt-2 text-xs bg-base-100 text-base-600 px-2 py-0.5 rounded">
+                  {wallpaper.category}
+                </span>
+              )}
             </div>
           </div>
-          
-          <div class="flex items-center justify-end gap-4 mt-6">
-            <button
-              type="button"
-              onclick="closeEditModal()"
-              class="px-4 py-2 text-sm bg-base-100 hover:bg-base-200 rounded-lg transition-colors"
-            >
-              {t('common.cancel')}
-            </button>
-            <button
-              type="submit"
-              class="px-4 py-2 text-sm bg-accent-500 text-base-50 hover:bg-accent-600 rounded-lg transition-colors"
-            >
-              Save Changes
-            </button>
-          </div>
-        </form>
-      </div>
+        );
+      })}
     </div>
+    
+    {(!wallpapers || wallpapers.length === 0) && (
+      <div class="text-center py-12 bg-white border border-base-200 rounded-xl text-base-500">
+        No wallpapers found
+      </div>
+    )}
   </div>
-</BaseLayout>
+</AdminLayout>
 
 <script>
-  async function toggleHidden(id: string, hidden: boolean) {
-    try {
-      const res = await fetch(`/api/admin/wallpapers/${id}/toggle`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ hidden }),
-      });
+  // Handle wallpaper actions
+  document.querySelectorAll('[data-action]').forEach(btn => {
+    btn.addEventListener('click', async (e) => {
+      e.preventDefault();
+      e.stopPropagation();
       
-      if (!res.ok) {
-        const error = await res.json();
-        throw new Error(error.error || 'Failed to toggle');
+      const button = e.currentTarget as HTMLButtonElement;
+      const action = button.dataset.action;
+      const id = button.dataset.id;
+      
+      if (!action || !id) return;
+      
+      try {
+        let endpoint = '';
+        
+        switch (action) {
+          case 'publish':
+            endpoint = `/api/admin/wallpapers/${id}/publish`;
+            break;
+          case 'hide':
+            endpoint = `/api/admin/wallpapers/${id}/hide`;
+            break;
+          case 'delete':
+            if (!confirm('Are you sure you want to delete this wallpaper?')) return;
+            endpoint = `/api/admin/wallpapers/${id}/delete`;
+            break;
+        }
+        
+        const res = await fetch(endpoint, { method: 'POST' });
+        
+        if (res.ok) {
+          window.location.reload();
+        } else {
+          const error = await res.json();
+          alert(error.error || 'Action failed');
+        }
+      } catch (error) {
+        console.error('Action error:', error);
+        alert('An error occurred');
       }
-      
-      window.location.reload();
-    } catch (error: any) {
-      alert(error.message || 'An error occurred');
-    }
-  }
-  
-  async function updateStatus(id: string, status: string) {
-    try {
-      const res = await fetch(`/api/admin/wallpapers/${id}/update`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status }),
-      });
-      
-      if (!res.ok) {
-        const error = await res.json();
-        throw new Error(error.error || 'Failed to update');
-      }
-      
-      window.location.reload();
-    } catch (error: any) {
-      alert(error.message || 'An error occurred');
-      window.location.reload();
-    }
-  }
-  
-  let currentWallpaper: any = null;
-  
-  async function openEditModal(id: string) {
-    try {
-      // Fetch wallpaper details
-      const res = await fetch(`/api/admin/wallpapers/${id}`);
-      if (!res.ok) {
-        throw new Error('Failed to fetch wallpaper');
-      }
-      
-      currentWallpaper = await res.json();
-      
-      // Populate form
-      (document.getElementById('editWallpaperId') as HTMLInputElement).value = currentWallpaper.id;
-      (document.getElementById('editStatus') as HTMLSelectElement).value = currentWallpaper.status || 'published';
-      (document.getElementById('editTitle') as HTMLInputElement).value = currentWallpaper.title || '';
-      (document.getElementById('editCategory') as HTMLSelectElement).value = currentWallpaper.category || '';
-      (document.getElementById('editAuthorName') as HTMLInputElement).value = currentWallpaper.author_name || '';
-      (document.getElementById('editRedditUsername') as HTMLInputElement).value = currentWallpaper.reddit_username || '';
-      (document.getElementById('editInstagramUsername') as HTMLInputElement).value = currentWallpaper.instagram_username || '';
-      
-      // Show modal
-      const modal = document.getElementById('editModal');
-      if (modal) {
-        modal.classList.remove('hidden');
-      }
-    } catch (error) {
-      alert('Failed to load wallpaper details');
-      console.error(error);
-    }
-  }
-  
-  function closeEditModal() {
-    const modal = document.getElementById('editModal');
-    if (modal) {
-      modal.classList.add('hidden');
-    }
-    currentWallpaper = null;
-  }
-  
-  async function handleEditSubmit(event: Event) {
-    event.preventDefault();
-    
-    if (!currentWallpaper) {
-      return;
-    }
-    
-    const form = event.target as HTMLFormElement;
-    const formData = new FormData(form);
-    
-    const updateData: Record<string, any> = {};
-    
-    // Collect form values
-    const status = formData.get('status');
-    if (status) {
-      updateData.status = status.toString();
-    }
-    
-    const title = formData.get('title');
-    updateData.title = title && title.toString().trim() ? title.toString().trim() : null;
-    
-    const category = formData.get('category');
-    updateData.category = category && category.toString().trim() ? category.toString().trim() : null;
-    
-    const authorName = formData.get('author_name');
-    updateData.author_name = authorName && authorName.toString().trim() ? authorName.toString().trim() : null;
-    
-    const redditUsername = formData.get('reddit_username');
-    updateData.reddit_username = redditUsername && redditUsername.toString().trim() ? redditUsername.toString().trim() : null;
-    
-    const instagramUsername = formData.get('instagram_username');
-    updateData.instagram_username = instagramUsername && instagramUsername.toString().trim() ? instagramUsername.toString().trim() : null;
-    
-    try {
-      const res = await fetch(`/api/admin/wallpapers/${currentWallpaper.id}/update`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updateData),
-      });
-      
-      if (!res.ok) {
-        const error = await res.json();
-        throw new Error(error.error || 'Failed to update wallpaper');
-      }
-      
-      alert('Wallpaper updated successfully');
-      closeEditModal();
-      window.location.reload();
-    } catch (error: any) {
-      alert(`Failed to update wallpaper: ${error.message}`);
-      console.error(error);
-    }
-  }
-  
-  // Make functions available globally
-  (window as any).toggleHidden = toggleHidden;
-  (window as any).updateStatus = updateStatus;
-  (window as any).openEditModal = openEditModal;
-  (window as any).closeEditModal = closeEditModal;
-  (window as any).handleEditSubmit = handleEditSubmit;
+    });
+  });
 </script>
-

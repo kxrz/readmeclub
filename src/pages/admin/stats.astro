@@ -1,17 +1,10 @@
 ---
-export const prerender = false; // Page admin dynamique, nécessite SSR
+export const prerender = false;
 
-import BaseLayout from "@/layouts/BaseLayout.astro";
-import Text from "@/components/fundations/elements/Text.astro";
-import Button from "@/components/fundations/components/Button.astro";
-import Wrapper from "@/components/fundations/containers/Wrapper.astro";
+import AdminLayout from "@/layouts/AdminLayout.astro";
 import { checkAdminAuth } from '@/lib/utils/admin';
 import { getSupabaseAdmin } from '@/lib/supabase/admin';
-import { useTranslations, getLangFromUrl } from '@/i18n/utils';
 import { countries } from '@/lib/utils/countries';
-
-const lang = getLangFromUrl(Astro.url);
-const t = useTranslations(lang);
 
 // Check admin auth
 if (!checkAdminAuth(Astro.cookies)) {
@@ -33,7 +26,7 @@ const { data: topResources } = await supabaseAdmin
   .eq('status', 'approved')
   .eq('hidden', false)
   .order('downloads_count', { ascending: false })
-  .limit(50);
+  .limit(20);
 
 // Fetch top wallpapers by downloads
 const { data: topWallpapers } = await supabaseAdmin
@@ -42,7 +35,7 @@ const { data: topWallpapers } = await supabaseAdmin
   .eq('status', 'published')
   .eq('hidden', false)
   .order('download_count', { ascending: false })
-  .limit(50);
+  .limit(20);
 
 // Fetch top feature requests by votes
 const { data: topFeatures } = await supabaseAdmin
@@ -51,7 +44,7 @@ const { data: topFeatures } = await supabaseAdmin
   .eq('status', 'published')
   .eq('hidden', false)
   .order('votes_count', { ascending: false })
-  .limit(50);
+  .limit(20);
 
 // Fetch location stats
 const { data: locationStats } = await supabaseAdmin
@@ -83,375 +76,176 @@ const totalResourceDownloads = topResources?.reduce((sum, r) => sum + (r.downloa
 const totalWallpaperDownloads = topWallpapers?.reduce((sum, w) => sum + (w.download_count || 0), 0) || 0;
 const totalGuideDownloads = (analytics?.pdf_v2_downloads || 0) + (analytics?.epub_v2_downloads || 0);
 const totalDownloads = totalResourceDownloads + totalWallpaperDownloads + totalGuideDownloads;
+const totalUsers = locationAggregated.reduce((sum, l) => sum + l.count, 0);
 ---
 
-<BaseLayout>
-  <section>
-    <Wrapper variant="hero">
-      <div class="flex items-center justify-between mb-8">
-        <Text
-          tag="h1"
-          variant="displaySM"
-          class="text-base-900 font-medium 2xl:text-5xl tracking-tight"
-        >
-          Statistics
-        </Text>
-        <div class="flex items-center gap-4">
-          <a href="/admin/resources">
-            <Button variant="muted" size="sm">
-              Resources
-            </Button>
-          </a>
-          <a href="/admin/features">
-            <Button variant="muted" size="sm">
-              Features
-            </Button>
-          </a>
-          <a href="/admin/wallpapers">
-            <Button variant="muted" size="sm">
-              Wallpapers
-            </Button>
-          </a>
-          <a href="/admin/logout">
-            <Button variant="muted" size="sm">
-              {t('admin.logout')}
-            </Button>
-          </a>
-        </div>
+<AdminLayout title="Statistics" currentPage="stats">
+  <!-- Summary Cards -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
+    <div class="bg-white border border-base-200 rounded-xl p-6">
+      <div class="text-3xl font-bold text-base-900">{totalDownloads.toLocaleString()}</div>
+      <div class="text-sm text-base-600 mt-1">Total Downloads</div>
+    </div>
+    <div class="bg-white border border-base-200 rounded-xl p-6">
+      <div class="text-3xl font-bold text-accent-500">{totalGuideDownloads.toLocaleString()}</div>
+      <div class="text-sm text-base-600 mt-1">Guide Downloads</div>
+      <div class="text-xs text-base-500 mt-1">
+        PDF: {analytics?.pdf_v2_downloads || 0} | EPUB: {analytics?.epub_v2_downloads || 0}
       </div>
+    </div>
+    <div class="bg-white border border-base-200 rounded-xl p-6">
+      <div class="text-3xl font-bold text-blue-500">{totalResourceDownloads.toLocaleString()}</div>
+      <div class="text-sm text-base-600 mt-1">Resource Downloads</div>
+    </div>
+    <div class="bg-white border border-base-200 rounded-xl p-6">
+      <div class="text-3xl font-bold text-purple-500">{totalWallpaperDownloads.toLocaleString()}</div>
+      <div class="text-sm text-base-600 mt-1">Wallpaper Downloads</div>
+    </div>
+    <div class="bg-white border border-base-200 rounded-xl p-6">
+      <div class="text-3xl font-bold text-green-500">{totalUsers.toLocaleString()}</div>
+      <div class="text-sm text-base-600 mt-1">Registered Users</div>
+    </div>
+  </div>
 
-      <!-- Summary Cards -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <div class="bg-base-50 border border-base-200 rounded-lg p-6">
-          <Text tag="p" variant="textSM" class="text-base-600 mb-1">
-            Total Downloads
-          </Text>
-          <Text tag="p" variant="displayLG" class="text-base-900 font-bold">
-            {totalDownloads.toLocaleString()}
-          </Text>
-        </div>
-        <div class="bg-base-50 border border-base-200 rounded-lg p-6">
-          <Text tag="p" variant="textSM" class="text-base-600 mb-1">
-            Guide Downloads
-          </Text>
-          <Text tag="p" variant="displayLG" class="text-base-900 font-bold">
-            {totalGuideDownloads.toLocaleString()}
-          </Text>
-          <Text tag="p" variant="textXS" class="text-base-500 mt-1">
-            PDF: {analytics?.pdf_v2_downloads || 0} | EPUB: {analytics?.epub_v2_downloads || 0}
-          </Text>
-        </div>
-        <div class="bg-base-50 border border-base-200 rounded-lg p-6">
-          <Text tag="p" variant="textSM" class="text-base-600 mb-1">
-            Resource Downloads
-          </Text>
-          <Text tag="p" variant="displayLG" class="text-base-900 font-bold">
-            {totalResourceDownloads.toLocaleString()}
-          </Text>
-        </div>
-        <div class="bg-base-50 border border-base-200 rounded-lg p-6">
-          <Text tag="p" variant="textSM" class="text-base-600 mb-1">
-            Wallpaper Downloads
-          </Text>
-          <Text tag="p" variant="displayLG" class="text-base-900 font-bold">
-            {totalWallpaperDownloads.toLocaleString()}
-          </Text>
-        </div>
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <!-- Top Resources -->
+    <div class="bg-white border border-base-200 rounded-xl overflow-hidden">
+      <div class="px-6 py-4 border-b border-base-200">
+        <h2 class="font-semibold text-base-900">Top Resources</h2>
       </div>
+      <div class="overflow-x-auto">
+        <table class="w-full">
+          <thead class="bg-base-50">
+            <tr>
+              <th class="px-4 py-2 text-left text-xs font-medium text-base-500">#</th>
+              <th class="px-4 py-2 text-left text-xs font-medium text-base-500">Title</th>
+              <th class="px-4 py-2 text-right text-xs font-medium text-base-500">Downloads</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-base-100">
+            {topResources?.slice(0, 10).map((r, i) => (
+              <tr class="hover:bg-base-50">
+                <td class="px-4 py-2 text-sm text-base-500">{i + 1}</td>
+                <td class="px-4 py-2">
+                  <a href={`/resources/${r.id}`} target="_blank" class="text-sm text-base-900 hover:text-accent-500">
+                    {r.title}
+                  </a>
+                </td>
+                <td class="px-4 py-2 text-right text-sm font-medium text-base-900">
+                  {r.downloads_count?.toLocaleString()}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
 
-      <!-- Top Resources Table -->
-      <div class="mb-8">
-        <Text tag="h2" variant="textXL" class="text-base-900 font-semibold mb-4">
-          Top Resources by Downloads
-        </Text>
-        <div class="bg-base-50 border border-base-200 rounded-lg overflow-hidden">
-          <div class="overflow-x-auto">
-            <table class="w-full" id="resources-table">
-              <thead class="bg-base-100 border-b border-base-200">
-                <tr>
-                  <th class="px-4 py-3 text-left text-sm font-semibold text-base-900 cursor-pointer hover:bg-base-200" data-sort="title">
-                    Title <span class="sort-indicator">↕</span>
-                  </th>
-                  <th class="px-4 py-3 text-left text-sm font-semibold text-base-900 cursor-pointer hover:bg-base-200" data-sort="type">
-                    Type <span class="sort-indicator">↕</span>
-                  </th>
-                  <th class="px-4 py-3 text-left text-sm font-semibold text-base-900 cursor-pointer hover:bg-base-200" data-sort="downloads">
-                    Downloads <span class="sort-indicator">↕</span>
-                  </th>
-                  <th class="px-4 py-3 text-left text-sm font-semibold text-base-900 cursor-pointer hover:bg-base-200" data-sort="date">
-                    Created <span class="sort-indicator">↕</span>
-                  </th>
+    <!-- Top Wallpapers -->
+    <div class="bg-white border border-base-200 rounded-xl overflow-hidden">
+      <div class="px-6 py-4 border-b border-base-200">
+        <h2 class="font-semibold text-base-900">Top Wallpapers</h2>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full">
+          <thead class="bg-base-50">
+            <tr>
+              <th class="px-4 py-2 text-left text-xs font-medium text-base-500">#</th>
+              <th class="px-4 py-2 text-left text-xs font-medium text-base-500">Title</th>
+              <th class="px-4 py-2 text-right text-xs font-medium text-base-500">Downloads</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-base-100">
+            {topWallpapers?.slice(0, 10).map((w, i) => (
+              <tr class="hover:bg-base-50">
+                <td class="px-4 py-2 text-sm text-base-500">{i + 1}</td>
+                <td class="px-4 py-2">
+                  <a href={`/wallpapers/${w.id}`} target="_blank" class="text-sm text-base-900 hover:text-accent-500">
+                    {w.title || 'Untitled'}
+                  </a>
+                </td>
+                <td class="px-4 py-2 text-right text-sm font-medium text-base-900">
+                  {w.download_count?.toLocaleString()}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Top Features -->
+    <div class="bg-white border border-base-200 rounded-xl overflow-hidden">
+      <div class="px-6 py-4 border-b border-base-200">
+        <h2 class="font-semibold text-base-900">Top Feature Requests</h2>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full">
+          <thead class="bg-base-50">
+            <tr>
+              <th class="px-4 py-2 text-left text-xs font-medium text-base-500">#</th>
+              <th class="px-4 py-2 text-left text-xs font-medium text-base-500">Title</th>
+              <th class="px-4 py-2 text-left text-xs font-medium text-base-500">Status</th>
+              <th class="px-4 py-2 text-right text-xs font-medium text-base-500">Votes</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-base-100">
+            {topFeatures?.slice(0, 10).map((f, i) => (
+              <tr class="hover:bg-base-50">
+                <td class="px-4 py-2 text-sm text-base-500">{i + 1}</td>
+                <td class="px-4 py-2 text-sm text-base-900">{f.title}</td>
+                <td class="px-4 py-2">
+                  <span class={`inline-flex px-2 py-0.5 text-xs rounded ${
+                    f.admin_status === 'completed' ? 'bg-green-100 text-green-700' :
+                    f.admin_status === 'planned' ? 'bg-blue-100 text-blue-700' :
+                    f.admin_status === 'rejected' ? 'bg-red-100 text-red-700' :
+                    'bg-base-100 text-base-600'
+                  }`}>
+                    {f.admin_status}
+                  </span>
+                </td>
+                <td class="px-4 py-2 text-right text-sm font-medium text-base-900">
+                  {f.votes_count?.toLocaleString()}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Users by Country -->
+    <div class="bg-white border border-base-200 rounded-xl overflow-hidden">
+      <div class="px-6 py-4 border-b border-base-200">
+        <h2 class="font-semibold text-base-900">Users by Country</h2>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full">
+          <thead class="bg-base-50">
+            <tr>
+              <th class="px-4 py-2 text-left text-xs font-medium text-base-500">#</th>
+              <th class="px-4 py-2 text-left text-xs font-medium text-base-500">Country</th>
+              <th class="px-4 py-2 text-right text-xs font-medium text-base-500">Users</th>
+              <th class="px-4 py-2 text-right text-xs font-medium text-base-500">%</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-base-100">
+            {locationAggregated.slice(0, 10).map((loc, i) => {
+              const pct = totalUsers > 0 ? ((loc.count / totalUsers) * 100).toFixed(1) : '0';
+              return (
+                <tr class="hover:bg-base-50">
+                  <td class="px-4 py-2 text-sm text-base-500">{i + 1}</td>
+                  <td class="px-4 py-2 text-sm text-base-900">{loc.name}</td>
+                  <td class="px-4 py-2 text-right text-sm font-medium text-base-900">
+                    {loc.count.toLocaleString()}
+                  </td>
+                  <td class="px-4 py-2 text-right text-sm text-base-500">{pct}%</td>
                 </tr>
-              </thead>
-              <tbody class="divide-y divide-base-200">
-                {topResources?.map((resource) => (
-                  <tr class="hover:bg-base-100">
-                    <td class="px-4 py-3 text-sm text-base-900">
-                      <a href={`/resources/${resource.id}`} class="text-accent-600 hover:underline" target="_blank">
-                        {resource.title}
-                      </a>
-                    </td>
-                    <td class="px-4 py-3 text-sm text-base-600">
-                      {resource.type}
-                    </td>
-                    <td class="px-4 py-3 text-sm text-base-900 font-medium">
-                      {resource.downloads_count.toLocaleString()}
-                    </td>
-                    <td class="px-4 py-3 text-sm text-base-600">
-                      {new Date(resource.created_at).toLocaleDateString()}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
+              );
+            })}
+          </tbody>
+        </table>
       </div>
-
-      <!-- Top Wallpapers Table -->
-      <div class="mb-8">
-        <Text tag="h2" variant="textXL" class="text-base-900 font-semibold mb-4">
-          Top Wallpapers by Downloads
-        </Text>
-        <div class="bg-base-50 border border-base-200 rounded-lg overflow-hidden">
-          <div class="overflow-x-auto">
-            <table class="w-full" id="wallpapers-table">
-              <thead class="bg-base-100 border-b border-base-200">
-                <tr>
-                  <th class="px-4 py-3 text-left text-sm font-semibold text-base-900 cursor-pointer hover:bg-base-200" data-sort="title">
-                    Title <span class="sort-indicator">↕</span>
-                  </th>
-                  <th class="px-4 py-3 text-left text-sm font-semibold text-base-900 cursor-pointer hover:bg-base-200" data-sort="category">
-                    Category <span class="sort-indicator">↕</span>
-                  </th>
-                  <th class="px-4 py-3 text-left text-sm font-semibold text-base-900 cursor-pointer hover:bg-base-200" data-sort="downloads">
-                    Downloads <span class="sort-indicator">↕</span>
-                  </th>
-                  <th class="px-4 py-3 text-left text-sm font-semibold text-base-900 cursor-pointer hover:bg-base-200" data-sort="date">
-                    Created <span class="sort-indicator">↕</span>
-                  </th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-base-200">
-                {topWallpapers?.map((wallpaper) => (
-                  <tr class="hover:bg-base-100">
-                    <td class="px-4 py-3 text-sm text-base-900">
-                      <a href={`/wallpapers/${wallpaper.id}`} class="text-accent-600 hover:underline" target="_blank">
-                        {wallpaper.title || 'Untitled'}
-                      </a>
-                    </td>
-                    <td class="px-4 py-3 text-sm text-base-600">
-                      {wallpaper.category || '-'}
-                    </td>
-                    <td class="px-4 py-3 text-sm text-base-900 font-medium">
-                      {wallpaper.download_count.toLocaleString()}
-                    </td>
-                    <td class="px-4 py-3 text-sm text-base-600">
-                      {new Date(wallpaper.created_at).toLocaleDateString()}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-      <!-- Top Feature Requests Table -->
-      <div class="mb-8">
-        <Text tag="h2" variant="textXL" class="text-base-900 font-semibold mb-4">
-          Top Feature Requests by Votes
-        </Text>
-        <div class="bg-base-50 border border-base-200 rounded-lg overflow-hidden">
-          <div class="overflow-x-auto">
-            <table class="w-full" id="features-table">
-              <thead class="bg-base-100 border-b border-base-200">
-                <tr>
-                  <th class="px-4 py-3 text-left text-sm font-semibold text-base-900 cursor-pointer hover:bg-base-200" data-sort="title">
-                    Title <span class="sort-indicator">↕</span>
-                  </th>
-                  <th class="px-4 py-3 text-left text-sm font-semibold text-base-900 cursor-pointer hover:bg-base-200" data-sort="status">
-                    Status <span class="sort-indicator">↕</span>
-                  </th>
-                  <th class="px-4 py-3 text-left text-sm font-semibold text-base-900 cursor-pointer hover:bg-base-200" data-sort="votes">
-                    Votes <span class="sort-indicator">↕</span>
-                  </th>
-                  <th class="px-4 py-3 text-left text-sm font-semibold text-base-900 cursor-pointer hover:bg-base-200" data-sort="date">
-                    Created <span class="sort-indicator">↕</span>
-                  </th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-base-200">
-                {topFeatures?.map((feature) => (
-                  <tr class="hover:bg-base-100">
-                    <td class="px-4 py-3 text-sm text-base-900">
-                      <a href={`/board#feature-${feature.id}`} class="text-accent-600 hover:underline" target="_blank">
-                        {feature.title}
-                      </a>
-                    </td>
-                    <td class="px-4 py-3 text-sm text-base-600">
-                      <span class={`px-2 py-1 rounded text-xs font-medium ${
-                        feature.admin_status === 'completed' ? 'bg-green-100 text-green-800' :
-                        feature.admin_status === 'planned' ? 'bg-blue-100 text-blue-800' :
-                        feature.admin_status === 'rejected' ? 'bg-red-100 text-red-800' :
-                        'bg-gray-100 text-gray-800'
-                      }`}>
-                        {feature.admin_status}
-                      </span>
-                    </td>
-                    <td class="px-4 py-3 text-sm text-base-900 font-medium">
-                      {feature.votes_count.toLocaleString()}
-                    </td>
-                    <td class="px-4 py-3 text-sm text-base-600">
-                      {new Date(feature.created_at).toLocaleDateString()}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-      <!-- Location Stats Table -->
-      <div class="mb-8">
-        <Text tag="h2" variant="textXL" class="text-base-900 font-semibold mb-4">
-          Users by Country
-        </Text>
-        <div class="bg-base-50 border border-base-200 rounded-lg overflow-hidden">
-          <div class="overflow-x-auto">
-            <table class="w-full" id="locations-table">
-              <thead class="bg-base-100 border-b border-base-200">
-                <tr>
-                  <th class="px-4 py-3 text-left text-sm font-semibold text-base-900 cursor-pointer hover:bg-base-200" data-sort="country">
-                    Country <span class="sort-indicator">↕</span>
-                  </th>
-                  <th class="px-4 py-3 text-left text-sm font-semibold text-base-900 cursor-pointer hover:bg-base-200" data-sort="users">
-                    Users <span class="sort-indicator">↕</span>
-                  </th>
-                  <th class="px-4 py-3 text-left text-sm font-semibold text-base-900 cursor-pointer hover:bg-base-200" data-sort="percentage">
-                    Percentage <span class="sort-indicator">↕</span>
-                  </th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-base-200">
-                {locationAggregated.map((location) => {
-                  const totalUsers = locationAggregated.reduce((sum, l) => sum + l.count, 0);
-                  const percentage = totalUsers > 0 ? ((location.count / totalUsers) * 100).toFixed(1) : '0';
-                  return (
-                    <tr class="hover:bg-base-100">
-                      <td class="px-4 py-3 text-sm text-base-900">
-                        {location.name}
-                      </td>
-                      <td class="px-4 py-3 text-sm text-base-900 font-medium">
-                        {location.count.toLocaleString()}
-                      </td>
-                      <td class="px-4 py-3 text-sm text-base-600">
-                        <div class="flex items-center gap-2">
-                          <div class="flex-1 bg-base-200 rounded-full h-2">
-                            <div 
-                              class="bg-accent-500 h-2 rounded-full" 
-                              style={`width: ${percentage}%`}
-                            ></div>
-                          </div>
-                          <span>{percentage}%</span>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </Wrapper>
-  </section>
-</BaseLayout>
-
-<script>
-  // Table sorting functionality
-  function initTableSorting(tableId: string) {
-    const table = document.getElementById(tableId);
-    if (!table) return;
-
-    const headers = table.querySelectorAll('thead th[data-sort]');
-    const tbody = table.querySelector('tbody');
-    if (!tbody) return;
-
-    headers.forEach((header, index) => {
-      header.addEventListener('click', () => {
-        const sortKey = header.getAttribute('data-sort');
-        if (!sortKey) return;
-
-        const rows = Array.from(tbody.querySelectorAll('tr'));
-        const isAscending = header.classList.contains('sort-asc');
-        
-        // Reset all headers
-        headers.forEach(h => {
-          h.classList.remove('sort-asc', 'sort-desc');
-          const indicator = h.querySelector('.sort-indicator');
-          if (indicator) indicator.textContent = '↕';
-        });
-
-        // Sort rows
-        rows.sort((a, b) => {
-          const aCell = a.cells[index];
-          const bCell = b.cells[index];
-          const aText = aCell.textContent?.trim() || '';
-          const bText = bCell.textContent?.trim() || '';
-
-          // Try to parse as number
-          const aNum = parseFloat(aText.replace(/,/g, ''));
-          const bNum = parseFloat(bText.replace(/,/g, ''));
-          
-          if (!isNaN(aNum) && !isNaN(bNum)) {
-            return isAscending ? bNum - aNum : aNum - bNum;
-          }
-
-          // Date comparison
-          const aDate = new Date(aText);
-          const bDate = new Date(bText);
-          if (!isNaN(aDate.getTime()) && !isNaN(bDate.getTime())) {
-            return isAscending ? bDate.getTime() - aDate.getTime() : aDate.getTime() - bDate.getTime();
-          }
-
-          // String comparison
-          return isAscending ? bText.localeCompare(aText) : aText.localeCompare(bText);
-        });
-
-        // Update DOM
-        rows.forEach(row => tbody.appendChild(row));
-
-        // Update header state
-        header.classList.add(isAscending ? 'sort-desc' : 'sort-asc');
-        const indicator = header.querySelector('.sort-indicator');
-        if (indicator) {
-          indicator.textContent = isAscending ? '↓' : '↑';
-        }
-      });
-    });
-  }
-
-  // Initialize sorting for all tables
-  initTableSorting('resources-table');
-  initTableSorting('wallpapers-table');
-  initTableSorting('features-table');
-  initTableSorting('locations-table');
-</script>
-
-<style>
-  .sort-indicator {
-    display: inline-block;
-    margin-left: 4px;
-    opacity: 0.5;
-  }
-  th:hover .sort-indicator {
-    opacity: 1;
-  }
-  th.sort-asc .sort-indicator,
-  th.sort-desc .sort-indicator {
-    opacity: 1;
-  }
-</style>
-
+    </div>
+  </div>
+</AdminLayout>

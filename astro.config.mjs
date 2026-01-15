@@ -9,8 +9,7 @@ import path from 'path';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
-  // output: 'static' est le défaut et permet pré-rendu sélectif
-  // Les pages avec prerender = true sont statiques, les autres sont SSR
+  output: 'hybrid',
   adapter: vercel(),
   vite: {
     plugins: [tailwindcss()],

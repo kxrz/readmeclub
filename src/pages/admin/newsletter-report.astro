@@ -1,26 +1,20 @@
 ---
-export const prerender = false; // Page admin dynamique, nécessite SSR
+export const prerender = false;
 
-import BaseLayout from "@/layouts/BaseLayout.astro";
-import Text from "@/components/fundations/elements/Text.astro";
-import Button from "@/components/fundations/components/Button.astro";
-import Wrapper from "@/components/fundations/containers/Wrapper.astro";
+import AdminLayout from "@/layouts/AdminLayout.astro";
 import { checkAdminAuth } from '@/lib/utils/admin';
 import { getSupabaseAdmin } from '@/lib/supabase/admin';
-import { useTranslations, getLangFromUrl } from '@/i18n/utils';
-
-const lang = getLangFromUrl(Astro.url);
-const t = useTranslations(lang);
 
 // Check admin auth
 if (!checkAdminAuth(Astro.cookies)) {
   return Astro.redirect('/admin');
 }
 
-// Récupérer le paramètre de jours (par défaut 7)
+// Récupérer les paramètres
 const url = Astro.url;
 const daysParam = url.searchParams.get('days');
 const days = daysParam ? parseInt(daysParam) : 7;
+const introParam = url.searchParams.get('intro');
 
 // Fetch weekly report directement depuis Supabase
 const supabaseAdmin = getSupabaseAdmin();
@@ -33,12 +27,12 @@ try {
   // Récupérer les ressources
   const { data: resources } = await supabaseAdmin
     .from('resources')
-    .select('id, title, description, type, created_at, external_link')
+    .select('id, title, description, type, created_at, external_link, downloads_count')
     .gte('created_at', startDate.toISOString())
     .lte('created_at', endDate.toISOString())
     .eq('status', 'approved')
     .eq('hidden', false)
-    .order('created_at', { ascending: false });
+    .order('downloads_count', { ascending: false });
   
   // Récupérer les news
   const { data: news } = await supabaseAdmin
@@ -50,15 +44,15 @@ try {
     .eq('hidden', false)
     .order('published_at', { ascending: false });
   
-  // Récupérer les wallpapers
+  // Récupérer les wallpapers triés par téléchargements
   const { data: wallpapers } = await supabaseAdmin
     .from('wallpapers')
-    .select('id, title, category, author_name, reddit_username, created_at')
+    .select('id, title, category, author_name, reddit_username, created_at, download_count')
     .gte('created_at', startDate.toISOString())
     .lte('created_at', endDate.toISOString())
     .eq('status', 'published')
     .eq('hidden', false)
-    .order('created_at', { ascending: false });
+    .order('download_count', { ascending: false });
   
   // Calculer le numéro de semaine
   const getWeekNumber = (date: Date): number => {
@@ -71,9 +65,9 @@ try {
   
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('fr-FR', { 
-      day: 'numeric', 
-      month: 'long', 
+    return date.toLocaleDateString('en-US', { 
+      month: 'short', 
+      day: 'numeric',
       year: 'numeric' 
     });
   };
@@ -101,288 +95,590 @@ try {
   console.error('Error fetching weekly report:', error);
 }
 
-// Formater une date pour l'affichage (utilisée dans le template)
-const formatDate = (dateString: string) => {
-  const date = new Date(dateString);
-  return date.toLocaleDateString('fr-FR', { 
-    day: 'numeric', 
-    month: 'long', 
-    year: 'numeric' 
-  });
-};
+// Intro : depuis URL (après clic "Use in email") ou fallback
+let introText = '';
+if (introParam) {
+  introText = introParam;
+} else if (reportData?.success) {
+  introText = getFallbackIntro(reportData.stats);
+}
 
-// Formater le rapport en markdown (format digest)
-const formatReportMarkdown = (data: any) => {
+const PROD_URL = 'https://readme.club';
+const MAX_WALLPAPERS = 15;
+const FALLBACK_IMAGE = `${PROD_URL}/og-image.png`;
+
+// Fallback intros basées sur les stats
+function getFallbackIntro(stats: any): string {
+  const total = stats.resources + stats.news + stats.wallpapers;
+  const intros = [
+    `Another week, another batch of goodies for your Xteink! This week brought us ${total} new additions to explore.`,
+    `The community has been busy! We've got ${stats.wallpapers} fresh wallpapers and ${stats.resources} resources waiting for you.`,
+    `Your weekly dose of Xteink goodness is here. Let's dive into what's new!`,
+    `Big week for the community! Here's everything that landed in the hub.`,
+    `From wallpapers to resources, here's what fellow Xteink users have been creating and sharing.`
+  ];
+  return intros[Math.floor(Math.random() * intros.length)] + '<br><br>👋 Florent';
+}
+
+// Générer le markdown formaté
+const generateMarkdown = (data: any, intro: string, randomRes?: any, resolvedUrls: Record<string, string> = {}) => {
   if (!data || !data.success) return '';
   
   const { period, stats, resources, news, wallpapers } = data;
   
-  let markdown = `Week ${period.weekNumber} - ${period.startFormatted} to ${period.endFormatted}\n\n`;
+  let md = `# 📬 Weekly Digest - Week ${period.weekNumber}\n\n`;
+  md += `*${period.startFormatted} → ${period.endFormatted}*\n\n`;
   
+  // Intro dynamique
+  if (intro) {
+    md += `${intro}\n\n`;
+  }
+  
+  md += `---\n\n`;
+  
+  // Summary
+  const totalItems = stats.resources + stats.news + stats.wallpapers;
+  if (totalItems === 0) {
+    md += `No new content this week. Stay tuned!\n`;
+    return md;
+  }
+  
+  md += `## 🎯 This Week's Highlights\n\n`;
+  md += `We added **${totalItems}** new items to the community hub:\n\n`;
+  if (stats.resources > 0) md += `- 📦 **${stats.resources}** new resources\n`;
+  if (stats.news > 0) md += `- 📰 **${stats.news}** news articles\n`;
+  if (stats.wallpapers > 0) md += `- 🖼️ **${stats.wallpapers}** wallpapers\n`;
+  md += `\n---\n\n`;
+  
+  // Resources
   if (resources && resources.length > 0) {
-    markdown += `${stats.resources} new resources:\n`;
-    resources.forEach((resource: any) => {
-      const link = resource.external_link || `https://readme.club/resources/${resource.id}`;
-      markdown += `- ${resource.title} (${resource.type}) - ${link}\n`;
+    md += `## 📦 New Resources\n\n`;
+    resources.forEach((r: any) => {
+      const link = r.external_link || `${PROD_URL}/resources/${r.id}`;
+      const downloads = r.downloads_count ? ` (${r.downloads_count} downloads)` : '';
+      md += `### [${r.title}](${link})\n`;
+      md += `> ${r.description?.substring(0, 150)}${r.description?.length > 150 ? '...' : ''}\n\n`;
+      md += `🏷️ *${r.type}*${downloads}\n\n`;
     });
-    markdown += `\n`;
+    md += `---\n\n`;
   }
   
+  // News
   if (news && news.length > 0) {
-    markdown += `${stats.news} news articles:\n`;
-    news.forEach((article: any) => {
-      const link = `https://readme.club/news/${article.slug}`;
-      markdown += `- ${article.title} - ${link}\n`;
+    md += `## 📰 Latest News\n\n`;
+    news.forEach((n: any) => {
+      const link = `${PROD_URL}/news/${n.slug}`;
+      md += `### [${n.title}](${link})\n`;
+      if (n.excerpt) {
+        md += `> ${n.excerpt}\n\n`;
+      }
     });
-    markdown += `\n`;
+    md += `---\n\n`;
   }
   
+  // Wallpapers (sorted by downloads, limited to MAX_WALLPAPERS)
   if (wallpapers && wallpapers.length > 0) {
-    markdown += `${stats.wallpapers} new wallpapers:\n`;
-    wallpapers.forEach((wallpaper: any) => {
-      const link = `https://readme.club/wallpapers/${wallpaper.id}`;
-      const title = wallpaper.title || 'Untitled';
-      markdown += `- ${title}${wallpaper.category ? ` (${wallpaper.category})` : ''} - ${link}\n`;
+    const displayedWallpapers = wallpapers.slice(0, MAX_WALLPAPERS);
+    const remainingCount = wallpapers.length - MAX_WALLPAPERS;
+    const top3 = wallpapers.slice(0, 3);
+
+    md += `## 🖼️ Popular New Wallpapers\n\n`;
+    md += `*Sorted by downloads*\n\n`;
+
+    // Top 3 avec images
+    top3.forEach((w: any, index: number) => {
+      const link = `${PROD_URL}/wallpapers/${w.id}`;
+      const title = w.title || 'Untitled';
+      const downloads = w.download_count || 0;
+      const medal = index === 0 ? '🥇' : index === 1 ? '🥈' : '🥉';
+      const imageUrl = resolvedUrls[w.id] || `${PROD_URL}/wallpapers/${w.id}/image.jpg`;
+
+      md += `${medal} **[${title}](${link})** · ${downloads} downloads\n\n`;
+      md += `![${title}](${imageUrl})\n\n`;
     });
-    markdown += `\n`;
+
+    // Le reste (4-15)
+    if (displayedWallpapers.length > 3) {
+      displayedWallpapers.slice(3).forEach((w: any, index: number) => {
+        const link = `${PROD_URL}/wallpapers/${w.id}`;
+        const title = w.title || 'Untitled';
+        const downloads = w.download_count || 0;
+
+        md += `${index + 4}. **[${title}](${link})** · ${downloads} downloads\n`;
+      });
+      md += `\n`;
+    }
+
+    if (remainingCount > 0) {
+      md += `\n👉 [See ${remainingCount} more new wallpapers](${PROD_URL}/wallpapers)\n\n`;
+    }
+    md += `---\n\n`;
+  }
+
+  // Random resource
+  if (randomRes) {
+    const resLink = `${PROD_URL}/resources/${randomRes.id}`;
+    md += `## 🎲 Random Pick from the Archive\n\n`;
+    md += `**[${randomRes.title}](${resLink})**\n`;
+    md += `> ${randomRes.description?.substring(0, 120)}${randomRes.description?.length > 120 ? '...' : ''}\n\n`;
+    md += `---\n\n`;
+  }
+
+  // Footer
+  md += `## 🔗 Quick Links\n\n`;
+  md += `- [Browse all resources](${PROD_URL}/resources)\n`;
+  md += `- [Wallpaper gallery](${PROD_URL}/wallpapers)\n`;
+  md += `- [Community guide](${PROD_URL}/guide)\n`;
+  md += `- [Join on Reddit](https://reddit.com/r/xteinkereader)\n\n`;
+  md += `---\n\n`;
+  md += `*You're receiving this because you subscribed to the readme.club newsletter.*\n`;
+  md += `*[Manage preferences](${PROD_URL}/newsletter)*\n`;
+  
+  return md;
+};
+
+// Générer le HTML preview (forEmail=true enlève onerror qui ne fonctionne pas dans les emails)
+const generateHtmlPreview = (data: any, intro: string, randomRes: any, forEmail: boolean = false, resolvedUrls: Record<string, string> = {}) => {
+  if (!data || !data.success) return '';
+  
+  const { period, stats, resources, news, wallpapers } = data;
+  
+  let html = `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td align="center"><table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="font-family: Arial, sans-serif; font-size: 16px; line-height: 1.5; color: #333;"><tr><td align="left" style="padding: 20px;">`;
+  
+  // Header
+  html += `<h1 style="font-size: 20px; margin: 0 0 8px 0;">📬 Weekly Digest - Week ${period.weekNumber}</h1>`;
+  html += `<p style="color: #666; margin: 0 0 16px 0;"><em>${period.startFormatted} → ${period.endFormatted}</em></p>`;
+  
+  // Intro dynamique
+  if (intro) {
+    html += `<p style="margin: 0 0 24px 0;">${intro}</p>`;
   }
   
-  return markdown;
-};
----
-
-<BaseLayout>
-  <section>
-    <Wrapper variant="hero">
-      <Text
-        tag="h1"
-        variant="displaySM"
-        class="text-base-900 font-medium 2xl:text-5xl tracking-tight"
-      >
-        Newsletter Weekly Report
-      </Text>
-      <Text
-        tag="p"
-        variant="textBase"
-        class="mt-4 text-base-600 text-balance 2xl:text-xl"
-      >
-        Generate a weekly digest of new content for your newsletter
-      </Text>
-    </Wrapper>
-  </section>
-
-  <section>
-    <Wrapper variant="standard" class="py-6 pb-24">
-      <!-- Period selector -->
-      <div class="mb-6 flex items-center gap-4">
-        <label for="days-select" class="text-sm font-medium text-base-700">
-          Period:
-        </label>
-        <select
-          id="days-select"
-          class="px-4 py-2 border border-base-300 rounded-lg bg-base-50 text-base-900 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none"
-          onchange="window.location.href = `/admin/newsletter-report?days=${this.value}`"
-        >
-          <option value="7" selected={days === 7}>Last 7 days</option>
-          <option value="14" selected={days === 14}>Last 14 days</option>
-          <option value="30" selected={days === 30}>Last 30 days</option>
-        </select>
-      </div>
-
-      {reportData && reportData.success ? (
-        <div class="space-y-6">
-          <!-- Statistics -->
-          <div class="bg-base-50 border border-base-200 rounded-lg p-6">
-            <Text tag="h2" variant="textLG" class="font-semibold text-base-900 mb-4">
-              Week {reportData.period.weekNumber} - {reportData.period.startFormatted} to {reportData.period.endFormatted}
-            </Text>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div class="text-center">
-                <div class="text-3xl font-bold text-accent-500">
-                  {reportData.stats.resources}
-                </div>
-                <div class="text-sm text-base-600 mt-1">New Resources</div>
-              </div>
-              <div class="text-center">
-                <div class="text-3xl font-bold text-accent-500">
-                  {reportData.stats.news}
-                </div>
-                <div class="text-sm text-base-600 mt-1">News Articles</div>
-              </div>
-              <div class="text-center">
-                <div class="text-3xl font-bold text-accent-500">
-                  {reportData.stats.wallpapers}
-                </div>
-                <div class="text-sm text-base-600 mt-1">New Wallpapers</div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Copy button -->
-          <div class="flex justify-end">
-            <button
-              id="copy-report-btn"
-              class="px-6 py-2 bg-accent-500 text-base-50 rounded-lg hover:bg-accent-600 transition-colors font-medium"
-            >
-              Copy Report
-            </button>
-          </div>
-
-          <!-- Report content -->
-          <div class="bg-base-50 border border-base-200 rounded-lg p-6">
-            <pre
-              id="report-content"
-              class="whitespace-pre-wrap text-sm text-base-700 font-mono overflow-x-auto"
-            >
-{formatReportMarkdown(reportData)}
-            </pre>
-          </div>
-
-          <!-- Detailed lists -->
-          {reportData.resources && reportData.resources.length > 0 && (
-            <div class="bg-base-50 border border-base-200 rounded-lg p-6">
-              <Text tag="h2" variant="textLG" class="font-semibold text-base-900 mb-4">
-                {reportData.stats.resources} New Resources
-              </Text>
-              <ul class="space-y-3">
-                {reportData.resources.map((resource: any) => (
-                  <li class="border-b border-base-200 pb-3 last:border-0">
-                    <div class="flex items-start justify-between gap-4">
-                      <div class="flex-1">
-                        <Text tag="h3" variant="textBase" class="font-semibold text-base-900 mb-1">
-                          {resource.title}
-                        </Text>
-                        <Text tag="p" variant="textSM" class="text-base-600 mb-2">
-                          {resource.description?.substring(0, 200)}...
-                        </Text>
-                        <div class="flex items-center gap-2 text-xs text-base-500">
-                          <span class="px-2 py-1 bg-base-200 rounded">{resource.type}</span>
-                          <span>{formatDate(resource.created_at)}</span>
-                        </div>
-                      </div>
-                      <a
-                        href={resource.external_link || `/resources/${resource.id}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="shrink-0 text-accent-500 hover:underline text-sm"
-                      >
-                        View →
-                      </a>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-
-          {reportData.news && reportData.news.length > 0 && (
-            <div class="bg-base-50 border border-base-200 rounded-lg p-6">
-              <Text tag="h2" variant="textLG" class="font-semibold text-base-900 mb-4">
-                {reportData.stats.news} News Articles
-              </Text>
-              <ul class="space-y-3">
-                {reportData.news.map((article: any) => (
-                  <li class="border-b border-base-200 pb-3 last:border-0">
-                    <div class="flex items-start justify-between gap-4">
-                      <div class="flex-1">
-                        <Text tag="h3" variant="textBase" class="font-semibold text-base-900 mb-1">
-                          {article.title}
-                        </Text>
-                        {article.excerpt && (
-                          <Text tag="p" variant="textSM" class="text-base-600 mb-2">
-                            {article.excerpt}
-                          </Text>
-                        )}
-                        <div class="text-xs text-base-500">
-                          {formatDate(article.published_at || article.created_at)}
-                        </div>
-                      </div>
-                      <a
-                        href={`/news/${article.slug}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="shrink-0 text-accent-500 hover:underline text-sm"
-                      >
-                        View →
-                      </a>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-
-          {reportData.wallpapers && reportData.wallpapers.length > 0 && (
-            <div class="bg-base-50 border border-base-200 rounded-lg p-6">
-              <Text tag="h2" variant="textLG" class="font-semibold text-base-900 mb-4">
-                {reportData.stats.wallpapers} New Wallpapers
-              </Text>
-              <ul class="space-y-3">
-                {reportData.wallpapers.map((wallpaper: any) => (
-                  <li class="border-b border-base-200 pb-3 last:border-0">
-                    <div class="flex items-start justify-between gap-4">
-                      <div class="flex-1">
-                        <Text tag="h3" variant="textBase" class="font-semibold text-base-900 mb-1">
-                          {wallpaper.title || 'Untitled'}
-                        </Text>
-                        <div class="flex items-center gap-2 text-xs text-base-500 mb-2">
-                          {wallpaper.category && (
-                            <span class="px-2 py-1 bg-base-200 rounded">{wallpaper.category}</span>
-                          )}
-                          {(wallpaper.author_name || wallpaper.reddit_username) && (
-                            <span>By {wallpaper.author_name || wallpaper.reddit_username}</span>
-                          )}
-                        </div>
-                        <div class="text-xs text-base-500">
-                          {formatDate(wallpaper.created_at)}
-                        </div>
-                      </div>
-                      <a
-                        href={`/wallpapers/${wallpaper.id}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="shrink-0 text-accent-500 hover:underline text-sm"
-                      >
-                        View →
-                      </a>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </div>
-      ) : (
-        <div class="text-center py-12">
-          <Text tag="p" variant="textBase" class="text-base-500">
-            {reportData ? 'Error loading report' : 'Loading report...'}
-          </Text>
-        </div>
-      )}
-    </Wrapper>
-  </section>
-</BaseLayout>
-
-<script>
-  document.getElementById('copy-report-btn')?.addEventListener('click', () => {
-    const reportContent = document.getElementById('report-content');
-    if (reportContent) {
-      const text = reportContent.textContent || '';
-      navigator.clipboard.writeText(text).then(() => {
-        const btn = document.getElementById('copy-report-btn');
-        if (btn) {
-          const originalText = btn.textContent;
-          btn.textContent = 'Copied!';
-          btn.classList.add('bg-green-500');
-          setTimeout(() => {
-            btn.textContent = originalText;
-            btn.classList.remove('bg-green-500');
-          }, 2000);
-        }
-      }).catch(err => {
-        console.error('Failed to copy:', err);
-        alert('Failed to copy to clipboard');
+  html += `<hr style="border: none; border-top: 1px solid #ddd; margin: 24px 0;">`;
+  
+  const totalItems = stats.resources + stats.news + stats.wallpapers;
+  if (totalItems === 0) {
+    html += `<p>No new content this week. Stay tuned!</p>`;
+    html += `</td></tr></table></td></tr></table>`;
+    return html;
+  }
+  
+  // Summary
+  html += `<h2 style="font-size: 18px; margin: 0 0 12px 0;">🎯 This Week's Highlights</h2>`;
+  html += `<p style="margin: 0 0 12px 0;">We added <strong>${totalItems}</strong> new items:</p>`;
+  html += `<ul style="margin: 0 0 16px 0; padding-left: 20px;">`;
+  if (stats.resources > 0) html += `<li>📦 <strong>${stats.resources}</strong> new resources</li>`;
+  if (stats.news > 0) html += `<li>📰 <strong>${stats.news}</strong> news articles</li>`;
+  if (stats.wallpapers > 0) html += `<li>🖼️ <strong>${stats.wallpapers}</strong> wallpapers</li>`;
+  html += `</ul>`;
+  html += `<hr style="border: none; border-top: 1px solid #ddd; margin: 24px 0;">`;
+  
+  // Resources
+  if (resources && resources.length > 0) {
+    html += `<h2 style="font-size: 18px; margin: 0 0 12px 0;">📦 New Resources</h2>`;
+    resources.forEach((r: any) => {
+      const link = `${PROD_URL}/resources/${r.id}`;
+      let cleanDesc = (r.description || '')
+        .replace(/https?:\/\/[^\s)]+/g, '')
+        .replace(/\(\s*\)/g, '')
+        .replace(/\s+/g, ' ')
+        .trim();
+      if (cleanDesc.length > 120) cleanDesc = cleanDesc.substring(0, 120) + '...';
+      
+      html += `<p style="margin: 0 0 4px 0;"><strong><a href="${link}" style="color: #333;">${r.title}</a></strong></p>`;
+      if (cleanDesc) html += `<p style="color: #666; margin: 0 0 4px 0;">${cleanDesc}</p>`;
+      html += `<p style="color: #888; margin: 0 0 16px 0;">🏷️ ${r.type}</p>`;
+    });
+    html += `<hr style="border: none; border-top: 1px solid #ddd; margin: 24px 0;">`;
+  }
+  
+  // News
+  if (news && news.length > 0) {
+    html += `<h2 style="font-size: 18px; margin: 0 0 12px 0;">📰 Latest News</h2>`;
+    news.forEach((n: any) => {
+      const link = `${PROD_URL}/news/${n.slug}`;
+      html += `<p style="margin: 0 0 4px 0;"><strong><a href="${link}" style="color: #333;">${n.title}</a></strong></p>`;
+      if (n.excerpt) html += `<p style="color: #666; margin: 0 0 16px 0;">${n.excerpt}</p>`;
+    });
+    html += `<hr style="border: none; border-top: 1px solid #ddd; margin: 24px 0;">`;
+  }
+  
+  // Wallpapers
+  if (wallpapers && wallpapers.length > 0) {
+    const displayedWallpapers = wallpapers.slice(0, MAX_WALLPAPERS);
+    const remainingCount = wallpapers.length - MAX_WALLPAPERS;
+    const top3 = wallpapers.slice(0, 3);
+    
+    html += `<h2 style="font-size: 18px; margin: 0 0 12px 0;">🖼️ Popular New Wallpapers</h2>`;
+    html += `<p style="color: #666; margin: 0 0 16px 0;"><em>Sorted by downloads</em></p>`;
+    
+    // Top 3 with thumbnails side by side
+    if (top3.length > 0) {
+      html += `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom: 20px;">`;
+      html += `<tr>`;
+      top3.forEach((w: any, index: number) => {
+        const link = `${PROD_URL}/wallpapers/${w.id}`;
+        const title = w.title || 'Untitled';
+        const medal = index === 0 ? '🥇' : index === 1 ? '🥈' : '🥉';
+        const downloads = w.download_count || 0;
+        const thumbnailUrl = `${PROD_URL}/wallpapers/${w.id}/thumbnail.webp`;
+        const fallbackUrl = `${PROD_URL}/wallpapers/${w.id}/image.jpg`;
+        const emailImageUrl = resolvedUrls[w.id] || fallbackUrl;
+        const imgTag = forEmail
+          ? `<img src="${emailImageUrl}" alt="${title}" width="150" height="250" style="width: 150px; height: 250px; object-fit: cover; border: 1px solid #ddd; display: block; margin: 0 auto;" />`
+          : `<img src="${thumbnailUrl}" alt="${title}" width="150" height="250" style="width: 150px; height: 250px; object-fit: cover; border: 1px solid #ddd; display: block; margin: 0 auto;" onerror="this.src='${fallbackUrl}';" />`;
+        
+        html += `<td width="33%" align="center" valign="top" style="padding: 0 6px;">`;
+        html += `<a href="${link}" style="text-decoration: none; display: block; color: #333;">`;
+        html += `<div style="font-size: 20px; margin-bottom: 4px;">${medal}</div>`;
+        html += imgTag;
+        html += `<p style="margin: 8px 0 2px 0;"><strong>${title}</strong></p>`;
+        html += `<p style="margin: 0; color: #666;">${downloads} downloads</p>`;
+        html += `</a>`;
+        html += `</td>`;
+      });
+      html += `</tr>`;
+      html += `</table>`;
+    }
+    
+    // Rest of the list (4-15)
+    if (displayedWallpapers.length > 3) {
+      displayedWallpapers.slice(3).forEach((w: any, index: number) => {
+        const link = `${PROD_URL}/wallpapers/${w.id}`;
+        const title = w.title || 'Untitled';
+        const downloads = w.download_count || 0;
+        html += `<p style="margin: 0 0 8px 0;">${index + 4}. <a href="${link}" style="color: #333;">${title}</a> · ${downloads} downloads</p>`;
       });
     }
-  });
+    
+    // Link to see more
+    if (remainingCount > 0) {
+      html += `<p style="margin: 16px 0 0 0; text-align: center;"><a href="${PROD_URL}/wallpapers" style="color: #333;"><strong>👉 See ${remainingCount} more new wallpapers</strong></a></p>`;
+    }
+    
+    html += `<hr style="border: none; border-top: 1px solid #ddd; margin: 24px 0;">`;
+  }
+  
+  // Random resource to discover
+  if (randomRes) {
+    const resLink = `${PROD_URL}/resources/${randomRes.id}`;
+    html += `<p style="margin: 0 0 8px 0;"><strong>🎲 Random pick from the archive</strong></p>`;
+    html += `<p style="margin: 0 0 4px 0;"><a href="${resLink}" style="color: #333;"><strong>${randomRes.title}</strong></a></p>`;
+    html += `<p style="color: #666; margin: 0 0 16px 0;">${randomRes.description?.substring(0, 120)}${randomRes.description?.length > 120 ? '...' : ''}</p>`;
+    html += `<hr style="border: none; border-top: 1px solid #ddd; margin: 24px 0;">`;
+  }
+  
+  // Footer
+  html += `<h2 style="font-size: 18px; margin: 0 0 12px 0;">🔗 Quick Links</h2>`;
+  html += `<ul style="margin: 0; padding-left: 20px;">`;
+  html += `<li><a href="${PROD_URL}/resources" style="color: #333;">Browse all resources</a></li>`;
+  html += `<li><a href="${PROD_URL}/wallpapers" style="color: #333;">Wallpaper gallery</a></li>`;
+  html += `<li><a href="${PROD_URL}/guide" style="color: #333;">Community guide</a></li>`;
+  html += `<li><a href="https://reddit.com/r/xteinkereader" style="color: #333;">Join on Reddit</a></li>`;
+  html += `</ul>`;
+  
+  html += `</td></tr></table></td></tr></table>`;
+  return html;
+};
+
+// Récupérer une ressource aléatoire (hors de celles déjà dans le digest)
+async function getRandomResource(excludeIds: string[]) {
+  try {
+    let query = supabaseAdmin
+      .from('resources')
+      .select('id, title, description, type, external_link')
+      .eq('status', 'approved')
+      .eq('hidden', false);
+    
+    if (excludeIds.length > 0) {
+      query = query.not('id', 'in', `(${excludeIds.join(',')})`);
+    }
+    
+    const { data } = await query.limit(100);
+    
+    if (data && data.length > 0) {
+      return data[Math.floor(Math.random() * data.length)];
+    }
+  } catch (e) {
+    console.error('Failed to get random resource:', e);
+  }
+  return null;
+}
+
+const digestResourceIds = reportData?.resources?.map((r: any) => r.id) || [];
+const randomResource = await getRandomResource(digestResourceIds);
+
+// Pré-vérifier les images du top 3 pour le HTML email
+const top3Wallpapers = reportData?.wallpapers?.slice(0, 3) || [];
+const resolvedImageUrls: Record<string, string> = {};
+for (const w of top3Wallpapers) {
+  const thumbnailUrl = `${PROD_URL}/wallpapers/${w.id}/thumbnail.webp`;
+  const fallbackUrl = `${PROD_URL}/wallpapers/${w.id}/image.jpg`;
+  try {
+    const res = await fetch(thumbnailUrl, { method: 'HEAD' });
+    resolvedImageUrls[w.id] = res.ok ? thumbnailUrl : fallbackUrl;
+  } catch {
+    resolvedImageUrls[w.id] = fallbackUrl;
+  }
+}
+
+const markdownContent = generateMarkdown(reportData, introText, randomResource, resolvedImageUrls);
+const htmlPreview = generateHtmlPreview(reportData, introText, randomResource, false);
+const htmlEmail = generateHtmlPreview(reportData, introText, randomResource, true, resolvedImageUrls);
+---
+
+<AdminLayout title="Newsletter Report" currentPage="newsletter">
+  <!-- Period selector -->
+  <div class="mb-8 flex items-center gap-4">
+    <label for="days-select" class="text-sm font-medium text-base-700">
+      Period:
+    </label>
+    <select
+      id="days-select"
+      class="px-4 py-2 border border-base-300 rounded-lg bg-white text-base-900 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none"
+      onchange="window.location.href = `/admin/newsletter-report?days=${this.value}`"
+    >
+      <option value="7" selected={days === 7}>Last 7 days</option>
+      <option value="14" selected={days === 14}>Last 14 days</option>
+      <option value="30" selected={days === 30}>Last 30 days</option>
+    </select>
+  </div>
+
+  {reportData && reportData.success ? (
+    <div class="space-y-8">
+      <!-- AI Intro Generator -->
+      <div class="bg-white border border-base-200 rounded-xl p-6">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="font-medium text-base-900">Newsletter Intro</h3>
+          <button
+            type="button"
+            id="generate-ai-btn"
+            onclick="generateAIIntro(); return false;"
+            class="px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors text-sm font-medium"
+          >
+            ✨ Generate with AI
+          </button>
+          <button
+            type="button"
+            id="use-intro-btn"
+            onclick="useIntroInEmail(); return false;"
+            class="px-4 py-2 bg-accent-500 text-white rounded-lg hover:bg-accent-600 transition-colors text-sm font-medium"
+          >
+            ✓ Use in email
+          </button>
+        </div>
+        <div id="intro-preview" class="text-base-700 p-4 bg-base-50 rounded-lg" set:html={introText}></div>
+      </div>
+
+      <!-- Statistics Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div class="bg-white border border-base-200 rounded-xl p-6">
+          <div class="text-3xl font-bold text-accent-500">
+            {reportData.stats.resources + reportData.stats.news + reportData.stats.wallpapers}
+          </div>
+          <div class="text-sm text-base-600 mt-1">Total Items</div>
+        </div>
+        <div class="bg-white border border-base-200 rounded-xl p-6">
+          <div class="text-3xl font-bold text-blue-500">
+            {reportData.stats.resources}
+          </div>
+          <div class="text-sm text-base-600 mt-1">Resources</div>
+        </div>
+        <div class="bg-white border border-base-200 rounded-xl p-6">
+          <div class="text-3xl font-bold text-green-500">
+            {reportData.stats.news}
+          </div>
+          <div class="text-sm text-base-600 mt-1">News</div>
+        </div>
+        <div class="bg-white border border-base-200 rounded-xl p-6">
+          <div class="text-3xl font-bold text-purple-500">
+            {reportData.stats.wallpapers}
+          </div>
+          <div class="text-sm text-base-600 mt-1">Wallpapers</div>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div 
+        x-data="{ activeTab: 'preview' }"
+        class="bg-white border border-base-200 rounded-xl overflow-hidden"
+      >
+        <div class="flex border-b border-base-200">
+          <button
+            @click="activeTab = 'preview'"
+            :class="activeTab === 'preview' ? 'bg-base-100 text-accent-500 border-b-2 border-accent-500' : 'text-base-600 hover:bg-base-50'"
+            class="px-6 py-3 font-medium transition-colors"
+          >
+            Preview
+          </button>
+          <button
+            @click="activeTab = 'markdown'"
+            :class="activeTab === 'markdown' ? 'bg-base-100 text-accent-500 border-b-2 border-accent-500' : 'text-base-600 hover:bg-base-50'"
+            class="px-6 py-3 font-medium transition-colors"
+          >
+            Markdown
+          </button>
+          <button
+            @click="activeTab = 'html'"
+            :class="activeTab === 'html' ? 'bg-base-100 text-accent-500 border-b-2 border-accent-500' : 'text-base-600 hover:bg-base-50'"
+            class="px-6 py-3 font-medium transition-colors"
+          >
+            HTML
+          </button>
+          <div class="flex-1"></div>
+          <button
+            id="copy-btn"
+            @click="
+              const content = activeTab === 'markdown' ? document.getElementById('markdown-content').textContent : document.getElementById('html-content').textContent;
+              navigator.clipboard.writeText(content).then(() => {
+                $el.textContent = 'Copied!';
+                $el.classList.add('bg-green-500');
+                setTimeout(() => {
+                  $el.textContent = 'Copy';
+                  $el.classList.remove('bg-green-500');
+                }, 2000);
+              });
+            "
+            class="px-4 py-2 m-2 bg-accent-500 text-white rounded-lg hover:bg-accent-600 transition-colors font-medium text-sm"
+          >
+            Copy
+          </button>
+        </div>
+
+        <div class="p-6">
+          <!-- Preview -->
+          <div x-show="activeTab === 'preview'" class="prose max-w-none">
+            <div set:html={htmlPreview} />
+          </div>
+
+          <!-- Markdown -->
+          <div x-show="activeTab === 'markdown'" style="display: none;">
+            <pre
+              id="markdown-content"
+              class="whitespace-pre-wrap text-sm text-base-700 font-mono bg-base-50 p-4 rounded-lg overflow-x-auto"
+            >{markdownContent}</pre>
+          </div>
+
+          <!-- HTML -->
+          <div x-show="activeTab === 'html'" style="display: none;">
+            <pre
+              id="html-content"
+              class="whitespace-pre-wrap text-sm text-base-700 font-mono bg-base-50 p-4 rounded-lg overflow-x-auto"
+            >{htmlEmail}</pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- Detailed Data -->
+      <details class="bg-white border border-base-200 rounded-xl">
+        <summary class="px-6 py-4 cursor-pointer font-medium text-base-900 hover:bg-base-50">
+          View Raw Data ({reportData.stats.resources + reportData.stats.news + reportData.stats.wallpapers} items)
+        </summary>
+        <div class="px-6 pb-6 space-y-6">
+          {reportData.wallpapers && reportData.wallpapers.length > 0 && (
+            <div>
+              <h3 class="font-semibold text-base-900 mb-3">Wallpapers (by downloads)</h3>
+              <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                  <thead class="bg-base-100">
+                    <tr>
+                      <th class="px-4 py-2 text-left">#</th>
+                      <th class="px-4 py-2 text-left">Title</th>
+                      <th class="px-4 py-2 text-left">Category</th>
+                      <th class="px-4 py-2 text-left">Author</th>
+                      <th class="px-4 py-2 text-right">Downloads</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {reportData.wallpapers.map((w: any, i: number) => (
+                      <tr class="border-t border-base-200">
+                        <td class="px-4 py-2 text-base-500">{i + 1}</td>
+                        <td class="px-4 py-2">
+                          <a href={`/wallpapers/${w.id}`} class="text-accent-500 hover:underline">
+                            {w.title || 'Untitled'}
+                          </a>
+                        </td>
+                        <td class="px-4 py-2 text-base-600">{w.category || '-'}</td>
+                        <td class="px-4 py-2 text-base-600">{w.author_name || w.reddit_username || '-'}</td>
+                        <td class="px-4 py-2 text-right font-medium">{w.download_count || 0}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+        </div>
+      </details>
+    </div>
+  ) : (
+    <div class="text-center py-12 bg-white border border-base-200 rounded-xl">
+      <p class="text-base-500">
+        {reportData ? 'Error loading report' : 'Loading report...'}
+      </p>
+    </div>
+  )}
+</AdminLayout>
+
+<script is:inline define:vars={{ reportData }}>
+  async function generateAIIntro() {
+    const btn = document.getElementById('generate-ai-btn');
+    const preview = document.getElementById('intro-preview');
+    
+    btn.disabled = true;
+    btn.textContent = 'Generating...';
+    
+    try {
+      const stats = reportData?.stats || { resources: 0, news: 0, wallpapers: 0 };
+      const topWallpaper = reportData?.wallpapers?.[0];
+      const topResource = reportData?.resources?.[0];
+      
+      const response = await fetch('/api/generate-intro', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          stats,
+          topWallpaper: topWallpaper ? { title: topWallpaper.title, downloads: topWallpaper.download_count } : null,
+          topResource: topResource ? { title: topResource.title } : null
+        })
+      });
+      
+      const data = await response.json();
+      if (data.intro) {
+        // Mettre à jour la preview
+        preview.innerHTML = data.intro;
+        // Stocker pour pouvoir copier
+        window.generatedIntro = data.intro;
+        btn.textContent = '✓ Generated!';
+        btn.classList.remove('bg-purple-500');
+        btn.classList.add('bg-green-500');
+        setTimeout(() => {
+          btn.textContent = '✨ Regenerate';
+          btn.classList.remove('bg-green-500');
+          btn.classList.add('bg-purple-500');
+        }, 2000);
+      } else {
+        alert('Failed to generate intro: ' + (data.error || 'Unknown error'));
+        btn.textContent = '✨ Generate with AI';
+      }
+    } catch (e) {
+      alert('Error: ' + e.message);
+      btn.textContent = '✨ Generate with AI';
+    } finally {
+      btn.disabled = false;
+    }
+  }
+  
+  function useIntroInEmail() {
+    const preview = document.getElementById('intro-preview');
+    const intro = preview.innerHTML;
+    
+    // Recharger la page avec l'intro en paramètre pour regénérer le HTML/Markdown
+    const url = new URL(window.location.href);
+    url.searchParams.set('intro', intro);
+    window.location.href = url.toString();
+  }
+  
+  window.generateAIIntro = generateAIIntro;
+  window.useIntroInEmail = useIntroInEmail;
 </script>
