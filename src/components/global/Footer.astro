@@ -76,13 +76,13 @@ const legalLinks = [
           {t('footer.crafted_by').split('Florent')[1] || ''}
         </Text>
         <div>
-          <BuyMeACoffee variant="default" class="text-base-400 dark:text-base-500 hover:text-accent-400" />
+          <BuyMeACoffee variant="default" class="text-base-400 hover:text-accent-400" />
         </div>
       </div>
       <Text
         tag="p"
         variant="textXS"
-        class="mt-2 text-base-400 dark:text-base-500">
+        class="mt-2 text-base-400">
         {t('footer.not_affiliated')}
       </Text>
     </div>
@@ -90,7 +90,7 @@ const legalLinks = [
     <div class="space-y-4">
       <!-- Language Selector -->
       <div class="flex items-center gap-2">
-        <Text tag="span" variant="textXS" class="text-base-400 dark:text-base-500 uppercase">
+        <Text tag="span" variant="textXS" class="text-base-400 uppercase">
           Language
         </Text>
         <div class="flex gap-2">
@@ -98,7 +98,7 @@ const legalLinks = [
             <a
               href={languageUrls[targetLang]}
               class={`text-sm hover:text-accent-400 transition-colors ${
-                lang === targetLang ? 'text-accent-400 font-semibold' : 'text-base-400 dark:text-base-500'
+                lang === targetLang ? 'text-accent-400 font-semibold' : 'text-base-400'
               }`}
             >
               {targetLang.toUpperCase()}

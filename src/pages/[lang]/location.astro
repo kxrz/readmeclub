@@ -91,19 +91,19 @@ const markers = generateLocationMarkers(stats);
         ) : (
           <!-- Statistics Table (Hidden by default) -->
           <details class="bg-base-50 rounded-lg border border-base-200 overflow-hidden">
-            <summary class="p-6 border-b border-base-200 dark:border-base-700 cursor-pointer hover:bg-base-100 dark:hover:bg-base-800 transition-colors">
+            <summary class="p-6 border-b border-base-200 cursor-pointer hover:bg-base-100 transition-colors">
               <div class="flex items-center justify-between">
                 <Text tag="h2" variant="textXL" class="font-semibold text-base-900">
                   {t('location.stats_table')}
                 </Text>
-                <svg class="w-5 h-5 text-base-500 dark:text-base-400 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-5 h-5 text-base-500 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                 </svg>
               </div>
             </summary>
             <div class="overflow-x-auto">
               <table class="w-full">
-                <thead class="bg-base-100 dark:bg-base-800">
+                <thead class="bg-base-100">
                   <tr>
                     <th class="px-6 py-3 text-left text-sm font-semibold text-base-900 border-b border-base-200">
                       {t('location.country')}

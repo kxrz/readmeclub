@@ -36,9 +36,9 @@ const authorName = 'author_name' in wallpaper && wallpaper.author_name
 
 <a
   href={wallpaperUrl}
-  class="group relative flex flex-col rounded-lg border border-base-200 dark:border-base-700 bg-base-50 dark:bg-base-100 dark:bg-base-200 overflow-hidden hover:border-accent-300 dark:hover:border-accent-500 hover:shadow-lg transition-all"
+  class="group relative flex flex-col rounded-lg border border-base-200 bg-base-50 overflow-hidden hover:border-accent-300 hover:shadow-lg transition-all"
 >
-  <div class="aspect-[3/5] w-full overflow-hidden bg-base-100 dark:bg-base-200">
+  <div class="aspect-[3/5] w-full overflow-hidden bg-base-100">
     <img
       src={imageUrl}
       alt={wallpaper.title || 'Wallpaper'}
@@ -49,22 +49,22 @@ const authorName = 'author_name' in wallpaper && wallpaper.author_name
   
   <div class="p-4 flex-1">
     <div class="flex items-start justify-between gap-2 mb-2">
-      <Text tag="h3" variant="textBase" class="font-semibold text-base-900 dark:text-base-50 line-clamp-2 group-hover:text-accent-500 dark:group-hover:text-accent-400">
+      <Text tag="h3" variant="textBase" class="font-semibold text-base-900 line-clamp-2 group-hover:text-accent-500">
         {wallpaper.title || 'Untitled Wallpaper'}
       </Text>
       {wallpaper.category && (
-        <span class="shrink-0 text-xs uppercase text-base-500 dark:text-base-400 bg-base-100 dark:bg-base-200 px-2 py-1 rounded">
+        <span class="shrink-0 text-xs uppercase text-base-500 bg-base-100 px-2 py-1 rounded">
           {wallpaper.category}
         </span>
       )}
     </div>
     
     <div class="flex items-center justify-between mt-auto">
-      <Text tag="span" variant="textXS" class="text-base-500 dark:text-base-400">
+      <Text tag="span" variant="textXS" class="text-base-500">
         {t('wallpapers.downloads', { count: wallpaper.download_count })}
       </Text>
       {authorName && (
-        <Text tag="span" variant="textXS" class="text-base-500 dark:text-base-400">
+        <Text tag="span" variant="textXS" class="text-base-500">
           {authorName}
         </Text>
       )}

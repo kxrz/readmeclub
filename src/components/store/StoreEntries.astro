@@ -20,7 +20,7 @@ const { title, url, image, price } = {
       height="500"
       src={image}
       alt={Astro.props.post.data.image.alt}
-      class="object-cover aspect-16/10 w-full bg-base-100 dark:bg-base-200"
+      class="object-cover aspect-16/10 w-full bg-base-100"
     />
     <a href={url} title={title}>
       <span class="absolute inset-0"></span>
@@ -30,7 +30,7 @@ const { title, url, image, price } = {
     <Text
       tag="h3"
       variant="textBase"
-      class="font-medium text-base-900 dark:text-base-50 justify-between flex flex-row w-full"
+      class="font-medium text-base-900 justify-between flex flex-row w-full"
     >
       <span>{title}</span>
 

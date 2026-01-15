@@ -12,7 +12,7 @@ const posts = await Promise.all(
   <button
     type="button"
     id="searchButton"
-    class="w-full flex items-center gap-2 py-2 pl-2 pr-4  h-9 px-4 text-sm text-base-700 duration-300 bg-base-100 dark:bg-base-200 border border-transparent rounded-full appearance-none ring1 ring-base-200 placeholder-base-400 focus:border-base-300 dark:border-base-600 focus:bg-transparent focus:outline-none focus:ring-base-500 focus:ring-offset-2 focus:ring-2 sm:text-sm"
+    class="w-full flex items-center gap-2 py-2 pl-2 pr-4  h-9 px-4 text-sm text-base-700 duration-300 bg-base-100 border border-transparent rounded-full appearance-none ring1 ring-base-200 placeholder-base-400 focus:border-base-300 focus:bg-transparent focus:outline-none focus:ring-base-500 focus:ring-offset-2 focus:ring-2 sm:text-sm"
     aria-label="Search for tools"
   >
     <svg
@@ -49,7 +49,7 @@ const posts = await Promise.all(
           <button
             type="button"
             id="closeSearch"
-            class="text-base-400 dark:text-base-500 hover: text-base-600 dark:text-base-400 cursor-pointer ml-auto"
+            class="text-base-400 hover: text-base-600 cursor-pointer ml-auto"
             aria-label="Close search"
           >
             <svg
@@ -70,11 +70,11 @@ const posts = await Promise.all(
           type="text"
           id="searchInput"
           placeholder="Search posts..."
-          class="w-full py-2 pl-10 pr-4 block h-9 px-4 text-sm text-base-700 duration-300 bg-base-100 dark:bg-base-200 border border-transparent rounded-full appearance-none ring1 ring-base-200 placeholder-base-400 focus:border-base-300 dark:border-base-600 focus:outline-none focus:ring-base-500 focus:ring-offset-2 focus:ring-2 sm:text-sm"
+          class="w-full py-2 pl-10 pr-4 block h-9 px-4 text-sm text-base-700 duration-300 bg-base-100 border border-transparent rounded-full appearance-none ring1 ring-base-200 placeholder-base-400 focus:border-base-300 focus:outline-none focus:ring-base-500 focus:ring-offset-2 focus:ring-2 sm:text-sm"
         />
         <div
           id="searchResults"
-          class="max-h-100 rounded-xl mt-2 overflow-y-auto bg-base-50  overflow-hidden w-full divide-y divide-base-200 border-y border-base-200 dark:border-base-700 scrollbar-hide"
+          class="max-h-100 rounded-xl mt-2 overflow-y-auto bg-base-50  overflow-hidden w-full divide-y divide-base-200 border-y border-base-200 scrollbar-hide"
         >
         </div>
       </div>
@@ -131,7 +131,7 @@ const posts = await Promise.all(
       if (results.length === 0) {
         searchResults.innerHTML = `
         <div class="p-8">
-            <Text tag="h3" variant="textBase" class="font-medium  text-base-600 dark:text-base-400 font-medium">
+            <Text tag="h3" variant="textBase" class="font-medium  text-base-600 font-medium">
               There's nothing here,...
             </Text>
         </div>
@@ -143,11 +143,11 @@ const posts = await Promise.all(
       searchResults.innerHTML = results
         .map(
           (result) => `
-            <a href="/tools/tool/${result.item.slug}" class="block p-8 hover:bg-base-100 dark:bg-base-200 duration-300 ">
-              <h3  class="font-medium text-sm text-base-900 dark:text-base-50 ">
+            <a href="/tools/tool/${result.item.slug}" class="block p-8 hover:bg-base-100 duration-300 ">
+              <h3  class="font-medium text-sm text-base-900 ">
                 ${result.item.title}
               </h3>
-              <p  class=" text-base-600 dark:text-base-400 text-xs block">
+              <p  class=" text-base-600 text-xs block">
                 ${result.item.tagline}
               </p>
             </a>

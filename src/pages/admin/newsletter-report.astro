@@ -157,14 +157,14 @@ const formatReportMarkdown = (data: any) => {
       <Text
         tag="h1"
         variant="displaySM"
-        class="text-base-900 dark:text-base-50 font-medium 2xl:text-5xl tracking-tight"
+        class="text-base-900 font-medium 2xl:text-5xl tracking-tight"
       >
         Newsletter Weekly Report
       </Text>
       <Text
         tag="p"
         variant="textBase"
-        class="mt-4 text-base-600 dark:text-base-400 text-balance 2xl:text-xl"
+        class="mt-4 text-base-600 text-balance 2xl:text-xl"
       >
         Generate a weekly digest of new content for your newsletter
       </Text>
@@ -175,12 +175,12 @@ const formatReportMarkdown = (data: any) => {
     <Wrapper variant="standard" class="py-6 pb-24">
       <!-- Period selector -->
       <div class="mb-6 flex items-center gap-4">
-        <label for="days-select" class="text-sm font-medium text-base-700 dark:text-base-300">
+        <label for="days-select" class="text-sm font-medium text-base-700">
           Period:
         </label>
         <select
           id="days-select"
-          class="px-4 py-2 border border-base-300 dark:border-base-600 rounded-lg bg-base-50 dark:bg-base-100 text-base-900 dark:text-base-50 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none"
+          class="px-4 py-2 border border-base-300 rounded-lg bg-base-50 text-base-900 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 outline-none"
           onchange="window.location.href = `/admin/newsletter-report?days=${this.value}`"
         >
           <option value="7" selected={days === 7}>Last 7 days</option>
@@ -192,28 +192,28 @@ const formatReportMarkdown = (data: any) => {
       {reportData && reportData.success ? (
         <div class="space-y-6">
           <!-- Statistics -->
-          <div class="bg-base-50 dark:bg-base-100 border border-base-200 dark:border-base-700 rounded-lg p-6">
-            <Text tag="h2" variant="textLG" class="font-semibold text-base-900 dark:text-base-50 mb-4">
+          <div class="bg-base-50 border border-base-200 rounded-lg p-6">
+            <Text tag="h2" variant="textLG" class="font-semibold text-base-900 mb-4">
               Week {reportData.period.weekNumber} - {reportData.period.startFormatted} to {reportData.period.endFormatted}
             </Text>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div class="text-center">
-                <div class="text-3xl font-bold text-accent-500 dark:text-accent-400">
+                <div class="text-3xl font-bold text-accent-500">
                   {reportData.stats.resources}
                 </div>
-                <div class="text-sm text-base-600 dark:text-base-400 mt-1">New Resources</div>
+                <div class="text-sm text-base-600 mt-1">New Resources</div>
               </div>
               <div class="text-center">
-                <div class="text-3xl font-bold text-accent-500 dark:text-accent-400">
+                <div class="text-3xl font-bold text-accent-500">
                   {reportData.stats.news}
                 </div>
-                <div class="text-sm text-base-600 dark:text-base-400 mt-1">News Articles</div>
+                <div class="text-sm text-base-600 mt-1">News Articles</div>
               </div>
               <div class="text-center">
-                <div class="text-3xl font-bold text-accent-500 dark:text-accent-400">
+                <div class="text-3xl font-bold text-accent-500">
                   {reportData.stats.wallpapers}
                 </div>
-                <div class="text-sm text-base-600 dark:text-base-400 mt-1">New Wallpapers</div>
+                <div class="text-sm text-base-600 mt-1">New Wallpapers</div>
               </div>
             </div>
           </div>
@@ -229,10 +229,10 @@ const formatReportMarkdown = (data: any) => {
           </div>
 
           <!-- Report content -->
-          <div class="bg-base-50 dark:bg-base-100 border border-base-200 dark:border-base-700 rounded-lg p-6">
+          <div class="bg-base-50 border border-base-200 rounded-lg p-6">
             <pre
               id="report-content"
-              class="whitespace-pre-wrap text-sm text-base-700 dark:text-base-300 font-mono overflow-x-auto"
+              class="whitespace-pre-wrap text-sm text-base-700 font-mono overflow-x-auto"
             >
 {formatReportMarkdown(reportData)}
             </pre>
@@ -240,23 +240,23 @@ const formatReportMarkdown = (data: any) => {
 
           <!-- Detailed lists -->
           {reportData.resources && reportData.resources.length > 0 && (
-            <div class="bg-base-50 dark:bg-base-100 border border-base-200 dark:border-base-700 rounded-lg p-6">
-              <Text tag="h2" variant="textLG" class="font-semibold text-base-900 dark:text-base-50 mb-4">
+            <div class="bg-base-50 border border-base-200 rounded-lg p-6">
+              <Text tag="h2" variant="textLG" class="font-semibold text-base-900 mb-4">
                 {reportData.stats.resources} New Resources
               </Text>
               <ul class="space-y-3">
                 {reportData.resources.map((resource: any) => (
-                  <li class="border-b border-base-200 dark:border-base-700 pb-3 last:border-0">
+                  <li class="border-b border-base-200 pb-3 last:border-0">
                     <div class="flex items-start justify-between gap-4">
                       <div class="flex-1">
-                        <Text tag="h3" variant="textBase" class="font-semibold text-base-900 dark:text-base-50 mb-1">
+                        <Text tag="h3" variant="textBase" class="font-semibold text-base-900 mb-1">
                           {resource.title}
                         </Text>
-                        <Text tag="p" variant="textSM" class="text-base-600 dark:text-base-400 mb-2">
+                        <Text tag="p" variant="textSM" class="text-base-600 mb-2">
                           {resource.description?.substring(0, 200)}...
                         </Text>
-                        <div class="flex items-center gap-2 text-xs text-base-500 dark:text-base-400">
-                          <span class="px-2 py-1 bg-base-200 dark:bg-base-700 rounded">{resource.type}</span>
+                        <div class="flex items-center gap-2 text-xs text-base-500">
+                          <span class="px-2 py-1 bg-base-200 rounded">{resource.type}</span>
                           <span>{formatDate(resource.created_at)}</span>
                         </div>
                       </div>
@@ -264,7 +264,7 @@ const formatReportMarkdown = (data: any) => {
                         href={resource.external_link || `/resources/${resource.id}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        class="shrink-0 text-accent-500 dark:text-accent-400 hover:underline text-sm"
+                        class="shrink-0 text-accent-500 hover:underline text-sm"
                       >
                         View →
                       </a>
@@ -276,24 +276,24 @@ const formatReportMarkdown = (data: any) => {
           )}
 
           {reportData.news && reportData.news.length > 0 && (
-            <div class="bg-base-50 dark:bg-base-100 border border-base-200 dark:border-base-700 rounded-lg p-6">
-              <Text tag="h2" variant="textLG" class="font-semibold text-base-900 dark:text-base-50 mb-4">
+            <div class="bg-base-50 border border-base-200 rounded-lg p-6">
+              <Text tag="h2" variant="textLG" class="font-semibold text-base-900 mb-4">
                 {reportData.stats.news} News Articles
               </Text>
               <ul class="space-y-3">
                 {reportData.news.map((article: any) => (
-                  <li class="border-b border-base-200 dark:border-base-700 pb-3 last:border-0">
+                  <li class="border-b border-base-200 pb-3 last:border-0">
                     <div class="flex items-start justify-between gap-4">
                       <div class="flex-1">
-                        <Text tag="h3" variant="textBase" class="font-semibold text-base-900 dark:text-base-50 mb-1">
+                        <Text tag="h3" variant="textBase" class="font-semibold text-base-900 mb-1">
                           {article.title}
                         </Text>
                         {article.excerpt && (
-                          <Text tag="p" variant="textSM" class="text-base-600 dark:text-base-400 mb-2">
+                          <Text tag="p" variant="textSM" class="text-base-600 mb-2">
                             {article.excerpt}
                           </Text>
                         )}
-                        <div class="text-xs text-base-500 dark:text-base-400">
+                        <div class="text-xs text-base-500">
                           {formatDate(article.published_at || article.created_at)}
                         </div>
                       </div>
@@ -301,7 +301,7 @@ const formatReportMarkdown = (data: any) => {
                         href={`/news/${article.slug}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        class="shrink-0 text-accent-500 dark:text-accent-400 hover:underline text-sm"
+                        class="shrink-0 text-accent-500 hover:underline text-sm"
                       >
                         View →
                       </a>
@@ -313,27 +313,27 @@ const formatReportMarkdown = (data: any) => {
           )}
 
           {reportData.wallpapers && reportData.wallpapers.length > 0 && (
-            <div class="bg-base-50 dark:bg-base-100 border border-base-200 dark:border-base-700 rounded-lg p-6">
-              <Text tag="h2" variant="textLG" class="font-semibold text-base-900 dark:text-base-50 mb-4">
+            <div class="bg-base-50 border border-base-200 rounded-lg p-6">
+              <Text tag="h2" variant="textLG" class="font-semibold text-base-900 mb-4">
                 {reportData.stats.wallpapers} New Wallpapers
               </Text>
               <ul class="space-y-3">
                 {reportData.wallpapers.map((wallpaper: any) => (
-                  <li class="border-b border-base-200 dark:border-base-700 pb-3 last:border-0">
+                  <li class="border-b border-base-200 pb-3 last:border-0">
                     <div class="flex items-start justify-between gap-4">
                       <div class="flex-1">
-                        <Text tag="h3" variant="textBase" class="font-semibold text-base-900 dark:text-base-50 mb-1">
+                        <Text tag="h3" variant="textBase" class="font-semibold text-base-900 mb-1">
                           {wallpaper.title || 'Untitled'}
                         </Text>
-                        <div class="flex items-center gap-2 text-xs text-base-500 dark:text-base-400 mb-2">
+                        <div class="flex items-center gap-2 text-xs text-base-500 mb-2">
                           {wallpaper.category && (
-                            <span class="px-2 py-1 bg-base-200 dark:bg-base-700 rounded">{wallpaper.category}</span>
+                            <span class="px-2 py-1 bg-base-200 rounded">{wallpaper.category}</span>
                           )}
                           {(wallpaper.author_name || wallpaper.reddit_username) && (
                             <span>By {wallpaper.author_name || wallpaper.reddit_username}</span>
                           )}
                         </div>
-                        <div class="text-xs text-base-500 dark:text-base-400">
+                        <div class="text-xs text-base-500">
                           {formatDate(wallpaper.created_at)}
                         </div>
                       </div>
@@ -341,7 +341,7 @@ const formatReportMarkdown = (data: any) => {
                         href={`/wallpapers/${wallpaper.id}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        class="shrink-0 text-accent-500 dark:text-accent-400 hover:underline text-sm"
+                        class="shrink-0 text-accent-500 hover:underline text-sm"
                       >
                         View →
                       </a>
@@ -354,7 +354,7 @@ const formatReportMarkdown = (data: any) => {
         </div>
       ) : (
         <div class="text-center py-12">
-          <Text tag="p" variant="textBase" class="text-base-500 dark:text-base-400">
+          <Text tag="p" variant="textBase" class="text-base-500">
             {reportData ? 'Error loading report' : 'Loading report...'}
           </Text>
         </div>

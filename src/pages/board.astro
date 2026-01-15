@@ -62,7 +62,7 @@ const { data: features } = await query;
       <div class="mt-4">
         <a
           href="#submit-feature-form"
-          class="inline-flex items-center gap-1.5 text-sm text-base-500 dark:text-base-400 hover:text-accent-500 dark:hover:text-accent-400 transition-colors"
+          class="inline-flex items-center gap-1.5 text-sm text-base-500 hover:text-accent-500 transition-colors"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -74,7 +74,7 @@ const { data: features } = await query;
             stroke-width="2"
             stroke-linecap="round"
             stroke-linejoin="round"
-            class="shrink-0 text-base-500 dark:text-base-400"
+            class="shrink-0 text-base-500"
           >
             <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
             <path d="M12 5v14"></path>
@@ -265,8 +265,8 @@ const { data: features } = await query;
             </Text>
           </div>
 
-          <div x-show="error" x-cloak class="p-3 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-lg">
-            <Text tag="p" variant="textSM" class="text-red-700 dark:text-red-300">
+          <div x-show="error" x-cloak class="p-3 bg-red-50 border border-red-200 rounded-lg">
+            <Text tag="p" variant="textSM" class="text-red-700">
               <span x-text="error"></span>
             </Text>
           </div>

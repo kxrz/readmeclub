@@ -5,24 +5,17 @@
 @plugin "@tailwindcss/typography";
 @plugin "tailwind-scrollbar-hide";
 
-
 /*  Define your custom theme variables */
 @theme {
   /* Typography */
   --font-sans: "Inter", sans-serif;
 
   /* Color palette */
-  /* 
-  // Uncomment this variable if you want to us only the custom colors  
-  // --color-*: initial; 
-  */
-  
-  /* Light Mode Colors */
-  --color-white: oklch(99% 0.005 95); /* Blanc chaud très proche du blanc pur */
-  --color-black: oklch(8% 0 0); /* Gris très foncé au lieu de #000 */
+  --color-white: oklch(99% 0.005 95); /* Blanc chaud */
+  --color-black: oklch(0.08 0 0);
   --color-transparent: oklch(99% 0.005 95 / 0);
   --color-current: currentColor;
-  
+
   /* Accent palette (vert olive) */
   --color-accent-50: oklch(96% 0.015 158.25);
   --color-accent-100: oklch(92.17% 0.032 155.36);
@@ -36,19 +29,19 @@
   --color-accent-900: oklch(20.92% 0.029 154.01);
   --color-accent-950: oklch(15.3% 0.017 157.97);
 
-  /* Base palette - Light Mode avec teinte chaude très légère */
-  --color-base-50: oklch(99% 0.005 95); /* Fond principal - très blanc */
-  --color-base-100: oklch(97% 0.005 95); /* Légèrement plus foncé */
-  --color-base-200: oklch(92% 0.005 95);
-  --color-base-300: oklch(86% 0.005 95);
+  /* Base palette - fond "pas blanc pas beige" avec teinte chaude légère */
+  --color-base-50: oklch(99% 0.005 95); /* Fond principal */
+  --color-base-100: oklch(97% 0.005 95);
+  --color-base-200: oklch(91% 0.005 95);
+  --color-base-300: oklch(85% 0.005 95);
   --color-base-400: oklch(78% 0.005 95);
   --color-base-500: oklch(63% 0.005 95);
-  --color-base-600: oklch(50% 0.005 95); /* Assombri pour meilleur contraste mobile */
-  --color-base-700: oklch(42% 0.005 95); /* Assombri pour meilleur contraste mobile */
+  --color-base-600: oklch(54% 0.005 95);
+  --color-base-700: oklch(46% 0.005 95);
   --color-base-800: oklch(35% 0.005 95);
-  --color-base-900: oklch(20% 0.005 95); /* Texte principal - pas noir pur */
-  --color-base-950: oklch(12% 0.005 95); /* Texte très foncé - pas noir pur */
-  
+  --color-base-900: oklch(25% 0.005 95);
+  --color-base-950: oklch(15% 0.005 95);
+
   --shadow-hover: rgba(0, 0, 0, 0.137) 0px 0px 0px 0px,
     rgba(0, 0, 0, 0.14) 0px 0px 0px 0px, rgba(0, 0, 0, 0.165) 0px 0px 0px 0px;
 }
@@ -62,7 +55,7 @@
     /* Open six */ "cv04" 1, /* Open nine */ "cv01" 1,
     /* Alternate one */ "cv09", /* Flat-top three */ "cv02" 1; /* Open 4 */
 
-  /* Variables to style Shiki code snippets - Light Mode */
+  /* Variables to style Shiki code snippets */
   --astro-code-color-text: theme("colors.base.500");
   --astro-code-token-link: theme("colors.accent.600");
   --astro-code-token-comment: theme("colors.base.400");
@@ -74,45 +67,4 @@
   --astro-code-token-parameter: theme("colors.accent.500");
   --astro-code-token-punctuation: theme("colors.accent.500");
   --astro-code-token-string-expression: theme("colors.base.950");
-  
-  /* Transitions pour dark mode */
-  color-scheme: light;
-}
-
-/* ============================================================
-   Accent theme tests (data-accent="mustard" | "graphite" | "olive")
-   - Default set in BaseLayout: mustard
-   - Olive uses existing defaults (no override needed)
-   ============================================================ */
-
-/* ---------- MUSTARD (light) ---------- */
-:root[data-accent="mustard"] {
-  /* Jaune moutarde "premium": assez sombre en 500 pour du texte blanc */
-  --color-accent-50: oklch(97% 0.02 95);
-  --color-accent-100: oklch(92% 0.04 92);
-  --color-accent-200: oklch(85% 0.075 90);
-  --color-accent-300: oklch(75% 0.11 88);
-  --color-accent-400: oklch(65% 0.135 86);
-  --color-accent-500: oklch(52% 0.13 84); /* + foncé */
-  --color-accent-600: oklch(46% 0.12 84);
-  --color-accent-700: oklch(38% 0.10 84);
-  --color-accent-800: oklch(30% 0.075 84);
-  --color-accent-900: oklch(22% 0.045 84);
-  --color-accent-950: oklch(16% 0.03 84);
-}
-
-/* ---------- GRAPHITE (light) ---------- */
-:root[data-accent="graphite"] {
-  /* Graphite légèrement bleuté, mais toujours lisible en tant qu'accent */
-  --color-accent-50: oklch(97% 0.005 260);
-  --color-accent-100: oklch(94% 0.01 260);
-  --color-accent-200: oklch(88% 0.015 260);
-  --color-accent-300: oklch(78% 0.02 260);
-  --color-accent-400: oklch(66% 0.025 260);
-  --color-accent-500: oklch(45% 0.03 260);
-  --color-accent-600: oklch(39% 0.03 260);
-  --color-accent-700: oklch(32% 0.025 260);
-  --color-accent-800: oklch(25% 0.02 260);
-  --color-accent-900: oklch(19% 0.015 260);
-  --color-accent-950: oklch(14% 0.01 260);
 }
