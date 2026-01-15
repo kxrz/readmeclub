@@ -10,6 +10,70 @@ import Link from "@/components/fundations/components/Link.astro";
 import { normalizeSiteUrl } from '@/lib/utils/url';
 
 const siteUrl = normalizeSiteUrl(Astro.site);
+
+// FAQ Schema for rich snippets
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Is the Xteink X4 good for a first e-reader?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Maybe not for complete beginners. The X4 requires sideloading DRM-free EPUBs. It's easier if you understand file transfers."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Should I buy the X3 or X4?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "X4 now if you want it today (ultra-portable). X3 for better screen (250 PPI) when available."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why is my X4 battery draining fast?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "First week is normal due to setup and WiFi usage. Stable usage is 10-14 days with WiFi off."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I read Kindle books on Xteink X4?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No, most Kindle books have DRM. Use DRM-free EPUBs from sources like Project Gutenberg or Standard Ebooks."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why does text look plain without bold or italics?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "This is a stock firmware limitation. CrossPoint community firmware fixes this issue."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does Xteink X4 support PDF files?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No, the X4 only supports EPUB and TXT formats."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the recommended wallpaper format for Xteink X4?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "BMP format, 480×800 resolution, 3:5 ratio."
+      }
+    }
+  ]
+};
 ---
 
 <BaseLayout>
@@ -19,6 +83,7 @@ const siteUrl = normalizeSiteUrl(Astro.site);
       description="Everything you need to know to get started with your Xteink X4 e-reader. Official channel first, community second."
       canonical={`${siteUrl}/start`}
       lang="en"
+      jsonLd={faqSchema}
     />
   </Fragment>
 
@@ -578,7 +643,7 @@ const siteUrl = normalizeSiteUrl(Astro.site);
                     Wallpapers:
                   </Text>
                   <ul class="list-disc list-inside space-y-1 text-base-700 ml-4">
-                    <li>BMP format (1920x1440 monochrome)</li>
+                    <li>BMP format (480×800, ratio 3:5)</li>
                     <li><a href="/wallpapers" class="text-accent-500 hover:underline">ReadMe.club gallery</a> – ready-to-use community wallpapers</li>
                     <li>Settings → Wallpaper → Select file</li>
                   </ul>

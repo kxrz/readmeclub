@@ -14,6 +14,7 @@ import NewsletterLink from "@/components/newsletter/NewsletterLink.astro";
 import { loadAllWallpapers, filterAndSortWallpapers, paginateWallpapers } from '@/lib/utils/wallpaper-loader';
 import { useTranslations, getLangFromUrl, getLangPrefix } from '@/i18n/utils';
 import { normalizeSiteUrl } from '@/lib/utils/url';
+import RelatedLinks from "@/components/common/RelatedLinks.astro";
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
@@ -532,6 +533,8 @@ function buildWallpapersUrl(category: string | null, sort: string, pageNum: numb
           </Text>
         </div>
       )}
+      
+      <RelatedLinks currentPage="wallpapers" />
     </Wrapper>
   </section>
 </BaseLayout>

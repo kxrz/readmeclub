@@ -81,6 +81,13 @@ const latestNews = allNews.slice(0, 3);
       description={t('site.description')}
       canonical={`${siteUrl}${langPrefix || '/'}`}
       lang={lang}
+      alternateLanguages={[
+        { lang: 'en', href: `${siteUrl}/` },
+        { lang: 'fr', href: `${siteUrl}/fr/` },
+        { lang: 'es', href: `${siteUrl}/es/` },
+        { lang: 'ru', href: `${siteUrl}/ru/` },
+        { lang: 'cn', href: `${siteUrl}/cn/` },
+      ]}
     />
   </Fragment>
   <Hero />

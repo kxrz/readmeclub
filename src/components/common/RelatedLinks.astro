@@ -1,0 +1,82 @@
+---
+/**
+ * Related Links component for internal linking (SEO)
+ * Displays contextual links to related sections of the site
+ */
+import { useTranslations, getLangFromUrl, getLangPrefix } from '@/i18n/utils';
+
+interface Props {
+  currentPage: 'wallpapers' | 'fonts' | 'firmware' | 'resources' | 'guide' | 'tips' | 'news';
+  class?: string;
+}
+
+const { currentPage, class: className } = Astro.props;
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const langPrefix = getLangPrefix(lang);
+
+// Define related pages for each section
+const relatedPages: Record<string, { href: string; label: string; description: string }[]> = {
+  wallpapers: [
+    { href: `${langPrefix}/fonts`, label: t('nav.fonts'), description: t('fonts.subtitle') },
+    { href: `${langPrefix}/firmware`, label: t('nav.firmware'), description: t('firmware.subtitle') },
+    { href: `${langPrefix}/guide`, label: t('nav.guide'), description: t('guide.subtitle') },
+  ],
+  fonts: [
+    { href: `${langPrefix}/wallpapers`, label: t('nav.wallpapers'), description: t('wallpapers.subtitle') },
+    { href: `${langPrefix}/download-fonts`, label: t('download_fonts.title'), description: t('download_fonts.subtitle') },
+    { href: `${langPrefix}/firmware`, label: t('nav.firmware'), description: t('firmware.subtitle') },
+  ],
+  firmware: [
+    { href: `${langPrefix}/fonts`, label: t('nav.fonts'), description: t('fonts.subtitle') },
+    { href: `${langPrefix}/guide`, label: t('nav.guide'), description: t('guide.subtitle') },
+    { href: `${langPrefix}/resources`, label: t('nav.resources'), description: t('resources.subtitle') },
+  ],
+  resources: [
+    { href: `${langPrefix}/wallpapers`, label: t('nav.wallpapers'), description: t('wallpapers.subtitle') },
+    { href: `${langPrefix}/fonts`, label: t('nav.fonts'), description: t('fonts.subtitle') },
+    { href: `${langPrefix}/firmware`, label: t('nav.firmware'), description: t('firmware.subtitle') },
+  ],
+  guide: [
+    { href: `${langPrefix}/tips`, label: t('nav.tips'), description: t('tips.subtitle') },
+    { href: `${langPrefix}/firmware`, label: t('nav.firmware'), description: t('firmware.subtitle') },
+    { href: `${langPrefix}/resources`, label: t('nav.resources'), description: t('resources.subtitle') },
+  ],
+  tips: [
+    { href: `${langPrefix}/guide`, label: t('nav.guide'), description: t('guide.subtitle') },
+    { href: `${langPrefix}/fonts`, label: t('nav.fonts'), description: t('fonts.subtitle') },
+    { href: `${langPrefix}/wallpapers`, label: t('nav.wallpapers'), description: t('wallpapers.subtitle') },
+  ],
+  news: [
+    { href: `${langPrefix}/guide`, label: t('nav.guide'), description: t('guide.subtitle') },
+    { href: `${langPrefix}/resources`, label: t('nav.resources'), description: t('resources.subtitle') },
+    { href: `${langPrefix}/firmware`, label: t('nav.firmware'), description: t('firmware.subtitle') },
+  ],
+};
+
+const links = relatedPages[currentPage] || [];
+---
+
+{links.length > 0 && (
+  <nav class={`border-t border-base-200 pt-8 mt-12 ${className || ''}`} aria-label="Related content">
+    <h2 class="text-sm font-semibold text-base-500 uppercase tracking-wide mb-4">
+      {t('common.related') || 'Related'}
+    </h2>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      {links.map((link) => (
+        <a
+          href={link.href}
+          class="group block p-4 rounded-lg border border-base-200 bg-base-50 hover:border-accent-300 hover:shadow-md transition-all"
+        >
+          <span class="font-medium text-base-900 group-hover:text-accent-500 transition-colors">
+            {link.label}
+          </span>
+          <p class="text-sm text-base-500 mt-1 line-clamp-2">
+            {link.description}
+          </p>
+        </a>
+      ))}
+    </div>
+  </nav>
+)}

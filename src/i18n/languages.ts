@@ -78,6 +78,7 @@ export const ui = {
     'common.sort.name': 'Name',
     'common.sort.author': 'Author',
     'common.buy_me_coffee': 'Buy me a coffee',
+    'common.related': 'Explore more',
     
     // News
     'news.title': 'News',
@@ -578,6 +579,7 @@ export const ui = {
     'common.sort.name': 'Nom',
     'common.sort.author': 'Auteur',
     'common.buy_me_coffee': 'Offrez-moi un café',
+    'common.related': 'À découvrir',
     
     // News
     'news.title': 'Actualités',
@@ -1100,6 +1102,7 @@ export const ui = {
     'common.sort.name': 'Nombre',
     'common.sort.author': 'Autor',
     'common.buy_me_coffee': 'Cómprame un café',
+    'common.related': 'Descubre más',
     
     // News
     'news.title': 'Noticias',
@@ -1543,6 +1546,7 @@ export const ui = {
     'common.sort.name': 'Имя',
     'common.sort.author': 'Автор',
     'common.buy_me_coffee': 'Купи мне кофе',
+    'common.related': 'Узнать больше',
     
     // News
     'news.title': 'Новости',
@@ -2012,6 +2016,7 @@ export const ui = {
     'common.sort.name': '名称',
     'common.sort.author': '作者',
     'common.buy_me_coffee': '请我喝咖啡',
+    'common.related': '探索更多',
     
     // News
     'news.title': '新闻',
