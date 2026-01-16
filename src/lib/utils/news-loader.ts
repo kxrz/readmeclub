@@ -54,19 +54,57 @@ function parseFrontmatter(content: string): { frontmatter: Record<string, any>, 
  * Nettoie le contenu en supprimant le frontmatter s'il est présent
  * Utile pour les articles venant de Supabase qui pourraient contenir le frontmatter
  */
-function cleanContent(content: string): string {
+export function cleanContent(content: string): string {
   if (!content) return content;
   
-  // Vérifier si le contenu commence par un frontmatter
-  const frontmatterRegex = /^---\s*\n([\s\S]*?)\n---\s*\n([\s\S]*)$/;
-  const match = content.match(frontmatterRegex);
+  // Nettoyer d'abord les espaces en début/fin
+  let cleaned = content.trim();
+  
+  // Pattern principal: frontmatter YAML standard
+  // Format: ---\n...frontmatter...\n---\ncontenu
+  // Utiliser un regex plus permissif qui gère les retours à la ligne de différentes façons
+  const frontmatterPattern = /^---\s*[\r\n]+([\s\S]*?)[\r\n]+---\s*[\r\n]+([\s\S]*)$/;
+  let match = cleaned.match(frontmatterPattern);
   
   if (match) {
-    // Retourner seulement le body (sans le frontmatter)
-    return match[2].trim();
+    const frontmatterText = match[1];
+    const body = match[2];
+    
+    // Vérifier que c'est bien un frontmatter (contient au moins une clé: valeur)
+    if (frontmatterText.includes(':')) {
+      return body.trim();
+    }
   }
   
-  return content.trim();
+  // Pattern alternatif: frontmatter avec espaces avant
+  const frontmatterPattern2 = /^\s*---\s*[\r\n]+([\s\S]*?)[\r\n]+---\s*[\r\n]+([\s\S]*)$/;
+  match = cleaned.match(frontmatterPattern2);
+  
+  if (match) {
+    const frontmatterText = match[1];
+    const body = match[2];
+    
+    if (frontmatterText.includes(':')) {
+      return body.trim();
+    }
+  }
+  
+  // Pattern de secours: chercher n'importe où dans le contenu
+  const frontmatterPattern3 = /---\s*[\r\n]+([\s\S]*?)[\r\n]+---\s*[\r\n]+([\s\S]*)$/;
+  match = cleaned.match(frontmatterPattern3);
+  
+  if (match) {
+    const frontmatterText = match[1];
+    const body = match[2];
+    
+    // Vérifier que c'est bien un frontmatter (contient au moins une clé: valeur)
+    // et que le frontmatter n'est pas trop long (max 2000 caractères pour éviter les faux positifs)
+    if (frontmatterText.includes(':') && frontmatterText.length < 2000) {
+      return body.trim();
+    }
+  }
+  
+  return cleaned;
 }
 
 const __filename = fileURLToPath(import.meta.url);
@@ -112,7 +150,7 @@ async function loadArticleFromMarkdown(slug: string): Promise<NewsArticle | null
       title: frontmatter.title || '',
       slug: frontmatter.slug || slug,
       excerpt: frontmatter.excerpt || null,
-      content: content.trim(),
+      content: cleanContent(content), // Nettoyer au cas où il reste du frontmatter
       featured_image: featuredImage,
       author_name: frontmatter.author_name || null,
       author_email: frontmatter.author_email || null,

@@ -11,7 +11,7 @@ import NewsCard from "@/components/news/NewsCard.astro";
 import ShareButtons from "@/components/news/ShareButtons.astro";
 import NewsletterCTA from "@/components/newsletter/NewsletterCTA.astro";
 import { normalizeSiteUrl } from '@/lib/utils/url';
-import { loadNewsArticle, loadAllNewsArticles } from '@/lib/utils/news-loader';
+import { loadNewsArticle, loadAllNewsArticles, cleanContent } from '@/lib/utils/news-loader';
 import { renderMarkdown } from '@/lib/utils/markdown';
 
 const siteUrl = normalizeSiteUrl(Astro.site);
@@ -28,8 +28,8 @@ if (!article) {
   });
 }
 
-// Générer le HTML du contenu
-const htmlContent = renderMarkdown(article.content);
+// Générer le HTML du contenu (nettoyer au cas où il reste du frontmatter)
+const htmlContent = renderMarkdown(cleanContent(article.content));
 
 // Charger les autres articles pour "Articles similaires"
 const allNews = await loadAllNewsArticles();

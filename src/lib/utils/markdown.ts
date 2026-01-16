@@ -76,6 +76,14 @@ export function parseMarkdown(content: string): string {
  * Utilise un renderer personnalisé pour ajouter target="_blank" à tous les liens
  */
 export function renderMarkdown(markdown: string): string {
+  // Nettoyer le frontmatter si présent (sécurité supplémentaire)
+  let cleanedMarkdown = markdown;
+  const frontmatterPattern = /^---\s*[\r\n]+([\s\S]*?)[\r\n]+---\s*[\r\n]+([\s\S]*)$/;
+  const match = cleanedMarkdown.trim().match(frontmatterPattern);
+  if (match && match[1].includes(':')) {
+    cleanedMarkdown = match[2].trim();
+  }
+  
   const renderer = new marked.Renderer();
   const defaultLinkRenderer = renderer.link.bind(renderer);
 
@@ -104,8 +112,8 @@ export function renderMarkdown(markdown: string): string {
     renderer: renderer,
   });
 
-  // Utiliser marked directement
-  const result = marked(markdown);
+  // Utiliser marked directement avec le markdown nettoyé
+  const result = marked(cleanedMarkdown);
   return typeof result === 'string' ? result : String(result);
 }
 
