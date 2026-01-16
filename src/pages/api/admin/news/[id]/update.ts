@@ -19,6 +19,7 @@ const newsUpdateSchema = z.object({
   featured: z.boolean().optional(),
   published_at: z.string().datetime().optional().nullable(),
   hidden: z.boolean().optional(),
+  ready_for_static: z.boolean().optional(),
 });
 
 export const PUT: APIRoute = async ({ params, request, cookies }) => {

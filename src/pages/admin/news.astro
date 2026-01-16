@@ -116,6 +116,7 @@ const formatDate = (dateString: string) => {
                       <div class="font-medium text-base-900 flex items-center gap-2">
                         {article.title}
                         {article.hidden && <span class="text-xs bg-base-200 text-base-500 px-2 py-0.5 rounded">Hidden</span>}
+                        {article.ready_for_static && <span class="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded">✅ Ready for static</span>}
                       </div>
                       <div class="text-sm text-base-500 truncate max-w-md">
                         {article.excerpt || article.content?.substring(0, 80)}...
@@ -156,7 +157,8 @@ const formatDate = (dateString: string) => {
                       </svg>
                     </a>
                     <button
-                      @click="deleteArticle('${article.id}')"
+                      data-id={article.id}
+                      @click="deleteArticle($el.dataset.id)"
                       class="p-2 text-base-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
                       title="Delete"
                     >
@@ -509,7 +511,7 @@ const formatDate = (dateString: string) => {
         if (!confirm('Are you sure you want to delete this article?')) return;
         
         try {
-          const res = await fetch('/api/admin/news/${id}/delete', { method: 'POST' });
+          const res = await fetch(`/api/admin/news/${id}/delete`, { method: 'DELETE' });
           
           if (res.ok) {
             window.location.reload();

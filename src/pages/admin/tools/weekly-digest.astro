@@ -1,0 +1,302 @@
+---
+export const prerender = false;
+
+import AdminLayout from "@/layouts/AdminLayout.astro";
+import { checkAdminAuth } from '@/lib/utils/admin';
+import { getSupabaseAdmin } from '@/lib/supabase/admin';
+
+// Check admin auth
+if (!checkAdminAuth(Astro.cookies)) {
+  return Astro.redirect('/admin');
+}
+
+const supabaseAdmin = getSupabaseAdmin();
+
+// Charger ou créer la config
+let { data: config } = await supabaseAdmin
+  .from('weekly_digest_config')
+  .select('*')
+  .limit(1)
+  .single();
+
+if (!config) {
+  // Créer une config par défaut
+  const { data: newConfig } = await supabaseAdmin
+    .from('weekly_digest_config')
+    .insert({
+      enabled: false,
+      schedule_day: 5, // Friday
+      schedule_hour: 10,
+      schedule_timezone: 'Europe/Paris',
+      period_days: 7,
+      author_name: 'iamkxrz',
+      slug_pattern: 'weekly-digest-week-{weekNumber}-{date}'
+    })
+    .select()
+    .single();
+  config = newConfig;
+}
+
+// Charger l'historique
+const { data: history } = await supabaseAdmin
+  .from('weekly_digest_history')
+  .select('*, news(id, title, slug, status)')
+  .order('generated_at', { ascending: false })
+  .limit(10);
+
+// Calculer la prochaine génération
+function getNextRunDate(config: any): Date | null {
+  if (!config?.enabled) return null;
+  
+  const now = new Date();
+  const tz = config.schedule_timezone || 'Europe/Paris';
+  
+  // Convertir en heure locale France
+  const frNow = new Date(now.toLocaleString('en-US', { timeZone: tz }));
+  const frNext = new Date(frNow);
+  
+  // Trouver le prochain jour de la semaine
+  // getDay() : 0=Sunday, 1=Monday, ..., 5=Friday, 6=Saturday
+  // config.schedule_day : 0=Lundi, 1=Mardi, ..., 4=Vendredi, 5=Samedi, 6=Dimanche
+  const currentDayJS = frNow.getDay(); // 0=Sunday, 1=Monday, etc.
+  const targetDay = config.schedule_day; // 0=Lundi, 4=Vendredi
+  
+  // Convertir targetDay (0=Lundi) vers getDay format (1=Monday)
+  const targetDayJS = targetDay === 6 ? 0 : targetDay + 1; // 0=Lundi -> 1, 6=Dimanche -> 0
+  
+  let daysUntilTarget = targetDayJS - currentDayJS;
+  if (daysUntilTarget < 0) daysUntilTarget += 7;
+  if (daysUntilTarget === 0) {
+    // Même jour, vérifier l'heure
+    const currentHour = frNow.getHours();
+    if (currentHour >= config.schedule_hour) {
+      daysUntilTarget = 7; // Semaine prochaine
+    }
+  }
+  
+  frNext.setDate(frNow.getDate() + daysUntilTarget);
+  frNext.setHours(config.schedule_hour, 0, 0, 0);
+  
+  return frNext;
+}
+
+const nextRun = config ? getNextRunDate(config) : null;
+---
+
+<AdminLayout title="Weekly Digest Generator" currentPage="tools">
+  <div x-data="weeklyDigestConfig()" class="space-y-6">
+    <!-- Configuration -->
+    <div class="bg-white border border-base-200 rounded-xl p-6">
+      <h2 class="text-xl font-semibold mb-4">Configuration</h2>
+      
+      <form @submit.prevent="saveConfig()" class="space-y-4">
+        <div class="flex items-center gap-2">
+          <input type="checkbox" x-model="config.enabled" id="enabled" class="w-4 h-4 text-accent-500 rounded" />
+          <label for="enabled" class="text-sm font-medium text-base-700">Activer la génération automatique</label>
+        </div>
+        
+        <div class="grid grid-cols-3 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-base-700 mb-1">Jour de la semaine</label>
+            <select x-model="config.schedule_day" class="w-full px-3 py-2 border border-base-200 rounded-lg focus:ring-2 focus:ring-accent-500 outline-none">
+              <option value="0">Lundi</option>
+              <option value="1">Mardi</option>
+              <option value="2">Mercredi</option>
+              <option value="3">Jeudi</option>
+              <option value="4">Vendredi</option>
+              <option value="5">Samedi</option>
+              <option value="6">Dimanche</option>
+            </select>
+          </div>
+          
+          <div>
+            <label class="block text-sm font-medium text-base-700 mb-1">Heure (heure France)</label>
+            <input 
+              type="time" 
+              :value="scheduleTime"
+              @input="scheduleTime = $event.target.value; updateScheduleHour()"
+              class="w-full px-3 py-2 border border-base-200 rounded-lg focus:ring-2 focus:ring-accent-500 outline-none" 
+            />
+          </div>
+          
+          <div>
+            <label class="block text-sm font-medium text-base-700 mb-1">Période</label>
+            <select x-model="config.period_days" class="w-full px-3 py-2 border border-base-200 rounded-lg focus:ring-2 focus:ring-accent-500 outline-none">
+              <option value="7" selected>Hebdomadaire (7 jours)</option>
+              <option value="14">Bihebdomadaire (14 jours)</option>
+              <option value="30">Mensuel (30 jours)</option>
+            </select>
+          </div>
+        </div>
+        
+        <div>
+          <label class="block text-sm font-medium text-base-700 mb-1">Auteur</label>
+          <input type="text" x-model="config.author_name" class="w-full px-3 py-2 border border-base-200 rounded-lg focus:ring-2 focus:ring-accent-500 outline-none" />
+        </div>
+        
+        <div x-show="nextRunDate" class="p-3 bg-base-50 rounded-lg">
+          <p class="text-sm text-base-600">
+            <strong>Prochaine génération :</strong> 
+            <span x-text="nextRunDate"></span>
+          </p>
+        </div>
+        
+        <div class="flex items-center gap-3 pt-4 border-t border-base-200">
+          <button type="submit" :disabled="saving" class="px-6 py-2 bg-accent-500 text-white rounded-lg hover:bg-accent-600 transition-colors font-medium disabled:opacity-50">
+            <span x-show="!saving">Enregistrer</span>
+            <span x-show="saving">Enregistrement...</span>
+          </button>
+          <button type="button" @click="generateNow()" :disabled="generating" class="px-6 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors font-medium disabled:opacity-50">
+            <span x-show="!generating">✨ Générer maintenant</span>
+            <span x-show="generating">Génération...</span>
+          </button>
+        </div>
+        
+        <div x-show="error" class="text-red-600 text-sm mt-2" x-text="error"></div>
+        <div x-show="success" class="text-green-600 text-sm mt-2" x-text="success"></div>
+      </form>
+    </div>
+    
+    <!-- Historique -->
+    <div class="bg-white border border-base-200 rounded-xl p-6">
+      <h2 class="text-xl font-semibold mb-4">Historique</h2>
+      
+      {history && history.length > 0 ? (
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead class="bg-base-50">
+              <tr>
+                <th class="px-4 py-2 text-left">Date</th>
+                <th class="px-4 py-2 text-left">Période</th>
+                <th class="px-4 py-2 text-left">Stats</th>
+                <th class="px-4 py-2 text-left">Article</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-base-200">
+              {history.map((h: any) => (
+                <tr>
+                  <td class="px-4 py-2">{new Date(h.generated_at).toLocaleDateString('fr-FR')}</td>
+                  <td class="px-4 py-2">{new Date(h.period_start).toLocaleDateString('fr-FR')} → {new Date(h.period_end).toLocaleDateString('fr-FR')}</td>
+                  <td class="px-4 py-2">
+                    {h.stats_resources} 📦 / {h.stats_news} 📰 / {h.stats_wallpapers} 🖼️
+                  </td>
+                  <td class="px-4 py-2">
+                    {h.news ? (
+                      <a href={`/admin/news/${h.news.id}`} class="text-accent-500 hover:underline">
+                        {h.news.title}
+                      </a>
+                    ) : (
+                      <span class="text-base-400">Supprimé</span>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        <p class="text-base-500 text-sm">Aucun historique</p>
+      )}
+    </div>
+  </div>
+</AdminLayout>
+
+<script is:inline define:vars={{ config, nextRun }}>
+  // Convertir l'heure en format time (HH:MM)
+  const hour = config?.schedule_hour ?? 10;
+  const scheduleTimeValue = `${hour.toString().padStart(2, '0')}:00`;
+  
+  const nextRunDate = nextRun ? new Date(nextRun).toLocaleString('fr-FR', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    timeZone: 'Europe/Paris'
+  }) : null;
+  
+  window.weeklyDigestConfig = function() {
+    return {
+      saving: false,
+      generating: false,
+      error: null,
+      success: null,
+      nextRunDate: nextRunDate,
+      scheduleTime: scheduleTimeValue,
+      config: {
+        enabled: config?.enabled || false,
+        schedule_day: config?.schedule_day ?? 4, // Vendredi par défaut (0=Lundi, 4=Vendredi)
+        schedule_hour: hour,
+        schedule_timezone: config?.schedule_timezone || 'Europe/Paris',
+        period_days: config?.period_days ?? 7,
+        author_name: config?.author_name || 'iamkxrz',
+        slug_pattern: 'weekly-digest-week-{weekNumber}-{date}' // Non modifiable
+      },
+      
+      updateScheduleHour() {
+        // Convertir HH:MM en nombre (0-23)
+        if (this.scheduleTime) {
+          const [hours] = this.scheduleTime.split(':');
+          this.config.schedule_hour = parseInt(hours, 10);
+        }
+      },
+      
+      async saveConfig() {
+        this.saving = true;
+        this.error = null;
+        this.success = null;
+        
+        try {
+          // Ne pas envoyer slug_pattern (non modifiable)
+          const { slug_pattern, ...configToSave } = this.config;
+          const res = await fetch('/api/admin/tools/weekly-digest/config', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(configToSave)
+          });
+          
+          if (!res.ok) {
+            const err = await res.json();
+            throw new Error(err.error || 'Failed to save');
+          }
+          
+          this.success = 'Configuration enregistrée !';
+          setTimeout(() => window.location.reload(), 1500);
+        } catch (err) {
+          this.error = err.message;
+        } finally {
+          this.saving = false;
+        }
+      },
+      
+      async generateNow() {
+        if (!confirm('Générer un article Weekly Digest maintenant ?')) return;
+        
+        this.generating = true;
+        this.error = null;
+        this.success = null;
+        
+        try {
+          const res = await fetch('/api/admin/tools/weekly-digest/generate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+          });
+          
+          if (!res.ok) {
+            const err = await res.json();
+            throw new Error(err.error || 'Failed to generate');
+          }
+          
+          const data = await res.json();
+          this.success = `Article créé ! ID: ${data.article_id}`;
+          setTimeout(() => window.location.reload(), 2000);
+        } catch (err) {
+          this.error = err.message;
+        } finally {
+          this.generating = false;
+        }
+      }
+    };
+  };
+</script>

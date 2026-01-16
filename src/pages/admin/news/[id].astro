@@ -46,6 +46,7 @@ const publishedAtFormatted = article.published_at
     published_at: publishedAtFormatted || '',
     featured: article.featured || false,
     hidden: article.hidden || false,
+    ready_for_static: article.ready_for_static || false,
     id: id
   })}></script>
   
@@ -222,6 +223,10 @@ const publishedAtFormatted = article.published_at
               <input type="checkbox" x-model="article.hidden" class="w-4 h-4 text-accent-500 rounded" />
               <span class="text-sm text-base-700">Hidden</span>
             </label>
+            <label class="flex items-center gap-2">
+              <input type="checkbox" x-model="article.ready_for_static" class="w-4 h-4 text-green-500 rounded" />
+              <span class="text-sm text-base-700">✅ Ready for static (will use Markdown instead of Supabase)</span>
+            </label>
           </div>
         </div>
         
@@ -275,7 +280,8 @@ const publishedAtFormatted = article.published_at
         status: _data.status || 'draft',
         published_at: _data.published_at || '',
         featured: _data.featured || false,
-        hidden: _data.hidden || false
+        hidden: _data.hidden || false,
+        ready_for_static: _data.ready_for_static || false
       },
       
       insertMarkdown(before, after) {

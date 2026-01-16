@@ -50,6 +50,25 @@ function parseFrontmatter(content: string): { frontmatter: Record<string, any>, 
   return { frontmatter, body };
 }
 
+/**
+ * Nettoie le contenu en supprimant le frontmatter s'il est présent
+ * Utile pour les articles venant de Supabase qui pourraient contenir le frontmatter
+ */
+function cleanContent(content: string): string {
+  if (!content) return content;
+  
+  // Vérifier si le contenu commence par un frontmatter
+  const frontmatterRegex = /^---\s*\n([\s\S]*?)\n---\s*\n([\s\S]*)$/;
+  const match = content.match(frontmatterRegex);
+  
+  if (match) {
+    // Retourner seulement le body (sans le frontmatter)
+    return match[2].trim();
+  }
+  
+  return content.trim();
+}
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const projectRoot = path.resolve(__dirname, '../../..');
@@ -117,6 +136,7 @@ async function loadAllNewsFromSupabase(): Promise<NewsArticle[]> {
       .select('*')
       .eq('status', 'published')
       .eq('hidden', false)
+      .or('ready_for_static.is.null,ready_for_static.eq.false') // Exclure ceux marqués ready_for_static
       .order('published_at', { ascending: false });
     
     if (error) {
@@ -132,7 +152,7 @@ async function loadAllNewsFromSupabase(): Promise<NewsArticle[]> {
       title: item.title,
       slug: item.slug,
       excerpt: item.excerpt,
-      content: item.content,
+      content: cleanContent(item.content || ''),
       featured_image: item.featured_image_url,
       author_name: item.author_name,
       author_email: item.author_email,
@@ -276,7 +296,7 @@ export function paginateNews(
  * Priorité : Supabase d'abord, puis Markdown
  */
 export async function loadNewsArticle(slug: string): Promise<NewsArticle | null> {
-  // Essayer d'abord depuis Supabase (priorité)
+  // Essayer d'abord depuis Supabase (priorité), sauf si ready_for_static = true
   try {
     const supabaseAdmin = getSupabaseAdmin();
     const { data, error } = await supabaseAdmin
@@ -285,6 +305,7 @@ export async function loadNewsArticle(slug: string): Promise<NewsArticle | null>
       .eq('slug', slug)
       .eq('status', 'published')
       .eq('hidden', false)
+      .or('ready_for_static.is.null,ready_for_static.eq.false') // Exclure ceux marqués ready_for_static
       .single();
     
     if (!error && data) {
@@ -292,7 +313,7 @@ export async function loadNewsArticle(slug: string): Promise<NewsArticle | null>
         title: data.title,
         slug: data.slug,
         excerpt: data.excerpt,
-        content: data.content,
+        content: cleanContent(data.content || ''),
         featured_image: data.featured_image_url,
         author_name: data.author_name,
         author_email: data.author_email,
