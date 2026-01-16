@@ -29,7 +29,26 @@ if (!article) {
 }
 
 // Générer le HTML du contenu (nettoyer au cas où il reste du frontmatter)
-const htmlContent = renderMarkdown(cleanContent(article.content));
+const cleanedContent = cleanContent(article.content);
+let htmlContent = renderMarkdown(cleanedContent);
+
+// Vérification de sécurité: s'assurer que le HTML a été généré
+// Si htmlContent ne contient pas de balises HTML, c'est qu'il y a eu un problème
+if (!htmlContent || (!htmlContent.includes('<') && cleanedContent.length > 0)) {
+  console.error('⚠️ renderMarkdown n\'a pas généré de HTML pour:', slug);
+  // Fallback: utiliser marked directement
+  try {
+    const { marked: markedFallback } = await import('marked');
+    const fallbackHtml = markedFallback.parse(cleanedContent);
+    const finalHtml = typeof fallbackHtml === 'string' ? fallbackHtml : String(fallbackHtml);
+    // Utiliser le fallback si disponible
+    if (finalHtml && finalHtml.includes('<')) {
+      htmlContent = finalHtml;
+    }
+  } catch (error) {
+    console.error('Erreur dans le fallback marked:', error);
+  }
+}
 
 // Charger les autres articles pour "Articles similaires"
 const allNews = await loadAllNewsArticles();
@@ -140,7 +159,7 @@ const ogImage = article.featured_image
 
         {/* Contenu */}
         <div class="prose prose-lg max-w-none text-base-600 mb-12 prose-headings:text-base-900 prose-headings:font-semibold prose-p:text-base-600 prose-strong:text-base-900 prose-a:text-accent-500 prose-a:no-underline hover:prose-a:underline prose-ul:text-base-600 prose-ol:text-base-600 prose-li:text-base-600 prose-blockquote:text-base-600 prose-blockquote:border-base-300 prose-code:text-base-900 prose-code:bg-base-100 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm prose-pre:bg-base-100 prose-pre:text-base-900 prose-pre:rounded-lg prose-pre:p-4">
-          <div set:html={htmlContent} />
+          <div set:html={htmlContent || ''} />
         </div>
 
         {/* Boutons de partage */}

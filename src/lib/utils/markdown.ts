@@ -155,15 +155,32 @@ export function renderMarkdown(markdown: string): string {
   });
 
   // Utiliser marked directement avec le markdown nettoyé
-  let result = marked(cleanedMarkdown);
-  result = typeof result === 'string' ? result : String(result);
-  
-  // Nettoyage final: supprimer tout frontmatter qui aurait pu être rendu en HTML
-  // Chercher des patterns comme <p>---</p> ou des lignes avec des clés frontmatter
-  result = result.replace(/<p>---\s*<\/p>\s*<p>([^<]*:.*?)<\/p>\s*(?:<p>([^<]*:.*?)<\/p>\s*)*(?:<p>---\s*<\/p>)/gi, '');
-  result = result.replace(/<p>---[\s\S]*?---<\/p>/gi, '');
-  
-  return result;
+  try {
+    let result = marked(cleanedMarkdown);
+    result = typeof result === 'string' ? result : String(result);
+    
+    // Vérifier que le résultat est bien du HTML (contient des balises)
+    // Si ce n'est pas le cas, c'est qu'il y a eu un problème
+    if (!result.includes('<') && cleanedMarkdown.length > 0) {
+      console.warn('renderMarkdown: marked n\'a pas généré de HTML, réessai...');
+      // Réessayer avec marked.parse si disponible
+      if (typeof marked.parse === 'function') {
+        result = marked.parse(cleanedMarkdown);
+        result = typeof result === 'string' ? result : String(result);
+      }
+    }
+    
+    // Nettoyage final: supprimer tout frontmatter qui aurait pu être rendu en HTML
+    // Chercher des patterns comme <p>---</p> ou des lignes avec des clés frontmatter
+    result = result.replace(/<p>---\s*<\/p>\s*<p>([^<]*:.*?)<\/p>\s*(?:<p>([^<]*:.*?)<\/p>\s*)*(?:<p>---\s*<\/p>)/gi, '');
+    result = result.replace(/<p>---[\s\S]*?---<\/p>/gi, '');
+    
+    return result;
+  } catch (error) {
+    console.error('Erreur dans renderMarkdown:', error);
+    // Fallback: retourner le markdown nettoyé (sera échappé par set:html)
+    return cleanedMarkdown;
+  }
 }
 
 /**
