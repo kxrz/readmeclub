@@ -77,11 +77,53 @@ export function parseMarkdown(content: string): string {
  */
 export function renderMarkdown(markdown: string): string {
   // Nettoyer le frontmatter si présent (sécurité supplémentaire)
-  let cleanedMarkdown = markdown;
-  const frontmatterPattern = /^---\s*[\r\n]+([\s\S]*?)[\r\n]+---\s*[\r\n]+([\s\S]*)$/;
-  const match = cleanedMarkdown.trim().match(frontmatterPattern);
+  let cleanedMarkdown = markdown.trim();
+  
+  // Pattern 1: frontmatter standard au début
+  const frontmatterPattern1 = /^---\s*[\r\n]+([\s\S]*?)[\r\n]+---\s*[\r\n]+([\s\S]*)$/;
+  let match = cleanedMarkdown.match(frontmatterPattern1);
   if (match && match[1].includes(':')) {
     cleanedMarkdown = match[2].trim();
+  }
+  
+  // Pattern 2: frontmatter avec espaces avant
+  if (cleanedMarkdown === markdown.trim()) {
+    const frontmatterPattern2 = /^\s*---\s*[\r\n]+([\s\S]*?)[\r\n]+---\s*[\r\n]+([\s\S]*)$/;
+    match = cleanedMarkdown.match(frontmatterPattern2);
+    if (match && match[1].includes(':')) {
+      cleanedMarkdown = match[2].trim();
+    }
+  }
+  
+  // Pattern 3: frontmatter n'importe où (dernier recours)
+  if (cleanedMarkdown === markdown.trim()) {
+    const frontmatterPattern3 = /---\s*[\r\n]+([\s\S]*?)[\r\n]+---\s*[\r\n]+([\s\S]*)$/;
+    match = cleanedMarkdown.match(frontmatterPattern3);
+    if (match && match[1].includes(':') && match[1].length < 2000) {
+      cleanedMarkdown = match[2].trim();
+    }
+  }
+  
+  // Si le markdown commence toujours par "---", essayer de supprimer manuellement
+  if (cleanedMarkdown.startsWith('---')) {
+    const lines = cleanedMarkdown.split('\n');
+    let frontmatterEndIndex = -1;
+    let foundFirstDash = false;
+    
+    for (let i = 0; i < lines.length; i++) {
+      if (lines[i].trim() === '---') {
+        if (!foundFirstDash) {
+          foundFirstDash = true;
+        } else {
+          frontmatterEndIndex = i;
+          break;
+        }
+      }
+    }
+    
+    if (frontmatterEndIndex > 0) {
+      cleanedMarkdown = lines.slice(frontmatterEndIndex + 1).join('\n').trim();
+    }
   }
   
   const renderer = new marked.Renderer();
@@ -113,8 +155,15 @@ export function renderMarkdown(markdown: string): string {
   });
 
   // Utiliser marked directement avec le markdown nettoyé
-  const result = marked(cleanedMarkdown);
-  return typeof result === 'string' ? result : String(result);
+  let result = marked(cleanedMarkdown);
+  result = typeof result === 'string' ? result : String(result);
+  
+  // Nettoyage final: supprimer tout frontmatter qui aurait pu être rendu en HTML
+  // Chercher des patterns comme <p>---</p> ou des lignes avec des clés frontmatter
+  result = result.replace(/<p>---\s*<\/p>\s*<p>([^<]*:.*?)<\/p>\s*(?:<p>([^<]*:.*?)<\/p>\s*)*(?:<p>---\s*<\/p>)/gi, '');
+  result = result.replace(/<p>---[\s\S]*?---<\/p>/gi, '');
+  
+  return result;
 }
 
 /**

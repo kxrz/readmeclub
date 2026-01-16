@@ -47,6 +47,17 @@
       "destination": "/:path*",
       "permanent": true
     }
+  ],
+  "headers": [
+    {
+      "source": "/news/:path*",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
+        }
+      ]
+    }
   ]
 }
 

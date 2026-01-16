@@ -5,6 +5,12 @@
 @plugin "@tailwindcss/typography";
 @plugin "tailwind-scrollbar-hide";
 
+/* Safelist pour s'assurer que les classes prose sont incluses en production */
+/* Les classes prose sont générées dynamiquement via set:html et peuvent être purgées */
+@source "../pages/**/*.astro";
+@source "../components/**/*.astro";
+@source "../layouts/**/*.astro";
+
 /*  Define your custom theme variables */
 @theme {
   /* Typography */
