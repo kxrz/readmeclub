@@ -1,5 +1,5 @@
 ---
-export const prerender = false; // SSR pour permettre l'affichage des nouveaux articles sans rebuild
+export const prerender = true; // Pré-rendu statique pour les articles avec ready_for_static = true, SSR pour les autres
 
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import { Fragment } from "astro/jsx-runtime";
@@ -11,25 +11,96 @@ import NewsCard from "@/components/news/NewsCard.astro";
 import ShareButtons from "@/components/news/ShareButtons.astro";
 import NewsletterCTA from "@/components/newsletter/NewsletterCTA.astro";
 import { normalizeSiteUrl } from '@/lib/utils/url';
-import { loadNewsArticle, loadAllNewsArticles, cleanContent } from '@/lib/utils/news-loader';
+import { loadNewsArticle, loadAllNewsArticles } from '@/lib/utils/news-loader';
 import { renderMarkdown } from '@/lib/utils/markdown';
+
+// Générer les pages statiques au build UNIQUEMENT pour les articles avec ready_for_static = true
+export async function getStaticPaths() {
+  try {
+    const { getSupabaseAdmin } = await import('@/lib/supabase/admin');
+    const supabaseAdmin = getSupabaseAdmin();
+    
+    // Charger uniquement les articles marqués ready_for_static = true
+    const { data: articles, error } = await supabaseAdmin
+      .from('news')
+      .select('*')
+      .eq('status', 'published')
+      .eq('hidden', false)
+      .eq('ready_for_static', true) // Seulement ceux marqués pour le statique
+      .order('published_at', { ascending: false });
+    
+    if (error || !articles) {
+      console.error('Erreur lors du chargement des articles statiques:', error);
+      return [];
+    }
+    
+    // Importer cleanContent et renderMarkdown pour préparer les articles
+    const { cleanContent } = await import('@/lib/utils/news-loader');
+    const { renderMarkdown } = await import('@/lib/utils/markdown');
+    
+    return articles.map((item) => {
+      const cleanedContent = cleanContent(item.content || '');
+      const htmlContent = renderMarkdown(cleanedContent);
+      
+      return {
+        params: { slug: item.slug },
+        props: {
+          article: {
+            title: item.title,
+            slug: item.slug,
+            excerpt: item.excerpt,
+            content: cleanedContent, // Contenu markdown nettoyé
+            htmlContent: htmlContent, // HTML pré-généré
+            featured_image: item.featured_image_url,
+            author_name: item.author_name,
+            author_email: item.author_email,
+            published_at: item.published_at || item.created_at,
+            featured: item.featured,
+          },
+        },
+      };
+    });
+  } catch (error) {
+    console.error('Erreur dans getStaticPaths pour news:', error);
+    return [];
+  }
+}
 
 const siteUrl = normalizeSiteUrl(Astro.site);
 
-const slug = Astro.params.slug!;
+// Déterminer le slug (depuis props ou params)
+const slug = Astro.props.article?.slug || Astro.params.slug;
 
-// Charger l'article
-const article = await loadNewsArticle(slug);
-
-if (!article) {
+if (!slug) {
   return new Response(null, {
     status: 404,
     statusText: 'Not Found',
   });
 }
 
-// Nettoyer le contenu (supprimer le frontmatter si présent)
-const cleanedContent = cleanContent(article.content);
+// Si l'article est dans props (pré-rendu statique), utiliser le HTML pré-généré
+// Sinon, charger depuis Supabase en SSR (pour les articles non marqués ready_for_static)
+let article;
+let htmlContent;
+
+if (Astro.props.article) {
+  // Article pré-rendu (ready_for_static = true)
+  article = Astro.props.article;
+  htmlContent = article.htmlContent; // HTML déjà généré au build
+} else {
+  // Article en SSR (ready_for_static = false/null) - charger depuis Supabase
+  article = await loadNewsArticle(slug);
+  
+  if (!article) {
+    return new Response(null, {
+      status: 404,
+      statusText: 'Not Found',
+    });
+  }
+  
+  // Le contenu est déjà nettoyé par loadNewsArticle, on le convertit en HTML
+  htmlContent = renderMarkdown(article.content);
+}
 
 // Charger les autres articles pour "Articles similaires"
 const allNews = await loadAllNewsArticles();
@@ -138,9 +209,9 @@ const ogImage = article.featured_image
           )}
         </header>
 
-        {/* Contenu */}
+        {/* Contenu - Toujours rendu en HTML depuis Supabase */}
         <div class="prose prose-lg max-w-none text-base-600 mb-12 prose-headings:text-base-900 prose-headings:font-semibold prose-p:text-base-600 prose-strong:text-base-900 prose-a:text-accent-500 prose-a:no-underline hover:prose-a:underline prose-ul:text-base-600 prose-ol:text-base-600 prose-li:text-base-600 prose-blockquote:text-base-600 prose-blockquote:border-base-300 prose-code:text-base-900 prose-code:bg-base-100 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm prose-pre:bg-base-100 prose-pre:text-base-900 prose-pre:rounded-lg prose-pre:p-4">
-          <div set:html={renderMarkdown(cleanedContent)} />
+          <div set:html={htmlContent} />
         </div>
 
         {/* Boutons de partage */}

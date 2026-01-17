@@ -164,7 +164,7 @@ async function loadArticleFromMarkdown(slug: string): Promise<NewsArticle | null
 }
 
 /**
- * Charge tous les articles depuis Supabase
+ * Charge tous les articles depuis Supabase uniquement
  */
 async function loadAllNewsFromSupabase(): Promise<NewsArticle[]> {
   try {
@@ -174,7 +174,6 @@ async function loadAllNewsFromSupabase(): Promise<NewsArticle[]> {
       .select('*')
       .eq('status', 'published')
       .eq('hidden', false)
-      .or('ready_for_static.is.null,ready_for_static.eq.false') // Exclure ceux marqués ready_for_static
       .order('published_at', { ascending: false });
     
     if (error) {
@@ -237,40 +236,16 @@ async function loadAllNewsFromMarkdown(): Promise<NewsArticle[]> {
 }
 
 /**
- * Charge tous les articles depuis Markdown + Supabase
- * En cas de conflit (même slug), Supabase a priorité
+ * Charge tous les articles depuis Supabase uniquement
+ * Toujours depuis Supabase, toujours en HTML
  */
 export async function loadAllNewsArticles(): Promise<NewsArticle[]> {
   try {
-    // Charger depuis les deux sources en parallèle
-    const [markdownArticles, supabaseArticles] = await Promise.all([
-      loadAllNewsFromMarkdown(),
-      loadAllNewsFromSupabase(),
-    ]);
-    
-    // Créer une Map pour les articles Supabase (priorité)
-    const supabaseMap = new Map<string, NewsArticle>();
-    supabaseArticles.forEach(article => {
-      supabaseMap.set(article.slug, article);
-    });
-    
-    // Créer une Map pour les articles Markdown (fallback)
-    const markdownMap = new Map<string, NewsArticle>();
-    markdownArticles.forEach(article => {
-      // Ne garder que ceux qui ne sont pas dans Supabase
-      if (!supabaseMap.has(article.slug)) {
-        markdownMap.set(article.slug, article);
-      }
-    });
-    
-    // Fusionner : Supabase d'abord, puis Markdown
-    const mergedArticles = [
-      ...Array.from(supabaseMap.values()),
-      ...Array.from(markdownMap.values()),
-    ];
+    // Charger uniquement depuis Supabase
+    const articles = await loadAllNewsFromSupabase();
     
     // Trier par date de publication (plus récent en premier)
-    mergedArticles.sort((a, b) => {
+    articles.sort((a, b) => {
       const dateA = a.published_at || '';
       const dateB = b.published_at || '';
       // Les dates ISO sont comparables directement comme chaînes
@@ -279,7 +254,7 @@ export async function loadAllNewsArticles(): Promise<NewsArticle[]> {
       return 0;
     });
     
-    return mergedArticles;
+    return articles;
   } catch (error) {
     console.error('Erreur lors du chargement des articles:', error);
     return [];
@@ -330,11 +305,10 @@ export function paginateNews(
 }
 
 /**
- * Charge un article par slug
- * Priorité : Supabase d'abord, puis Markdown
+ * Charge un article par slug depuis Supabase uniquement
+ * Toujours charger depuis Supabase, toujours rendre en HTML
  */
 export async function loadNewsArticle(slug: string): Promise<NewsArticle | null> {
-  // Essayer d'abord depuis Supabase (priorité), sauf si ready_for_static = true
   try {
     const supabaseAdmin = getSupabaseAdmin();
     const { data, error } = await supabaseAdmin
@@ -343,31 +317,27 @@ export async function loadNewsArticle(slug: string): Promise<NewsArticle | null>
       .eq('slug', slug)
       .eq('status', 'published')
       .eq('hidden', false)
-      .or('ready_for_static.is.null,ready_for_static.eq.false') // Exclure ceux marqués ready_for_static
       .single();
     
-    if (!error && data) {
-      return {
-        title: data.title,
-        slug: data.slug,
-        excerpt: data.excerpt,
-        content: cleanContent(data.content || ''),
-        featured_image: data.featured_image_url,
-        author_name: data.author_name,
-        author_email: data.author_email,
-        published_at: data.published_at || data.created_at,
-        featured: data.featured,
-      };
+    if (error || !data) {
+      console.error(`Article non trouvé ou erreur pour ${slug}:`, error);
+      return null;
     }
+    
+    // Toujours retourner depuis Supabase, nettoyer le contenu
+    return {
+      title: data.title,
+      slug: data.slug,
+      excerpt: data.excerpt,
+      content: cleanContent(data.content || ''),
+      featured_image: data.featured_image_url,
+      author_name: data.author_name,
+      author_email: data.author_email,
+      published_at: data.published_at || data.created_at,
+      featured: data.featured,
+    };
   } catch (error) {
     console.error(`Erreur lors du chargement depuis Supabase pour ${slug}:`, error);
+    return null;
   }
-  
-  // Fallback vers Markdown
-  const article = await loadArticleFromMarkdown(slug);
-  if (article) {
-    return article;
-  }
-  
-  return null;
 }
